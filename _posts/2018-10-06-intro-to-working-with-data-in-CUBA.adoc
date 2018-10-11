@@ -149,13 +149,17 @@ Once the entity instance was created the data of that entity has to be set throu
 
 The process of storing an entity instance contains a few steps like security checks, ID generation and so on. The return value of the commit method is the stored instance with all properties set that have been added during the storage phase.
 
+TIP: There are a couple over other convenience API methods for storing entites. For more information about those variants see the http://files.cuba-platform.com/javadoc/cuba/{cuba_version}/com/haulmont/cuba/core/global/DataManager.html[DataManager API reference].
+
 === Transactions & Commit Context
 
 The example from above shows on how to store a single item in the database. Although this is oftentimes sufficient, a lot of cases require to store multiple items in a single transaction. The default example for this is the bank transfer from one account to another. In this case it is crucial that the update to both accounts happens together or not at all, but never only one of them.
 
 The DataManager API always encapsulated the database operation in a transaction. This means that by default the `commit(visit)` call is executed in one transaction. Another call to `commit` would create another transaction.
 
-To execute updates on multiple entity instances there is the concept of a `CommitContext`. The commit context defines all entity instances that should get created / updated and removed. The DataManager accepts a `commitContext` object as an alternative to an entity instance. In this case all entity instances that are hold by the commit context will get transfered to the database within one transaction.
+To execute updates on multiple entity instances there is the concept of a `CommitContext`. The commit context defines all entity instances that should get created / updated and removed. The DataManager accepts a `CommitContext` object as an alternative to an entity instance. In this case all entity instances that are hold by the commit context will get transferred to the database within one transaction.
+
+The `CommitContext` has two main methods: http://files.cuba-platform.com/javadoc/cuba/{cuba_version}/com/haulmont/cuba/core/global/CommitContext.html#addInstanceToCommit-com.haulmont.cuba.core.entity.Entity-[addInstanceToCommit] as well as http://files.cuba-platform.com/javadoc/cuba/{cuba_version}/com/haulmont/cuba/core/global/CommitContext.html#addInstanceToRemove-com.haulmont.cuba.core.entity.Entity-[addInstancesToRemove] which allow to define which items should be added / updated as well as removed within one transaction.
 
 In case multiple visits should be updated within one transaction the usage of `CommitContext` looks like this:
 
