@@ -190,7 +190,7 @@ Sometimes the fact that DataManager API always creates a new transaction is not 
 
 == Summary
 
-`DataManager` is a CUBA abstraction that allows application developer to fulfill common use-cases for working with databases. It has multiple operations to allow for regular create, read, update and delete operations (CRUD). Entity instances can stored directly or within a Commit Context. Every operation will be encapsulated in a new transaction.
+The Data Manager APi is a CUBA abstraction that allows application developer to fulfill common use-cases for working with databases. It has multiple operations to allow for regular create, read, update and delete operations (CRUD). Entity instances can stored directly or within a Commit Context. Every operation will be encapsulated in a new transaction.
 
 === Futher information
 
