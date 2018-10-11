@@ -1,0 +1,15 @@
+
+=== Requirements
+
+
+Your development environment requires to contain the following:
+
+* https://www.oracle.com/technetwork/java/javase/downloads/index.html[JDK {java_version}]
+* a text editor or IDE (preferred https://www.jetbrains.com/idea/download/[IntelliJ IDEA])
+* https://www.cuba-platform.com/download[CUBA Studio] (optional)
+* https://github.com/cuba-platform/cuba-cli/wiki/Installation[CUBA CLI] (optional)
+
+
+https://github.com/cuba-guides/{project_id}/archive/master.zip[Download] and unzip the source repository for this guide, or clone it using git:
+
+`git clone https://github.com/cuba-guides/{project_id}.git`

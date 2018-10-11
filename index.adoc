@@ -1,0 +1,8 @@
+---
+layout: index
+---
+
+= CUBA Platform Guides
+:showtitle:
+:page-title: CUBA Platform Guides
+:page-description: The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.
