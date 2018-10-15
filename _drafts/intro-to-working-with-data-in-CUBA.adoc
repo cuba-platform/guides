@@ -1,0 +1,202 @@
+---
+compatible_cuba_versions: 6.9 - 6.10
+project_id: cuba-petclinic-intro-to-datamanager
+permalink: intro-working-with-data-in-cuba
+---
+= Introduction to working with Data in CUBA
+:showtitle:
+:page-navtitle: Introduction to working with Data in CUBA
+:page-excerpt: Overview on how to read and write data in a CUBA application
+:page-root: ../../../
+:project_id: cuba-petclinic-intro-to-datamanager
+:java_version: 1.8
+:cuba_version: 6.10
+
+This guide walks you through the CUBA APIs for programmatically interacting with the database through the DataManager API.
+
+
+== What will be build
+
+This guides enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show different use cases regarding programmatic data access with the DataManager API. In particular the following use cases will be covered:
+
+* automatic creation of a Visit for a given Pet Identification Number
+* automatic send out of "Disease Warning Mailing" for endangered pets
+
+=== Final Application
+image:https://dummyimage.com/600x400/00b5ec/ffffff.png&text=CUBA Petclinic Overview[] Overview of final CUBA petclinic application
+
+
+include::includes/guide_requirements.adoc[]
+
+
+
+== Programmatic data access interactions
+
+Oftentimes it is necessary to interact with the database in a programmatic manner. In a CUBA based application, these cases are not as omnipresent as in other frameworks due to its declarative nature of data-binding for UIs, but still there are
+a lot of cases where data has to be loaded from the database or stored in the database as part of a business process.
+
+The main interaction point that CUBA provides is the https://doc.cuba-platform.com/manual-6.10/dataManager.html[DataManager] API. This API allows the developer of a CUBA application to load and store data in the database
+through the general abstraction of entities.
+
+DataManager is an Abstraction on top of the Java Persistence API (JPA). It hides away certain details that are not required on a day-to-day basis.
+
+It also adds certain capabilities that are not available out of the box in JPA. Those capabilities are mainly the https://doc.cuba-platform.com/manual-6.10/views.html[Views concept] as well as the application of https://doc.cuba-platform.com/manual-6.10/security_subsystem.html[security constrains]. More information about differences between JPA and DataManager can be found in the docs on https://doc.cuba-platform.com/manual-6.10/dm_vs_em.html[DataManager vs. EntityManager].
+
+
+include::includes/petclinic_introduction.adoc[]
+
+
+== Load data with DataManager
+
+DataManager has multiple ways to load data from the database. The following examples contain the most common cases for loading data in different ways.
+
+=== Single Item
+
+The first option is to load a single Entity instance from the database. This option is often required, if reference data needs to be read from the database in order to execute some logic for that entity instance or with the help of that entity instance.
+
+In the case of the Petclinic example there is some business logic, which should create a new Visit for a given Pet by its ID.
+
+image:https://dummyimage.com/600x400/00b5ec/ffffff.png&text=Create visit for Pet[] Create visit for Pet overview
+
+
+The part that loads the Pet instance by its ID looks like this with the use of the DataManager API:
+
+
+.VisitServiceBean.java
+[source,java]
+----
+@Inject
+DataManager dataManager;
+
+Pet loadPetById(String petId) {
+  return dataManager.load(Pet.class)
+            .query("select e from petclinic$Pet e where e.petId = :petId")
+            .parameter("petId", petId)
+            .one();
+}
+----
+
+DataManager has a https://martinfowler.com/bliki/FluentInterface.html[fluent API] which allows to chain operations on the load operation in order to define parameters to the execution. In this case the interaction starts with `dataManager.load(Pet.class)`. Then the JPQL query is defined and the associated parameters are configured with the parameter values. The method call `one()` executes the load operation and fetches exactly one item that matches the criteria. If there are no results or multiple results corresponding exceptions are thrown.
+
+It is up to the application developer to decide if the query can return one or possibly multiple results. In this case it is only possible to create a Pet ID once, we can be sure that the query will return at the most one item.
+
+In this case the attribute `petId` is not the primary key of the entity. If this would be the case, the query would be even easier to create as the query part is not needed: `dataManager.load(Pet.class).id(petId).one();`
+
+=== Multiple Items by query
+
+The next very common option is to load multiple Items defined by a query.
+
+The Petclinic application has the capability to let the user send out Disease Warning Mailings. The user has to define the location of a known disease as well as the type of Pet that is endangered by this disease. The system will find all endangered Pets and send out a Mailing to the owners.
+
+image:https://dummyimage.com/600x400/00b5ec/ffffff.png&text=Disease Warning Mailing[] Disease Warning Mailing overview
+
+
+The part that find the endangered Pets looks like this with the use of the DataManager API:
+
+.DiseaseWarningMailingServiceBean.java
+[source,java]
+----
+@Inject
+DataManager dataManager;
+
+private List<Pet> findEndangeredPets(PetType petType, String city) {
+    return dataManager.load(Pet.class)
+                .query("select e from petclinic$Pet e where e.owner.city = :ownerCity and e.type.id = :petType")
+                .parameter("ownerCity", city)
+                .parameter("petType", petType)
+                .view("pet-with-owner-and-type")
+                .list();
+}
+----
+
+The query part is a little more complicated compared to above, but the same pattern applies. The differences in this example are the usage of the `list()` method as we expect multiple Pets from the database query. Also a specific view has been used, because not only the Pet data, but also the Owner data has to be loaded in order to send out the Mailings.
+
+== Write data with DataManager
+
+DataManager is also responsible for writing data into the database. There are also different ways to achieve it based on the case at hand.
+
+=== Single Item
+
+The first most commonly used case is to update or create a single item in the database. There are no major differences between creation and updating of an entity from the usage perspective.
+
+When revisiting the example from above, where a new Visit for a given Pet ID is created we only looked at the part which loads the Pet by its Pet ID. In this case we are more interested in the creation part of the Visit entity. The source code to create and save a Visit looks like this:
+
+
+.VisitServiceBean.java
+[source,java]
+----
+@Inject
+DataManager dataManager;
+
+private Visit createVisitForPet(Pet pet) {
+
+    Visit visit = dataManager.create(Visit.class); // <1>
+
+    visit.setPet(pet);
+    visit.setVisitDate(timeSource.currentTimestamp());
+
+    return dataManager.commit(visit); // <2>
+
+}
+----
+
+<1> an entity instance is created with all initializations in memory
+<2> the entity instance is stored in the DB
+
+The creation of an instance through DataManager does the initialization of the instance as well. It is important to not create an instance via `new Visit()` but rather through this Factory method, so that CUBA can do all the required initialization (like `@PostConstruct` annotated methods e.g.).
+
+Once the entity instance was created the data of that entity has to be set through its corresponding setter methods. In this case the database instance of the Pet is set as well as the current date as the visit date.
+
+The process of storing an entity instance contains a few steps like security checks, ID generation and so on. The return value of the commit method is the stored instance with all properties set that have been added during the storage phase.
+
+TIP: There are a couple over other convenience API methods for storing entites. For more information about those variants see the http://files.cuba-platform.com/javadoc/cuba/{cuba_version}/com/haulmont/cuba/core/global/DataManager.html[DataManager API reference].
+
+=== Transactions & Commit Context
+
+The example from above shows on how to store a single item in the database. Although this is oftentimes sufficient, a lot of cases require to store multiple items in a single transaction. The default example for this is the bank transfer from one account to another. In this case it is crucial that the update to both accounts happens together or not at all, but never only one of them.
+
+The DataManager API always encapsulated the database operation in a transaction. This means that by default the `commit(visit)` call is executed in one transaction. Another call to `commit` would create another transaction.
+
+To execute updates on multiple entity instances there is the concept of a `CommitContext`. The commit context defines all entity instances that should get created / updated and removed. The DataManager accepts a `CommitContext` object as an alternative to an entity instance. In this case all entity instances that are hold by the commit context will get transferred to the database within one transaction.
+
+The `CommitContext` has two main methods: http://files.cuba-platform.com/javadoc/cuba/{cuba_version}/com/haulmont/cuba/core/global/CommitContext.html#addInstanceToCommit-com.haulmont.cuba.core.entity.Entity-[addInstanceToCommit] as well as http://files.cuba-platform.com/javadoc/cuba/{cuba_version}/com/haulmont/cuba/core/global/CommitContext.html#addInstanceToRemove-com.haulmont.cuba.core.entity.Entity-[addInstancesToRemove] which allow to define which items should be added / updated as well as removed within one transaction.
+
+In case multiple visits should be updated within one transaction the usage of `CommitContext` looks like this:
+
+
+[source,java]
+----
+@Inject
+DataManager dataManager;
+
+private void createVisitForPet(Pet pet) {
+
+    Visit todaysVisit = createVisitInstance(pet);
+    todaysVisit.setVisitDate(today());
+
+    Visit followUpCheckVisit = createVisitInstance(pet);
+    followUpCheckVisit.setVisitDate(nextWeek());
+
+
+    CommitContext commitContext = new CommitContext();
+
+    commitContext.addInstanceToCommit(todaysVisit); // <1>
+    commitContext.addInstanceToCommit(followUpCheckVisit);
+
+    dataManager.commit(commitContext); // <2>
+}
+----
+<1> `addInstanceToCommit` allows to add entity instances to the commit context
+<2> `commit` can take a `CommitContext` instance for storing multiple entity instances in one transaction
+
+Sometimes the fact that DataManager API always creates a new transaction is not the desired behavior. Instead an already running transaction should be re-used. In this case a very similar API called `TransactionalDataManager` can be used. It behaves basically the same as the regular `DataManager` with the difference that it allows to join existing transaction as well as enabling programmatic transaction handling.
+
+
+== Summary
+
+The Data Manager APi is a CUBA abstraction that allows application developer to fulfill common use-cases for working with databases. It has multiple operations to allow for regular create, read, update and delete operations (CRUD). Entity instances can stored directly or within a Commit Context. Every operation will be encapsulated in a new transaction.
+
+=== Futher information
+
+* https://doc.cuba-platform.com/manual-{cuba_version}/dataManager.html[DataManager reference documentation]
+* https://www.cuba-platform.com/webinars/working-data[Working with Data (Webinar)]
