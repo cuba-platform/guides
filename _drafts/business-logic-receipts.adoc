@@ -1,41 +1,20 @@
 ---
 compatible_cuba_versions: 6.9 - 6.10
-project_id: cuba-petclinict-datamanager
-permalink: create-business-logic-with-services
+project_id: cuba-petclinic-cookbook-business-logic
+permalink: cookbook-business-logic-receipts
 ---
-= Business logic recepits
+= Cookbook: Business logic recepits
 :showtitle:
-:page-navtitle: Create business logic with services
-:page-excerpt: Overview on how to use Service when defining custom business logic
+:page-navtitle: Cookbook: Business logic recepits
+:page-excerpt: Cookbook on what options are available for putting business logic into a CUBA application
 :page-root: ../../../
-:project_id: cuba-petclinic-business-logic-services
+:project_id: cuba-petclinic-cookbook-business-logic
 :java_version: 1.8
 :cuba_version: 6.10 // the version of CUBA which it was build with
+
 :proj_business_logic: https://github.com/cuba-platform/sample-business-logic
 
-One (max. two) sentence(s) that outlines the guide and the scope of it.
-
-Example:
-This guide walks you through the CUBA APIs for programmatically interacting with the database through the DataManager API.
-
-== What will be build
-
-This guides enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to...
-
-The main points of enhancement should be named here:
-
-* in a
-* list
-
-=== Final Application
-
-A little screencast of the final application overview goes here.
-
-image:https://dummyimage.com/600x400/00b5ec/ffffff.png&text=CUBA Petclinic Overview[] Overview of final CUBA petclinic application
-
-
-include::includes/guide_requirements.adoc[]
-
+Cookbook on what options are available for putting business logic into a CUBA application.
 
 
 [[business_logic_recipes]]
@@ -65,8 +44,8 @@ include::business_logic_recipes/app_start_recipe.adoc[]
 
 == Summary
 
-This section summarizes what was done in this guide. The main learning points have to be layed out here.
+There are several options when it comes to where to put the business logic in a CUBA application. A controller can be a good and easy start, although it has some downsides when it comes to sharing code. A client bean solves this problem to some degree. Middleware services allow for sharing business logic across different clients (e.g. Polymer Client) and is the most appropriate way of putting business logic.
 
-=== Futher information
+The decision where to put the business logic for a given case should be done on a case to case basis.
 
-* https://doc.cuba-platform.com/manual-{cuba_version}[Reference documentation]
+
