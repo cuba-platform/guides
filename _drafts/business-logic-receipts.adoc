@@ -1,0 +1,72 @@
+---
+compatible_cuba_versions: 6.9 - 6.10
+project_id: cuba-petclinict-datamanager
+permalink: create-business-logic-with-services
+---
+= Business logic recepits
+:showtitle:
+:page-navtitle: Create business logic with services
+:page-excerpt: Overview on how to use Service when defining custom business logic
+:page-root: ../../../
+:project_id: cuba-petclinic-business-logic-services
+:java_version: 1.8
+:cuba_version: 6.10 // the version of CUBA which it was build with
+:proj_business_logic: https://github.com/cuba-platform/sample-business-logic
+
+One (max. two) sentence(s) that outlines the guide and the scope of it.
+
+Example:
+This guide walks you through the CUBA APIs for programmatically interacting with the database through the DataManager API.
+
+== What will be build
+
+This guides enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to...
+
+The main points of enhancement should be named here:
+
+* in a
+* list
+
+=== Final Application
+
+A little screencast of the final application overview goes here.
+
+image:https://dummyimage.com/600x400/00b5ec/ffffff.png&text=CUBA Petclinic Overview[] Overview of final CUBA petclinic application
+
+
+include::includes/guide_requirements.adoc[]
+
+
+
+[[business_logic_recipes]]
+=== Organizing Business Logic
+
+When you start developing on the platform, one of the first questions is "where should I put my business logic"? Using Studio for creating data model and CRUD screens is simple, but any real project requires some logic beyond CRUD. This section explains how you can effectively organize your business logic depending on your requirements.
+
+Most examples in this section work with the following data model:
+
+image::/images/business_logic_receipts/business_logic_model_1.png[align="center"]
+
+In these examples, we will calculate discounts for customers based on total amount of their purchases.
+
+include::business_logic_recipes/logic_in_controllers_recipe.adoc[]
+
+include::business_logic_recipes/using_client_beans_recipe.adoc[]
+
+include::business_logic_recipes/using_services_recipe.adoc[]
+
+include::business_logic_recipes/using_entity_listeners_recipe.adoc[]
+
+include::business_logic_recipes/using_jmx_beans_recipe.adoc[]
+
+include::business_logic_recipes/app_start_recipe.adoc[]
+
+
+
+== Summary
+
+This section summarizes what was done in this guide. The main learning points have to be layed out here.
+
+=== Futher information
+
+* https://doc.cuba-platform.com/manual-{cuba_version}[Reference documentation]
