@@ -28,17 +28,181 @@ image::/images/business_logic_receipts/business_logic_model_1.png[align="center"
 
 In these examples, we will calculate discounts for customers based on total amount of their purchases.
 
-include::business_logic_recipes/logic_in_controllers_recipe.adoc[]
 
-include::business_logic_recipes/using_client_beans_recipe.adoc[]
+=== Business Logic in Controllers
 
-include::business_logic_recipes/using_services_recipe.adoc[]
+++++
+<div class="manual-live-demo-container">
+    <a href="https://demo1.cuba-platform.com/business-logic/open?screen=sample$Customer.browse_1" class="live-demo-btn" target="_blank">LIVE DEMO</a>
+</div>
+++++
 
-include::business_logic_recipes/using_entity_listeners_recipe.adoc[]
+If we want to run the discount calculation when a user clicks a button on the customer's browser screen, the most straightforward way to accomplish this is to put the calculation logic right in the browser <<screen_controller,screen controller>>.
 
-include::business_logic_recipes/using_jmx_beans_recipe.adoc[]
+See the *Calculate discount* button in the demo application and the screen controller implementation: {proj_business_logic}/blob/master/modules/web/src/com/company/sample/web/ex1/customer/CustomerBrowse.java[CustomerBrowse.java]. Please keep in mind that the provided calculation process is not optimal and see more options in the <<data_recipes>> section.
 
-include::business_logic_recipes/app_start_recipe.adoc[]
+This approach is acceptable if the logic is invoked from a single point and it is not too complex to fit into a couple of short methods.
+
+
+
+
+=== Using Client Tier Beans
+
+++++
+<div class="manual-live-demo-container">
+    <a href="https://demo1.cuba-platform.com/business-logic/open?screen=sample$Customer.browse_2" class="live-demo-btn" target="_blank">LIVE DEMO</a>
+</div>
+++++
+
+Let's complicate the task from the <<logic_in_controllers_recipe,previous>> section a bit. Now we want to invoke the calculation both from the customer browser and editor screens. To not repeat yourself, we should extract the logic to a common place available for both controllers. It can be a <<managed_beans,managed bean>> of the client <<app_tiers,tier>>.
+
+A managed bean is a class annotated with the `@Component` annotation. It can be injected into other beans and screen controllers, or obtained via the `AppBeans.get()` static method. If the bean has a separate interface, you can access the bean through the interface instead of the class.
+
+Please note that in order to be accessible for screen controllers, the bean must be located in *global*, *gui* or *web* <<app_modules,modules>> of your project. In the former case the bean will be also accessible for the middleware.
+
+See the *Calculate discount* button on both browser and editor screens of the demo application and the implementation:
+
+image::/images/business_logic_receipts/using_client_beans_1.png[align="center"]
+
+* {proj_business_logic}/blob/master/modules/web/src/com/company/sample/web/ex2/customer/CustomerBrowse.java[CustomerBrowse.java] - browser controller.
+
+* {proj_business_logic}/blob/master/modules/web/src/com/company/sample/web/ex2/customer/CustomerEdit.java[CustomerEdit.java] - editor controller.
+
+* {proj_business_logic}/blob/master/modules/web/src/com/company/sample/web/ex2/DiscountCalculator.java[DiscountCalculator.java] - discount calculator bean. It uses <<dataManager,DataManager>> to load the list of orders for the given customer from the database.
+
+
+
+=== Using Middleware Services
+
+++++
+<div class="manual-live-demo-container">
+    <a href="https://demo1.cuba-platform.com/business-logic/open?screen=sample$Customer.browse_3" class="live-demo-btn" target="_blank">LIVE DEMO</a>
+</div>
+++++
+
+In the <<using_client_beans_recipe,previous>> section we considered the encapsulation of business logic in a managed bean of the client tier. Now we will go further and implement our logic in the most appropriate place: on the <<middleware,middle tier>>. By doing this, we will achieve the following goals:
+
+* Our business methods will be available for all types of clients including <<polymer_ui,Polymer UI>>.
+
+* We will be able to use APIs available only on the middleware: <<entityManager,EntityManager>>, <<transactions,transactions>>, etc.
+
+In order to invoke a middleware business method from the client, you need to create a <<services,service>>. Studio can help you to scaffold the service stub:
+
+* Switch to the *Middleware* section and click *New > Service*.
+
+* Change the service interface name to `DiscountService`. The bean class and service names will be changed accordingly. Click *OK* or *Apply*.
+
+* Click *IDE* and open the service interface in your IDE. Create a method and implement it in the service class.
+
+See an example implementation in the demo application:
+
+image::/images/business_logic_receipts/using_services_1.png[align="center"]
+
+ * {proj_business_logic}/blob/master/modules/web/src/com/company/sample/web/ex3/customer/CustomerBrowse.java[CustomerBrowse.java] and {proj_business_logic}/blob/master/modules/web/src/com/company/sample/web/ex3/customer/CustomerEdit.java[CustomerEdit.java] - screen controllers that invoke the service.
+
+ * {proj_business_logic}/blob/master/modules/global/src/com/company/sample/service/DiscountService.java[DiscountService.java] - service interface.
+
+ * {proj_business_logic}/blob/master/modules/core/src/com/company/sample/service/DiscountServiceBean.java[DiscountServiceBean.java] - service implementation.
+
+ * {proj_business_logic}/blob/master/modules/core/src/com/company/sample/core/DiscountCalculator.java[DiscountCalculator.java] - a managed bean of the middle tier which actually calculates discounts. Of course, a service can contain the business logic itself, but we will use this delegate to share logic with entity listeners and JMX beans (see next sections).
++
+Please note that this bean is different from the one mentioned in the <<using_client_beans_recipe,previous>> section: it is located in the *core* module and uses <<entityManager,EntityManager>> for loading the amount of purchases from the database.
+
+Let's now make our business method accessible for external clients through the <<rest_api_v2,REST API>>:
+
+* Open the service editor in Studio and switch to the *REST Methods* tab.
+
+* Select the *REST invocation allowed* checkbox for the method.
+
+Studio will create the `rest-services.xml` file and write the method description into it. After restarting the application server you will be able to invoke your business method using HTTP requests. For example, the following GET request should work with our online demo server:
+
+`\https://demo1.cuba-platform.com/business-logic/rest/v2/services/sample_DiscountService/calculateDiscount?customerId=1797f54d-5bec-87a6-4330-d958955743a2`
+
+Please note that the demo application allows <<rest_api_v2_anonymous,anonymous access>>. In the most real-world usage scenarios you need to authenticate prior to executing REST requests.
+
+
+
+=== Using Entity Listeners
+
+++++
+<div class="manual-live-demo-container">
+    <a href="https://demo1.cuba-platform.com/business-logic/open?screen=sample$orderBrowseWithCustomers" class="live-demo-btn" target="_blank">LIVE DEMO</a>
+</div>
+++++
+
+<<entity_listeners,Entity listeners>> allow you to execute your business logic each time an entity is added, updated or removed from the database. For example, we could recalculate the discount for a customer each time an order for this customer is changed.
+
+An entity listener stub can be easily created using Studio:
+
+* Switch to the *Middleware* section and click *New > Entity listener*.
+
+* Change the class name to `OrderEntityListener` and select checkboxes for `BeforeInsertEntityListener`, `BeforeUpdateEntityListener` and `BeforeDeleteEntityListener` interfaces.
+
+* Select `Order` entity in the *Entity type* field.
+
+* Click *OK* or *Apply* and open the listener class in your IDE.
+
+See an example implementation in the demo application:
+
+image::/images/business_logic_receipts/using_entity_listeners_1.png[align="center"]
+
+* {proj_business_logic}/blob/master/modules/core/src/com/company/sample/listener/OrderEntityListener.java[OrderEntityListener.java] - the entity listener.
+
+* {proj_business_logic}/blob/master/modules/core/src/com/company/sample/core/DiscountCalculator.java[DiscountCalculator.java] - a managed bean of the middle tier which actually calculates discounts. An entity listener can contain the business logic itself, but we will use this delegate to share logic with services and JMX beans.
+
+If you open the *Logic in Entity Listeners* screen of the demo application, you will see two tables: orders and customers. Create, edit or remove an order, then refresh the customers table, and you will see that the discount of the corresponding customer is changed.
+
+=== Using JMX Beans
+
+++++
+<div class="manual-live-demo-container">
+    <a href="https://demo1.cuba-platform.com/business-logic/open?screen=jmxConsole" class="live-demo-btn" target="_blank">LIVE DEMO</a>
+</div>
+++++
+
+With <<jmx_beans,JMX beans>> you can expose some administrative functionality of your application without creating a user interface for it. The functionality becomes available via the built-in JMX console and via external JMX tools like `jconsole`.
+
+In our example with discounts, a user having access to JMX console is able to recalculate discounts for all customers and for a customer with a given id.
+
+Studio cannot help you with scaffolding JMX beans at the moment, so all classes and configuration entries have to be created manually in the IDE.
+
+See an example implementation in the demo application:
+
+image::/images/business_logic_receipts/using_jmx_beans_1.png[align="center"]
+
+* {proj_business_logic}/blob/master/modules/core/src/com/company/sample/core/jmx/DiscountsMBean.java[DiscountsMBean.java] - JMX bean interface.
+
+* {proj_business_logic}/blob/master/modules/core/src/com/company/sample/core/jmx/Discounts.java[Discounts.java] - JMX bean implementation.
+
+* {proj_business_logic}/blob/master/modules/core/src/com/company/sample/core/DiscountCalculator.java[DiscountCalculator.java] - a managed bean of the middle tier which is invoked by the JMX bean. A JMX bean can contain the business logic itself, but we will use this delegate to share logic with services and entity listeners.
+
+* {proj_business_logic}/blob/master/modules/core/src/com/company/sample/spring.xml[spring.xml] - registers the JMX bean.
+
+
+
+=== Running Code on Startup
+
+Sometimes you need to run some code on the application startup, at the moment when all application functionality is already initialized and ready to work. For this, you can use <<app_lifecycle_events,application lifecycle event listeners>>.
+
+++++
+<div class="manual-live-demo-container">
+    <a href="https://demo1.cuba-platform.com/business-logic/open?screen=sample$Employee.browse" class="live-demo-btn" target="_blank">LIVE DEMO</a>
+</div>
+++++
+
+In this section we demonstrate how to dynamically register an <<entity_listeners,entity listener>> on application startup. Consider the following task: a project has an `Employee` entity that is linked one-to-one to the platform's `User` entity.
+
+image::/images/business_logic_receipts/app_start_recipe_1.png[align="center"]
+
+If the `name` attribute of the `User` entity is changed, for example, through a standard user management screen, the `name` attribute of the related `Employee` should change as well. This is a common task for "denormalized" data, which is typically solved using entity listeners. Our case is more complicated, since we need to track changes of the platform's `User` entity, and thus we cannot add an entity listener using the <<listeners_annotation,@Listeners>> annotation. So we will add a listener dynamically using the `EntityListenerManager` bean on application start.
+
+* {proj_business_logic}/blob/master/modules/core/src/com/company/sample/core/AppLifecycle.java[AppLifecycle.java] - a middleware bean listening to the `AppContextInitializedEvent` events.
+
+* {proj_business_logic}/blob/master/modules/core/src/com/company/sample/listener/UserEntityListener.java[UserEntityListener.java] - an entity listener for the `User` entity.
+
+As a result, the `initEntityListeners()` method of the `AppLifecycle` class will be invoked on the middleware <<app_tiers,block>> startup. This method registers the `sample_UserEntityListener` bean as an entity listener for the `User` entity.
+
+The `onBeforeUpdate()` method of the `UserEntityListener` class will be invoked every time before the changes in the `User` instances are saved to the database. The method checks if the `name` attribute exists among the updated attributes. If yes, a related `Employee` instance is loaded and its `name` is updated with the new value.
 
 
 
