@@ -3,9 +3,9 @@ compatible_cuba_versions: 6.9 - 6.10
 project_id: cuba-petclinic-cookbook-business-logic
 permalink: cookbook-business-logic-receipts
 ---
-= Cookbook: Business logic recepits
+= Cookbook: Business logic receipts
 :showtitle:
-:page-navtitle: Cookbook: Business logic recepits
+:page-navtitle: Cookbook: Business logic receipts
 :page-excerpt: Cookbook on what options are available for putting business logic into a CUBA application
 :page-root: ../../../
 :project_id: cuba-petclinic-cookbook-business-logic
