@@ -47,18 +47,18 @@ include::includes/petclinic_introduction.adoc[]
 
 == Load data with DataManager
 
-DataManager has multiple ways to load data from the database. The following examples contain the most common cases for loading data in different ways.
+DataManager has multiple ways to load data from the database. In this guide the two main options are covered: Load a single item as well as multiple items based on Queries.
 
 === Single Item
 
 The first option is to load a single Entity instance from the database. This option is often required if reference data needs to be read from the database in order to execute some logic for that entity instance or with the help of that entity instance.
 
-In the case of the Petclinic example, there is some business logic which should create a new Visit for a given Pet by its ID.
+In the case of the Petclinic example, there is some business logic which should create a new Visit for a given Pet by its Identification Number.
 
 image:https://dummyimage.com/600x400/00b5ec/ffffff.png&text=Create visit for Pet[] Create visit for Pet overview
 
 
-The part that loads the Pet instance by its ID looks like this with the use of the DataManager API:
+The source code that loads the Pet instance by its Identification Number is located in https://github.com/cuba-guides/cuba-petclinic-intro-to-datamanager/blob/master/modules/core/src/com/cubaplatform/petclinic/service/visit/VisitServiceBean.java#L47[VisitServiceBean.java] in the example application. The usage of the DataManager API looks like this:
 
 
 .VisitServiceBean.java
@@ -67,23 +67,30 @@ The part that loads the Pet instance by its ID looks like this with the use of t
 @Inject
 DataManager dataManager;
 
-Pet loadPetById(String petId) {
-  return dataManager.load(Pet.class)
-            .query("select e from petclinic$Pet e where e.petId = :petId")
-            .parameter("petId", petId)
+/**
+ * loads a Pet by its Identification Number
+ * @param identificationNumber the Identification Number to load
+ * @return the Pet for the given Identification Number
+ */
+private Pet loadPetByIdentificationNumber(String identificationNumber) {
+    return dataManager.load(Pet.class)
+            .query("select e from petclinic$Pet e where e.identificationNumber = :identificationNumber")
+            .parameter("identificationNumber", identificationNumber)
             .one();
 }
 ----
 
-DataManager has a https://martinfowler.com/bliki/FluentInterface.html[fluent API] which allows to chain operations on the load operation in order to define parameters to the execution. In this case, the interaction starts with `dataManager.load(Pet.class)`. Then the JPQL query is defined and the associated parameters are configured with the parameter values. The method call `one()` executes the load operation and fetches exactly one item that matches the criteria. If there are no results or multiple results the corresponding exceptions are thrown.
+DataManager has a https://martinfowler.com/bliki/FluentInterface.html[fluent API] which allows to chain operations on the load operation in order to define parameters to the execution. In this case, the interaction starts with `dataManager.load(Pet.class)`. Then the JPQL query is defined and the associated parameters are configured with the parameter values. The method call `one()` executes the load operation and fetches exactly one item that matches the criteria. If there are no results the corresponding exception is thrown.
 
-It is up to the application developer to decide if the query can return one or possibly multiple results. In this case it is only possible to create a Pet ID once, we can be sure that the query will return at the most one item.
+It is up to the application developer to decide if the query can return one or possibly multiple results. In this case it is only possible to create a Identification Number once, we can be sure that the query will return at the most one item.
 
-In this case, the attribute `petId` is not the primary key of the entity. If this would be the case, the query would be even easier to create as the query part is not needed: `dataManager.load(Pet.class).id(petId).one();`
+In this case, the attribute `identificationNumber` is not the primary key of the entity. But it represents a globally unique identification number given by proper Pet authorities - therefore it is modelled uniquely within the application. 
 
-=== Multiple Items by query
+If the task is to load a Pet by its primary key (`id`) the query is easier to create as the query part is not needed: `dataManager.load(Pet.class).id(id).one();`
 
-The next very common option is to load multiple Items defined by a query.
+=== Multiple Items by Query
+
+The next very common option is to load multiple items defined by a query.
 
 The Petclinic application has the capability to let the user send out Disease Warning Mailings. The user has to define the location of a known disease as well as the type of Pet that is endangered by this disease. The system will find all endangered Pets and send out a Mailing to the owners.
 
@@ -110,7 +117,7 @@ private List<Pet> findEndangeredPets(PetType petType, String city) {
 
 The query part is a little more complicated compared to above, but the same pattern applies. The differences in this example are the usage of the `list()` method as we expect multiple Pets from the database query. Also a specific view has been used, because not only the Pet data, but also the Owner data has to be loaded in order to send out the Mailings.
 
-== Write data with DataManager
+== Write Data with DataManager
 
 DataManager is also responsible for writing data into the database. There are also different ways to achieve it based on the case at hand.
 
@@ -146,9 +153,9 @@ The creation of an instance through DataManager does the initialization of the i
 
 Once the entity instance was created, the data of that entity has to be set through its corresponding setter methods. In this case, the database instance of the Pet is set as well as the current date as the visit date.
 
-The process of storing an entity instance contains a few steps like security checks, ID generation, and so on. The return value of the commit method is the stored instance with all properties set that have been added during the storage phase.
+The process of storing an entity instance contains a few steps like security checks, execution of Entity Listeners and so on. The return value of the commit method is the stored instance with all properties set that have been added during the storage phase.
 
-TIP: There are a couple over other convenience API methods for storing entites. For more information about those variants see the http://files.cuba-platform.com/javadoc/cuba/{cuba_version}/com/haulmont/cuba/core/global/DataManager.html[DataManager API reference].
+TIP: There is a couple over other convenience API methods for storing entites. For more information about those variants see the http://files.cuba-platform.com/javadoc/cuba/{cuba_version}/com/haulmont/cuba/core/global/DataManager.html[DataManager API reference].
 
 === Transactions & Commit Context
 
