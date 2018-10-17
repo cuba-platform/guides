@@ -1,20 +1,20 @@
 ---
 compatible_cuba_versions: 6.9 - 6.10
-project_id: cuba-petclinic-cookbook-business-logic
-permalink: cookbook-business-logic-receipts
+project_id: cuba-petclinic-guide-business-logic
+permalink: guide-business-logic-in-cuba
 ---
-= Cookbook: Business logic receipts
+= Create business logic in CUBA
 :showtitle:
-:page-navtitle: Cookbook: Business logic receipts
-:page-excerpt: Cookbook on what options are available for putting business logic into a CUBA application
+:page-navtitle: Create business logic in CUBA
+:page-excerpt: Guide on what options are available for putting business logic into a CUBA application
 :page-root: ../../../
-:project_id: cuba-petclinic-cookbook-business-logic
+:project_id: cuba-petclinic-guide-business-logic
 :java_version: 1.8
 :cuba_version: 6.10 // the version of CUBA which it was build with
 
 :proj_business_logic: https://github.com/cuba-platform/sample-business-logic
 
-Cookbook on what options are available for putting business logic into a CUBA application.
+Guide on what options are available for putting business logic into a CUBA application.
 
 
 [[business_logic_recipes]]
