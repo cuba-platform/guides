@@ -1,0 +1,146 @@
+---
+compatible_cuba_versions: 6.9 - 6.10
+project_id: cuba-petclinic-business-logic
+permalink: create-business-logic-in-CUBA
+---
+= Old: Create business logic with services
+:showtitle:
+:page-navtitle: Old: Create business logic in CUBA
+:page-excerpt: Overview on what options are available for putting business logic into a CUBA application
+:page-root: ../../../
+:project_id: cuba-petclinic-business-logic-services
+:java_version: 1.8
+:cuba_version: 6.10 // the version of CUBA which it was build with
+
+
+This guides gives an overview on what options are available for putting business logic into a CUBA application.
+
+== What will be build
+
+This guides enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show different options on where business logic can be placed and what the pros and cons or those approaches are.
+
+In particular the example will be extended with the following features:
+
+* in a
+* list
+
+=== Final Application
+
+
+image:https://dummyimage.com/600x400/00b5ec/ffffff.png&text=CUBA Petclinic Overview[] Overview of final CUBA petclinic application
+
+
+include::includes/guide_requirements.adoc[]
+
+== What is business logic
+
+A CUBA application, just like any other custom application, has different logic implemented that represents the policies of the domain, the understanding of the business domain that the application is in, the rules that are the automation piece, which is oftentimes the very basis why the application exists.
+
+Normally this pieces of functionality are called _business logic_. That term is not always very precise, because oftentimes it has not very much to do with the business itself, but rather with the solution domain of the application - let's call it _solution domain business logic_.
+
+A CUBA application has oftentimes less of _solution domain business logic_ compared to other applications because of the features the platform itself provides. But regarding the real _business logic_ a CUBA application is not different by any means compared to any other application.
+
+=== An example on business logic
+
+To better understand what business logic means and where it differs from _solution domain business logic_ the following examples should give an option to identify the differences.
+
+
+.VisitPriceCalculator.java
+[source,java]
+----
+public VisitPrice calculateVisitPrice(PetType petType, LocalDate visitStart, LocalDate visitEnd) {
+
+    PriceUnit priceUnit = determineUnitPrice(petType);
+
+    VisitDuration visitDuration = calculateDuration(visitStart, visitEnd);
+
+    VisitPrice visitPrice;
+
+    if (visitDuration.isOneDay()) {
+        visitPrice = priceUnit * 1 + FIXED_VISIT_PRICE
+    }
+    else if (visitDuration.isLessThenAWeek()) {
+        visitPrice = priceUnit * visitDuration.getDurationDays() + FIXED_VISIT_PRICE / 2
+    }
+    else if (visitDuration.isMoreThenAWeek() {
+        visitPrice = priceUnit * visitDuration.getDurationDays()
+    }
+
+    return visitPrice;
+}
+----
+
+The method `calculateVisitPrice` is an example of real business logic. It contains rules that are very much related to the business. Moreover it does not really contain any code that deals with the solution space and constructs of that. To contrast the following example will show a piece of code which in contrast falls more under the category of _solution domain business logic_:
+
+
+.DiseaseWarningMailingService.java
+[source,java]
+----
+@Inject
+    protected DataManager dataManager;
+
+
+    @Inject
+    protected EmailerAPI emailerAPI;
+
+
+    @Override
+    public int warnAboutDisease(PetType petType, String disease, String city) {
+
+        List<Pet> petsInDiseaseCity = dataManager.load(Pet.class)
+                .query("select e from petclinic$Pet e where e.owner.city = :ownerCity and e.type.id = :petType")
+                .parameter("ownerCity", city)
+                .parameter("petType", petType)
+                .view("pet-with-owner-and-type")
+                .list();
+
+        petsInDiseaseCity.forEach(pet -> {
+
+            String emailSubject = "Warning about " + disease + " in the Area of " + city;
+
+            Map<String, Serializable> templateParameters = getTemplateParams(disease, city, pet);
+
+            EmailInfo email = new EmailInfo(
+                    pet.getOwner().getEmail(),
+                    emailSubject,
+                    null,
+                    "com/cubaplatform/petclinic/templates/disease-warning-mailing.txt",
+                    templateParameters
+            );
+
+            emailerAPI.sendEmailAsync(email);
+        });
+
+        return petsInDiseaseCity.size();
+    }
+----
+
+This example sends out Disease warning Emails for Owners of pets in particular cities. It contains some business logic. But is also contains parts that are
+dealing with the solution space like the Database or the Email sending mechanisms. Those two examples show what different kinds of business logic are common and where the differences are.
+
+With that differentiation between _real business logic_ and _solution domain business logic_ in mind, this guide will explore in which ways business logic can be expressed in a CUBA application and what the pros and cons of those options are.
+
+== How is business logic represented
+
+A CUBA application is a regular Java application. Therefore all options to represent logic in Java are available in a CUBA application as well. Furthermore since a CUBA application uses Spring as a Framework for Dependency Injection, the patterns that Spring suggests are available as well in a CUBA application. Additionally CUBA has certain preferences to represent business logic as artifacts.
+
+The main options for representing business logic in a CUBA application are:
+
+* Java class (POJO)
+* Spring Bean
+* Spring / CUBA Service
+* CUBA controller
+
+
+
+== What is a Service and how Service are used in a CUBA app
+== Example of creating business logic in a Service
+== Use services from different modules (web, polymer through REST API)
+
+== Summary
+
+This section summarizes what was done in this guide. The main learning points have to be layed out here.
+
+=== Futher information
+
+* https://doc.cuba-platform.com/manual-{cuba_version}[Reference documentation]
