@@ -14,45 +14,36 @@ permalink: guide-business-logic-in-cuba
 
 :proj_business_logic: https://github.com/cuba-platform/sample-business-logic
 
-Guide on what options are available for putting business logic into a CUBA application.
 
 
-[[business_logic_recipes]]
-=== Organizing Business Logic
+One of the first questions when developing a CUBA application is: _Where should I put my business logic?_ This guide will explain the different options available and its upsides and downsides.
 
-When you start developing on the platform, one of the first questions is "where should I put my business logic"? Using Studio for creating data model and CRUD screens is simple, but any real project requires some logic beyond CRUD. This section explains how you can effectively organize your business logic depending on your requirements.
+== What will be build
 
-Most examples in this section work with the following data model:
-
-image::/images/business_logic_receipts/business_logic_model_1.png[align="center"]
-
-In these examples, we will calculate discounts for customers based on total amount of their purchases.
+This guides enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show where business logic can be places in a CUBA application. Mainly discounts are calculated for Pets based on total amount of their visits in the Petclinic.
 
 
-=== Business Logic in Controllers
+=== Final Application
 
-++++
-<div class="manual-live-demo-container">
-    <a href="https://demo1.cuba-platform.com/business-logic/open?screen=sample$Customer.browse_1" class="live-demo-btn" target="_blank">LIVE DEMO</a>
-</div>
-++++
+ A little screencast of the final application overview goes here.
 
-If we want to run the discount calculation when a user clicks a button on the customer's browser screen, the most straightforward way to accomplish this is to put the calculation logic right in the browser <<screen_controller,screen controller>>.
+image:https://dummyimage.com/600x400/00b5ec/ffffff.png&text=CUBA Petclinic Overview[] Overview of final CUBA petclinic application
+
+
+
+== Business Logic in Controllers
+
+Assuming the discount calculation should be executed when a user clicks a button on the Owners's browser screen, the most straightforward way to accomplish this is to put the calculation logic right in the associated controller class.
 
 See the *Calculate discount* button in the demo application and the screen controller implementation: {proj_business_logic}/blob/master/modules/web/src/com/company/sample/web/ex1/customer/CustomerBrowse.java[CustomerBrowse.java]. Please keep in mind that the provided calculation process is not optimal and see more options in the <<data_recipes>> section.
 
-This approach is acceptable if the logic is invoked from a single point and it is not too complex to fit into a couple of short methods.
+TIP: This approach is acceptable if the logic is invoked from a single point and it is not too complex to fit into a couple of short methods.
 
 
 
 
-=== Using Client Tier Beans
+== Client Tier Beans
 
-++++
-<div class="manual-live-demo-container">
-    <a href="https://demo1.cuba-platform.com/business-logic/open?screen=sample$Customer.browse_2" class="live-demo-btn" target="_blank">LIVE DEMO</a>
-</div>
-++++
 
 Let's complicate the task from the <<logic_in_controllers_recipe,previous>> section a bit. Now we want to invoke the calculation both from the customer browser and editor screens. To not repeat yourself, we should extract the logic to a common place available for both controllers. It can be a <<managed_beans,managed bean>> of the client <<app_tiers,tier>>.
 
@@ -72,13 +63,8 @@ image::/images/business_logic_receipts/using_client_beans_1.png[align="center"]
 
 
 
-=== Using Middleware Services
+== Middleware Services
 
-++++
-<div class="manual-live-demo-container">
-    <a href="https://demo1.cuba-platform.com/business-logic/open?screen=sample$Customer.browse_3" class="live-demo-btn" target="_blank">LIVE DEMO</a>
-</div>
-++++
 
 In the <<using_client_beans_recipe,previous>> section we considered the encapsulation of business logic in a managed bean of the client tier. Now we will go further and implement our logic in the most appropriate place: on the <<middleware,middle tier>>. By doing this, we will achieve the following goals:
 
@@ -122,13 +108,7 @@ Please note that the demo application allows <<rest_api_v2_anonymous,anonymous a
 
 
 
-=== Using Entity Listeners
-
-++++
-<div class="manual-live-demo-container">
-    <a href="https://demo1.cuba-platform.com/business-logic/open?screen=sample$orderBrowseWithCustomers" class="live-demo-btn" target="_blank">LIVE DEMO</a>
-</div>
-++++
+== Entity Listeners
 
 <<entity_listeners,Entity listeners>> allow you to execute your business logic each time an entity is added, updated or removed from the database. For example, we could recalculate the discount for a customer each time an order for this customer is changed.
 
@@ -152,13 +132,8 @@ image::/images/business_logic_receipts/using_entity_listeners_1.png[align="cente
 
 If you open the *Logic in Entity Listeners* screen of the demo application, you will see two tables: orders and customers. Create, edit or remove an order, then refresh the customers table, and you will see that the discount of the corresponding customer is changed.
 
-=== Using JMX Beans
+== JMX Beans
 
-++++
-<div class="manual-live-demo-container">
-    <a href="https://demo1.cuba-platform.com/business-logic/open?screen=jmxConsole" class="live-demo-btn" target="_blank">LIVE DEMO</a>
-</div>
-++++
 
 With <<jmx_beans,JMX beans>> you can expose some administrative functionality of your application without creating a user interface for it. The functionality becomes available via the built-in JMX console and via external JMX tools like `jconsole`.
 
@@ -180,15 +155,10 @@ image::/images/business_logic_receipts/using_jmx_beans_1.png[align="center"]
 
 
 
-=== Running Code on Startup
+== Running Code on Startup
 
 Sometimes you need to run some code on the application startup, at the moment when all application functionality is already initialized and ready to work. For this, you can use <<app_lifecycle_events,application lifecycle event listeners>>.
 
-++++
-<div class="manual-live-demo-container">
-    <a href="https://demo1.cuba-platform.com/business-logic/open?screen=sample$Employee.browse" class="live-demo-btn" target="_blank">LIVE DEMO</a>
-</div>
-++++
 
 In this section we demonstrate how to dynamically register an <<entity_listeners,entity listener>> on application startup. Consider the following task: a project has an `Employee` entity that is linked one-to-one to the platform's `User` entity.
 
