@@ -81,23 +81,91 @@ TIP: This approach is acceptable if the logic is invoked from a single point and
 == Client Tier Beans
 
 
-Let's complicate the task from the <<logic_in_controllers_recipe,previous>> section a bit. Now we want to invoke the calculation both from the customer browser and editor screens. To not repeat yourself, we should extract the logic to a common place available for both controllers. It can be a <<managed_beans,managed bean>> of the client <<app_tiers,tier>>.
+The in-controller solution works as long as the logic should only be executed within one screen. Once the calculation should be executed in multiple UI screens there is a better way to not duplicate the code. The logic can be extracted to a common place available for both controllers. This option is using a Spring bean in the client tier.
 
-A managed bean is a class annotated with the `@Component` annotation. It can be injected into other beans and screen controllers, or obtained via the `AppBeans.get()` static method. If the bean has a separate interface, you can access the bean through the interface instead of the class.
+A managed bean is a class annotated with the `@Component` annotation. It can be injected via `@Inject` into other beans and screen controllers. If the bean has a separate interface, it can be accessed through the interface instead of the class. This reduces the coupling between the
 
-Please note that in order to be accessible for screen controllers, the bean must be located in *global*, *gui* or *web* <<app_modules,modules>> of your project. In the former case the bean will be also accessible for the middleware.
+Please note that in order to be accessible for screen controllers, the bean must be located in *global*, *gui* or *web* <<app_modules,modules>> of the application. In the former case the bean will be also accessible for the middleware.
 
-See the *Calculate discount* button on both browser and editor screens of the demo application and the implementation:
+The example that is implemented as (multiple) client tier beans is to display the contact information of the pet's owner directly from the pet browser or pet detail screen.
 
-image::/images/business_logic_receipts/using_client_beans_1.png[align="center"]
+For this there are two Spring beans:
 
-* {proj_business_logic}/blob/master/modules/web/src/com/company/sample/web/ex2/customer/CustomerBrowse.java[CustomerBrowse.java] - browser controller.
+* https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/global/src/com/cubaplatform/petclinic/contact/PetContactFetcherBean.java[PetContactFetcher] that deals with fetching of the appropriate contact data
+* https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetContactDisplay.java[PetContactDisplay] for displaying the contact information as notifications
 
-* {proj_business_logic}/blob/master/modules/web/src/com/company/sample/web/ex2/customer/CustomerEdit.java[CustomerEdit.java] - editor controller.
+.PetContactFetcherBean.java
+[source,java]
+----
 
-* {proj_business_logic}/blob/master/modules/web/src/com/company/sample/web/ex2/DiscountCalculator.java[DiscountCalculator.java] - discount calculator bean. It uses <<dataManager,DataManager>> to load the list of orders for the given customer from the database.
+@Component(PetContactFetcher.NAME)
+public class PetContactFetcherBean implements PetContactFetcher {
+
+    @Inject
+    DataManager dataManager;
+
+    @Inject
+    Messages messages;
+
+    @Override
+    public Optional<Contact> findContact(Pet pet) {
+
+        Optional<Owner> petOwner = loadOwnerFor(pet);
+
+        if (petOwner.isPresent()) {
+
+            Owner owner = petOwner.get();
+            String telephone = owner.getTelephone();
+            String email = owner.getEmail();
+            String address = formatOwnerAddress(owner);
+
+            if (isAvailable(telephone)) {
+                return createContact(telephone, ContactType.TELEPHONE);
+            } else if (isAvailable(email)) {
+                return createContact(email, ContactType.EMAIL);
+            } else if (isAvailable(address)) {
+                return createContact(address, ContactType.ADDRESS);
+            } else {
+                return Optional.empty();
+            }
+        } else {
+            return Optional.empty();
+        }
+
+    }
+
+    //...
+}
+----
 
 
+The beans are used in the https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetBrowse.java#L24[Pet browse screen] and the
+https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetEdit.java#L19[Pet detail screen]. The usage looks like this:
+
+
+.PetEdit.java
+[source,java]
+----
+public class PetEdit extends AbstractEditor<Pet> {
+
+    @Inject
+    PetContactFetcher petContactFetcher;
+
+    @Inject
+    PetContactDisplay petContactDisplay;
+
+    public void onFetchContact() {
+
+        Pet pet = getItem();
+
+        Optional<Contact> contactInformation = petContactFetcher.findContact(pet);
+
+        petContactDisplay.displayContact(contactInformation, frame);
+    }
+}
+----
+
+The benefit compared to the first in-controller solution is that the code-reuse is higher. It is possible to use the logic in different places. `PetContactFetcher` is a bean in the global module, therefore it is also possible to use the logic in the middleware as well as the client tier. `PetContactDisplay` is a bean in the web module, therefore is only available within the client tier.
 
 == Middleware Services
 
