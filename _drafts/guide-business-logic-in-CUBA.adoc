@@ -33,9 +33,45 @@ image:https://dummyimage.com/600x400/00b5ec/ffffff.png&text=CUBA Petclinic Overv
 
 == Business Logic in Controllers
 
-Assuming the discount calculation should be executed when a user clicks a button on the Owners's browser screen, the most straightforward way to accomplish this is to put the calculation logic right in the associated controller class.
+Assuming the discount calculation should be executed when a user clicks a button on the Pets's browser screen, the most straightforward way to accomplish this is to put the calculation logic right in the associated controller class.
 
-See the *Calculate discount* button in the demo application and the screen controller implementation: {proj_business_logic}/blob/master/modules/web/src/com/company/sample/web/ex1/customer/CustomerBrowse.java[CustomerBrowse.java]. Please keep in mind that the provided calculation process is not optimal and see more options in the <<data_recipes>> section.
+See the *Calculate discount* button in the demo application and the screen controller implementation: https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetBrowse.java#L15[PetBrowse.java].
+
+.PetBrowse.java
+[source,java]
+----
+
+public class PetBrowse extends AbstractLookup {
+
+
+    @Inject
+    protected GroupTable<Pet> petsTable;
+
+    public void onCalculateDiscount() {
+
+        Pet pet = petsTable.getSingleSelected();
+
+        int discount = calculateDiscount(pet);
+
+        String discountMessage = "Discount for " + pet.getName() + ": " + discount + "%";
+
+        showNotification(discountMessage, NotificationType.TRAY);
+    }
+
+    private int calculateDiscount(Pet pet) {
+        int discount = 0;
+
+        int visitAmount = pet.getVisits().size();
+        if (visitAmount > 10) {
+            discount = 10;
+        }
+        else if (visitAmount > 5) {
+            discount = 5;
+        }
+        return discount;
+    }
+}
+----
 
 TIP: This approach is acceptable if the logic is invoked from a single point and it is not too complex to fit into a couple of short methods.
 
