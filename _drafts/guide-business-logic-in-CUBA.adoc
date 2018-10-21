@@ -35,7 +35,7 @@ image:https://dummyimage.com/600x400/00b5ec/ffffff.png&text=CUBA Petclinic Overv
 
 Assuming the discount calculation should be executed when a user clicks a button on the Pets's browser screen, the most straightforward way to accomplish this is to put the calculation logic right in the associated controller class.
 
-See the *Calculate discount* button in the demo application and the screen controller implementation: https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetBrowse.java#L15[PetBrowse.java].
+See the *Calculate discount* button in the petclinic application and the screen controller implementation: https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetBrowse.java#L15[PetBrowse].
 
 .PetBrowse.java
 [source,java]
@@ -83,7 +83,10 @@ TIP: This approach is acceptable if the logic is invoked from a single point and
 
 The in-controller solution works as long as the logic should only be executed within one screen. Once the calculation should be executed in multiple UI screens there is a better way to not duplicate the code. The logic can be extracted to a common place available for both controllers. This option is using a Spring bean in the client tier.
 
-A managed bean is a class annotated with the `@Component` annotation. It can be injected via `@Inject` into other beans and screen controllers. If the bean has a separate interface, it can be accessed through the interface instead of the class. This reduces the coupling between the
+A managed bean is a class annotated with the `@Component` annotation. It can be injected via `@Inject` into other beans and screen controllers. If the bean has a separate interface, it can be accessed through the interface instead of the class.
+
+
+image:https://dummyimage.com/600x400/00b5ec/ffffff.png&text=Client tier beans UML class diagram[] Class Diagramm overview of using the Client Tier beans
 
 Please note that in order to be accessible for screen controllers, the bean must be located in *global*, *gui* or *web* modules of the application. In the former case the bean will be also accessible for the middleware.
 
@@ -165,7 +168,10 @@ public class PetEdit extends AbstractEditor<Pet> {
 }
 ----
 
-The benefit compared to the first in-controller solution is that the code-reuse is higher. It is possible to use the logic in different places. `PetContactDisplay` is a bean in the web module, therefore is only available within the client tier. `PetContactFetcher` on the other hand is a bean in the global module which means that it is also possible to use the logic in the middleware as well as the client tier.
+The benefit compared to the first in-controller solution is that the code-reuse is higher. It is possible to use the logic in different places.
+
+`PetContactDisplay` is a bean in the web module, therefore is only available within the client tier.
+`PetContactFetcher` on the other hand is a bean in the global module which means that it is also possible to use the logic in the middleware as well as the client tier.
 
 == Middleware Services
 
@@ -175,6 +181,8 @@ The next approach on where to put the business logic is a https://doc.cuba-platf
 
 * APIs that are available only on the middleware: https://doc.cuba-platform.com/manual-{cuba_version}/entityManager.html[EntityManager], Transaction etc. are accessible to the business logic
 
+
+image:https://dummyimage.com/600x400/00b5ec/ffffff.png&text=Architecture diagram on Services[] Architecture diagram on Services with tiers
 
 In order to invoke a middleware business logic from the client, a service needs to be created. CUBA Studio streamlines the creation process of a service:
 
@@ -190,75 +198,7 @@ In the petclinic application, the following service was created: `DiseaseWarning
 
 * https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/cubaplatform/petclinic/service/DiseaseWarningMailingServiceBean.java[DiseaseWarningMailingServiceBean] - service implementation
 
-* https://github.com/cuba-guides/{project_id}/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/CreateDiseaseWarningMailing.java[DiscountCalculator] - screen controllers that use the service
-
-
-
-== Entity Listeners
-
-<<entity_listeners,Entity listeners>> allow you to execute your business logic each time an entity is added, updated or removed from the database. For example, we could recalculate the discount for a customer each time an order for this customer is changed.
-
-An entity listener stub can be easily created using Studio:
-
-* Switch to the *Middleware* section and click *New > Entity listener*.
-
-* Change the class name to `OrderEntityListener` and select checkboxes for `BeforeInsertEntityListener`, `BeforeUpdateEntityListener` and `BeforeDeleteEntityListener` interfaces.
-
-* Select `Order` entity in the *Entity type* field.
-
-* Click *OK* or *Apply* and open the listener class in your IDE.
-
-See an example implementation in the demo application:
-
-image::/images/business_logic_receipts/using_entity_listeners_1.png[align="center"]
-
-* {proj_business_logic}/blob/master/modules/core/src/com/company/sample/listener/OrderEntityListener.java[OrderEntityListener.java] - the entity listener.
-
-* {proj_business_logic}/blob/master/modules/core/src/com/company/sample/core/DiscountCalculator.java[DiscountCalculator.java] - a managed bean of the middle tier which actually calculates discounts. An entity listener can contain the business logic itself, but we will use this delegate to share logic with services and JMX beans.
-
-If you open the *Logic in Entity Listeners* screen of the demo application, you will see two tables: orders and customers. Create, edit or remove an order, then refresh the customers table, and you will see that the discount of the corresponding customer is changed.
-
-== JMX Beans
-
-
-With <<jmx_beans,JMX beans>> you can expose some administrative functionality of your application without creating a user interface for it. The functionality becomes available via the built-in JMX console and via external JMX tools like `jconsole`.
-
-In our example with discounts, a user having access to JMX console is able to recalculate discounts for all customers and for a customer with a given id.
-
-Studio cannot help you with scaffolding JMX beans at the moment, so all classes and configuration entries have to be created manually in the IDE.
-
-See an example implementation in the demo application:
-
-image::/images/business_logic_receipts/using_jmx_beans_1.png[align="center"]
-
-* {proj_business_logic}/blob/master/modules/core/src/com/company/sample/core/jmx/DiscountsMBean.java[DiscountsMBean.java] - JMX bean interface.
-
-* {proj_business_logic}/blob/master/modules/core/src/com/company/sample/core/jmx/Discounts.java[Discounts.java] - JMX bean implementation.
-
-* {proj_business_logic}/blob/master/modules/core/src/com/company/sample/core/DiscountCalculator.java[DiscountCalculator.java] - a managed bean of the middle tier which is invoked by the JMX bean. A JMX bean can contain the business logic itself, but we will use this delegate to share logic with services and entity listeners.
-
-* {proj_business_logic}/blob/master/modules/core/src/com/company/sample/spring.xml[spring.xml] - registers the JMX bean.
-
-
-
-== Running Code on Startup
-
-Sometimes you need to run some code on the application startup, at the moment when all application functionality is already initialized and ready to work. For this, you can use <<app_lifecycle_events,application lifecycle event listeners>>.
-
-
-In this section we demonstrate how to dynamically register an <<entity_listeners,entity listener>> on application startup. Consider the following task: a project has an `Employee` entity that is linked one-to-one to the platform's `User` entity.
-
-image::/images/business_logic_receipts/app_start_recipe_1.png[align="center"]
-
-If the `name` attribute of the `User` entity is changed, for example, through a standard user management screen, the `name` attribute of the related `Employee` should change as well. This is a common task for "denormalized" data, which is typically solved using entity listeners. Our case is more complicated, since we need to track changes of the platform's `User` entity, and thus we cannot add an entity listener using the <<listeners_annotation,@Listeners>> annotation. So we will add a listener dynamically using the `EntityListenerManager` bean on application start.
-
-* {proj_business_logic}/blob/master/modules/core/src/com/company/sample/core/AppLifecycle.java[AppLifecycle.java] - a middleware bean listening to the `AppContextInitializedEvent` events.
-
-* {proj_business_logic}/blob/master/modules/core/src/com/company/sample/listener/UserEntityListener.java[UserEntityListener.java] - an entity listener for the `User` entity.
-
-As a result, the `initEntityListeners()` method of the `AppLifecycle` class will be invoked on the middleware <<app_tiers,block>> startup. This method registers the `sample_UserEntityListener` bean as an entity listener for the `User` entity.
-
-The `onBeforeUpdate()` method of the `UserEntityListener` class will be invoked every time before the changes in the `User` instances are saved to the database. The method checks if the `name` attribute exists among the updated attributes. If yes, a related `Employee` instance is loaded and its `name` is updated with the new value.
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/CreateDiseaseWarningMailing.java[CreateDiseaseWarningMailing] - screen controller that use the service
 
 
 
@@ -266,6 +206,6 @@ The `onBeforeUpdate()` method of the `UserEntityListener` class will be invoked 
 
 There are several options when it comes to where to put the business logic in a CUBA application. A controller can be a good and easy start, although it has some downsides when it comes to sharing code. A client bean solves this problem to some degree. Middleware services allow for sharing business logic across different clients (e.g. Polymer Client) and is the most appropriate way of putting business logic.
 
-The decision where to put the business logic for a given case should be done on a case to case basis.
+Additionally there are several advanced techniques like https://doc.cuba-platform.com/manual-6.10/jmx_beans.html[JMX Beans] or https://doc.cuba-platform.com/manual-6.10/entity_listeners.html[Entity Listeners] that also allow for certain business logic to be executed in particular scenarios. The decision where to put the business logic for a given case should be done on a case to case basis. But the mentioned main places of Controllers & Spring Beans / Spring Services for placing business logic are a good starting point.
 
 
