@@ -30,6 +30,8 @@ This guides enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA pe
 image:https://dummyimage.com/600x400/00b5ec/ffffff.png&text=CUBA Petclinic Overview[] Overview of final CUBA petclinic application
 
 
+include::/includes/guide_requirements.adoc[]
+
 
 == Business Logic in Controllers
 
