@@ -1,5 +1,5 @@
 ---
-compatible_cuba_versions: 6.9 - 6.10
+compatible_cuba_versions: 7.0
 project_id: cuba-petclinic-guide-business-logic
 permalink: guide-business-logic-in-cuba
 ---
@@ -10,7 +10,7 @@ permalink: guide-business-logic-in-cuba
 :page-root: ../../../
 :project_id: cuba-petclinic-guide-business-logic
 :java_version: 1.8
-:cuba_version: 6.10
+:cuba_version: 7.0
 
 :proj_business_logic: https://github.com/cuba-platform/sample-business-logic
 
@@ -43,21 +43,29 @@ See the *Calculate discount* button in the petclinic application and the screen 
 [source,java]
 ----
 
-public class PetBrowse extends AbstractLookup {
+@UiController("petclinic_Pet.browse")
+@UiDescriptor("pet-browse.xml")
+@LookupComponent("petsTable")
+public class PetBrowse extends StandardLookup<Pet> {
 
 
-    @Inject
-    protected GroupTable<Pet> petsTable;
+    @Inject protected Screens screens;
 
-    public void onCalculateDiscount() {
+    @Inject protected Notifications notifications;
+
+    @Inject protected Metadata metadata;
+
+    @Inject protected GroupTable<Pet> petsTable;
+
+
+    @Subscribe("petsTable.calculateDiscount")
+    public void calculateDiscount(Action.ActionPerformedEvent actionPerformedEvent) {
 
         Pet pet = petsTable.getSingleSelected();
 
         int discount = calculateDiscount(pet);
 
-        String discountMessage = "Discount for " + pet.getName() + ": " + discount + "%";
-
-        showNotification(discountMessage, NotificationType.TRAY);
+        showDiscountCalculatedNotification(pet, discount);
     }
 
     private int calculateDiscount(Pet pet) {
@@ -66,12 +74,25 @@ public class PetBrowse extends AbstractLookup {
         int visitAmount = pet.getVisits().size();
         if (visitAmount > 10) {
             discount = 10;
-        }
-        else if (visitAmount > 5) {
+        } else if (visitAmount > 5) {
             discount = 5;
         }
         return discount;
     }
+
+    private void showDiscountCalculatedNotification(Pet pet, int discount) {
+
+        String petName = metadata.getTools().getInstanceName(pet);
+
+        String discountMessage = "Discount for " + petName + ": " + discount + "%";
+
+        notifications.create()
+            .setCaption(discountMessage)
+            .setType(Notifications.NotificationType.TRAY)
+            .show();
+    }
+
+
 }
 ----
 
@@ -151,7 +172,11 @@ https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules
 .PetEdit.java
 [source,java]
 ----
-public class PetEdit extends AbstractEditor<Pet> {
+
+@UiController("petclinic_Pet.edit")
+@UiDescriptor("pet-edit.xml")
+@EditedEntityContainer("petCt")
+public class PetEdit extends StandardEditor<Pet> {
 
     @Inject
     PetContactFetcher petContactFetcher;
@@ -159,13 +184,15 @@ public class PetEdit extends AbstractEditor<Pet> {
     @Inject
     PetContactDisplay petContactDisplay;
 
-    public void onFetchContact() {
 
-        Pet pet = getItem();
+    @Subscribe("fetchContact")
+    public void fetchContact() {
+
+        Pet pet = getEditedEntity();
 
         Optional<Contact> contactInformation = petContactFetcher.findContact(pet);
 
-        petContactDisplay.displayContact(contactInformation, frame);
+        petContactDisplay.displayContact(contactInformation, this);
     }
 }
 ----
@@ -202,6 +229,82 @@ In the petclinic application, the following service was created: `DiseaseWarning
 
 * https://github.com/cuba-guides/{project_id}/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/CreateDiseaseWarningMailing.java[CreateDiseaseWarningMailing] - screen controller that use the service
 
+The implementation of a service looks like this in case of the `DiseaseWarningMailingService`:
+
+.DiseaseWarningMailingServiceBean.java
+[source,java]
+----
+
+@Service(DiseaseWarningMailingService.NAME) // <1>
+public class DiseaseWarningMailingServiceBean implements DiseaseWarningMailingService {
+
+  @Inject
+  protected DataManager dataManager;
+
+
+  @Inject
+  protected EmailerAPI emailerAPI;
+
+
+  @Override
+  public int warnAboutDisease(PetType petType, String disease, String city) { // <2>
+
+    List<Pet> petsInDiseaseCity = findPetsInDiseaseCity(petType, city);
+
+    List<Pet> petsWithEmail = filterPetsWithValidOwnersEmail(petsInDiseaseCity);
+
+    petsWithEmail.forEach(pet -> sendEmailToPetsOwner(pet, disease, city));
+
+    return petsWithEmail.size();
+  }
+
+
+  // ...
+
+}
+----
+
+<1> Declaration of the `DiseaseWarningMailingServiceBean` as the Middleware Service implementation
+<2> Implementation of the business logic interface
+
+
+The usage in the UI controller is very similar to the invocation of a client tier bean.. The `CreateDiseaseWarningMailing` screen controller looks like this:
+
+
+.CreateDiseaseWarningMailing.java
+[source,java]
+----
+
+@UiController
+@UiDescriptor("create-disease-warning-mailing.xml")
+public class CreateDiseaseWarningMailing extends Screen {
+
+
+    @Inject protected DiseaseWarningMailingService diseaseWarningMailingService; // <1>
+
+    @Inject protected Notifications notifications;
+
+
+    @Subscribe("createDiseaseWarningMailing")
+    protected void createDiseaseWarningMailing(Action.ActionPerformedEvent event) {
+
+        int endangeredPets = diseaseWarningMailingService.warnAboutDisease(petType.getValue(),
+            disease.getValue(), city.getValue()); // <2>
+
+        closeWithCommit().then(() ->
+            notifications.create()
+                .setCaption(endangeredPets + " Owner(s) of endangered Pets have been notified")
+                .setType(Notifications.NotificationType.TRAY)
+                .show()
+        );
+    }
+----
+
+<1> Injection of the middleware service via its interface definition
+<2> Invocation of the business logic in the controller action
+
+With that middleware service in place, the logic of creating disease warning mailings can now shared across UI screens in the web tier. Additionally any other middleware code can execute the logic, since
+it is not tied to the web tier anymore. Furthermore it is possible to trigger it via the REST API and with that exposes it also to other UI technologies like the Polymer UI.
 
 
 == Summary
