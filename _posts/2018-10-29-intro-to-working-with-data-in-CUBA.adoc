@@ -1,5 +1,5 @@
 ---
-compatible_cuba_versions: 6.9 - 6.10
+compatible_cuba_versions: 7.0
 project_id: cuba-petclinic-intro-to-datamanager
 permalink: intro-working-with-data-in-cuba
 ---
@@ -10,7 +10,7 @@ permalink: intro-working-with-data-in-cuba
 :page-root: ../../../
 :project_id: cuba-petclinic-intro-to-datamanager
 :java_version: 1.8
-:cuba_version: 6.10
+:cuba_version: 7.0
 
 This guide walks you through the CUBA APIs for programmatically interacting with the database through the DataManager API.
 
@@ -35,11 +35,11 @@ include::includes/guide_requirements.adoc[]
 Oftentimes it is necessary to interact with the database in a programmatic manner. In a CUBA based application, these cases are not as omnipresent as in other frameworks due to its declarative nature of data-binding for UIs, but still, there are
 a lot of cases where data has to be loaded from the database or stored in the database as part of a business process.
 
-The main interaction point that CUBA provides is the https://doc.cuba-platform.com/manual-6.10/dataManager.html[DataManager] API. This API allows the developer of a CUBA application to load and store data in the database through the general abstraction of entities.
+The main interaction point that CUBA provides is the https://doc.cuba-platform.com/manual-{cuba_version}/dataManager.html[DataManager] API. This API allows the developer of a CUBA application to load and store data in the database through the general abstraction of entities.
 
 DataManager is an Abstraction on top of the Java Persistence API (JPA). It hides away certain details that are not required on a day-to-day basis.
 
-It also adds certain capabilities that are not available out of the box in JPA. Those capabilities are mainly the https://doc.cuba-platform.com/manual-6.10/views.html[Views concept] as well as the application of https://doc.cuba-platform.com/manual-6.10/security_subsystem.html[security constrains]. More information about differences between JPA and DataManager can be found in the docs on https://doc.cuba-platform.com/manual-6.10/dm_vs_em.html[DataManager vs. EntityManager].
+It also adds certain capabilities that are not available out of the box in JPA. Those capabilities are mainly the https://doc.cuba-platform.com/manual-{cuba_version}/views.html[Views concept] as well as the application of https://doc.cuba-platform.com/manual-{cuba_version}/security_subsystem.html[security constrains]. More information about differences between JPA and DataManager can be found in the docs on https://doc.cuba-platform.com/manual-{cuba_version}/dm_vs_em.html[DataManager vs. EntityManager].
 
 
 include::includes/petclinic_introduction.adoc[]
