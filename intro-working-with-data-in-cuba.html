@@ -1,0 +1,441 @@
+<!doctype html>
+<!--[if IE 9]>
+<html class="lt-ie10" lang="en"> <![endif]-->
+<html class="no-js" lang="en" data-useragent="Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduction to working with Data in CUBA</title>
+    <meta name="description" content="The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.">
+    <meta name="author" content="Haulmont">
+    <link rel="stylesheet" href="../../../css/foundation.css">
+    <link rel="stylesheet" href="../../../css/font-awesome.css">
+    <link rel="stylesheet" href="../../../css/coderay.css">
+    <link rel="stylesheet" href="../../../css/asciidoctor.css">
+    <link rel="stylesheet" href="../../../css/cuba.css">
+    <script src="../../../js/vendor/modernizr.js"></script>
+    <script src="../../../js/toc.js"></script>
+</head>
+<body>
+
+
+<!-- Nav Bar -->
+
+<!--<nav class="top-bar" data-topbar>-->
+    <!--<ul class="title-area">-->
+        <!--&lt;!&ndash; Title Area &ndash;&gt;-->
+        <!--<li class="name">-->
+            <!--<h1>-->
+                <!--<a href="../../../">CUBA Platform guides</a>-->
+            <!--</h1>-->
+        <!--</li>-->
+        <!--<li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>-->
+    <!--</ul>-->
+<!--</nav>-->
+<!-- End Nav -->
+
+
+<!-- Main Page Content and Sidebar -->
+
+<div class="row">
+
+    <!-- Main Blog Content -->
+    <div class="large-9 columns" role="content">
+
+        <h1>Introduction to working with Data in CUBA</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>This guide walks you through the CUBA APIs for programmatically interacting with the database through the DataManager API.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="what_will_be_build">What will be build</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show different use cases regarding programmatic data access with the DataManager API. In particular, the following use cases will be covered:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>automatic creation of a Visit for a given Pet Identification Number</p>
+</li>
+<li>
+<p>automatic sending out of "Disease Warning Mailing" for endangered pets</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="final_application">Final Application</h3>
+<div class="paragraph">
+<p><span class="image"><img src="https://dummyimage.com/600x400/00b5ec/ffffff.png&amp;text=CUBA%20Petclinic%20Overview" alt="ffffff"></span> Overview of final CUBA petclinic application</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="requirements">Requirements</h3>
+<div class="paragraph">
+<p>Your development environment requires to contain the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.oracle.com/technetwork/java/javase/downloads/index.html">JDK 1.8</a></p>
+</li>
+<li>
+<p>a text editor or IDE (preferred <a href="https://www.jetbrains.com/idea/download/">IntelliJ IDEA</a>)</p>
+</li>
+<li>
+<p><a href="https://www.cuba-platform.com/download">CUBA Studio</a> (optional)</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-platform/cuba-cli/wiki/Installation">CUBA CLI</a> (optional)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-intro-to-datamanager/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
+</div>
+<div class="paragraph">
+<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-intro-to-datamanager.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-intro-to-datamanager.git</a></code></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="programmatic_data_access_interactions">Programmatic data access interactions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Oftentimes it is necessary to interact with the database in a programmatic manner. In a CUBA based application, these cases are not as omnipresent as in other frameworks due to its declarative nature of data-binding for UIs, but still, there are
+a lot of cases where data has to be loaded from the database or stored in the database as part of a business process.</p>
+</div>
+<div class="paragraph">
+<p>The main interaction point that CUBA provides is the <a href="https://doc.cuba-platform.com/manual-7.0/dataManager.html">DataManager</a> API. This API allows the developer of a CUBA application to load and store data in the database through the general abstraction of entities.</p>
+</div>
+<div class="paragraph">
+<p>DataManager is an Abstraction on top of the Java Persistence API (JPA). It hides away certain details that are not required on a day-to-day basis.</p>
+</div>
+<div class="paragraph">
+<p>It also adds certain capabilities that are not available out of the box in JPA. Those capabilities are mainly the <a href="https://doc.cuba-platform.com/manual-7.0/views.html">Views concept</a> as well as the application of <a href="https://doc.cuba-platform.com/manual-7.0/security_subsystem.html">security constrains</a>. More information about differences between JPA and DataManager can be found in the docs on <a href="https://doc.cuba-platform.com/manual-7.0/dm_vs_em.html">DataManager vs. EntityManager</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="example_cuba_petclinic">Example: CUBA petclinic</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The project that is be the basis for this example is <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a>. It is based on the commonly known <a href="https://github.com/spring-projects/spring-petclinic">Spring Petclinic</a>. The CUBA Petclinic application deals with the domain of a Pet clinic and the associated business workflows to manage a pet clinic.</p>
+</div>
+<div class="paragraph">
+<p>The underlying domain model for the application looks like this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/images/domain-model.png" alt="Domain model">
+</div>
+</div>
+<div class="paragraph">
+<p>The main entities are <strong>Pet</strong> and <strong>Visit</strong>. A Pet is visiting the petclinic and during this Visit, a Vet will take care of it. A Pet belongs to a Owner, which can hold multiple pets. The visit describes the act of a pet visiting the clinic with the help of its owner.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="load_data_with_datamanager">Load data with DataManager</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>DataManager has multiple ways to load data from the database. In this guide the two main options are covered: Load a single item as well as multiple items based on Queries.</p>
+</div>
+<div class="sect2">
+<h3 id="single_item">Single Item</h3>
+<div class="paragraph">
+<p>The first option is to load a single Entity instance from the database. This option is often required if reference data needs to be read from the database in order to execute some logic for that entity instance or with the help of that entity instance.</p>
+</div>
+<div class="paragraph">
+<p>In the case of the Petclinic example, there is some business logic which should create a new Visit for a given Pet by its Identification Number.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="https://dummyimage.com/600x400/00b5ec/ffffff.png&amp;text=Create%20visit%20for%20Pet" alt="ffffff"></span> Create visit for Pet overview</p>
+</div>
+<div class="paragraph">
+<p>The source code that loads the Pet instance by its Identification Number is located in <a href="https://github.com/cuba-guides/cuba-petclinic-intro-to-datamanager/blob/master/modules/core/src/com/cubaplatform/petclinic/service/visit/VisitServiceBean.java#L47">VisitServiceBean.java</a> in the example application. The usage of the DataManager API looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">VisitServiceBean.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Inject</span>
+DataManager dataManager;
+
+<span class="comment">/**
+ * loads a Pet by its Identification Number
+ * @param identificationNumber the Identification Number to load
+ * @return the Pet for the given Identification Number
+ */</span>
+<span class="directive">private</span> Pet loadPetByIdentificationNumber(<span class="predefined-type">String</span> identificationNumber) {
+    <span class="keyword">return</span> dataManager.load(Pet.class)
+            .query(<span class="string"><span class="delimiter">&quot;</span><span class="content">select e from petclinic$Pet e where e.identificationNumber = :identificationNumber</span><span class="delimiter">&quot;</span></span>)
+            .parameter(<span class="string"><span class="delimiter">&quot;</span><span class="content">identificationNumber</span><span class="delimiter">&quot;</span></span>, identificationNumber)
+            .one();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>DataManager has a <a href="https://martinfowler.com/bliki/FluentInterface.html">fluent API</a> which allows to chain operations on the load operation in order to define parameters to the execution. In this case, the interaction starts with <code>dataManager.load(Pet.class)</code>. Then the JPQL query is defined and the associated parameters are configured with the parameter values. The method call <code>one()</code> executes the load operation and fetches exactly one item that matches the criteria. If there are no results the corresponding exception is thrown.</p>
+</div>
+<div class="paragraph">
+<p>It is up to the application developer to decide if the query can return one or possibly multiple results. In this case it is only possible to create a Identification Number once, we can be sure that the query will return at the most one item.</p>
+</div>
+<div class="paragraph">
+<p>In this case, the attribute <code>identificationNumber</code> is not the primary key of the entity. But it represents a globally unique identification number given by proper Pet authorities - therefore it is modelled uniquely within the application.</p>
+</div>
+<div class="paragraph">
+<p>If the task is to load a Pet by its primary key (<code>id</code>) the query is easier to create as the query part is not needed: <code>dataManager.load(Pet.class).id(id).one();</code></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="multiple_items_by_query">Multiple Items by Query</h3>
+<div class="paragraph">
+<p>The next very common option is to load multiple items defined by a query.</p>
+</div>
+<div class="paragraph">
+<p>The Petclinic application has the capability to let the user send out Disease Warning Mailings. The user has to define the location of a known disease as well as the type of Pet that is endangered by this disease. The system will find all endangered Pets and send out a Mailing to the owners.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="https://dummyimage.com/600x400/00b5ec/ffffff.png&amp;text=Disease%20Warning%20Mailing" alt="ffffff"></span> Disease Warning Mailing overview</p>
+</div>
+<div class="paragraph">
+<p>The part that finds the endangered Pets looks like this with the use of the DataManager API:</p>
+</div>
+<div class="listingblock">
+<div class="title">DiseaseWarningMailingServiceBean.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Inject</span>
+DataManager dataManager;
+
+<span class="directive">private</span> <span class="predefined-type">List</span>&lt;Pet&gt; findEndangeredPets(PetType petType, <span class="predefined-type">String</span> city) {
+    <span class="keyword">return</span> dataManager.load(Pet.class)
+                .query(<span class="string"><span class="delimiter">&quot;</span><span class="content">select e from petclinic$Pet e where e.owner.city = :ownerCity and e.type.id = :petType</span><span class="delimiter">&quot;</span></span>)
+                .parameter(<span class="string"><span class="delimiter">&quot;</span><span class="content">ownerCity</span><span class="delimiter">&quot;</span></span>, city)
+                .parameter(<span class="string"><span class="delimiter">&quot;</span><span class="content">petType</span><span class="delimiter">&quot;</span></span>, petType)
+                .view(<span class="string"><span class="delimiter">&quot;</span><span class="content">pet-with-owner-and-type</span><span class="delimiter">&quot;</span></span>)
+                .list();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The query part is a little more complicated compared to above, but the same pattern applies. The differences in this example are the usage of the <code>list()</code> method as we expect multiple Pets from the database query. Also a specific view has been used, because not only the Pet data, but also the Owner data has to be loaded in order to send out the Mailings.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="write_data_with_datamanager">Write Data with DataManager</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>DataManager is also responsible for writing data into the database. There are also different ways to achieve it based on the case at hand.</p>
+</div>
+<div class="sect2">
+<h3 id="single_item_2">Single Item</h3>
+<div class="paragraph">
+<p>The first most commonly used case is to update or create a single item in the database. There are no major differences between creating and updating of an entity from the usage perspective.</p>
+</div>
+<div class="paragraph">
+<p>When revisiting the example from above, where a new Visit for a given Pet ID is created, we only looked at the part which loads the Pet by its Pet ID. In this case, we are more interested in the creation part of the Visit entity. The source code to create and save a Visit looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">VisitServiceBean.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Inject</span>
+DataManager dataManager;
+
+<span class="directive">private</span> Visit createVisitForPet(Pet pet) {
+
+    Visit visit = dataManager.create(Visit.class); <i class="conum" data-value="1"></i><b>(1)</b>
+
+    visit.setPet(pet);
+    visit.setVisitDate(timeSource.currentTimestamp());
+
+    <span class="keyword">return</span> dataManager.commit(visit); <i class="conum" data-value="2"></i><b>(2)</b>
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>an entity instance is created with all initializations in memory</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the entity instance is stored in the DB</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The creation of an instance through DataManager does the initialization of the instance as well. It is important to not create an instance via <code>new Visit()</code> but rather through this Factory method, so that CUBA can do all the required initialization (like <code>@PostConstruct</code> annotated methods e.g.).</p>
+</div>
+<div class="paragraph">
+<p>Once the entity instance was created, the data of that entity has to be set through its corresponding setter methods. In this case, the database instance of the Pet is set as well as the current date as the visit date.</p>
+</div>
+<div class="paragraph">
+<p>The process of storing an entity instance contains a few steps like security checks, execution of Entity Listeners and so on. The return value of the commit method is the stored instance with all properties set that have been added during the storage phase.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+There is a couple over other convenience API methods for storing entites. For more information about those variants see the <a href="http://files.cuba-platform.com/javadoc/cuba/7.0/com/haulmont/cuba/core/global/DataManager.html">DataManager API reference</a>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="transactions_commit_context">Transactions &amp; Commit Context</h3>
+<div class="paragraph">
+<p>The example from above shows on how to store a single item in the database. Although this is oftentimes sufficient, a lot of cases require to store multiple items in a single transaction. The default example for this is the bank transfer from one account to another. In this case it is crucial that the update to both accounts happens together or not at all, but never only one of them.</p>
+</div>
+<div class="paragraph">
+<p>The DataManager API always encapsulated the database operation in a transaction. This means that by default the <code>commit(visit)</code> call is executed in one transaction. Another call to <code>commit</code> would create another transaction.</p>
+</div>
+<div class="paragraph">
+<p>To execute updates on multiple entity instances there is the concept of a <code>CommitContext</code>. The commit context defines all entity instances that should get created / updated and removed. The DataManager accepts a <code>CommitContext</code> object as an alternative to an entity instance. In this case, all entity instances that are held by the commit context will get transferred to the database within one transaction.</p>
+</div>
+<div class="paragraph">
+<p>The <code>CommitContext</code> has two main methods: <a href="http://files.cuba-platform.com/javadoc/cuba/7.0/com/haulmont/cuba/core/global/CommitContext.html#addInstanceToCommit-com.haulmont.cuba.core.entity.Entity-">addInstanceToCommit</a> as well as <a href="http://files.cuba-platform.com/javadoc/cuba/7.0/com/haulmont/cuba/core/global/CommitContext.html#addInstanceToRemove-com.haulmont.cuba.core.entity.Entity-">addInstancesToRemove</a> which allow defining which items should be added / updated as well as removed within one transaction.</p>
+</div>
+<div class="paragraph">
+<p>In case multiple visits should be updated within one transaction, the usage of <code>CommitContext</code> looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Inject</span>
+DataManager dataManager;
+
+<span class="directive">private</span> <span class="type">void</span> createVisitForPet(Pet pet) {
+
+    Visit todaysVisit = createVisitInstance(pet);
+    todaysVisit.setVisitDate(today());
+
+    Visit followUpCheckVisit = createVisitInstance(pet);
+    followUpCheckVisit.setVisitDate(nextWeek());
+
+
+    CommitContext commitContext = <span class="keyword">new</span> CommitContext();
+
+    commitContext.addInstanceToCommit(todaysVisit); <i class="conum" data-value="1"></i><b>(1)</b>
+    commitContext.addInstanceToCommit(followUpCheckVisit);
+
+    dataManager.commit(commitContext); <i class="conum" data-value="2"></i><b>(2)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>addInstanceToCommit</code> allows to add entity instances to the commit context</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>commit</code> can take a <code>CommitContext</code> instance for storing multiple entity instances in one transaction</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Sometimes the fact that DataManager API always creates a new transaction is not the desired behavior. Instead, an already running transaction should be re-used. In this case, a very similar API called <code>TransactionalDataManager</code> can be used. It behaves basically the same as the regular <code>DataManager</code> with the difference that it allows to join an existing transaction as well as enabling programmatic transaction handling.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="summary">Summary</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Data Manager API is a CUBA abstraction that allows an application developer to fulfill common use-cases for working with databases. It has multiple operations to allow for regular create, read, update and delete operations (CRUD). Entity instances can be stored directly or within a Commit Context. Every operation will be encapsulated in a new transaction.</p>
+</div>
+<div class="sect2">
+<h3 id="further_information">Further information</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://doc.cuba-platform.com/manual-7.0/dataManager.html">DataManager reference documentation</a></p>
+</li>
+<li>
+<p><a href="https://www.cuba-platform.com/webinars/working-data">Working with Data (Webinar)</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+    </div>
+
+    <!-- End Main Content -->
+
+    <!-- Sidebar -->
+
+    <aside class="large-3 columns">
+
+        <br />
+        <br />
+
+        <div class="panel">
+            <h4>CUBA Version</h4>
+            <b>7.0</b>
+        </div>
+
+        <div class="panel">
+            <h4>Get the code</h4>
+
+            <a class="button expanded"  href="https://github.com/cuba-guides/cuba-petclinic-intro-to-datamanager/archive/master.zip">Download</a>
+            <a href="https://github.com/cuba-guides/cuba-petclinic-intro-to-datamanager">Github Repository</a>
+        </div>
+
+        <div class="panel">
+            <h3>Table of contents</h3>
+            <ul class="sectlevel1">
+<li><a href="#what_will_be_build">What will be build</a></li>
+<li><a href="#programmatic_data_access_interactions">Programmatic data access interactions</a></li>
+<li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
+<li><a href="#load_data_with_datamanager">Load data with DataManager</a></li>
+<li><a href="#write_data_with_datamanager">Write Data with DataManager</a></li>
+<li><a href="#summary">Summary</a></li>
+</ul>
+        </div>
+
+    </aside>
+
+    <!-- End Sidebar -->
+</div>
+
+<!-- End Main Content and Sidebar -->
+
+
+<!-- Footer -->
+
+<footer class="row">
+    <div class="large-12 columns">
+        <hr>
+        <div class="row">
+            <div class="large-12 columns">
+                <p>Copyright &#169; 2008-2018 Haulmont</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="../../../js/vendor/jquery.js"></script>
+<script src="../../../js/foundation.min.js"></script>
+<script src="https://unpkg.com/isotope-layout@3.0/dist/isotope.pkgd.js"></script>
+<script>
+$(document).foundation();
+var doc = document.documentElement;
+doc.setAttribute('data-useragent', navigator.userAgent);
+</script>
+</body>
+</html>
