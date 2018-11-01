@@ -43,3 +43,21 @@ Normally it is useful to create the guide as a draft. In order to see them as we
 $ jekyll serve --drafts --config _config.yml 
 ```
 
+### Using Docker
+
+If you don't want to set up Ruby environment you can use jekyll Docker image
+
+Pull jekyll image:
+```
+jekyll pull jekyll/jekyll:3.8
+```
+
+Build:
+```
+docker run --rm --volume="$PWD:/srv/jekyll" jekyll/jekyll:3.8 jekyll build
+```
+
+Serve:
+```
+docker run --rm --volume="$PWD:/srv/jekyll" -p 4000:4000 jekyll/jekyll:3.8 jekyll serve
+```
