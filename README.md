@@ -1,6 +1,6 @@
 # CUBA Platform guides
 
-This project contains the the sources for the CUBA Platform guides provided on https://guides.cuba-platform.com
+This project contains the the sources for the CUBA Platform guides provided on https://cuba-platform.com/guides
 
 
 ## Creating a guide
