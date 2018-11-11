@@ -7,3 +7,8 @@ The underlying domain model for the application looks like this:
 
 image::/images/domain-model.png[Domain model]
 The main entities are *Pet* and *Visit*. A Pet is visiting the petclinic and during this Visit, a Vet will take care of it. A Pet belongs to a Owner, which can hold multiple pets. The visit describes the act of a pet visiting the clinic with the help of its owner.
+
+
+++++
+<a href="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/login-screen.png"/></a>
+++++
