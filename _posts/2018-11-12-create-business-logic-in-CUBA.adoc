@@ -1,7 +1,7 @@
 ---
 compatible_cuba_versions: 7.0
 project_id: cuba-petclinic-guide-business-logic
-permalink: guide-business-logic-in-cuba
+permalink: create-business-logic-in-cuba
 ---
 = Create business logic in CUBA
 :showtitle:
