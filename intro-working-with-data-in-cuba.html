@@ -8,13 +8,13 @@
     <title>Introduction to working with Data in CUBA</title>
     <meta name="description" content="The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.">
     <meta name="author" content="Haulmont">
-    <link rel="stylesheet" href="/css/foundation.css">
-    <link rel="stylesheet" href="/css/font-awesome.css">
-    <link rel="stylesheet" href="/css/coderay.css">
-    <link rel="stylesheet" href="/css/asciidoctor.css">
-    <link rel="stylesheet" href="/css/cuba.css">
-    <script src="/js/vendor/modernizr.js"></script>
-    <script src="/js/toc.js"></script>
+    <link rel="stylesheet" href="../../../css/foundation.css">
+    <link rel="stylesheet" href="../../../css/font-awesome.css">
+    <link rel="stylesheet" href="../../../css/coderay.css">
+    <link rel="stylesheet" href="../../../css/asciidoctor.css">
+    <link rel="stylesheet" href="../../../css/cuba.css">
+    <script src="../../../js/vendor/modernizr.js"></script>
+    <script src="../../../js/toc.js"></script>
 </head>
 <body>
 
@@ -101,24 +101,6 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="programmatic_data_access_interactions">Programmatic data access interactions</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Oftentimes it is necessary to interact with the database in a programmatic manner. In a CUBA based application, these cases are not as omnipresent as in other frameworks due to its declarative nature of data-binding for UIs, but still, there are
-a lot of cases where data has to be loaded from the database or stored in the database as part of a business process.</p>
-</div>
-<div class="paragraph">
-<p>The main interaction point that CUBA provides is the <a href="https://doc.cuba-platform.com/manual-7.0/dataManager.html">DataManager</a> API. This API allows the developer of a CUBA application to load and store data in the database through the general abstraction of entities.</p>
-</div>
-<div class="paragraph">
-<p>DataManager is an Abstraction on top of the Java Persistence API (JPA). It hides away certain details that are not required on a day-to-day basis.</p>
-</div>
-<div class="paragraph">
-<p>It also adds certain capabilities that are not available out of the box in JPA. Those capabilities are mainly the <a href="https://doc.cuba-platform.com/manual-7.0/views.html">Views concept</a> as well as the application of <a href="https://doc.cuba-platform.com/manual-7.0/security_subsystem.html">security constrains</a>. More information about differences between JPA and DataManager can be found in the docs on <a href="https://doc.cuba-platform.com/manual-7.0/dm_vs_em.html">DataManager vs. EntityManager</a>.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
 <h2 id="example_cuba_petclinic">Example: CUBA petclinic</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -136,6 +118,24 @@ a lot of cases where data has to be loaded from the database or stored in the da
 <p>The main entities are <strong>Pet</strong> and <strong>Visit</strong>. A Pet is visiting the petclinic and during this Visit, a Vet will take care of it. A Pet belongs to a Owner, which can hold multiple pets. The visit describes the act of a pet visiting the clinic with the help of its owner.</p>
 </div>
 <a href="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/login-screen.png"/></a>
+</div>
+</div>
+<div class="sect1">
+<h2 id="programmatic_data_access_interactions">Programmatic data access interactions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Oftentimes it is necessary to interact with the database in a programmatic manner. In a CUBA based application, these cases are not as omnipresent as in other frameworks due to its declarative nature of data-binding for UIs, but still, there are
+a lot of cases where data has to be loaded from the database or stored in the database as part of a business process.</p>
+</div>
+<div class="paragraph">
+<p>The main interaction point that CUBA provides is the <a href="https://doc.cuba-platform.com/manual-7.0/dataManager.html">DataManager</a> API. This API allows the developer of a CUBA application to load and store data in the database through the general abstraction of entities.</p>
+</div>
+<div class="paragraph">
+<p>DataManager is an Abstraction on top of the Java Persistence API (JPA). It hides away certain details that are not required on a day-to-day basis.</p>
+</div>
+<div class="paragraph">
+<p>It also adds certain capabilities that are not available out of the box in JPA. Those capabilities are mainly the <a href="https://doc.cuba-platform.com/manual-7.0/views.html">Views concept</a> as well as the application of <a href="https://doc.cuba-platform.com/manual-7.0/security_subsystem.html">security constrains</a>. More information about differences between JPA and DataManager can be found in the docs on <a href="https://doc.cuba-platform.com/manual-7.0/dm_vs_em.html">DataManager vs. EntityManager</a>.</p>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -395,8 +395,8 @@ DataManager dataManager;
             <h3>Table of contents</h3>
             <ul class="sectlevel1">
 <li><a href="#what_will_be_build">What will be build</a></li>
-<li><a href="#programmatic_data_access_interactions">Programmatic data access interactions</a></li>
 <li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
+<li><a href="#programmatic_data_access_interactions">Programmatic data access interactions</a></li>
 <li><a href="#load_data_with_datamanager">Load data with DataManager</a></li>
 <li><a href="#write_data_with_datamanager">Write Data with DataManager</a></li>
 <li><a href="#summary">Summary</a></li>
@@ -424,8 +424,8 @@ DataManager dataManager;
     </div>
 </footer>
 
-<script src="/js/vendor/jquery.js"></script>
-<script src="/js/foundation.min.js"></script>
+<script src="../../../js/vendor/jquery.js"></script>
+<script src="../../../js/foundation.min.js"></script>
 <script src="https://unpkg.com/isotope-layout@3.0/dist/isotope.pkgd.js"></script>
 <script>
 $(document).foundation();

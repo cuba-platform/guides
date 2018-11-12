@@ -1,0 +1,508 @@
+<!doctype html>
+<!--[if IE 9]>
+<html class="lt-ie10" lang="en"> <![endif]-->
+<html class="no-js" lang="en" data-useragent="Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create business logic in CUBA</title>
+    <meta name="description" content="The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.">
+    <meta name="author" content="Haulmont">
+    <link rel="stylesheet" href="../../../css/foundation.css">
+    <link rel="stylesheet" href="../../../css/font-awesome.css">
+    <link rel="stylesheet" href="../../../css/coderay.css">
+    <link rel="stylesheet" href="../../../css/asciidoctor.css">
+    <link rel="stylesheet" href="../../../css/cuba.css">
+    <script src="../../../js/vendor/modernizr.js"></script>
+    <script src="../../../js/toc.js"></script>
+</head>
+<body>
+
+
+<!-- Nav Bar -->
+
+<!--<nav class="top-bar" data-topbar>-->
+    <!--<ul class="title-area">-->
+        <!--&lt;!&ndash; Title Area &ndash;&gt;-->
+        <!--<li class="name">-->
+            <!--<h1>-->
+                <!--<a href="../../../">CUBA Platform guides</a>-->
+            <!--</h1>-->
+        <!--</li>-->
+        <!--<li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>-->
+    <!--</ul>-->
+<!--</nav>-->
+<!-- End Nav -->
+
+
+<!-- Main Page Content and Sidebar -->
+
+<div class="row">
+
+    <!-- Main Blog Content -->
+    <div class="large-9 columns" role="content">
+
+        <h1>Create business logic in CUBA</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>One of the first questions when developing a CUBA application is: <em>Where should I put my business logic?</em> This guide will explain the different options available and its upsides and downsides.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="what_will_be_build">What will be build</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This guides enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show where business logic can be places in a CUBA application. Mainly discounts are calculated for Pets based on total amount of their visits in the Petclinic.</p>
+</div>
+<div class="sect2">
+<h3 id="final_application">Final Application</h3>
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/login-screen.png"/></a>
+<div class="paragraph">
+<p>Unresolved directive in 2018-11-12-create-business-logic-in-CUBA.adoc - include::/includes/guide_requirements.adoc[]</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="example_cuba_petclinic">Example: CUBA petclinic</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The project that is be the basis for this example is <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a>. It is based on the commonly known <a href="https://github.com/spring-projects/spring-petclinic">Spring Petclinic</a>. The CUBA Petclinic application deals with the domain of a Pet clinic and the associated business workflows to manage a pet clinic.</p>
+</div>
+<div class="paragraph">
+<p>The underlying domain model for the application looks like this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/images/domain-model.png" alt="Domain model">
+</div>
+</div>
+<div class="paragraph">
+<p>The main entities are <strong>Pet</strong> and <strong>Visit</strong>. A Pet is visiting the petclinic and during this Visit, a Vet will take care of it. A Pet belongs to a Owner, which can hold multiple pets. The visit describes the act of a pet visiting the clinic with the help of its owner.</p>
+</div>
+<a href="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/login-screen.png"/></a>
+</div>
+</div>
+<div class="sect1">
+<h2 id="business_logic_in_controllers">Business Logic in Controllers</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Assuming the discount calculation should be executed when a user clicks a button on the Pets&#8217;s browser screen, the most straightforward way to accomplish this is to put the calculation logic right in the associated controller class.</p>
+</div>
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/calculate-discout-for-pet.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/calculate-discout-for-pet.png"/></a>
+<div class="paragraph">
+<p>See the <strong>Calculate discount</strong> button in the petclinic application and the screen controller implementation: <a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetBrowse.java#L15">PetBrowse</a>.</p>
+</div>
+<div class="listingblock">
+<div class="title">PetBrowse.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@UiController</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_Pet.browse</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">pet-browse.xml</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@LookupComponent</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petsTable</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">PetBrowse</span> <span class="directive">extends</span> StandardLookup&lt;Pet&gt; {
+
+
+    <span class="annotation">@Inject</span> <span class="directive">protected</span> Screens screens;
+
+    <span class="annotation">@Inject</span> <span class="directive">protected</span> Notifications notifications;
+
+    <span class="annotation">@Inject</span> <span class="directive">protected</span> Metadata metadata;
+
+    <span class="annotation">@Inject</span> <span class="directive">protected</span> GroupTable&lt;Pet&gt; petsTable;
+
+
+    <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petsTable.calculateDiscount</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">public</span> <span class="type">void</span> calculateDiscount(<span class="predefined-type">Action</span>.ActionPerformedEvent actionPerformedEvent) {
+
+        Pet pet = petsTable.getSingleSelected();
+
+        <span class="type">int</span> discount = calculateDiscount(pet);
+
+        showDiscountCalculatedNotification(pet, discount);
+    }
+
+    <span class="directive">private</span> <span class="type">int</span> calculateDiscount(Pet pet) {
+        <span class="type">int</span> discount = <span class="integer">0</span>;
+
+        <span class="type">int</span> visitAmount = pet.getVisits().size();
+        <span class="keyword">if</span> (visitAmount &gt; <span class="integer">10</span>) {
+            discount = <span class="integer">10</span>;
+        } <span class="keyword">else</span> <span class="keyword">if</span> (visitAmount &gt; <span class="integer">5</span>) {
+            discount = <span class="integer">5</span>;
+        }
+        <span class="keyword">return</span> discount;
+    }
+
+    <span class="directive">private</span> <span class="type">void</span> showDiscountCalculatedNotification(Pet pet, <span class="type">int</span> discount) {
+
+        <span class="predefined-type">String</span> petName = metadata.getTools().getInstanceName(pet);
+
+        <span class="predefined-type">String</span> discountMessage = <span class="string"><span class="delimiter">&quot;</span><span class="content">Discount for </span><span class="delimiter">&quot;</span></span> + petName + <span class="string"><span class="delimiter">&quot;</span><span class="content">: </span><span class="delimiter">&quot;</span></span> + discount + <span class="string"><span class="delimiter">&quot;</span><span class="content">%</span><span class="delimiter">&quot;</span></span>;
+
+        notifications.create()
+            .setCaption(discountMessage)
+            .setType(Notifications.NotificationType.TRAY)
+            .show();
+    }
+
+
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+This approach is acceptable if the logic is invoked from a single point and it is not too complex to fit into a couple of short methods.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="client_tier_beans">Client Tier Beans</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The in-controller solution works as long as the logic should only be executed within one screen. Once the calculation should be executed in multiple UI screens there is a better way to not duplicate the code. The logic can be extracted to a common place available for both controllers. This option is using a Spring bean in the client tier.</p>
+</div>
+<div class="paragraph">
+<p>A managed bean is a class annotated with the <code>@Component</code> annotation. It can be injected via <code>@Inject</code> into other beans and screen controllers. If the bean has a separate interface, it can be accessed through the interface instead of the class.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="https://dummyimage.com/600x400/00b5ec/ffffff.png&amp;text=Client%20tier%20beans%20UML%20class%20diagram" alt="ffffff"></span> Class Diagramm overview of using the Client Tier beans</p>
+</div>
+<div class="paragraph">
+<p>Please note that in order to be accessible for screen controllers, the bean must be located in <strong>global</strong>, <strong>gui</strong> or <strong>web</strong> modules of the application. In the former case the bean will be also accessible for the middleware.</p>
+</div>
+<div class="paragraph">
+<p>The example that is implemented as (multiple) client tier beans is to display the contact information of the pet&#8217;s owner directly from the pet browser or pet detail screen.</p>
+</div>
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/fetch-contact-of-pet.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/fetch-contact-of-pet.png"/></a>
+<div class="paragraph">
+<p>For this there are two Spring beans:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/global/src/com/cubaplatform/petclinic/contact/PetContactFetcherBean.java">PetContactFetcher</a> that deals with fetching of the appropriate contact data</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetContactDisplay.java">PetContactDisplay</a> for displaying the contact information as notifications</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="title">PetContactFetcherBean.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Component</span>(PetContactFetcher.NAME)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">PetContactFetcherBean</span> <span class="directive">implements</span> PetContactFetcher {
+
+    <span class="annotation">@Inject</span>
+    DataManager dataManager;
+
+    <span class="annotation">@Inject</span>
+    Messages messages;
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> Optional&lt;Contact&gt; findContact(Pet pet) {
+
+        Optional&lt;<span class="predefined-type">Owner</span>&gt; petOwner = loadOwnerFor(pet);
+
+        <span class="keyword">if</span> (petOwner.isPresent()) {
+
+            <span class="predefined-type">Owner</span> owner = petOwner.get();
+            <span class="predefined-type">String</span> telephone = owner.getTelephone();
+            <span class="predefined-type">String</span> email = owner.getEmail();
+            <span class="predefined-type">String</span> address = formatOwnerAddress(owner);
+
+            <span class="keyword">if</span> (isAvailable(telephone)) {
+                <span class="keyword">return</span> createContact(telephone, ContactType.TELEPHONE);
+            } <span class="keyword">else</span> <span class="keyword">if</span> (isAvailable(email)) {
+                <span class="keyword">return</span> createContact(email, ContactType.EMAIL);
+            } <span class="keyword">else</span> <span class="keyword">if</span> (isAvailable(address)) {
+                <span class="keyword">return</span> createContact(address, ContactType.ADDRESS);
+            } <span class="keyword">else</span> {
+                <span class="keyword">return</span> Optional.empty();
+            }
+        } <span class="keyword">else</span> {
+            <span class="keyword">return</span> Optional.empty();
+        }
+
+    }
+
+    <span class="comment">//...</span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The beans are used in the <a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetBrowse.java#L24">Pet browse screen</a> and the
+<a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetEdit.java#L19">Pet detail screen</a>. The usage looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">PetEdit.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@UiController</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_Pet.edit</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">pet-edit.xml</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@EditedEntityContainer</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petCt</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">PetEdit</span> <span class="directive">extends</span> StandardEditor&lt;Pet&gt; {
+
+    <span class="annotation">@Inject</span>
+    PetContactFetcher petContactFetcher;
+
+    <span class="annotation">@Inject</span>
+    PetContactDisplay petContactDisplay;
+
+
+    <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">fetchContact</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">public</span> <span class="type">void</span> fetchContact() {
+
+        Pet pet = getEditedEntity();
+
+        Optional&lt;Contact&gt; contactInformation = petContactFetcher.findContact(pet);
+
+        petContactDisplay.displayContact(contactInformation, <span class="local-variable">this</span>);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The benefit compared to the first in-controller solution is that the code-reuse is higher. It is possible to use the logic in different places.</p>
+</div>
+<div class="paragraph">
+<p><code>PetContactDisplay</code> is a bean in the web module, therefore is only available within the client tier.
+<code>PetContactFetcher</code> on the other hand is a bean in the global module which means that it is also possible to use the logic in the middleware as well as the client tier.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="middleware_services">Middleware Services</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The next approach on where to put the business logic is a <a href="https://doc.cuba-platform.com/manual-7.0/services.html">middleware service</a>. A service is the most appropriate place for business logic, because it achieves the following goals:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The business logic will be available for all types of clients including the Polymer UI.</p>
+</li>
+<li>
+<p>APIs that are available only on the middleware: <a href="https://doc.cuba-platform.com/manual-7.0/entityManager.html">EntityManager</a>, Transaction etc. are accessible to the business logic</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="https://dummyimage.com/600x400/00b5ec/ffffff.png&amp;text=Architecture%20diagram%20on%20Services" alt="ffffff"></span> Architecture diagram on Services with tiers</p>
+</div>
+<div class="paragraph">
+<p>In order to invoke a middleware business logic from the client, a service needs to be created. CUBA Studio streamlines the creation process of a service:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Switch to the <strong>Middleware</strong> section and click <strong>New &gt; Service</strong>.</p>
+</li>
+<li>
+<p>Change the service interface name to <code>DiseaseWarningMailingService</code>. The bean class and service names will be changed accordingly. Click <strong>OK</strong> or <strong>Apply</strong>.</p>
+</li>
+<li>
+<p>Click <strong>IDE</strong> and open the service interface in your IDE. Create a method and implement it in the service class.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In the petclinic application, the following service was created: <code>DiseaseWarningMailingService</code>. It sends out disease warning mailings for potential endangered pets.</p>
+</div>
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/create-disease-warning-mailing.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/create-disease-warning-mailing.png"/></a>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-guide-business-logic/blob/master/modules/global/src/com/cubaplatform/petclinic/service/DiseaseWarningMailingService.java">DiseaseWarningMailingService</a> - service interface</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-guide-business-logic/blob/master/modules/global/src/com/cubaplatform/petclinic/service/DiseaseWarningMailingServiceBean.java">DiseaseWarningMailingServiceBean</a> - service implementation</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-guide-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/CreateDiseaseWarningMailing.java">CreateDiseaseWarningMailing</a> - screen controller that use the service</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The implementation of a service looks like this in case of the <code>DiseaseWarningMailingService</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">DiseaseWarningMailingServiceBean.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Service</span>(DiseaseWarningMailingService.NAME) <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">DiseaseWarningMailingServiceBean</span> <span class="directive">implements</span> DiseaseWarningMailingService {
+
+  <span class="annotation">@Inject</span>
+  <span class="directive">protected</span> DataManager dataManager;
+
+
+  <span class="annotation">@Inject</span>
+  <span class="directive">protected</span> EmailerAPI emailerAPI;
+
+
+  <span class="annotation">@Override</span>
+  <span class="directive">public</span> <span class="type">int</span> warnAboutDisease(PetType petType, <span class="predefined-type">String</span> disease, <span class="predefined-type">String</span> city) { <i class="conum" data-value="2"></i><b>(2)</b>
+
+    <span class="predefined-type">List</span>&lt;Pet&gt; petsInDiseaseCity = findPetsInDiseaseCity(petType, city);
+
+    <span class="predefined-type">List</span>&lt;Pet&gt; petsWithEmail = filterPetsWithValidOwnersEmail(petsInDiseaseCity);
+
+    petsWithEmail.forEach(pet -&gt; sendEmailToPetsOwner(pet, disease, city));
+
+    <span class="keyword">return</span> petsWithEmail.size();
+  }
+
+
+  <span class="comment">// ...</span>
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Declaration of the <code>DiseaseWarningMailingServiceBean</code> as the Middleware Service implementation</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Implementation of the business logic interface</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The usage in the UI controller is very similar to the invocation of a client tier bean.. The <code>CreateDiseaseWarningMailing</code> screen controller looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">CreateDiseaseWarningMailing.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@UiController</span>
+<span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">create-disease-warning-mailing.xml</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">CreateDiseaseWarningMailing</span> <span class="directive">extends</span> Screen {
+
+
+    <span class="annotation">@Inject</span> <span class="directive">protected</span> DiseaseWarningMailingService diseaseWarningMailingService; <i class="conum" data-value="1"></i><b>(1)</b>
+
+    <span class="annotation">@Inject</span> <span class="directive">protected</span> Notifications notifications;
+
+
+    <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">createDiseaseWarningMailing</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">protected</span> <span class="type">void</span> createDiseaseWarningMailing(<span class="predefined-type">Action</span>.ActionPerformedEvent event) {
+
+        <span class="type">int</span> endangeredPets = diseaseWarningMailingService.warnAboutDisease(petType.getValue(),
+            disease.getValue(), city.getValue()); <i class="conum" data-value="2"></i><b>(2)</b>
+
+        closeWithCommit().then(() -&gt;
+            notifications.create()
+                .setCaption(endangeredPets + <span class="string"><span class="delimiter">&quot;</span><span class="content"> Owner(s) of endangered Pets have been notified</span><span class="delimiter">&quot;</span></span>)
+                .setType(Notifications.NotificationType.TRAY)
+                .show()
+        );
+    }</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Injection of the middleware service via its interface definition</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Invocation of the business logic in the controller action</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>With that middleware service in place, the logic of creating disease warning mailings can now shared across UI screens in the web tier. Additionally any other middleware code can execute the logic, since
+it is not tied to the web tier anymore. Furthermore it is possible to trigger it via the REST API and with that exposes it also to other UI technologies like the Polymer UI.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="summary">Summary</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>There are several options when it comes to where to put the business logic in a CUBA application. A controller can be a good and easy start, although it has some downsides when it comes to sharing code. A client bean solves this problem to some degree. Middleware services allow for sharing business logic across different clients (e.g. Polymer Client) and is the most appropriate way of putting business logic.</p>
+</div>
+<div class="paragraph">
+<p>Additionally there are several advanced techniques like <a href="https://doc.cuba-platform.com/manual-6.10/jmx_beans.html">JMX Beans</a> or <a href="https://doc.cuba-platform.com/manual-6.10/entity_listeners.html">Entity Listeners</a> that also allow for certain business logic to be executed in particular scenarios. The decision where to put the business logic for a given case should be done on a case to case basis. But the mentioned main places of Controllers &amp; Spring Beans / Spring Services for placing business logic are a good starting point.</p>
+</div>
+</div>
+</div>
+
+    </div>
+
+    <!-- End Main Content -->
+
+    <!-- Sidebar -->
+
+    <aside class="large-3 columns">
+
+        <br />
+        <br />
+
+        <div class="panel">
+            <h4>CUBA Version</h4>
+            <b>7.0</b>
+        </div>
+
+        <div class="panel">
+            <h4>Get the code</h4>
+
+            <a class="button expanded"  href="https://github.com/cuba-guides/cuba-petclinic-guide-business-logic/archive/master.zip">Download</a>
+            <a href="https://github.com/cuba-guides/cuba-petclinic-guide-business-logic">Github Repository</a>
+        </div>
+
+        <div class="panel">
+            <h3>Table of contents</h3>
+            <ul class="sectlevel1">
+<li><a href="#what_will_be_build">What will be build</a></li>
+<li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
+<li><a href="#business_logic_in_controllers">Business Logic in Controllers</a></li>
+<li><a href="#client_tier_beans">Client Tier Beans</a></li>
+<li><a href="#middleware_services">Middleware Services</a></li>
+<li><a href="#summary">Summary</a></li>
+</ul>
+        </div>
+
+    </aside>
+
+    <!-- End Sidebar -->
+</div>
+
+<!-- End Main Content and Sidebar -->
+
+
+<!-- Footer -->
+
+<footer class="row">
+    <div class="large-12 columns">
+        <hr>
+        <div class="row">
+            <div class="large-12 columns">
+                <p>Copyright &#169; 2008-2018 Haulmont</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="../../../js/vendor/jquery.js"></script>
+<script src="../../../js/foundation.min.js"></script>
+<script src="https://unpkg.com/isotope-layout@3.0/dist/isotope.pkgd.js"></script>
+<script>
+$(document).foundation();
+var doc = document.documentElement;
+doc.setAttribute('data-useragent', navigator.userAgent);
+</script>
+</body>
+</html>
