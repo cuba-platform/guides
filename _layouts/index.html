@@ -8,13 +8,13 @@
     <title>{{page.title}}</title>
     <meta name="description" content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">
     <meta name="author" content="Haulmont">
-    <link rel="stylesheet" href="{{page.root}}css/foundation.css">
-    <link rel="stylesheet" href="{{page.root}}css/font-awesome.css">
-    <link rel="stylesheet" href="{{page.root}}css/coderay.css">
-    <link rel="stylesheet" href="{{page.root}}css/asciidoctor.css">
-    <link rel="stylesheet" href="{{page.root}}css/cuba.css">
-    <script src="{{page.root}}js/vendor/modernizr.js"></script>
-    <script src="{{page.root}}js/toc.js"></script>
+    <link rel="stylesheet" href="{{ '/css/foundation.css' | prepend: site.baseurl }}">
+    <link rel="stylesheet" href="{{ '/css/font-awesome.css' | prepend: site.baseurl }}">
+    <link rel="stylesheet" href="{{ '/css/coderay.css' | prepend: site.baseurl }}">
+    <link rel="stylesheet" href="{{ '/css/asciidoctor.css' | prepend: site.baseurl }}">
+    <link rel="stylesheet" href="{{ '/css/cuba.css' | prepend: site.baseurl }}">
+    <script src="{{ '/js/vendor/modernizr.js' | prepend: site.baseurl }}"></script>
+    <script src="{{ '/js/toc.js' | prepend: site.baseurl }}"></script>
 
     <style type="text/css">
 
@@ -87,8 +87,8 @@
 </footer>
 
 
-<script src="{{page.root}}js/vendor/jquery.js"></script>
-<script src="{{page.root}}js/foundation.min.js"></script>
+<script src="{{'/js/vendor/jquery.js' | prepend: site.baseurl }}"></script>
+<script src="{{'/js/foundation.min.js' | prepend: site.baseurl }}"></script>
 <script>
 $(document).foundation();
 var doc = document.documentElement;
