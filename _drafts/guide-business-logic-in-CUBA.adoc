@@ -25,17 +25,24 @@ This guides enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA pe
 
 === Final Application
 
- A little screencast of the final application overview goes here.
-
-image:https://dummyimage.com/600x400/00b5ec/ffffff.png&text=CUBA Petclinic Overview[] Overview of final CUBA petclinic application
-
+++++
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/login-screen.png"/></a>
+++++
 
 include::/includes/guide_requirements.adoc[]
+
+
+include::includes/petclinic_introduction.adoc[]
 
 
 == Business Logic in Controllers
 
 Assuming the discount calculation should be executed when a user clicks a button on the Pets's browser screen, the most straightforward way to accomplish this is to put the calculation logic right in the associated controller class.
+
+
+++++
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/calculate-discout-for-pet.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/calculate-discout-for-pet.png"/></a>
+++++
 
 See the *Calculate discount* button in the petclinic application and the screen controller implementation: https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetBrowse.java#L15[PetBrowse].
 
@@ -114,6 +121,11 @@ image:https://dummyimage.com/600x400/00b5ec/ffffff.png&text=Client tier beans UM
 Please note that in order to be accessible for screen controllers, the bean must be located in *global*, *gui* or *web* modules of the application. In the former case the bean will be also accessible for the middleware.
 
 The example that is implemented as (multiple) client tier beans is to display the contact information of the pet's owner directly from the pet browser or pet detail screen.
+
+
+++++
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/fetch-contact-of-pet.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/fetch-contact-of-pet.png"/></a>
+++++
 
 For this there are two Spring beans:
 
@@ -222,6 +234,12 @@ In order to invoke a middleware business logic from the client, a service needs 
 * Click *IDE* and open the service interface in your IDE. Create a method and implement it in the service class.
 
 In the petclinic application, the following service was created: `DiseaseWarningMailingService`. It sends out disease warning mailings for potential endangered pets.
+
+
+++++
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/create-disease-warning-mailing.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/create-disease-warning-mailing.png"/></a>
+++++
+
 
 * https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/cubaplatform/petclinic/service/DiseaseWarningMailingService.java[DiseaseWarningMailingService] - service interface
 
