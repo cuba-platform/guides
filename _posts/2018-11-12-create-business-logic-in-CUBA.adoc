@@ -1,0 +1,334 @@
+---
+compatible_cuba_versions: 7.0
+project_id: cuba-petclinic-guide-business-logic
+permalink: create-business-logic-in-cuba
+---
+= Create business logic in CUBA
+:showtitle:
+:page-navtitle: Create business logic in CUBA
+:page-excerpt: Guide on what options are available for putting business logic into a CUBA application
+:page-root: ../../../
+:project_id: cuba-petclinic-guide-business-logic
+:java_version: 1.8
+:cuba_version: 7.0
+
+:proj_business_logic: https://github.com/cuba-platform/sample-business-logic
+
+
+
+One of the first questions when developing a CUBA application is: _Where should I put my business logic?_ This guide will explain the different options available and its upsides and downsides.
+
+== What will be build
+
+This guides enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show where business logic can be places in a CUBA application. Mainly discounts are calculated for Pets based on total amount of their visits in the Petclinic.
+
+
+=== Final Application
+
+++++
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/login-screen.png"/></a>
+++++
+
+include::/includes/guide_requirements.adoc[]
+
+
+include::includes/petclinic_introduction.adoc[]
+
+
+== Business Logic in Controllers
+
+Assuming the discount calculation should be executed when a user clicks a button on the Pets's browser screen, the most straightforward way to accomplish this is to put the calculation logic right in the associated controller class.
+
+
+++++
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/calculate-discout-for-pet.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/calculate-discout-for-pet.png"/></a>
+++++
+
+See the *Calculate discount* button in the petclinic application and the screen controller implementation: https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetBrowse.java#L15[PetBrowse].
+
+.PetBrowse.java
+[source,java]
+----
+
+@UiController("petclinic_Pet.browse")
+@UiDescriptor("pet-browse.xml")
+@LookupComponent("petsTable")
+public class PetBrowse extends StandardLookup<Pet> {
+
+
+    @Inject protected Screens screens;
+
+    @Inject protected Notifications notifications;
+
+    @Inject protected Metadata metadata;
+
+    @Inject protected GroupTable<Pet> petsTable;
+
+
+    @Subscribe("petsTable.calculateDiscount")
+    public void calculateDiscount(Action.ActionPerformedEvent actionPerformedEvent) {
+
+        Pet pet = petsTable.getSingleSelected();
+
+        int discount = calculateDiscount(pet);
+
+        showDiscountCalculatedNotification(pet, discount);
+    }
+
+    private int calculateDiscount(Pet pet) {
+        int discount = 0;
+
+        int visitAmount = pet.getVisits().size();
+        if (visitAmount > 10) {
+            discount = 10;
+        } else if (visitAmount > 5) {
+            discount = 5;
+        }
+        return discount;
+    }
+
+    private void showDiscountCalculatedNotification(Pet pet, int discount) {
+
+        String petName = metadata.getTools().getInstanceName(pet);
+
+        String discountMessage = "Discount for " + petName + ": " + discount + "%";
+
+        notifications.create()
+            .setCaption(discountMessage)
+            .setType(Notifications.NotificationType.TRAY)
+            .show();
+    }
+
+
+}
+----
+
+TIP: This approach is acceptable if the logic is invoked from a single point and it is not too complex to fit into a couple of short methods.
+
+
+
+
+== Client Tier Beans
+
+
+The in-controller solution works as long as the logic should only be executed within one screen. Once the calculation should be executed in multiple UI screens there is a better way to not duplicate the code. The logic can be extracted to a common place available for both controllers. This option is using a Spring bean in the client tier.
+
+A managed bean is a class annotated with the `@Component` annotation. It can be injected via `@Inject` into other beans and screen controllers. If the bean has a separate interface, it can be accessed through the interface instead of the class.
+
+
+image:https://dummyimage.com/600x400/00b5ec/ffffff.png&text=Client tier beans UML class diagram[] Class Diagramm overview of using the Client Tier beans
+
+Please note that in order to be accessible for screen controllers, the bean must be located in *global*, *gui* or *web* modules of the application. In the former case the bean will be also accessible for the middleware.
+
+The example that is implemented as (multiple) client tier beans is to display the contact information of the pet's owner directly from the pet browser or pet detail screen.
+
+
+++++
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/fetch-contact-of-pet.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/fetch-contact-of-pet.png"/></a>
+++++
+
+For this there are two Spring beans:
+
+* https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/global/src/com/cubaplatform/petclinic/contact/PetContactFetcherBean.java[PetContactFetcher] that deals with fetching of the appropriate contact data
+* https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetContactDisplay.java[PetContactDisplay] for displaying the contact information as notifications
+
+.PetContactFetcherBean.java
+[source,java]
+----
+
+@Component(PetContactFetcher.NAME)
+public class PetContactFetcherBean implements PetContactFetcher {
+
+    @Inject
+    DataManager dataManager;
+
+    @Inject
+    Messages messages;
+
+    @Override
+    public Optional<Contact> findContact(Pet pet) {
+
+        Optional<Owner> petOwner = loadOwnerFor(pet);
+
+        if (petOwner.isPresent()) {
+
+            Owner owner = petOwner.get();
+            String telephone = owner.getTelephone();
+            String email = owner.getEmail();
+            String address = formatOwnerAddress(owner);
+
+            if (isAvailable(telephone)) {
+                return createContact(telephone, ContactType.TELEPHONE);
+            } else if (isAvailable(email)) {
+                return createContact(email, ContactType.EMAIL);
+            } else if (isAvailable(address)) {
+                return createContact(address, ContactType.ADDRESS);
+            } else {
+                return Optional.empty();
+            }
+        } else {
+            return Optional.empty();
+        }
+
+    }
+
+    //...
+}
+----
+
+
+The beans are used in the https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetBrowse.java#L24[Pet browse screen] and the
+https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetEdit.java#L19[Pet detail screen]. The usage looks like this:
+
+
+.PetEdit.java
+[source,java]
+----
+
+@UiController("petclinic_Pet.edit")
+@UiDescriptor("pet-edit.xml")
+@EditedEntityContainer("petCt")
+public class PetEdit extends StandardEditor<Pet> {
+
+    @Inject
+    PetContactFetcher petContactFetcher;
+
+    @Inject
+    PetContactDisplay petContactDisplay;
+
+
+    @Subscribe("fetchContact")
+    public void fetchContact() {
+
+        Pet pet = getEditedEntity();
+
+        Optional<Contact> contactInformation = petContactFetcher.findContact(pet);
+
+        petContactDisplay.displayContact(contactInformation, this);
+    }
+}
+----
+
+The benefit compared to the first in-controller solution is that the code-reuse is higher. It is possible to use the logic in different places.
+
+`PetContactDisplay` is a bean in the web module, therefore is only available within the client tier.
+`PetContactFetcher` on the other hand is a bean in the global module which means that it is also possible to use the logic in the middleware as well as the client tier.
+
+== Middleware Services
+
+The next approach on where to put the business logic is a https://doc.cuba-platform.com/manual-{cuba_version}/services.html[middleware service]. A service is the most appropriate place for business logic, because it achieves the following goals:
+
+* The business logic will be available for all types of clients including the Polymer UI.
+
+* APIs that are available only on the middleware: https://doc.cuba-platform.com/manual-{cuba_version}/entityManager.html[EntityManager], Transaction etc. are accessible to the business logic
+
+
+image:https://dummyimage.com/600x400/00b5ec/ffffff.png&text=Architecture diagram on Services[] Architecture diagram on Services with tiers
+
+In order to invoke a middleware business logic from the client, a service needs to be created. CUBA Studio streamlines the creation process of a service:
+
+* Switch to the *Middleware* section and click *New > Service*.
+
+* Change the service interface name to `DiseaseWarningMailingService`. The bean class and service names will be changed accordingly. Click *OK* or *Apply*.
+
+* Click *IDE* and open the service interface in your IDE. Create a method and implement it in the service class.
+
+In the petclinic application, the following service was created: `DiseaseWarningMailingService`. It sends out disease warning mailings for potential endangered pets.
+
+
+++++
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/create-disease-warning-mailing.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/create-disease-warning-mailing.png"/></a>
+++++
+
+
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/cubaplatform/petclinic/service/DiseaseWarningMailingService.java[DiseaseWarningMailingService] - service interface
+
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/cubaplatform/petclinic/service/DiseaseWarningMailingServiceBean.java[DiseaseWarningMailingServiceBean] - service implementation
+
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/CreateDiseaseWarningMailing.java[CreateDiseaseWarningMailing] - screen controller that use the service
+
+The implementation of a service looks like this in case of the `DiseaseWarningMailingService`:
+
+.DiseaseWarningMailingServiceBean.java
+[source,java]
+----
+
+@Service(DiseaseWarningMailingService.NAME) // <1>
+public class DiseaseWarningMailingServiceBean implements DiseaseWarningMailingService {
+
+  @Inject
+  protected DataManager dataManager;
+
+
+  @Inject
+  protected EmailerAPI emailerAPI;
+
+
+  @Override
+  public int warnAboutDisease(PetType petType, String disease, String city) { // <2>
+
+    List<Pet> petsInDiseaseCity = findPetsInDiseaseCity(petType, city);
+
+    List<Pet> petsWithEmail = filterPetsWithValidOwnersEmail(petsInDiseaseCity);
+
+    petsWithEmail.forEach(pet -> sendEmailToPetsOwner(pet, disease, city));
+
+    return petsWithEmail.size();
+  }
+
+
+  // ...
+
+}
+----
+
+<1> Declaration of the `DiseaseWarningMailingServiceBean` as the Middleware Service implementation
+<2> Implementation of the business logic interface
+
+
+The usage in the UI controller is very similar to the invocation of a client tier bean.. The `CreateDiseaseWarningMailing` screen controller looks like this:
+
+
+.CreateDiseaseWarningMailing.java
+[source,java]
+----
+
+@UiController
+@UiDescriptor("create-disease-warning-mailing.xml")
+public class CreateDiseaseWarningMailing extends Screen {
+
+
+    @Inject protected DiseaseWarningMailingService diseaseWarningMailingService; // <1>
+
+    @Inject protected Notifications notifications;
+
+
+    @Subscribe("createDiseaseWarningMailing")
+    protected void createDiseaseWarningMailing(Action.ActionPerformedEvent event) {
+
+        int endangeredPets = diseaseWarningMailingService.warnAboutDisease(petType.getValue(),
+            disease.getValue(), city.getValue()); // <2>
+
+        closeWithCommit().then(() ->
+            notifications.create()
+                .setCaption(endangeredPets + " Owner(s) of endangered Pets have been notified")
+                .setType(Notifications.NotificationType.TRAY)
+                .show()
+        );
+    }
+----
+
+<1> Injection of the middleware service via its interface definition
+<2> Invocation of the business logic in the controller action
+
+With that middleware service in place, the logic of creating disease warning mailings can now shared across UI screens in the web tier. Additionally any other middleware code can execute the logic, since
+it is not tied to the web tier anymore. Furthermore it is possible to trigger it via the REST API and with that exposes it also to other UI technologies like the Polymer UI.
+
+
+== Summary
+
+There are several options when it comes to where to put the business logic in a CUBA application. A controller can be a good and easy start, although it has some downsides when it comes to sharing code. A client bean solves this problem to some degree. Middleware services allow for sharing business logic across different clients (e.g. Polymer Client) and is the most appropriate way of putting business logic.
+
+Additionally there are several advanced techniques like https://doc.cuba-platform.com/manual-6.10/jmx_beans.html[JMX Beans] or https://doc.cuba-platform.com/manual-6.10/entity_listeners.html[Entity Listeners] that also allow for certain business logic to be executed in particular scenarios. The decision where to put the business logic for a given case should be done on a case to case basis. But the mentioned main places of Controllers & Spring Beans / Spring Services for placing business logic are a good starting point.
+
+

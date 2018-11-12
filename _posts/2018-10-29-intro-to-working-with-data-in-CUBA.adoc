@@ -31,6 +31,8 @@ This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA pet
 include::includes/guide_requirements.adoc[]
 
 
+include::includes/petclinic_introduction.adoc[]
+
 
 == Programmatic data access interactions
 
@@ -42,9 +44,6 @@ The main interaction point that CUBA provides is the https://doc.cuba-platform.c
 DataManager is an Abstraction on top of the Java Persistence API (JPA). It hides away certain details that are not required on a day-to-day basis.
 
 It also adds certain capabilities that are not available out of the box in JPA. Those capabilities are mainly the https://doc.cuba-platform.com/manual-{cuba_version}/views.html[Views concept] as well as the application of https://doc.cuba-platform.com/manual-{cuba_version}/security_subsystem.html[security constrains]. More information about differences between JPA and DataManager can be found in the docs on https://doc.cuba-platform.com/manual-{cuba_version}/dm_vs_em.html[DataManager vs. EntityManager].
-
-
-include::includes/petclinic_introduction.adoc[]
 
 
 == Load data with DataManager
