@@ -1,0 +1,66 @@
+---
+compatible_cuba_versions: 7.0
+project_id: cuba-petclinic-decouple-logic-with-app-events
+permalink: decouple-business-logic-with-app-events
+---
+= Decouple business logic with application events
+:showtitle:
+:page-navtitle: Decouple business logic with application events
+:page-excerpt: Overview on how application events can be used in a CUBA application to decouple business logic
+:page-root: ../../../
+:project_id: cuba-petclinic-decouple-logic-with-app-events
+:java_version: 1.8
+:cuba_version: 7.0
+
+This guide walks you through the CUBA mechanism to use events in your application. Events are a common pattern within an application to decouple one part of the business logic from another.
+
+
+== What will be build
+
+This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show different use cases regarding programmatic data access with the DataManager API. In particular, the following use cases will be covered:
+
+* automatic creation of a Visit for a given Pet Identification Number
+* automatic sending out of "Disease Warning Mailing" for endangered pets
+
+=== Final Application
+
+++++
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/login-screen.png"/></a>
+++++
+
+include::includes/guide_requirements.adoc[]
+
+
+include::includes/petclinic_introduction.adoc[]
+
+
+== Sync vs. Async. Communication in software
+
+== Available types of Events in a CUBA application
+
+* Entity Lifecycle Events (`EntityChangedEvent`)
+* Application Lifecycle Events (`AppStartedEvent`)
+* Custom Application Logic Events (`MyEvent extends ApplicationEvent`)
+
+=== EntityChangedEvent for executing decoupled business logic on entities
+
+
+
+=== Execute logic on the global application lifecycle
+
+=== Custom Application Logic events
+
+== Constrains of Events in a CUBA application
+
+=== Sending global events within an CUBA application
+
+
+
+== Summary
+
+The application events from CUBA allow to define loosely coupled business logic within the application. Independent parts from a business functionality point of view can also be reflected as independent components within the application. This low coupling
+
+=== Further information
+
+* https://doc.cuba-platform.com/manual-{cuba_version}/dataManager.html[DataManager reference documentation]
+* https://www.cuba-platform.com/webinars/working-data[Working with Data (Webinar)]
