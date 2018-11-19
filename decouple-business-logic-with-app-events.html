@@ -1,0 +1,255 @@
+<!doctype html>
+<!--[if IE 9]>
+<html class="lt-ie10" lang="en"> <![endif]-->
+<html class="no-js" lang="en" data-useragent="Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decouple business logic with application events</title>
+    <meta name="description" content="The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.">
+    <meta name="author" content="Haulmont">
+    <link rel="stylesheet" href="/css/foundation.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/coderay.css">
+    <link rel="stylesheet" href="/css/asciidoctor.css">
+    <link rel="stylesheet" href="/css/cuba.css">
+    <script src="/js/vendor/modernizr.js"></script>
+    <script src="/js/toc.js"></script>
+</head>
+<body>
+
+
+<!-- Nav Bar -->
+
+<!--<nav class="top-bar" data-topbar>-->
+    <!--<ul class="title-area">-->
+        <!--&lt;!&ndash; Title Area &ndash;&gt;-->
+        <!--<li class="name">-->
+            <!--<h1>-->
+                <!--<a href="../../../">CUBA Platform guides</a>-->
+            <!--</h1>-->
+        <!--</li>-->
+        <!--<li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>-->
+    <!--</ul>-->
+<!--</nav>-->
+<!-- End Nav -->
+
+
+<!-- Main Page Content and Sidebar -->
+
+<div class="row">
+
+    <!-- Main Blog Content -->
+    <div class="large-9 columns" role="content">
+
+        <h1>Decouple business logic with application events</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>This guide walks you through the CUBA mechanism to use events in your application. Events are a common pattern within an application to decouple one part of the business logic from another.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="what_will_be_build">What will be build</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show different use cases regarding programmatic data access with the DataManager API. In particular, the following use cases will be covered:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>automatic creation of a Visit for a given Pet Identification Number</p>
+</li>
+<li>
+<p>automatic sending out of "Disease Warning Mailing" for endangered pets</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="final_application">Final Application</h3>
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/login-screen.png"/></a>
+</div>
+<div class="sect2">
+<h3 id="requirements">Requirements</h3>
+<div class="paragraph">
+<p>Your development environment requires to contain the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.oracle.com/technetwork/java/javase/downloads/index.html">JDK 1.8</a></p>
+</li>
+<li>
+<p>a text editor or IDE (preferred <a href="https://www.jetbrains.com/idea/download/">IntelliJ IDEA</a>)</p>
+</li>
+<li>
+<p><a href="https://www.cuba-platform.com/download">CUBA Studio</a> (optional)</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-platform/cuba-cli/wiki/Installation">CUBA CLI</a> (optional)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-decouple-logic-with-app-events/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
+</div>
+<div class="paragraph">
+<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-decouple-logic-with-app-events.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-decouple-logic-with-app-events.git</a></code></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="example_cuba_petclinic">Example: CUBA petclinic</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The project that is be the basis for this example is <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a>. It is based on the commonly known <a href="https://github.com/spring-projects/spring-petclinic">Spring Petclinic</a>. The CUBA Petclinic application deals with the domain of a Pet clinic and the associated business workflows to manage a pet clinic.</p>
+</div>
+<div class="paragraph">
+<p>The underlying domain model for the application looks like this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/images/domain-model.png" alt="Domain model">
+</div>
+</div>
+<div class="paragraph">
+<p>The main entities are <strong>Pet</strong> and <strong>Visit</strong>. A Pet is visiting the petclinic and during this Visit, a Vet will take care of it. A Pet belongs to a Owner, which can hold multiple pets. The visit describes the act of a pet visiting the clinic with the help of its owner.</p>
+</div>
+<a href="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/login-screen.png"/></a>
+</div>
+</div>
+<div class="sect1">
+<h2 id="sync_vs_async_communication_in_software">Sync vs. Async. Communication in software</h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="available_types_of_events_in_a_cuba_application">Available types of Events in a CUBA application</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Entity Lifecycle Events (<code>EntityChangedEvent</code>)</p>
+</li>
+<li>
+<p>Application Lifecycle Events (<code>AppStartedEvent</code>)</p>
+</li>
+<li>
+<p>Custom Application Logic Events (<code>MyEvent extends ApplicationEvent</code>)</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="entitychangedevent_for_executing_decoupled_business_logic_on_entities">EntityChangedEvent for executing decoupled business logic on entities</h3>
+
+</div>
+<div class="sect2">
+<h3 id="execute_logic_on_the_global_application_lifecycle">Execute logic on the global application lifecycle</h3>
+
+</div>
+<div class="sect2">
+<h3 id="custom_application_logic_events">Custom Application Logic events</h3>
+
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="constrains_of_events_in_a_cuba_application">Constrains of Events in a CUBA application</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="sending_global_events_within_an_cuba_application">Sending global events within an CUBA application</h3>
+
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="summary">Summary</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The application events from CUBA allow to define loosely coupled business logic within the application. Independent parts from a business functionality point of view can also be reflected as independent components within the application. This low coupling</p>
+</div>
+<div class="sect2">
+<h3 id="further_information">Further information</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://doc.cuba-platform.com/manual-7.0/dataManager.html">DataManager reference documentation</a></p>
+</li>
+<li>
+<p><a href="https://www.cuba-platform.com/webinars/working-data">Working with Data (Webinar)</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+    </div>
+
+    <!-- End Main Content -->
+
+    <!-- Sidebar -->
+
+    <aside class="large-3 columns">
+
+        <br />
+        <br />
+
+        <div class="panel">
+            <h4>CUBA Version</h4>
+            <b>7.0</b>
+        </div>
+
+        <div class="panel">
+            <h4>Get the code</h4>
+
+            <a class="button expanded"  href="https://github.com/cuba-guides/cuba-petclinic-decouple-logic-with-app-events/archive/master.zip">Download</a>
+            <a href="https://github.com/cuba-guides/cuba-petclinic-decouple-logic-with-app-events">Github Repository</a>
+        </div>
+
+        <div class="panel">
+            <h3>Table of contents</h3>
+            <ul class="sectlevel1">
+<li><a href="#what_will_be_build">What will be build</a></li>
+<li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
+<li><a href="#sync_vs_async_communication_in_software">Sync vs. Async. Communication in software</a></li>
+<li><a href="#available_types_of_events_in_a_cuba_application">Available types of Events in a CUBA application</a></li>
+<li><a href="#constrains_of_events_in_a_cuba_application">Constrains of Events in a CUBA application</a></li>
+<li><a href="#summary">Summary</a></li>
+</ul>
+        </div>
+
+    </aside>
+
+    <!-- End Sidebar -->
+</div>
+
+<!-- End Main Content and Sidebar -->
+
+
+<!-- Footer -->
+
+<footer class="row">
+    <div class="large-12 columns">
+        <hr>
+        <div class="row">
+            <div class="large-12 columns">
+                <p>Copyright &#169; 2008-2018 Haulmont</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="/js/vendor/jquery.js"></script>
+<script src="/js/foundation.min.js"></script>
+<script src="https://unpkg.com/isotope-layout@3.0/dist/isotope.pkgd.js"></script>
+<script>
+$(document).foundation();
+var doc = document.documentElement;
+doc.setAttribute('data-useragent', navigator.userAgent);
+</script>
+</body>
+</html>
