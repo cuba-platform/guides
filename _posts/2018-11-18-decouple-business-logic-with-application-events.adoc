@@ -1,6 +1,6 @@
 ---
 compatible_cuba_versions: 7.0
-project_id: cuba-petclinic-decouple-logic-with-app-events
+project_id: cuba-petclinic-intro-to-application-events
 permalink: decouple-business-logic-with-app-events
 ---
 = Decouple business logic with application events
@@ -8,7 +8,7 @@ permalink: decouple-business-logic-with-app-events
 :page-navtitle: Decouple business logic with application events
 :page-excerpt: Overview on how application events can be used in a CUBA application to decouple business logic
 :page-root: ../../../
-:project_id: cuba-petclinic-decouple-logic-with-app-events
+:project_id: cuba-petclinic-intro-to-application-events
 :java_version: 1.8
 :cuba_version: 7.0
 
@@ -17,10 +17,11 @@ This guide walks you through the CUBA mechanism to use events in your applicatio
 
 == What will be build
 
-This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show different use cases regarding programmatic data access with the DataManager API. In particular, the following use cases will be covered:
+This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show different use cases of application events. In particular, the following use cases will be covered:
 
-* automatic creation of a Visit for a given Pet Identification Number
-* automatic sending out of "Disease Warning Mailing" for endangered pets
+* sending out of "Welcome mailing" for newly registered pets
+* notifying user after login about latest visits
+* kicking off payment process once Pet Visit is marked as completed
 
 === Final Application
 
@@ -33,17 +34,76 @@ include::includes/guide_requirements.adoc[]
 
 include::includes/petclinic_introduction.adoc[]
 
+== Benefits of a event based business logic
 
-== Sync vs. Async. Communication in software
 
-== Available types of Events in a CUBA application
 
-* Entity Lifecycle Events (`EntityChangedEvent`)
-* Application Lifecycle Events (`AppStartedEvent`)
-* Custom Application Logic Events (`MyEvent extends ApplicationEvent`)
+== Available types of events in a CUBA application
 
-=== EntityChangedEvent for executing decoupled business logic on entities
+There are different kinds of application events within a CUBA application. The main categories are:
 
+* Entity Lifecycle Events
+* Application Lifecycle Events
+* Custom Application Events
+
+The guide goes through all of the categories and lays out an example on how to use them.
+
+=== Entity Lifecycle events: EntityChangedEvent
+
+The first example is in the category of _Entity lifecycle events_. The `EntityChangedEvent` is send out by the CUBA storage mechanism, once an Entity has been changed in the database.
+
+CUBA fires such an Event for entities, that have an annotation `@PublishEntityChangedEvents` on the Entity definition. A `EntityChangedEvent` contains information about the type of change (create, update or delete) as well as the attributes which have been changed.
+
+Using the petclinic as an example the following logic will be implemented: Once a new Pet is created in the database, a "welcome mailing" should be send out to the pet owner as an email, which welcomes the pet as a new customer of the pet clinic.
+
+To register a Event listener for this event, a new Spring bean in the core module of the application has to be defined. In order to register to a specific kind of event, the method that should be called once an `EntityChangedEvent` has been send has to be annotated with `@TransactionalEventListener`.
+
+
+.WelcomeMailSender.java
+[source,java]
+----
+
+@Component("petclinic_welcomeMailSender")
+public class WelcomeMailSender {
+
+    @TransactionalEventListener // <1>
+    public void sendWelcomeMail(EntityChangedEvent<Pet, UUID> event) { // <2>
+
+        if (event.getType().equals(EntityChangedEvent.Type.CREATED)) {
+
+            Pet pet = loadPet(event.getEntityId()); // <3>
+
+            tryToSendEmailToPetsOwner(pet);
+
+        }
+    }
+
+
+    // ...
+
+}
+----
+
+<1> registration of `showWelcomeMail` as an event listener
+<2> scoping `EntityChangedEvent` only to Events which changed `Pet` entities
+<3> access to `Pet` identifier of the created instance
+
+
+With this definition of the Event listener the application will send out welcome emails to the owners of pets that have just registered in the petclinic.
+
+==== Conventions of event based programming
+
+Events are normally named in simple past: "Entity *Changed* Event". This is a common pattern, because it stresses that an event is a immutable fact that happened in the past and is not changeable anymore.
+
+Event listeners instead should be named in present tense.
+
+Furthermore Event listeners are normally named regarding the one specific action that they should fulfil. Instead of create a general `PetCreatedListener` that deals with all things that should happen once a pet is created in the system, Event listeners should be named regarding one specific action that should be performed: `WelcomeMailSender` -> send a welcome mail.
+
+This leads to one major benefit of event based architectures: loose coupling. In case the example should be extended so that next to the welcome email a code is send to the mobile phone of the owner, which acts as the key for the petclinic room that the pet gets during its stay.
+
+In case there would be a `PetCreatedListener` class, it would be natural to just put the logic in the class before or after the welcome email sending. Due to the fact, that it is named towards a specific action: `WelcomeMailSender` it does not feel very natural to put the logic in this class. Instead it is more logical to create another entity listener, that only fulfils the next requirement: `RoomCodeDistributor`.
+
+This is an example of an application of the "open / closed principle", which normally lead to more loosely coupled application and due to that to more maintainable software.
 
 
 === Execute logic on the global application lifecycle
