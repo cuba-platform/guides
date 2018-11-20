@@ -54,15 +54,18 @@
 <h2 id="what_will_be_build">What will be build</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show different use cases regarding programmatic data access with the DataManager API. In particular, the following use cases will be covered:</p>
+<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show different use cases of application events. In particular, the following use cases will be covered:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>automatic creation of a Visit for a given Pet Identification Number</p>
+<p>sending out of "Welcome mailing" for newly registered pets</p>
 </li>
 <li>
-<p>automatic sending out of "Disease Warning Mailing" for endangered pets</p>
+<p>notifying user after login about latest visits</p>
+</li>
+<li>
+<p>kicking off payment process once Pet Visit is marked as completed</p>
 </li>
 </ul>
 </div>
@@ -92,10 +95,10 @@
 </ul>
 </div>
 <div class="paragraph">
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-decouple-logic-with-app-events/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-intro-to-application-events/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
 </div>
 <div class="paragraph">
-<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-decouple-logic-with-app-events.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-decouple-logic-with-app-events.git</a></code></p>
+<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-intro-to-application-events.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-intro-to-application-events.git</a></code></p>
 </div>
 </div>
 </div>
@@ -121,30 +124,111 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="sync_vs_async_communication_in_software">Sync vs. Async. Communication in software</h2>
+<h2 id="benefits_of_a_event_based_business_logic">Benefits of a event based business logic</h2>
 <div class="sectionbody">
 
 </div>
 </div>
 <div class="sect1">
-<h2 id="available_types_of_events_in_a_cuba_application">Available types of Events in a CUBA application</h2>
+<h2 id="available_types_of_events_in_a_cuba_application">Available types of events in a CUBA application</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>There are different kinds of application events within a CUBA application. The main categories are:</p>
+</div>
 <div class="ulist">
 <ul>
 <li>
-<p>Entity Lifecycle Events (<code>EntityChangedEvent</code>)</p>
+<p>Entity Lifecycle Events</p>
 </li>
 <li>
-<p>Application Lifecycle Events (<code>AppStartedEvent</code>)</p>
+<p>Application Lifecycle Events</p>
 </li>
 <li>
-<p>Custom Application Logic Events (<code>MyEvent extends ApplicationEvent</code>)</p>
+<p>Custom Application Events</p>
 </li>
 </ul>
 </div>
+<div class="paragraph">
+<p>The guide goes through all of the categories and lays out an example on how to use them.</p>
+</div>
 <div class="sect2">
-<h3 id="entitychangedevent_for_executing_decoupled_business_logic_on_entities">EntityChangedEvent for executing decoupled business logic on entities</h3>
+<h3 id="entity_lifecycle_events_entitychangedevent">Entity Lifecycle events: EntityChangedEvent</h3>
+<div class="paragraph">
+<p>The first example is in the category of <em>Entity lifecycle events</em>. The <code>EntityChangedEvent</code> is send out by the CUBA storage mechanism, once an Entity has been changed in the database.</p>
+</div>
+<div class="paragraph">
+<p>CUBA fires such an Event for entities, that have an annotation <code>@PublishEntityChangedEvents</code> on the Entity definition. A <code>EntityChangedEvent</code> contains information about the type of change (create, update or delete) as well as the attributes which have been changed.</p>
+</div>
+<div class="paragraph">
+<p>Using the petclinic as an example the following logic will be implemented: Once a new Pet is created in the database, a "welcome mailing" should be send out to the pet owner as an email, which welcomes the pet as a new customer of the pet clinic.</p>
+</div>
+<div class="paragraph">
+<p>To register a Event listener for this event, a new Spring bean in the core module of the application has to be defined. In order to register to a specific kind of event, the method that should be called once an <code>EntityChangedEvent</code> has been send has to be annotated with <code>@TransactionalEventListener</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">WelcomeMailSender.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Component</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_welcomeMailSender</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">WelcomeMailSender</span> {
 
+    <span class="annotation">@TransactionalEventListener</span> <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="directive">public</span> <span class="type">void</span> sendWelcomeMail(EntityChangedEvent&lt;Pet, <span class="predefined-type">UUID</span>&gt; event) { <i class="conum" data-value="2"></i><b>(2)</b>
+
+        <span class="keyword">if</span> (event.getType().equals(EntityChangedEvent.Type.CREATED)) {
+
+            Pet pet = loadPet(event.getEntityId()); <i class="conum" data-value="3"></i><b>(3)</b>
+
+            tryToSendEmailToPetsOwner(pet);
+
+        }
+    }
+
+
+    <span class="comment">// ...</span>
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>registration of <code>showWelcomeMail</code> as an event listener</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>scoping <code>EntityChangedEvent</code> only to Events which changed <code>Pet</code> entities</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>access to <code>Pet</code> identifier of the created instance</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>With this definition of the Event listener the application will send out welcome emails to the owners of pets that have just registered in the petclinic.</p>
+</div>
+<div class="sect3">
+<h4 id="conventions_of_event_based_programming">Conventions of event based programming</h4>
+<div class="paragraph">
+<p>Events are normally named in simple past: "Entity <strong>Changed</strong> Event". This is a common pattern, because it stresses that an event is a immutable fact that happened in the past and is not changeable anymore.</p>
+</div>
+<div class="paragraph">
+<p>Event listeners instead should be named in present tense.</p>
+</div>
+<div class="paragraph">
+<p>Furthermore Event listeners are normally named regarding the one specific action that they should fulfil. Instead of create a general <code>PetCreatedListener</code> that deals with all things that should happen once a pet is created in the system, Event listeners should be named regarding one specific action that should be performed: <code>WelcomeMailSender</code> &#8594; send a welcome mail.</p>
+</div>
+<div class="paragraph">
+<p>This leads to one major benefit of event based architectures: loose coupling. In case the example should be extended so that next to the welcome email a code is send to the mobile phone of the owner, which acts as the key for the petclinic room that the pet gets during its stay.</p>
+</div>
+<div class="paragraph">
+<p>In case there would be a <code>PetCreatedListener</code> class, it would be natural to just put the logic in the class before or after the welcome email sending. Due to the fact, that it is named towards a specific action: <code>WelcomeMailSender</code> it does not feel very natural to put the logic in this class. Instead it is more logical to create another entity listener, that only fulfils the next requirement: <code>RoomCodeDistributor</code>.</p>
+</div>
+<div class="paragraph">
+<p>This is an example of an application of the "open / closed principle", which normally lead to more loosely coupled application and due to that to more maintainable software.</p>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="execute_logic_on_the_global_application_lifecycle">Execute logic on the global application lifecycle</h3>
@@ -206,8 +290,8 @@
         <div class="panel">
             <h4>Get the code</h4>
 
-            <a class="button expanded"  href="https://github.com/cuba-guides/cuba-petclinic-decouple-logic-with-app-events/archive/master.zip">Download</a>
-            <a href="https://github.com/cuba-guides/cuba-petclinic-decouple-logic-with-app-events">Github Repository</a>
+            <a class="button expanded"  href="https://github.com/cuba-guides/cuba-petclinic-intro-to-application-events/archive/master.zip">Download</a>
+            <a href="https://github.com/cuba-guides/cuba-petclinic-intro-to-application-events">Github Repository</a>
         </div>
 
         <div class="panel">
@@ -215,8 +299,8 @@
             <ul class="sectlevel1">
 <li><a href="#what_will_be_build">What will be build</a></li>
 <li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
-<li><a href="#sync_vs_async_communication_in_software">Sync vs. Async. Communication in software</a></li>
-<li><a href="#available_types_of_events_in_a_cuba_application">Available types of Events in a CUBA application</a></li>
+<li><a href="#benefits_of_a_event_based_business_logic">Benefits of a event based business logic</a></li>
+<li><a href="#available_types_of_events_in_a_cuba_application">Available types of events in a CUBA application</a></li>
 <li><a href="#constrains_of_events_in_a_cuba_application">Constrains of Events in a CUBA application</a></li>
 <li><a href="#summary">Summary</a></li>
 </ul>
