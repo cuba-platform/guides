@@ -12,14 +12,14 @@ permalink: decouple-business-logic-with-app-events
 :java_version: 1.8
 :cuba_version: 7.0
 
-This guide walks you through the CUBA mechanism to use events in your application. Events are a common pattern within an application to decouple one part of the business logic from another.
+This guide walks you through the CUBA mechanism to use events in your application. In CUBA 7 events are the predominant mechanism to react to different kinds of changes of the application. Furthermore events are a common pattern within an application to decouple one part of the business logic from another.
 
 
 == What will be build
 
 This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show different use cases of application events. In particular, the following use cases will be covered:
 
-* sending out of "Welcome mailing" for newly registered pets
+* sending out of Room Keycode for booked visits
 * notifying user after login about latest visits
 * kicking off payment process once Pet Visit is marked as completed
 
@@ -46,36 +46,56 @@ There are different kinds of application events within a CUBA application. The m
 * Application Lifecycle Events
 * Custom Application Events
 
-The guide goes through all of the categories and lays out an example on how to use them.
+This guide goes through the three categories one by one and lays out an example on how to use them.
 
 === Entity Lifecycle events: EntityChangedEvent
 
-The first example is in the category of _Entity lifecycle events_. The `EntityChangedEvent` is send out by the CUBA storage mechanism, once an Entity has been changed in the database.
+
+In the petclinic following logic will be implemented: The petclinic has rooms for the stay of the pets during their time in the clinic. The rooms have no traditional keys or keycards, but instead have a 6 digit keycode to enter at the entrace door. This keycode has to be given to the pets owner once a new visit is booked. The transportation of the keycode should happen via SMS notification from the application.
+
+This example is in the category of _Entity lifecycle events_. The `EntityChangedEvent` is send out by the CUBA storage mechanism, once an Entity has been changed in the database: because we want to execute logic, once a visit is booked (created).
 
 CUBA fires such an Event for entities, that have an annotation `@PublishEntityChangedEvents` on the Entity definition. A `EntityChangedEvent` contains information about the type of change (create, update or delete) as well as the attributes which have been changed.
-
-Using the petclinic as an example the following logic will be implemented: Once a new Pet is created in the database, a "welcome mailing" should be send out to the pet owner as an email, which welcomes the pet as a new customer of the pet clinic.
 
 To register a Event listener for this event, a new Spring bean in the core module of the application has to be defined. In order to register to a specific kind of event, the method that should be called once an `EntityChangedEvent` has been send has to be annotated with `@TransactionalEventListener`.
 
 
-.WelcomeMailSender.java
+.RoomKeycodeToOwnerSender.java
 [source,java]
 ----
 
-@Component("petclinic_welcomeMailSender")
-public class WelcomeMailSender {
+@Component("petclinic_roomKeycodeToOwnerSender")
+public class RoomKeycodeToOwnerSender {
+
+    @Inject
+    private DataManager dataManager;
+
+    @Inject
+    private MobilePhoneNotificationGateway mobilePhoneNotificationGateway;
 
     @TransactionalEventListener // <1>
-    public void sendWelcomeMail(EntityChangedEvent<Pet, UUID> event) { // <2>
+    public void sendRoomKeycode(EntityChangedEvent<Visit, UUID> event) { // <2>
 
         if (event.getType().equals(EntityChangedEvent.Type.CREATED)) {
-
-            Pet pet = loadPet(event.getEntityId()); // <3>
-
-            tryToSendEmailToPetsOwner(pet);
-
+            Visit visit = loadVisit(event.getEntityId()); // <3>
+            tryToSendRoomKeycodeToPetsOwner(visit);
         }
+    }
+
+    private void tryToSendRoomKeycodeToPetsOwner(Visit visit) {
+
+
+        if (visit.getPet().getOwner() != null) {
+
+            String phoneNumber = visit.getPet().getOwner().getTelephone();
+
+            if (phoneNumber != null) {
+                String notificationText = createNotificationText(visit);
+
+                mobilePhoneNotificationGateway.sendNotification(phoneNumber, notificationText);
+            }
+        }
+
     }
 
 
@@ -84,26 +104,56 @@ public class WelcomeMailSender {
 }
 ----
 
-<1> registration of `showWelcomeMail` as an event listener
-<2> scoping `EntityChangedEvent` only to Events which changed `Pet` entities
-<3> access to `Pet` identifier of the created instance
+<1> registration of `sendRoomKeycode` as an event listener
+<2> scoping `EntityChangedEvent` only to Events which changed `Visit` entities
+<3> access to `Visit` identifier of the created instance
 
 
-With this definition of the Event listener the application will send out welcome emails to the owners of pets that have just registered in the petclinic.
+With this definition of the Event listener the application will send out room keycodes to the owners of pets that have just registered in the petclinic.
 
-==== Conventions of event based programming
+There can be multiple event listeners defined for a given event. In this example it is also required to not only notify the Owner of the pet about the keycode, but also the system that is responsible for controlling the door hardware. It also needs additional information about the visit with the associated pet, to automatically adjust the height of the bed, display a welcome message on the rooms TV etc.
 
-Events are normally named in simple past: "Entity *Changed* Event". This is a common pattern, because it stresses that an event is a immutable fact that happened in the past and is not changeable anymore.
+The following event listener will take over the responsibility to notify the room system.
 
-Event listeners instead should be named in present tense.
 
-Furthermore Event listeners are normally named regarding the one specific action that they should fulfil. Instead of create a general `PetCreatedListener` that deals with all things that should happen once a pet is created in the system, Event listeners should be named regarding one specific action that should be performed: `WelcomeMailSender` -> send a welcome mail.
+.RoomSystemNotifier.java
+[source,java]
+----
 
-This leads to one major benefit of event based architectures: loose coupling. In case the example should be extended so that next to the welcome email a code is send to the mobile phone of the owner, which acts as the key for the petclinic room that the pet gets during its stay.
+@Component("petclinic_roomSystemNotifier")
+public class RoomSystemNotifier {
 
-In case there would be a `PetCreatedListener` class, it would be natural to just put the logic in the class before or after the welcome email sending. Due to the fact, that it is named towards a specific action: `WelcomeMailSender` it does not feel very natural to put the logic in this class. Instead it is more logical to create another entity listener, that only fulfils the next requirement: `RoomCodeDistributor`.
+    @Inject
+    private DataManager dataManager;
 
-This is an example of an application of the "open / closed principle", which normally lead to more loosely coupled application and due to that to more maintainable software.
+    @Inject
+    RoomSystemGateway roomSystemGateway;
+
+    @TransactionalEventListener
+    public void notifyRoomSystem(EntityChangedEvent<Visit, UUID> event) {
+
+        if (event.getType().equals(EntityChangedEvent.Type.CREATED)) {
+            Visit visit = loadVisit(event.getEntityId());
+            tryToNotifyRoomSystemAboutVisit(visit);
+        }
+    }
+
+    private void tryToNotifyRoomSystemAboutVisit(Visit visit) {
+        roomSystemGateway.informAboutVisit(visit);
+    }
+
+    // ...
+}
+----
+
+
+==== Naming Conventions of events
+
+Events are normally named in simple past: "Entity *Changed* Event". This is a common pattern, because it stresses that an event is a immutable fact that happened in the past and is not changeable anymore. Event listeners on the other hand should be named in present tense.
+
+Furthermore Event listeners are normally named regarding the one specific action that they should fulfill. Instead of create a general `PetCreatedListener` that deals with all things that should happen once a pet is created in the system, Event listeners should be named regarding one specific action that should be performed: `RoomKeycodeToOwnerSender` -> sends a room keycode to the pets owner.
+
+This is an example of an application of the https://en.wikipedia.org/wiki/Open%E2%80%93closed_principle[open-closed principle], which normally lead to more loosely coupled application and due to that to more maintainable software.
 
 
 === Execute logic on the global application lifecycle
@@ -122,5 +172,3 @@ The application events from CUBA allow to define loosely coupled business logic 
 
 === Further information
 
-* https://doc.cuba-platform.com/manual-{cuba_version}/dataManager.html[DataManager reference documentation]
-* https://www.cuba-platform.com/webinars/working-data[Working with Data (Webinar)]
