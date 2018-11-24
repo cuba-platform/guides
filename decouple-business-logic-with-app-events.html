@@ -281,7 +281,158 @@
 </div>
 <div class="sect2">
 <h3 id="custom_application_logic_events">Custom Application Logic events</h3>
+<div class="paragraph">
+<p>The last example is using custom application events to send message between different parts of the application in a loosely coupled manner. When the pet is recovered and checks out the visit is marked as complete. When this event happens, certain downstream process can be kicked of as well. One of them, which this example deals with is that the invoicing process kicks in.</p>
+</div>
+<div class="paragraph">
+<p>The first step towards custom application event is to define a event as a class <code>VisitCompletedEvent</code> in the <code>core</code> module:</p>
+</div>
+<div class="listingblock">
+<div class="title">VisitCompletedEvent.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.haulmont.sample.petclinic.core.visit</span>;
 
+<span class="directive">public</span> <span class="type">class</span> <span class="class">VisitCompletedEvent</span> <span class="directive">extends</span> ApplicationEvent { <i class="conum" data-value="1"></i><b>(1)</b>
+
+    <span class="directive">public</span> VisitCompletedEvent(Visit source) { <i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="local-variable">super</span>(source);
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> Visit getSource() {
+        <span class="keyword">return</span> (Visit) <span class="local-variable">super</span>.getSource();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Custom events have to extend <code>ApplicationEvent</code> in order to being passed through the event system of Spring</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The source of the event is set to an <code>Visit</code> instance</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The next part is to send the event using the <code>Events</code> infrastructure of CUBA.</p>
+</div>
+<div class="listingblock">
+<div class="title">VisitStatusServiceBean.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.haulmont.sample.petclinic.service</span>;
+
+<span class="keyword">import</span> <span class="include">com.haulmont.cuba.core.global.Events</span>;
+
+<span class="comment">// ...</span>
+
+<span class="annotation">@Service</span>(VisitStatusService.NAME)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">VisitStatusServiceBean</span> <span class="directive">implements</span> VisitStatusService {
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">private</span> Events events; <i class="conum" data-value="1"></i><b>(1)</b>
+
+    <span class="comment">// ...</span>
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">boolean</span> completeVisit(Visit visit) {
+
+        <span class="keyword">if</span> (visit.getStatus().equals(VisitStatus.ACTIVE)) {
+            markVisitAsComplete(visit);
+
+            notifyAboutVisitCompletion(visit);
+
+            <span class="keyword">return</span> <span class="predefined-constant">true</span>;
+        }
+
+        <span class="comment">// ...</span>
+    }
+
+    <span class="directive">private</span> <span class="type">void</span> notifyAboutVisitCompletion(Visit visit) {
+        events.publish(<span class="keyword">new</span> VisitCompletedEvent(visit)); <i class="conum" data-value="2"></i><b>(2)</b>
+    }
+
+    <span class="directive">private</span> <span class="type">void</span> markVisitAsComplete(Visit visit) {
+        visit.setStatus(VisitStatus.COMPLETED);
+        dataManager.commit(visit);
+        log.info(<span class="string"><span class="delimiter">&quot;</span><span class="content">Visit {} marked as complete</span><span class="delimiter">&quot;</span></span>, visit);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Injecting CUBAs <code>Events</code> Spring bean</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>publishing a new <code>VisitCompletedEvent</code> once the visit&#8217;s status is updated</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The last remaining part looks exactly the same as for other events that are published by CUBA itself - since the technical mechanisms are exactly the same.</p>
+</div>
+<div class="paragraph">
+<p>The Event listener <code>InvoicingProcessInitializer</code> receives events of type <code>VisitCompletedEvent</code> and create an invoice for the received visit.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+there are two ways to listen to events. Above <code>@TransactionalEventListener</code> annotation is used. There is also the possibility to implement the Interface <code>ApplicationListener&lt;T&gt;</code> which is used for the Event listener <code>InvoicingProcessInitializer</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">InvoicingProcessInitializer.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.haulmont.sample.petclinic.core.payment</span>;
+
+<span class="annotation">@Component</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_invoicingProcessInitializer</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">InvoicingProcessInitializer</span> <span class="directive">implements</span> ApplicationListener&lt;VisitCompletedEvent&gt; {
+
+    <span class="comment">// ...</span>
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> onApplicationEvent(VisitCompletedEvent event) {
+        log.info(<span class="string"><span class="delimiter">&quot;</span><span class="content">Payment process initialized: {}</span><span class="delimiter">&quot;</span></span>, event.getSource());
+
+        CommitContext commitContext = <span class="keyword">new</span> CommitContext();
+        createInvoiceFor(event.getSource(), commitContext);
+
+        dataManager.commit(commitContext);
+    }
+
+    <span class="directive">private</span> <span class="type">void</span> createInvoiceFor(Visit visit, CommitContext commitContext) {
+        Invoice invoice = dataManager.create(Invoice.class);
+
+        invoice.setVisit(visit);
+        invoice.setInvoiceDate(visit.getVisitDate());
+        invoice.setInvoiceNumber(createInvoiceNumber());
+
+        <span class="predefined-type">List</span>&lt;InvoiceItem&gt; invoiceItems = createInvoiceItemsFor(invoice);
+        invoice.setItems(invoiceItems);
+
+        invoiceItems.forEach(commitContext::addInstanceToCommit);
+        commitContext.addInstanceToCommit(invoice);
+
+    }
+
+    <span class="comment">//...</span>
+
+}</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
