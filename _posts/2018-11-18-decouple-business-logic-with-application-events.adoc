@@ -160,6 +160,131 @@ This is an example of an application of the https://en.wikipedia.org/wiki/Open%E
 
 === Custom Application Logic events
 
+The last example is using custom application events to send message between different parts of the application in a loosely coupled manner. When the pet is recovered and checks out the visit is marked as complete. When this event happens, certain downstream process can be kicked of as well. One of them, which this example deals with is that the invoicing process kicks in.
+
+The first step towards custom application event is to define a event as a class `VisitCompletedEvent` in the `core` module:
+
+.VisitCompletedEvent.java
+[source,java]
+----
+package com.haulmont.sample.petclinic.core.visit;
+
+public class VisitCompletedEvent extends ApplicationEvent { // <1>
+
+    public VisitCompletedEvent(Visit source) { // <2>
+        super(source);
+    }
+
+    @Override
+    public Visit getSource() {
+        return (Visit) super.getSource();
+    }
+}
+----
+
+<1> Custom events have to extend `ApplicationEvent` in order to being passed through the event system of Spring
+<2> The source of the event is set to an `Visit` instance
+
+The next part is to send the event using the `Events` infrastructure of CUBA.
+
+
+.VisitStatusServiceBean.java
+[source,java]
+----
+package com.haulmont.sample.petclinic.service;
+
+import com.haulmont.cuba.core.global.Events;
+
+// ...
+
+@Service(VisitStatusService.NAME)
+public class VisitStatusServiceBean implements VisitStatusService {
+
+    @Inject
+    private Events events; // <1>
+
+    // ...
+
+    @Override
+    public boolean completeVisit(Visit visit) {
+
+        if (visit.getStatus().equals(VisitStatus.ACTIVE)) {
+            markVisitAsComplete(visit);
+
+            notifyAboutVisitCompletion(visit);
+
+            return true;
+        }
+
+        // ...
+    }
+
+    private void notifyAboutVisitCompletion(Visit visit) {
+        events.publish(new VisitCompletedEvent(visit)); // <2>
+    }
+
+    private void markVisitAsComplete(Visit visit) {
+        visit.setStatus(VisitStatus.COMPLETED);
+        dataManager.commit(visit);
+        log.info("Visit {} marked as complete", visit);
+    }
+}
+----
+
+<1> Injecting CUBAs `Events` Spring bean
+<2> publishing a new `VisitCompletedEvent` once the visit's status is updated
+
+The last remaining part looks exactly the same as for other events that are published by CUBA itself - since the technical mechanisms are exactly the same.
+
+The Event listener `InvoicingProcessInitializer` receives events of type `VisitCompletedEvent` and create an invoice for the received visit.
+
+TIP: there are two ways to listen to events. Above `@TransactionalEventListener` annotation is used. There is also the possibility to implement the Interface `ApplicationListener<T>` which is used for the Event listener `InvoicingProcessInitializer`.
+
+
+.InvoicingProcessInitializer.java
+[source,java]
+----
+package com.haulmont.sample.petclinic.core.payment;
+
+@Component("petclinic_invoicingProcessInitializer")
+public class InvoicingProcessInitializer implements ApplicationListener<VisitCompletedEvent> {
+
+    // ...
+
+    @Override
+    public void onApplicationEvent(VisitCompletedEvent event) {
+        log.info("Payment process initialized: {}", event.getSource());
+
+        CommitContext commitContext = new CommitContext();
+        createInvoiceFor(event.getSource(), commitContext);
+
+        dataManager.commit(commitContext);
+    }
+
+    private void createInvoiceFor(Visit visit, CommitContext commitContext) {
+        Invoice invoice = dataManager.create(Invoice.class);
+
+        invoice.setVisit(visit);
+        invoice.setInvoiceDate(visit.getVisitDate());
+        invoice.setInvoiceNumber(createInvoiceNumber());
+
+        List<InvoiceItem> invoiceItems = createInvoiceItemsFor(invoice);
+        invoice.setItems(invoiceItems);
+
+        invoiceItems.forEach(commitContext::addInstanceToCommit);
+        commitContext.addInstanceToCommit(invoice);
+
+    }
+
+    //...
+
+}
+----
+
+
+
+
+
 == Constrains of Events in a CUBA application
 
 === Sending global events within an CUBA application
