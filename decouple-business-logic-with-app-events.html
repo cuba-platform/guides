@@ -59,10 +59,7 @@
 <div class="ulist">
 <ul>
 <li>
-<p>sending out of Room Keycode for booked visits</p>
-</li>
-<li>
-<p>notifying user after login about latest visits</p>
+<p>sending out of Room keycode for booked visits</p>
 </li>
 <li>
 <p>kicking off payment process once Pet Visit is marked as completed</p>
@@ -126,7 +123,44 @@
 <div class="sect1">
 <h2 id="benefits_of_a_event_based_business_logic">Benefits of a event based business logic</h2>
 <div class="sectionbody">
-
+<div class="paragraph">
+<p>The most common approach of communicating between application logic is to do method invocation. In CUBA and Spring this is done via Java objects interacting with each other, Spring components &amp; CUBA services. There are good reasons to use this functionality, but it is not the only one. Furthermore this pattern of method invocation is oftentimes overused which can lead to bad maintainability of the overall system due to highly coupled application parts.</p>
+</div>
+<div class="paragraph">
+<p>Event based business logic is an alternative communication pattern for application logic, that has particular strengths in its low coupling of the parts. It is not suitable for all kinds of communication patterns, but for a big number of cases it is a viable alternative. Generally event based communication can be used in the following scenarios:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>notification style communication</p>
+</li>
+<li>
+<p>communication that not necessary needs a back-channel</p>
+</li>
+<li>
+<p>triggering between technical independent parts of application logic</p>
+</li>
+<li>
+<p>situations where the user doesn&#8217;t need an immediate response</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>As a result of using event based communication the parts of the application that are leveraging it will gain the following properties:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>low coupling from the event sender to the receiver</p>
+</li>
+<li>
+<p>easy isolated testability of the sender and receiver</p>
+</li>
+<li>
+<p>increased resiliency of the sender</p>
+</li>
+</ul>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -138,23 +172,26 @@
 <div class="ulist">
 <ul>
 <li>
-<p>Entity Lifecycle Events</p>
+<p>CUBA entity lifecycle events</p>
 </li>
 <li>
-<p>Application Lifecycle Events</p>
+<p>CUBA application lifecycle events</p>
 </li>
 <li>
-<p>Custom Application Events</p>
+<p>CUBA application events</p>
+</li>
+<li>
+<p>custom application events</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>This guide goes through the three categories one by one and lays out an example on how to use them.</p>
+<p>In this guide there are examples for using an entity lifecycle event as well as creating a custom application event.</p>
 </div>
 <div class="sect2">
 <h3 id="entity_lifecycle_events_entitychangedevent">Entity Lifecycle events: EntityChangedEvent</h3>
 <div class="paragraph">
-<p>In the petclinic following logic will be implemented: The petclinic has rooms for the stay of the pets during their time in the clinic. The rooms have no traditional keys or keycards, but instead have a 6 digit keycode to enter at the entrace door. This keycode has to be given to the pets owner once a new visit is booked. The transportation of the keycode should happen via SMS notification from the application.</p>
+<p>In the petclinic example following logic will be implemented: The petclinic has rooms for the stay of the pets during their time in the clinic. The rooms have no traditional keys or keycards, but instead have a 6 digit keycode to enter at the entrace door. This keycode has to be given to the pets owner once a new visit is booked. The transportation of the keycode should happen via SMS notification from the application.</p>
 </div>
 <div class="paragraph">
 <p>This example is in the category of <em>Entity lifecycle events</em>. The <code>EntityChangedEvent</code> is send out by the CUBA storage mechanism, once an Entity has been changed in the database: because we want to execute logic, once a visit is booked (created).</p>
@@ -274,10 +311,6 @@
 <p>This is an example of an application of the <a href="https://en.wikipedia.org/wiki/Open%E2%80%93closed_principle">open-closed principle</a>, which normally lead to more loosely coupled application and due to that to more maintainable software.</p>
 </div>
 </div>
-</div>
-<div class="sect2">
-<h3 id="execute_logic_on_the_global_application_lifecycle">Execute logic on the global application lifecycle</h3>
-
 </div>
 <div class="sect2">
 <h3 id="custom_application_logic_events">Custom Application Logic events</h3>
@@ -434,14 +467,20 @@ there are two ways to listen to events. Above <code>@TransactionalEventListener<
 </div>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="constrains_of_events_in_a_cuba_application">Constrains of Events in a CUBA application</h2>
-<div class="sectionbody">
 <div class="sect2">
-<h3 id="sending_global_events_within_an_cuba_application">Sending global events within an CUBA application</h3>
-
+<h3 id="sending_events_between_layers_within_an_cuba_application">Sending events between layers within an CUBA application</h3>
+<div class="paragraph">
+<p>Technically there is one main constraints to think about when interacting with events in a CUBA application. This is that as CUBA is a multi module application that can be deployed as two main parts: frontend (web module) and middleware (core module) sending events between the two layers is not directly possible.</p>
+</div>
+<div class="paragraph">
+<p>The underlying framework for the events mechanism is Spring, which has the facility to send application events within one application, especially within one JVM process. Since frontend and middleware can be two different JVM processes on different servers, Spring by default has no capabilities to interact between JVM processes.</p>
+</div>
+<div class="paragraph">
+<p>There are two ways to solve this problem. The first one is to leverage an external message broker like RabbitMQ to interact between applications (or layers of applications in this case). An internal application event can be send internally. An event listener (e.g. <code>RabbitMqForwarder</code>) then takes this message and forwards it to the external message broker. On the receiver side another Event listener for external RabbitMQ messages converts the messages to internal CUBA / Spring messages. With that the application can transparently communicate between JVM boundaries.</p>
+</div>
+<div class="paragraph">
+<p>The other way is to use an existing application component called <code>global-events</code>. Global events is an application component from Haulmont that especially addresses the problem of communicating between CUBA middleware and frontend parts.</p>
+</div>
 </div>
 </div>
 </div>
@@ -449,7 +488,16 @@ there are two ways to listen to events. Above <code>@TransactionalEventListener<
 <h2 id="summary">Summary</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The application events from CUBA allow to define loosely coupled business logic within the application. Independent parts from a business functionality point of view can also be reflected as independent components within the application. This low coupling</p>
+<p>Communicating via events can sometimes be a challenge to gets ones developers head around. Method calls allow to have a back-channel as a response. This is normally not the case for events. Also identifiying that certain parts can be executed independent of each other is not obvious at first sight.</p>
+</div>
+<div class="paragraph">
+<p>One could argue that in the example from above the room keycode to the pets owner should only be send if the room system also knows about it and has configured everything properly. This natural wish for consistency is oftentimes very hard to achieve in a distributed system (as the petclinic management and room system are). Messaging in this regard increases the resiliency of the overall system and its parts on the costs of some potential consistency.</p>
+</div>
+<div class="paragraph">
+<p>Application events in CUBA allow to define loosely coupled business logic within the application. Independent parts from a business functionality point of view can also be reflected as independent components within the application. This low coupling has certain advantages like easier testability and higher resilient of the parts of the application.</p>
+</div>
+<div class="paragraph">
+<p>Ultimately, doing it right, prevents application logic to end up in a big ball of mud where there are calls between business logic from any parts of the system to any other parts of the system. Sending messages between application parts is a more maintainable way of arranging application logic and oftentimes represents the workflows of the problem domain in a more accurate way as they exists in the real world.</p>
 </div>
 <div class="sect2">
 <h3 id="further_information">Further information</h3>
@@ -488,7 +536,6 @@ there are two ways to listen to events. Above <code>@TransactionalEventListener<
 <li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
 <li><a href="#benefits_of_a_event_based_business_logic">Benefits of a event based business logic</a></li>
 <li><a href="#available_types_of_events_in_a_cuba_application">Available types of events in a CUBA application</a></li>
-<li><a href="#constrains_of_events_in_a_cuba_application">Constrains of Events in a CUBA application</a></li>
 <li><a href="#summary">Summary</a></li>
 </ul>
         </div>
