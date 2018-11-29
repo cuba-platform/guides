@@ -19,8 +19,10 @@ This guide walks you through the CUBA mechanism to use events in your applicatio
 
 This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show different use cases of application events. In particular, the following use cases will be covered:
 
-* sending out of Room keycode for booked visits
-* kicking off payment process once Pet Visit is marked as completed
+* sending out of room keycode for booked visits
+* kicking off payment process once pet visit is marked as completed
+* generate a room keycode when a visit is going to be created
+* refresh the
 
 === Final Application
 
@@ -57,12 +59,11 @@ There are different kinds of application events within a CUBA application. The m
 
 * CUBA entity lifecycle events
 * CUBA application lifecycle events
-* CUBA application events
+* CUBA UI events
 * custom application events
 
-In this guide there are examples for using an entity lifecycle event as well as creating a custom application event.
 
-=== Entity Lifecycle events: EntityChangedEvent
+=== Entity changes through EntityChangedEvent
 
 
 In the petclinic example following logic will be implemented: The petclinic has rooms for the stay of the pets during their time in the clinic. The rooms have no traditional keys or keycards, but instead have a 6 digit keycode to enter at the entrace door. This keycode has to be given to the pets owner once a new visit is booked. The transportation of the keycode should happen via SMS notification from the application.
@@ -172,7 +173,7 @@ This is an example of an application of the https://en.wikipedia.org/wiki/Open%E
 
 === Custom Application Logic events
 
-The last example is using custom application events to send message between different parts of the application in a loosely coupled manner. When the pet is recovered and checks out the visit is marked as complete. When this event happens, certain downstream process can be kicked of as well. One of them, which this example deals with is that the invoicing process kicks in.
+The next example is using custom application events to send message between different parts of the application in a loosely coupled manner. When the pet is recovered and checks out the visit is marked as complete. When this event happens, certain downstream process can be kicked of as well. One of them, which this example deals with is that the invoicing process kicks in.
 
 The first step towards custom application event is to define a event as a class `VisitCompletedEvent` in the `core` module:
 
@@ -294,7 +295,104 @@ public class InvoicingProcessInitializer implements ApplicationListener<VisitCom
 ----
 
 
-=== Sending events between layers within an CUBA application
+=== CUBA UI events
+
+On the UI layer there are two main use cases for events. The first is that the framework itself sends events for certain interactions that happen within the user interface of the application. Additionally it is also possible, just like in the middleware layer to send custom application UI events. Both kinds of events have in common that instead of the middleware events, the UI events are always scoped to once instance of the UI. Furthermore the events are scoped towards a single browser tab.
+
+==== Framework UI events
+
+With CUBA v7 the API of the UI components changed from event listener and template method pattern towards event subscriptions. It is possible to register event listeners in the controller using the `@Subscribe` annotation. There are several Events to subscribe that deal with the lifecycle of a controller like `InitEvent`, `BeforeCloseEvent`, `PreCommitEvent` and so on. The data part of the controllers also offer a list of Events like `ItemChangeEvent`, `CollectionChangeEvent`. Futhermore the UI components itself send events for changes of their states like `EnterPressEvent`, `TextChangeEvent` and so on.
+
+For the petclinic, the VisitEdit controller leverages the `InitEntityEvent` for generating a Room keycode when a new entity is going to be created:
+
+
+.VisitEdit.java
+[source,java]
+----
+
+@UiController("petclinic_Visit.edit")
+@UiDescriptor("visit-edit.xml")
+@EditedEntityContainer("visitCt")
+public class VisitEdit extends StandardEditor<Visit> {
+
+    @Subscribe // <1>
+    protected void onInitEntity(InitEntityEvent<Visit> event) {
+        event.getEntity().setRoomKeycode(generateRoomKeycode()); // <2>
+    }
+
+    private String generateRoomKeycode() {
+        int rookKeycode = new Random().nextInt(999999);
+        return String.format("%04d", rookKeycode);
+    }
+}
+----
+
+<1> registering `onInitEntity` as a event listener for the `InitEntityEvent<Visit>`
+<2> setting the room keycode of the newly created visit entity
+
+==== Custom UI events
+
+Just like for custom application events, custom UI events allow to send notifications about business / UI related facts as objects. The same UI instance is able to register for those events and execute further decoupled logic. In the petclinic, the following use case is modeled as a custom UI event. Once the visit is marked as complete through the UI button, the table of the screen should be updated.
+
+The first step is once again to define a
+
+
+.VisitCompletedUiEvent.java
+[source,java]
+----
+public class VisitCompletedClickedEvent extends ApplicationEvent implements UiEvent { // <1>
+
+
+    public VisitCompletedClickedEvent(Object source) {
+        super(source);
+    }
+}
+----
+<1> marks the application event as a ui event by implemtenting the interface `UiEvent`
+
+
+.VisitEdit.java
+[source,java]
+----
+public class VisitBrowse extends StandardLookup<Visit> {
+
+    // ...
+
+    @Inject
+    private Events events; // <1>
+
+
+    @Subscribe("completeBtn")
+    protected void onCompleteBtnClick(Button.ClickEvent event) {
+        Visit visit = visitsTable.getSingleSelected();
+        boolean visitWasCompleted = visitStatusService.completeVisit(visit);
+
+        if (visitWasCompleted) {
+            events.publish(new VisitCompletedClickedEvent(visit)); // <2>
+        }
+        // ...
+    }
+
+    @EventListener // <3>
+    protected void updateDataOnVisitCompleted(VisitCompletedClickedEvent event) {
+        loadData(); // <4>
+
+        notifications.create()
+                .setCaption(messages.formatMessage(this.getClass(), "visitCompleteSuccessful"))
+                .setType(Notifications.NotificationType.TRAY)
+                .show();
+    }
+}
+----
+
+<1> using CUBAs `Events` mechanism
+<2> sending a `VisitCompletedUiEvent`
+<3> registering `updateDataOnVisitCompleted` as a event listener for `VisitCompletedUiEvent` events
+<4> reload the data
+
+In this example the sender and the receiver are the same. But this does not necessarily be the case. It is also possible to send a UI event in one controller and receive the event in another controller.
+
+=== Sending events between layers
 
 
 Technically there is one main constraints to think about when interacting with events in a CUBA application. This is that as CUBA is a multi module application that can be deployed as two main parts: frontend (web module) and middleware (core module) sending events between the two layers is not directly possible.
