@@ -407,7 +407,7 @@ The other way is to use an existing application component called `global-events`
 
 == Summary
 
-Communicating via events can sometimes be a challenge to gets ones developers head around. Method calls allow to have a back-channel as a response. This is normally not the case for events. Also identifiying that certain parts can be executed independent of each other is not obvious at first sight.
+Communicating via events can sometimes be a challenge to gets ones developers head around. Method calls allow to have a back-channel as a response. This is normally not the case for events. Also identifying that certain parts can be executed independent of each other is not obvious at first sight.
 
 One could argue that in the example from above the room keycode to the pets owner should only be send if the room system also knows about it and has configured everything properly. This natural wish for consistency is oftentimes very hard to achieve in a distributed system (as the petclinic management and room system are). Messaging in this regard increases the resiliency of the overall system and its parts on the costs of some potential consistency.
 
