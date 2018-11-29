@@ -59,10 +59,16 @@
 <div class="ulist">
 <ul>
 <li>
-<p>sending out of Room keycode for booked visits</p>
+<p>sending out of room keycode for booked visits</p>
 </li>
 <li>
-<p>kicking off payment process once Pet Visit is marked as completed</p>
+<p>kicking off payment process once pet visit is marked as completed</p>
+</li>
+<li>
+<p>generate a room keycode when a visit is going to be created</p>
+</li>
+<li>
+<p>refresh the</p>
 </li>
 </ul>
 </div>
@@ -178,18 +184,15 @@
 <p>CUBA application lifecycle events</p>
 </li>
 <li>
-<p>CUBA application events</p>
+<p>CUBA UI events</p>
 </li>
 <li>
 <p>custom application events</p>
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>In this guide there are examples for using an entity lifecycle event as well as creating a custom application event.</p>
-</div>
 <div class="sect2">
-<h3 id="entity_lifecycle_events_entitychangedevent">Entity Lifecycle events: EntityChangedEvent</h3>
+<h3 id="entity_changes_through_entitychangedevent">Entity changes through EntityChangedEvent</h3>
 <div class="paragraph">
 <p>In the petclinic example following logic will be implemented: The petclinic has rooms for the stay of the pets during their time in the clinic. The rooms have no traditional keys or keycards, but instead have a 6 digit keycode to enter at the entrace door. This keycode has to be given to the pets owner once a new visit is booked. The transportation of the keycode should happen via SMS notification from the application.</p>
 </div>
@@ -315,7 +318,7 @@
 <div class="sect2">
 <h3 id="custom_application_logic_events">Custom Application Logic events</h3>
 <div class="paragraph">
-<p>The last example is using custom application events to send message between different parts of the application in a loosely coupled manner. When the pet is recovered and checks out the visit is marked as complete. When this event happens, certain downstream process can be kicked of as well. One of them, which this example deals with is that the invoicing process kicks in.</p>
+<p>The next example is using custom application events to send message between different parts of the application in a loosely coupled manner. When the pet is recovered and checks out the visit is marked as complete. When this event happens, certain downstream process can be kicked of as well. One of them, which this example deals with is that the invoicing process kicks in.</p>
 </div>
 <div class="paragraph">
 <p>The first step towards custom application event is to define a event as a class <code>VisitCompletedEvent</code> in the <code>core</code> module:</p>
@@ -468,7 +471,140 @@ there are two ways to listen to events. Above <code>@TransactionalEventListener<
 </div>
 </div>
 <div class="sect2">
-<h3 id="sending_events_between_layers_within_an_cuba_application">Sending events between layers within an CUBA application</h3>
+<h3 id="cuba_ui_events">CUBA UI events</h3>
+<div class="paragraph">
+<p>On the UI layer there are two main use cases for events. The first is that the framework itself sends events for certain interactions that happen within the user interface of the application. Additionally it is also possible, just like in the middleware layer to send custom application UI events. Both kinds of events have in common that instead of the middleware events, the UI events are always scoped to once instance of the UI. Furthermore the events are scoped towards a single browser tab.</p>
+</div>
+<div class="sect3">
+<h4 id="framework_ui_events">Framework UI events</h4>
+<div class="paragraph">
+<p>With CUBA v7 the API of the UI components changed from event listener and template method pattern towards event subscriptions. It is possible to register event listeners in the controller using the <code>@Subscribe</code> annotation. There are several Events to subscribe that deal with the lifecycle of a controller like <code>InitEvent</code>, <code>BeforeCloseEvent</code>, <code>PreCommitEvent</code> and so on. The data part of the controllers also offer a list of Events like <code>ItemChangeEvent</code>, <code>CollectionChangeEvent</code>. Futhermore the UI components itself send events for changes of their states like <code>EnterPressEvent</code>, <code>TextChangeEvent</code> and so on.</p>
+</div>
+<div class="paragraph">
+<p>For the petclinic, the VisitEdit controller leverages the <code>InitEntityEvent</code> for generating a Room keycode when a new entity is going to be created:</p>
+</div>
+<div class="listingblock">
+<div class="title">VisitEdit.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@UiController</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_Visit.edit</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">visit-edit.xml</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@EditedEntityContainer</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">visitCt</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">VisitEdit</span> <span class="directive">extends</span> StandardEditor&lt;Visit&gt; {
+
+    <span class="annotation">@Subscribe</span> <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="directive">protected</span> <span class="type">void</span> onInitEntity(InitEntityEvent&lt;Visit&gt; event) {
+        event.getEntity().setRoomKeycode(generateRoomKeycode()); <i class="conum" data-value="2"></i><b>(2)</b>
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">String</span> generateRoomKeycode() {
+        <span class="type">int</span> rookKeycode = <span class="keyword">new</span> <span class="predefined-type">Random</span>().nextInt(<span class="integer">999999</span>);
+        <span class="keyword">return</span> <span class="predefined-type">String</span>.format(<span class="string"><span class="delimiter">&quot;</span><span class="content">%04d</span><span class="delimiter">&quot;</span></span>, rookKeycode);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>registering <code>onInitEntity</code> as a event listener for the <code>InitEntityEvent&lt;Visit&gt;</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>setting the room keycode of the newly created visit entity</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="custom_ui_events">Custom UI events</h4>
+<div class="paragraph">
+<p>Just like for custom application events, custom UI events allow to send notifications about business / UI related facts as objects. The same UI instance is able to register for those events and execute further decoupled logic. In the petclinic, the following use case is modeled as a custom UI event. Once the visit is marked as complete through the UI button, the table of the screen should be updated.</p>
+</div>
+<div class="paragraph">
+<p>The first step is once again to define a</p>
+</div>
+<div class="listingblock">
+<div class="title">VisitCompletedUiEvent.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VisitCompletedClickedEvent</span> <span class="directive">extends</span> ApplicationEvent <span class="directive">implements</span> UiEvent { <i class="conum" data-value="1"></i><b>(1)</b>
+
+
+    <span class="directive">public</span> VisitCompletedClickedEvent(<span class="predefined-type">Object</span> source) {
+        <span class="local-variable">super</span>(source);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>marks the application event as a ui event by implemtenting the interface <code>UiEvent</code></td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">VisitEdit.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VisitBrowse</span> <span class="directive">extends</span> StandardLookup&lt;Visit&gt; {
+
+    <span class="comment">// ...</span>
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">private</span> Events events; <i class="conum" data-value="1"></i><b>(1)</b>
+
+
+    <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">completeBtn</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">protected</span> <span class="type">void</span> onCompleteBtnClick(<span class="predefined-type">Button</span>.ClickEvent event) {
+        Visit visit = visitsTable.getSingleSelected();
+        <span class="type">boolean</span> visitWasCompleted = visitStatusService.completeVisit(visit);
+
+        <span class="keyword">if</span> (visitWasCompleted) {
+            events.publish(<span class="keyword">new</span> VisitCompletedClickedEvent(visit)); <i class="conum" data-value="2"></i><b>(2)</b>
+        }
+        <span class="comment">// ...</span>
+    }
+
+    <span class="annotation">@EventListener</span> <i class="conum" data-value="3"></i><b>(3)</b>
+    <span class="directive">protected</span> <span class="type">void</span> updateDataOnVisitCompleted(VisitCompletedClickedEvent event) {
+        loadData(); <i class="conum" data-value="4"></i><b>(4)</b>
+
+        notifications.create()
+                .setCaption(messages.formatMessage(<span class="local-variable">this</span>.getClass(), <span class="string"><span class="delimiter">&quot;</span><span class="content">visitCompleteSuccessful</span><span class="delimiter">&quot;</span></span>))
+                .setType(Notifications.NotificationType.TRAY)
+                .show();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>using CUBAs <code>Events</code> mechanism</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>sending a <code>VisitCompletedUiEvent</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>registering <code>updateDataOnVisitCompleted</code> as a event listener for <code>VisitCompletedUiEvent</code> events</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>reload the data</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In this example the sender and the receiver are the same. But this does not necessarily be the case. It is also possible to send a UI event in one controller and receive the event in another controller.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="sending_events_between_layers">Sending events between layers</h3>
 <div class="paragraph">
 <p>Technically there is one main constraints to think about when interacting with events in a CUBA application. This is that as CUBA is a multi module application that can be deployed as two main parts: frontend (web module) and middleware (core module) sending events between the two layers is not directly possible.</p>
 </div>
@@ -488,7 +624,7 @@ there are two ways to listen to events. Above <code>@TransactionalEventListener<
 <h2 id="summary">Summary</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Communicating via events can sometimes be a challenge to gets ones developers head around. Method calls allow to have a back-channel as a response. This is normally not the case for events. Also identifiying that certain parts can be executed independent of each other is not obvious at first sight.</p>
+<p>Communicating via events can sometimes be a challenge to gets ones developers head around. Method calls allow to have a back-channel as a response. This is normally not the case for events. Also identifying that certain parts can be executed independent of each other is not obvious at first sight.</p>
 </div>
 <div class="paragraph">
 <p>One could argue that in the example from above the room keycode to the pets owner should only be send if the room system also knows about it and has configured everything properly. This natural wish for consistency is oftentimes very hard to achieve in a distributed system (as the petclinic management and room system are). Messaging in this regard increases the resiliency of the overall system and its parts on the costs of some potential consistency.</p>
