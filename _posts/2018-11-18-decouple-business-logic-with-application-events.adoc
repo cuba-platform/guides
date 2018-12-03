@@ -307,7 +307,15 @@ On the UI layer there are two main use cases for events. The first is that the f
 
 ==== Framework UI events
 
-With CUBA 7 the API of the UI components changed from programmatically defined event listener and template method pattern towards declarative event subscriptions via annotations. It is possible to register event listeners in the controller using the `@Subscribe` annotation. There are several Events to subscribe that deal with the lifecycle of a controller like `InitEvent`, `BeforeCloseEvent`, `PreCommitEvent` and so on. The data part of the controllers also offer a list of Events like `ItemChangeEvent`, `CollectionChangeEvent`. Futhermore the UI components itself send events for changes of their states like `EnterPressEvent`, `TextChangeEvent` and so on.
+With CUBA 7 the API of the UI components changed from programmatically defined event listener and template method pattern towards declarative event subscriptions via annotations. It is possible to register event listeners in the controller using the `@Subscribe` annotation.
+
+There are several Events to subscribe that deal with the lifecycle of a controller like `InitEvent`, `BeforeCloseEvent`, `PreCommitEvent` and so on. The data part of the controllers also offer a list of Events like `ItemChangeEvent`, `CollectionChangeEvent`. Furthermore the UI components itself send events for changes of their states like `EnterPressEvent`, `TextChangeEvent` and so on.
+
+CUBA studio has the ability to get an overview of the available events for a controller. It looks like this:
+
+++++
+<img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-application-events/master/img/studio-subscribe-to-events.png"/>
+++++
 
 For the petclinic, the VisitEdit controller leverages the `InitEntityEvent` for generating a Room keycode when a new entity is going to be created:
 
