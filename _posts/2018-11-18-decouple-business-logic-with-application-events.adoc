@@ -431,3 +431,4 @@ Ultimately, modelling and using application events right, prevents application l
 
 === Further information
 
+* https://doc.cuba-platform.com/manual-{cuba_version}/events.html[Events reference documentation]
