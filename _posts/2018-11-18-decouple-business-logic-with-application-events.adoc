@@ -182,21 +182,24 @@ The first step towards custom application event is to define a event as a class 
 ----
 package com.haulmont.sample.petclinic.core.visit;
 
+
 public class VisitCompletedEvent extends ApplicationEvent { // <1>
 
-    public VisitCompletedEvent(Visit source) { // <2>
+    private final Visit visit;
+
+    public VisitCompletedEvent(Object source, Visit visit) {
+
         super(source);
+
+        this.visit = visit;
     }
 
-    @Override
-    public Visit getSource() {
-        return (Visit) super.getSource();
+    public Visit getVisit() {
+        return visit;
     }
 }
 ----
-
 <1> Custom events have to extend `ApplicationEvent` in order to being passed through the event system of Spring
-<2> The source of the event is set to an `Visit` instance
 
 The next part is to send the event using the `Events` infrastructure of CUBA.
 
@@ -233,7 +236,7 @@ public class VisitStatusServiceBean implements VisitStatusService {
     }
 
     private void notifyAboutVisitCompletion(Visit visit) {
-        events.publish(new VisitCompletedEvent(visit)); // <2>
+        events.publish(new VisitCompletedEvent(this, visit)); // <2>
     }
 
     private void markVisitAsComplete(Visit visit) {
@@ -266,10 +269,10 @@ public class InvoicingProcessInitializer implements ApplicationListener<VisitCom
 
     @Override
     public void onApplicationEvent(VisitCompletedEvent event) {
-        log.info("Payment process initialized: {}", event.getSource());
+        log.info("Payment process initialized: {}", event.getVisit());
 
         CommitContext commitContext = new CommitContext();
-        createInvoiceFor(event.getSource(), commitContext);
+        createInvoiceFor(event.getVisit(), commitContext);
 
         dataManager.commit(commitContext);
     }
@@ -341,7 +344,6 @@ The first step is once again to define a
 [source,java]
 ----
 public class VisitCompletedClickedEvent extends ApplicationEvent implements UiEvent { // <1>
-
 
     public VisitCompletedClickedEvent(Object source) {
         super(source);
