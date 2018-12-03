@@ -46,7 +46,7 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>This guide walks you through the CUBA mechanism to use events in your application. In CUBA 7 events are the predominant mechanism to react to different kinds of changes of the application. Furthermore events are a common pattern within an application to decouple one part of the business logic from another.</p>
+<p>In CUBA 7 events are the predominant mechanism to react to different kinds of changes of the application. Furthermore events are a common pattern within an application to decouple one part of the business logic from another. This guide gives an overview on how events can be used in a CUBA application and what the benefits are.</p>
 </div>
 </div>
 </div>
@@ -59,22 +59,22 @@
 <div class="ulist">
 <ul>
 <li>
+<p>generate a room keycode when a visit is going to be created</p>
+</li>
+<li>
 <p>sending out of room keycode for booked visits</p>
 </li>
 <li>
 <p>kicking off payment process once pet visit is marked as completed</p>
 </li>
 <li>
-<p>generate a room keycode when a visit is going to be created</p>
-</li>
-<li>
-<p>refresh the</p>
+<p>refresh the visits list once a visit is marked as completed</p>
 </li>
 </ul>
 </div>
 <div class="sect2">
 <h3 id="final_application">Final Application</h3>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/login-screen.png"/></a>
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-application-events/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-application-events/master/img/login-screen.png"/></a>
 </div>
 <div class="sect2">
 <h3 id="requirements">Requirements</h3>
@@ -130,10 +130,10 @@
 <h2 id="benefits_of_a_event_based_business_logic">Benefits of a event based business logic</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The most common approach of communicating between application logic is to do method invocation. In CUBA and Spring this is done via Java objects interacting with each other, Spring components &amp; CUBA services. There are good reasons to use this functionality, but it is not the only one. Furthermore this pattern of method invocation is oftentimes overused which can lead to bad maintainability of the overall system due to highly coupled application parts.</p>
+<p>The most common approach of communicating between application logic is to do method invocation. In CUBA and Spring this is done via Java objects, Spring components &amp; CUBA services that interact with each other. There are good reasons to use this communication pattern, but it is not the only one. Method invocation is oftentimes overused which can lead to bad maintainability of the overall system due to highly coupled application parts.</p>
 </div>
 <div class="paragraph">
-<p>Event based business logic is an alternative communication pattern for application logic, that has particular strengths in its low coupling of the parts. It is not suitable for all kinds of communication patterns, but for a big number of cases it is a viable alternative. Generally event based communication can be used in the following scenarios:</p>
+<p>Event based business logic is an alternative communication pattern for application logic, that has particular strengths in its low coupling of the communication partcipants. It is not suitable for all kinds of communication styles, but for a big number of cases it is a viable alternative. Generally event based communication can be used in the following scenarios:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -194,16 +194,28 @@
 <div class="sect2">
 <h3 id="entity_changes_through_entitychangedevent">Entity changes through EntityChangedEvent</h3>
 <div class="paragraph">
-<p>In the petclinic example following logic will be implemented: The petclinic has rooms for the stay of the pets during their time in the clinic. The rooms have no traditional keys or keycards, but instead have a 6 digit keycode to enter at the entrace door. This keycode has to be given to the pets owner once a new visit is booked. The transportation of the keycode should happen via SMS notification from the application.</p>
+<p>In the petclinic example the following logic will be implemented: The petclinic has rooms for the stay of the pets during their time in the clinic. The rooms have no traditional keys or keycards, but instead have a 6 digit keycode to enter at the entrace door. This keycode has to be given to the pets owner once a new visit is booked. The transportation of the keycode should happen via SMS notification from the application.</p>
 </div>
 <div class="paragraph">
-<p>This example is in the category of <em>Entity lifecycle events</em>. The <code>EntityChangedEvent</code> is send out by the CUBA storage mechanism, once an Entity has been changed in the database: because we want to execute logic, once a visit is booked (created).</p>
+<p>This example is in the category of <em>Entity lifecycle events</em> because we want to execute logic, once a visit is booked (created). The <code>EntityChangedEvent</code> is send out by the CUBA storage mechanism, once an Entity has been changed in the database.</p>
 </div>
 <div class="paragraph">
-<p>CUBA fires such an Event for entities, that have an annotation <code>@PublishEntityChangedEvents</code> on the Entity definition. A <code>EntityChangedEvent</code> contains information about the type of change (create, update or delete) as well as the attributes which have been changed.</p>
+<p>CUBA fires such an Event for entities, that have an annotation <code>@PublishEntityChangedEvents</code> on the class definition. A <code>EntityChangedEvent</code> contains information about the type of change (create, update or delete) as well as the attributes which have been changed.</p>
 </div>
 <div class="paragraph">
-<p>To register a Event listener for this event, a new Spring bean in the core module of the application has to be defined. In order to register to a specific kind of event, the method that should be called once an <code>EntityChangedEvent</code> has been send has to be annotated with <code>@TransactionalEventListener</code>.</p>
+<p>To register an Event listener for this event, a new Spring bean in the core module of the application has to be defined. In order to register to a specific kind of event, the method that should be called once an <code>EntityChangedEvent</code> has been send has to be annotated with <code>@TransactionalEventListener</code>.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+There are two different kinds of annotations to register for as an event listener. <code>@TransactionalEventListener</code> and <code>@EventListener</code>. They differ regarding the transaction behavior. In this guide <code>@TransactionalEventListener</code> is used. More details can be found in the docs[<strong>*</strong>]
+</td>
+</tr>
+</table>
 </div>
 <div class="listingblock">
 <div class="title">RoomKeycodeToOwnerSender.java</div>
@@ -302,6 +314,18 @@
 }</code></pre>
 </div>
 </div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+When the having multiple event listeners the invocation order oftentimes does not matter. In case it is necessary to execute one event listener before another Spring has the ability to define the order via the <code>@Order</code> annotation. See the documentation[<strong>*</strong>] for further information on this topic.
+</td>
+</tr>
+</table>
+</div>
 <div class="sect3">
 <h4 id="naming_conventions_of_events">Naming Conventions of events</h4>
 <div class="paragraph">
@@ -311,14 +335,14 @@
 <p>Furthermore Event listeners are normally named regarding the one specific action that they should fulfill. Instead of create a general <code>PetCreatedListener</code> that deals with all things that should happen once a pet is created in the system, Event listeners should be named regarding one specific action that should be performed: <code>RoomKeycodeToOwnerSender</code> &#8594; sends a room keycode to the pets owner.</p>
 </div>
 <div class="paragraph">
-<p>This is an example of an application of the <a href="https://en.wikipedia.org/wiki/Open%E2%80%93closed_principle">open-closed principle</a>, which normally lead to more loosely coupled application and due to that to more maintainable software.</p>
+<p>This is an example of an application of the <a href="https://en.wikipedia.org/wiki/Open%E2%80%93closed_principle">open-closed principle</a>, which normally lead to more loosely coupled application parts and due to that to more maintainable software.</p>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="custom_application_logic_events">Custom Application Logic events</h3>
 <div class="paragraph">
-<p>The next example is using custom application events to send message between different parts of the application in a loosely coupled manner. When the pet is recovered and checks out the visit is marked as complete. When this event happens, certain downstream process can be kicked of as well. One of them, which this example deals with is that the invoicing process kicks in.</p>
+<p>The next example is using custom application events to send messages between different parts of the application in a loosely coupled manner. When the pet is recovered and checks out the visit is marked as complete. When this event happens, certain downstream process can be kicked of as well. One of them, which this example deals with is that the invoicing process starts.</p>
 </div>
 <div class="paragraph">
 <p>The first step towards custom application event is to define a event as a class <code>VisitCompletedEvent</code> in the <code>core</code> module:</p>
@@ -328,15 +352,20 @@
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.haulmont.sample.petclinic.core.visit</span>;
 
+
 <span class="directive">public</span> <span class="type">class</span> <span class="class">VisitCompletedEvent</span> <span class="directive">extends</span> ApplicationEvent { <i class="conum" data-value="1"></i><b>(1)</b>
 
-    <span class="directive">public</span> VisitCompletedEvent(Visit source) { <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="directive">private</span> <span class="directive">final</span> Visit visit;
+
+    <span class="directive">public</span> VisitCompletedEvent(<span class="predefined-type">Object</span> source, Visit visit) {
+
         <span class="local-variable">super</span>(source);
+
+        <span class="local-variable">this</span>.visit = visit;
     }
 
-    <span class="annotation">@Override</span>
-    <span class="directive">public</span> Visit getSource() {
-        <span class="keyword">return</span> (Visit) <span class="local-variable">super</span>.getSource();
+    <span class="directive">public</span> Visit getVisit() {
+        <span class="keyword">return</span> visit;
     }
 }</code></pre>
 </div>
@@ -346,10 +375,6 @@
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
 <td>Custom events have to extend <code>ApplicationEvent</code> in order to being passed through the event system of Spring</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The source of the event is set to an <code>Visit</code> instance</td>
 </tr>
 </table>
 </div>
@@ -388,7 +413,7 @@
     }
 
     <span class="directive">private</span> <span class="type">void</span> notifyAboutVisitCompletion(Visit visit) {
-        events.publish(<span class="keyword">new</span> VisitCompletedEvent(visit)); <i class="conum" data-value="2"></i><b>(2)</b>
+        events.publish(<span class="keyword">new</span> VisitCompletedEvent(<span class="local-variable">this</span>, visit)); <i class="conum" data-value="2"></i><b>(2)</b>
     }
 
     <span class="directive">private</span> <span class="type">void</span> markVisitAsComplete(Visit visit) {
@@ -412,7 +437,7 @@
 </table>
 </div>
 <div class="paragraph">
-<p>The last remaining part looks exactly the same as for other events that are published by CUBA itself - since the technical mechanisms are exactly the same.</p>
+<p>The last remaining part does not differ compared to other events that are published by CUBA itself since the technical mechanisms are exactly the same.</p>
 </div>
 <div class="paragraph">
 <p>The Event listener <code>InvoicingProcessInitializer</code> receives events of type <code>VisitCompletedEvent</code> and create an invoice for the received visit.</p>
@@ -424,7 +449,7 @@
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-there are two ways to listen to events. Above <code>@TransactionalEventListener</code> annotation is used. There is also the possibility to implement the Interface <code>ApplicationListener&lt;T&gt;</code> which is used for the Event listener <code>InvoicingProcessInitializer</code>.
+There are two ways to listen to events. Above <code>@TransactionalEventListener</code> annotation is used. There is also the possibility to implement the Interface <code>ApplicationListener&lt;T&gt;</code> which is used for the Event listener <code>InvoicingProcessInitializer</code>.
 </td>
 </tr>
 </table>
@@ -441,10 +466,10 @@ there are two ways to listen to events. Above <code>@TransactionalEventListener<
 
     <span class="annotation">@Override</span>
     <span class="directive">public</span> <span class="type">void</span> onApplicationEvent(VisitCompletedEvent event) {
-        log.info(<span class="string"><span class="delimiter">&quot;</span><span class="content">Payment process initialized: {}</span><span class="delimiter">&quot;</span></span>, event.getSource());
+        log.info(<span class="string"><span class="delimiter">&quot;</span><span class="content">Payment process initialized: {}</span><span class="delimiter">&quot;</span></span>, event.getVisit());
 
         CommitContext commitContext = <span class="keyword">new</span> CommitContext();
-        createInvoiceFor(event.getSource(), commitContext);
+        createInvoiceFor(event.getVisit(), commitContext);
 
         dataManager.commit(commitContext);
     }
@@ -478,7 +503,7 @@ there are two ways to listen to events. Above <code>@TransactionalEventListener<
 <div class="sect3">
 <h4 id="framework_ui_events">Framework UI events</h4>
 <div class="paragraph">
-<p>With CUBA v7 the API of the UI components changed from event listener and template method pattern towards event subscriptions. It is possible to register event listeners in the controller using the <code>@Subscribe</code> annotation. There are several Events to subscribe that deal with the lifecycle of a controller like <code>InitEvent</code>, <code>BeforeCloseEvent</code>, <code>PreCommitEvent</code> and so on. The data part of the controllers also offer a list of Events like <code>ItemChangeEvent</code>, <code>CollectionChangeEvent</code>. Futhermore the UI components itself send events for changes of their states like <code>EnterPressEvent</code>, <code>TextChangeEvent</code> and so on.</p>
+<p>With CUBA 7 the API of the UI components changed from programmatically defined event listener and template method pattern towards declarative event subscriptions via annotations. It is possible to register event listeners in the controller using the <code>@Subscribe</code> annotation. There are several Events to subscribe that deal with the lifecycle of a controller like <code>InitEvent</code>, <code>BeforeCloseEvent</code>, <code>PreCommitEvent</code> and so on. The data part of the controllers also offer a list of Events like <code>ItemChangeEvent</code>, <code>CollectionChangeEvent</code>. Futhermore the UI components itself send events for changes of their states like <code>EnterPressEvent</code>, <code>TextChangeEvent</code> and so on.</p>
 </div>
 <div class="paragraph">
 <p>For the petclinic, the VisitEdit controller leverages the <code>InitEntityEvent</code> for generating a Room keycode when a new entity is going to be created:</p>
@@ -529,7 +554,6 @@ there are two ways to listen to events. Above <code>@TransactionalEventListener<
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VisitCompletedClickedEvent</span> <span class="directive">extends</span> ApplicationEvent <span class="directive">implements</span> UiEvent { <i class="conum" data-value="1"></i><b>(1)</b>
 
-
     <span class="directive">public</span> VisitCompletedClickedEvent(<span class="predefined-type">Object</span> source) {
         <span class="local-variable">super</span>(source);
     }
@@ -555,8 +579,8 @@ there are two ways to listen to events. Above <code>@TransactionalEventListener<
     <span class="directive">private</span> Events events; <i class="conum" data-value="1"></i><b>(1)</b>
 
 
-    <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">completeBtn</span><span class="delimiter">&quot;</span></span>)
-    <span class="directive">protected</span> <span class="type">void</span> onCompleteBtnClick(<span class="predefined-type">Button</span>.ClickEvent event) {
+    <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">visitsTable.completeVisit</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">protected</span> <span class="type">void</span> completeVisit(<span class="predefined-type">Action</span>.ActionPerformedEvent event) {
         Visit visit = visitsTable.getSingleSelected();
         <span class="type">boolean</span> visitWasCompleted = visitStatusService.completeVisit(visit);
 
@@ -599,7 +623,7 @@ there are two ways to listen to events. Above <code>@TransactionalEventListener<
 </table>
 </div>
 <div class="paragraph">
-<p>In this example the sender and the receiver are the same. But this does not necessarily be the case. It is also possible to send a UI event in one controller and receive the event in another controller.</p>
+<p>In this example the sender and the receiver are the same class, but this does not necessarily be the case. It is also possible to send a UI event in one controller and receive the event in another controller.</p>
 </div>
 </div>
 </div>
@@ -609,10 +633,10 @@ there are two ways to listen to events. Above <code>@TransactionalEventListener<
 <p>Technically there is one main constraints to think about when interacting with events in a CUBA application. This is that as CUBA is a multi module application that can be deployed as two main parts: frontend (web module) and middleware (core module) sending events between the two layers is not directly possible.</p>
 </div>
 <div class="paragraph">
-<p>The underlying framework for the events mechanism is Spring, which has the facility to send application events within one application, especially within one JVM process. Since frontend and middleware can be two different JVM processes on different servers, Spring by default has no capabilities to interact between JVM processes.</p>
+<p>The underlying framework for the events mechanism is Spring, which has the facility to send application events within one application, more precisely within one JVM process. Since frontend and middleware can be two different JVM processes on different servers, Spring by default has no capabilities to interact between JVM processes.</p>
 </div>
 <div class="paragraph">
-<p>There are two ways to solve this problem. The first one is to leverage an external message broker like RabbitMQ to interact between applications (or layers of applications in this case). An internal application event can be send internally. An event listener (e.g. <code>RabbitMqForwarder</code>) then takes this message and forwards it to the external message broker. On the receiver side another Event listener for external RabbitMQ messages converts the messages to internal CUBA / Spring messages. With that the application can transparently communicate between JVM boundaries.</p>
+<p>There are two ways to solve this problem. The first one is to leverage an external message broker like RabbitMQ to interact between applications (or layers of applications in this case). An internal application event can be send internally. An event listener (e.g. <code>RabbitMqForwarder</code>) then takes this message and forwards it to the external message broker. On the receiver side another Event listener for external RabbitMQ messages converts the messages back to an internal CUBA / Spring messages. With that the application can transparently communicate between JVM boundaries.</p>
 </div>
 <div class="paragraph">
 <p>The other way is to use an existing application component called <code>global-events</code>. Global events is an application component from Haulmont that especially addresses the problem of communicating between CUBA middleware and frontend parts.</p>
@@ -624,16 +648,16 @@ there are two ways to listen to events. Above <code>@TransactionalEventListener<
 <h2 id="summary">Summary</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Communicating via events can sometimes be a challenge to gets ones developers head around. Method calls allow to have a back-channel as a response. This is normally not the case for events. Also identifying that certain parts can be executed independent of each other is not obvious at first sight.</p>
+<p>Application events in CUBA allow to define loosely coupled business logic within the application. Independent parts from a business functionality point of view can also be reflected as independent components within the application. This low coupling has certain advantages like easier testability and higher resilient of the parts of the application.</p>
+</div>
+<div class="paragraph">
+<p>But there are also downsides to this approach. Communicating via events can sometimes be a challenge to get ones developers head around. Method invocation allow to have a back-channel as a response. This is normally not the case for events. Also identifying that certain parts can be executed independent of each other is sometimes not obvious at first sight.</p>
 </div>
 <div class="paragraph">
 <p>One could argue that in the example from above the room keycode to the pets owner should only be send if the room system also knows about it and has configured everything properly. This natural wish for consistency is oftentimes very hard to achieve in a distributed system (as the petclinic management and room system are). Messaging in this regard increases the resiliency of the overall system and its parts on the costs of some potential consistency.</p>
 </div>
 <div class="paragraph">
-<p>Application events in CUBA allow to define loosely coupled business logic within the application. Independent parts from a business functionality point of view can also be reflected as independent components within the application. This low coupling has certain advantages like easier testability and higher resilient of the parts of the application.</p>
-</div>
-<div class="paragraph">
-<p>Ultimately, doing it right, prevents application logic to end up in a big ball of mud where there are calls between business logic from any parts of the system to any other parts of the system. Sending messages between application parts is a more maintainable way of arranging application logic and oftentimes represents the workflows of the problem domain in a more accurate way as they exists in the real world.</p>
+<p>Ultimately, modelling and using application events right, prevents application logic to end up in a big ball of mud with invocations between business logic from any parts of the system to any other parts of the system. Sending messages between application parts is a more maintainable way of arranging application logic and oftentimes represents the workflows of the problem domain in a more accurate way as they exists in the real world.</p>
 </div>
 <div class="sect2">
 <h3 id="further_information">Further information</h3>
