@@ -503,8 +503,15 @@ There are two ways to listen to events. Above <code>@TransactionalEventListener<
 <div class="sect3">
 <h4 id="framework_ui_events">Framework UI events</h4>
 <div class="paragraph">
-<p>With CUBA 7 the API of the UI components changed from programmatically defined event listener and template method pattern towards declarative event subscriptions via annotations. It is possible to register event listeners in the controller using the <code>@Subscribe</code> annotation. There are several Events to subscribe that deal with the lifecycle of a controller like <code>InitEvent</code>, <code>BeforeCloseEvent</code>, <code>PreCommitEvent</code> and so on. The data part of the controllers also offer a list of Events like <code>ItemChangeEvent</code>, <code>CollectionChangeEvent</code>. Futhermore the UI components itself send events for changes of their states like <code>EnterPressEvent</code>, <code>TextChangeEvent</code> and so on.</p>
+<p>With CUBA 7 the API of the UI components changed from programmatically defined event listener and template method pattern towards declarative event subscriptions via annotations. It is possible to register event listeners in the controller using the <code>@Subscribe</code> annotation.</p>
 </div>
+<div class="paragraph">
+<p>There are several Events to subscribe that deal with the lifecycle of a controller like <code>InitEvent</code>, <code>BeforeCloseEvent</code>, <code>PreCommitEvent</code> and so on. The data part of the controllers also offer a list of Events like <code>ItemChangeEvent</code>, <code>CollectionChangeEvent</code>. Furthermore the UI components itself send events for changes of their states like <code>EnterPressEvent</code>, <code>TextChangeEvent</code> and so on.</p>
+</div>
+<div class="paragraph">
+<p>CUBA studio has the ability to get an overview of the available events for a controller. It looks like this:</p>
+</div>
+<img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-application-events/master/img/studio-subscribe-to-events.png"/>
 <div class="paragraph">
 <p>For the petclinic, the VisitEdit controller leverages the <code>InitEntityEvent</code> for generating a Room keycode when a new entity is going to be created:</p>
 </div>
