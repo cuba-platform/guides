@@ -74,7 +74,7 @@ CUBA fires such an Event for entities, that have an annotation `@PublishEntityCh
 
 To register an Event listener for this event, a new Spring bean in the core module of the application has to be defined. In order to register to a specific kind of event, the method that should be called once an `EntityChangedEvent` has been send has to be annotated with `@TransactionalEventListener`.
 
-TIP: There are two different kinds of annotations to register for as an event listener. `@TransactionalEventListener` and `@EventListener`. They differ regarding the transaction behavior. In this guide `@TransactionalEventListener` is used. More details can be found in the docs[***]
+TIP: There are two different kinds of annotations to register for as an event listener. `@TransactionalEventListener` and `@EventListener`. They differ regarding the transaction behavior. In this guide `@TransactionalEventListener` is used. More details can be found in the https://doc.cuba-platform.com/manual-7.0/events.html[CUBA documentation]
 
 
 .RoomKeycodeToOwnerSender.java
@@ -163,7 +163,7 @@ public class RoomSystemNotifier {
 }
 ----
 
-TIP: When the having multiple event listeners the invocation order oftentimes does not matter. In case it is necessary to execute one event listener before another Spring has the ability to define the order via the `@Order` annotation. See the documentation[***] for further information on this topic.
+TIP: When the having multiple event listeners the invocation order oftentimes does not matter. In case it is necessary to execute one event listener before another Spring has the ability to define the order via the `@Order` annotation. See the https://doc.cuba-platform.com/manual-7.0/events.html[CUBA documentation] for further information on this topic.
 
 ==== Naming Conventions of events
 
