@@ -27,7 +27,7 @@ This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA pet
 === Final Application
 
 ++++
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/login-screen.png"/></a>
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-application-events/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-application-events/master/img/login-screen.png"/></a>
 ++++
 
 include::includes/guide_requirements.adoc[]
@@ -364,8 +364,8 @@ public class VisitBrowse extends StandardLookup<Visit> {
     private Events events; // <1>
 
 
-    @Subscribe("completeBtn")
-    protected void onCompleteBtnClick(Button.ClickEvent event) {
+    @Subscribe("visitsTable.completeVisit")
+    protected void completeVisit(Action.ActionPerformedEvent event) {
         Visit visit = visitsTable.getSingleSelected();
         boolean visitWasCompleted = visitStatusService.completeVisit(visit);
 
