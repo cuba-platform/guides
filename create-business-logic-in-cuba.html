@@ -58,7 +58,7 @@
 </div>
 <div class="sect2">
 <h3 id="final_application">Final Application</h3>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/login-screen.png"/></a>
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/login-screen.png"/></a>
 <div class="paragraph">
 <p>Unresolved directive in 2018-11-12-create-business-logic-in-CUBA.adoc - include::/includes/guide_requirements.adoc[]</p>
 </div>
@@ -174,8 +174,10 @@ This approach is acceptable if the logic is invoked from a single point and it i
 <div class="paragraph">
 <p>A managed bean is a class annotated with the <code>@Component</code> annotation. It can be injected via <code>@Inject</code> into other beans and screen controllers. If the bean has a separate interface, it can be accessed through the interface instead of the class.</p>
 </div>
-<div class="paragraph">
-<p><span class="image"><img src="https://dummyimage.com/600x400/00b5ec/ffffff.png&amp;text=Client%20tier%20beans%20UML%20class%20diagram" alt="ffffff"></span> Class Diagramm overview of using the Client Tier beans</p>
+<div class="imageblock">
+<div class="content">
+<img src="/images/creating-business-logic-in-cuba/using_client_beans_1.png" alt="class diagramm using client tier beans">
+</div>
 </div>
 <div class="paragraph">
 <p>Please note that in order to be accessible for screen controllers, the bean must be located in <strong>global</strong>, <strong>gui</strong> or <strong>web</strong> modules of the application. In the former case the bean will be also accessible for the middleware.</p>
@@ -296,8 +298,10 @@ This approach is acceptable if the logic is invoked from a single point and it i
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p><span class="image"><img src="https://dummyimage.com/600x400/00b5ec/ffffff.png&amp;text=Architecture%20diagram%20on%20Services" alt="ffffff"></span> Architecture diagram on Services with tiers</p>
+<div class="imageblock">
+<div class="content">
+<img src="/images/creating-business-logic-in-cuba/using_services_1.png" alt="class diagramm using services">
+</div>
 </div>
 <div class="paragraph">
 <p>In order to invoke a middleware business logic from the client, a service needs to be created. CUBA Studio streamlines the creation process of a service:</p>
