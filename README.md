@@ -49,7 +49,7 @@ If you don't want to set up Ruby environment you can use jekyll Docker image
 
 Pull jekyll image:
 ```
-jekyll pull jekyll/jekyll:3.8
+docker pull jekyll/jekyll:3.8
 ```
 
 Build:
