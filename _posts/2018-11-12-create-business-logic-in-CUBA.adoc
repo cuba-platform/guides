@@ -29,7 +29,7 @@ This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA pet
 <a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/login-screen.png"/></a>
 ++++
 
-include::/includes/guide_requirements.adoc[]
+include::includes/guide_requirements.adoc[]
 
 
 include::includes/petclinic_introduction.adoc[]
@@ -114,7 +114,7 @@ The in-controller solution works as long as the logic should only be executed wi
 
 A managed bean is a class annotated with the `@Component` annotation. It can be injected via `@Inject` into other beans and screen controllers. If the bean has a separate interface, it can be accessed through the interface instead of the class.
 
-image::/images/creating-business-logic-in-cuba/using_client_beans_1.png[class diagramm using client tier beans]
+image::creating-business-logic-in-cuba/using_client_beans_1.png[class diagramm using client tier beans]
 
 Please note that in order to be accessible for screen controllers, the bean must be located in *global*, *gui* or *web* modules of the application. In the former case the bean will be also accessible for the middleware.
 
@@ -222,7 +222,7 @@ The next approach on where to put the business logic is a https://doc.cuba-platf
 * APIs that are available only on the middleware: https://doc.cuba-platform.com/manual-{cuba_version}/entityManager.html[EntityManager], Transaction etc. are accessible to the business logic
 
 
-image::/images/creating-business-logic-in-cuba/using_services_1.png[class diagramm using services]
+image::creating-business-logic-in-cuba/using_services_1.png[class diagramm using services]
 
 In order to invoke a middleware business logic from the client, a service needs to be created. CUBA Studio streamlines the creation process of a service:
 
