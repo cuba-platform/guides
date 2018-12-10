@@ -8,13 +8,13 @@
     <title>Create business logic in CUBA</title>
     <meta name="description" content="The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.">
     <meta name="author" content="Haulmont">
-    <link rel="stylesheet" href="/css/foundation.css">
-    <link rel="stylesheet" href="/css/font-awesome.css">
-    <link rel="stylesheet" href="/css/coderay.css">
-    <link rel="stylesheet" href="/css/asciidoctor.css">
-    <link rel="stylesheet" href="/css/cuba.css">
-    <script src="/js/vendor/modernizr.js"></script>
-    <script src="/js/toc.js"></script>
+    <link rel="stylesheet" href="/guides/css/foundation.css">
+    <link rel="stylesheet" href="/guides/css/font-awesome.css">
+    <link rel="stylesheet" href="/guides/css/coderay.css">
+    <link rel="stylesheet" href="/guides/css/asciidoctor.css">
+    <link rel="stylesheet" href="/guides/css/cuba.css">
+    <script src="/guides/js/vendor/modernizr.js"></script>
+    <script src="/guides/js/toc.js"></script>
 </head>
 <body>
 
@@ -59,8 +59,33 @@
 <div class="sect2">
 <h3 id="final_application">Final Application</h3>
 <a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/login-screen.png"/></a>
+</div>
+<div class="sect2">
+<h3 id="requirements">Requirements</h3>
 <div class="paragraph">
-<p>Unresolved directive in 2018-11-12-create-business-logic-in-CUBA.adoc - include::/includes/guide_requirements.adoc[]</p>
+<p>Your development environment requires to contain the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.oracle.com/technetwork/java/javase/downloads/index.html">JDK 1.8</a></p>
+</li>
+<li>
+<p>a text editor or IDE (preferred <a href="https://www.jetbrains.com/idea/download/">IntelliJ IDEA</a>)</p>
+</li>
+<li>
+<p><a href="https://www.cuba-platform.com/download">CUBA Studio</a> (optional)</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-platform/cuba-cli/wiki/Installation">CUBA CLI</a> (optional)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-guide-business-logic/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
+</div>
+<div class="paragraph">
+<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-guide-business-logic.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-guide-business-logic.git</a></code></p>
 </div>
 </div>
 </div>
@@ -76,7 +101,7 @@
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="/images/domain-model.png" alt="Domain model">
+<img src="/guides/images/domain-model.png" alt="Domain model">
 </div>
 </div>
 <div class="paragraph">
@@ -176,7 +201,7 @@ This approach is acceptable if the logic is invoked from a single point and it i
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="/images/creating-business-logic-in-cuba/using_client_beans_1.png" alt="class diagramm using client tier beans">
+<img src="/guides/images/creating-business-logic-in-cuba/using_client_beans_1.png" alt="class diagramm using client tier beans">
 </div>
 </div>
 <div class="paragraph">
@@ -300,7 +325,7 @@ This approach is acceptable if the logic is invoked from a single point and it i
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="/images/creating-business-logic-in-cuba/using_services_1.png" alt="class diagramm using services">
+<img src="/guides/images/creating-business-logic-in-cuba/using_services_1.png" alt="class diagramm using services">
 </div>
 </div>
 <div class="paragraph">
@@ -500,8 +525,8 @@ it is not tied to the web tier anymore. Furthermore it is possible to trigger it
     </div>
 </footer>
 
-<script src="/js/vendor/jquery.js"></script>
-<script src="/js/foundation.min.js"></script>
+<script src="/guides/js/vendor/jquery.js"></script>
+<script src="/guides/js/foundation.min.js"></script>
 <script src="https://unpkg.com/isotope-layout@3.0/dist/isotope.pkgd.js"></script>
 <script>
 $(document).foundation();
