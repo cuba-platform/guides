@@ -5,7 +5,7 @@ The project that is be the basis for this example is https://github.com/cuba-pla
 
 The underlying domain model for the application looks like this:
 
-image::/images/domain-model.png[Domain model]
+image::domain-model.png[Domain model]
 The main entities are *Pet* and *Visit*. A Pet is visiting the petclinic and during this Visit, a Vet will take care of it. A Pet belongs to a Owner, which can hold multiple pets. The visit describes the act of a pet visiting the clinic with the help of its owner.
 
 
