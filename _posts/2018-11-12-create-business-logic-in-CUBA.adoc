@@ -16,11 +16,11 @@ permalink: create-business-logic-in-cuba
 
 
 
-One of the first questions when developing a CUBA application is: _Where should I put my business logic?_ This guide will explain the different options available and its upsides and downsides.
+One of the first questions when developing a CUBA application is: _Where should I put my business logic?_ This guide will explain the different options available and their pros and cons.
 
-== What will be build
+== What will be built
 
-This guides enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show where business logic can be places in a CUBA application. Mainly discounts are calculated for Pets based on total amount of their visits in the Petclinic.
+This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show where business logic can be placed in a CUBA application. Mainly discounts are calculated for Pets based on total amount of their visits in the Petclinic.
 
 
 === Final Application
@@ -53,10 +53,9 @@ See the *Calculate discount* button in the petclinic application and the screen 
 @UiController("petclinic_Pet.browse")
 @UiDescriptor("pet-browse.xml")
 @LookupComponent("petsTable")
+@LoadDataBeforeShow
 public class PetBrowse extends StandardLookup<Pet> {
 
-
-    @Inject protected Screens screens;
 
     @Inject protected Notifications notifications;
 
@@ -187,6 +186,7 @@ https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules
 @UiController("petclinic_Pet.edit")
 @UiDescriptor("pet-edit.xml")
 @EditedEntityContainer("petCt")
+@LoadDataBeforeShow
 public class PetEdit extends StandardEditor<Pet> {
 
     @Inject
@@ -226,11 +226,11 @@ image::/images/creating-business-logic-in-cuba/using_services_1.png[class diagra
 
 In order to invoke a middleware business logic from the client, a service needs to be created. CUBA Studio streamlines the creation process of a service:
 
-* Switch to the *Middleware* section and click *New > Service*.
+* Select the *Middleware* section in the CUBA project tree and click *New > Service* in the context menu.
 
-* Change the service interface name to `DiseaseWarningMailingService`. The bean class and service names will be changed accordingly. Click *OK* or *Apply*.
+* Change the service interface name to `DiseaseWarningMailingService`. The bean class and service names will be changed accordingly. Click *OK*.
 
-* Click *IDE* and open the service interface in your IDE. Create a method and implement it in the service class.
+* Open the service interface in the editor. Create a method and implement it in the service class.
 
 In the petclinic application, the following service was created: `DiseaseWarningMailingService`. It sends out disease warning mailings for potential endangered pets.
 
@@ -285,7 +285,7 @@ public class DiseaseWarningMailingServiceBean implements DiseaseWarningMailingSe
 <2> Implementation of the business logic interface
 
 
-The usage in the UI controller is very similar to the invocation of a client tier bean.. The `CreateDiseaseWarningMailing` screen controller looks like this:
+The usage in the UI controller is very similar to the invocation of a client tier bean. The `CreateDiseaseWarningMailing` screen controller looks like this:
 
 
 .CreateDiseaseWarningMailing.java
@@ -320,7 +320,7 @@ public class CreateDiseaseWarningMailing extends Screen {
 <1> Injection of the middleware service via its interface definition
 <2> Invocation of the business logic in the controller action
 
-With that middleware service in place, the logic of creating disease warning mailings can now shared across UI screens in the web tier. Additionally any other middleware code can execute the logic, since
+With that middleware service in place, the logic of creating disease warning mailings can now be shared across UI screens in the web tier. Additionally any other middleware code can execute the logic, since
 it is not tied to the web tier anymore. Furthermore it is possible to trigger it via the REST API and with that exposes it also to other UI technologies like the Polymer UI.
 
 
