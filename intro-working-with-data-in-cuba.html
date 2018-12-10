@@ -51,7 +51,7 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="what_will_be_build">What will be build</h2>
+<h2 id="what_will_be_built">What will be built</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show different use cases regarding programmatic data access with the DataManager API. In particular, the following use cases will be covered:</p>
@@ -104,7 +104,7 @@
 <h2 id="example_cuba_petclinic">Example: CUBA petclinic</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The project that is be the basis for this example is <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a>. It is based on the commonly known <a href="https://github.com/spring-projects/spring-petclinic">Spring Petclinic</a>. The CUBA Petclinic application deals with the domain of a Pet clinic and the associated business workflows to manage a pet clinic.</p>
+<p>The project that is the basis for this example is <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a>. It is based on the commonly known <a href="https://github.com/spring-projects/spring-petclinic">Spring Petclinic</a>. The CUBA Petclinic application deals with the domain of a Pet clinic and the associated business workflows to manage a pet clinic.</p>
 </div>
 <div class="paragraph">
 <p>The underlying domain model for the application looks like this:</p>
@@ -176,7 +176,7 @@ DataManager dataManager;
 </div>
 </div>
 <div class="paragraph">
-<p>DataManager has a <a href="https://martinfowler.com/bliki/FluentInterface.html">fluent API</a> which allows to chain operations on the load operation in order to define parameters to the execution. In this case, the interaction starts with <code>dataManager.load(Pet.class)</code>. Then the JPQL query is defined and the associated parameters are configured with the parameter values. The method call <code>one()</code> executes the load operation and fetches exactly one item that matches the criteria. If there are no results the corresponding exception is thrown.</p>
+<p>DataManager has a <a href="https://martinfowler.com/bliki/FluentInterface.html">fluent API</a> which allows to chain operations on the load operation in order to define parameters to the execution. In this case, the interaction starts with <code>dataManager.load(Pet.class)</code>. Then the JPQL query is defined and the associated parameters are configured with the parameter values. The <code>one()</code> method executes the load operation and fetches exactly one item that matches the criteria. If there are no results the corresponding exception is thrown.</p>
 </div>
 <div class="paragraph">
 <p>It is up to the application developer to decide if the query can return one or possibly multiple results. In this case it is only possible to create a Identification Number once, we can be sure that the query will return at the most one item.</p>
@@ -394,7 +394,7 @@ DataManager dataManager;
         <div class="panel">
             <h3>Table of contents</h3>
             <ul class="sectlevel1">
-<li><a href="#what_will_be_build">What will be build</a></li>
+<li><a href="#what_will_be_built">What will be built</a></li>
 <li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
 <li><a href="#programmatic_data_access_interactions">Programmatic data access interactions</a></li>
 <li><a href="#load_data_with_datamanager">Load data with DataManager</a></li>

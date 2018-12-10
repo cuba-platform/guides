@@ -46,19 +46,19 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>One of the first questions when developing a CUBA application is: <em>Where should I put my business logic?</em> This guide will explain the different options available and its upsides and downsides.</p>
+<p>One of the first questions when developing a CUBA application is: <em>Where should I put my business logic?</em> This guide will explain the different options available and their pros and cons.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="what_will_be_build">What will be build</h2>
+<h2 id="what_will_be_built">What will be built</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This guides enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show where business logic can be places in a CUBA application. Mainly discounts are calculated for Pets based on total amount of their visits in the Petclinic.</p>
+<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show where business logic can be placed in a CUBA application. Mainly discounts are calculated for Pets based on total amount of their visits in the Petclinic.</p>
 </div>
 <div class="sect2">
 <h3 id="final_application">Final Application</h3>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/login-screen.png"/></a>
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/login-screen.png"/></a>
 </div>
 <div class="sect2">
 <h3 id="requirements">Requirements</h3>
@@ -94,7 +94,7 @@
 <h2 id="example_cuba_petclinic">Example: CUBA petclinic</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The project that is be the basis for this example is <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a>. It is based on the commonly known <a href="https://github.com/spring-projects/spring-petclinic">Spring Petclinic</a>. The CUBA Petclinic application deals with the domain of a Pet clinic and the associated business workflows to manage a pet clinic.</p>
+<p>The project that is the basis for this example is <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a>. It is based on the commonly known <a href="https://github.com/spring-projects/spring-petclinic">Spring Petclinic</a>. The CUBA Petclinic application deals with the domain of a Pet clinic and the associated business workflows to manage a pet clinic.</p>
 </div>
 <div class="paragraph">
 <p>The underlying domain model for the application looks like this:</p>
@@ -126,10 +126,9 @@
 <pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@UiController</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_Pet.browse</span><span class="delimiter">&quot;</span></span>)
 <span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">pet-browse.xml</span><span class="delimiter">&quot;</span></span>)
 <span class="annotation">@LookupComponent</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petsTable</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@LoadDataBeforeShow</span>
 <span class="directive">public</span> <span class="type">class</span> <span class="class">PetBrowse</span> <span class="directive">extends</span> StandardLookup&lt;Pet&gt; {
 
-
-    <span class="annotation">@Inject</span> <span class="directive">protected</span> Screens screens;
 
     <span class="annotation">@Inject</span> <span class="directive">protected</span> Notifications notifications;
 
@@ -277,6 +276,7 @@ This approach is acceptable if the logic is invoked from a single point and it i
 <pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@UiController</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_Pet.edit</span><span class="delimiter">&quot;</span></span>)
 <span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">pet-edit.xml</span><span class="delimiter">&quot;</span></span>)
 <span class="annotation">@EditedEntityContainer</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petCt</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@LoadDataBeforeShow</span>
 <span class="directive">public</span> <span class="type">class</span> <span class="class">PetEdit</span> <span class="directive">extends</span> StandardEditor&lt;Pet&gt; {
 
     <span class="annotation">@Inject</span>
@@ -334,13 +334,13 @@ This approach is acceptable if the logic is invoked from a single point and it i
 <div class="ulist">
 <ul>
 <li>
-<p>Switch to the <strong>Middleware</strong> section and click <strong>New &gt; Service</strong>.</p>
+<p>Select the <strong>Middleware</strong> section in the CUBA project tree and click <strong>New &gt; Service</strong> in the context menu.</p>
 </li>
 <li>
-<p>Change the service interface name to <code>DiseaseWarningMailingService</code>. The bean class and service names will be changed accordingly. Click <strong>OK</strong> or <strong>Apply</strong>.</p>
+<p>Change the service interface name to <code>DiseaseWarningMailingService</code>. The bean class and service names will be changed accordingly. Click <strong>OK</strong>.</p>
 </li>
 <li>
-<p>Click <strong>IDE</strong> and open the service interface in your IDE. Create a method and implement it in the service class.</p>
+<p>Open the service interface in the editor. Create a method and implement it in the service class.</p>
 </li>
 </ul>
 </div>
@@ -409,7 +409,7 @@ This approach is acceptable if the logic is invoked from a single point and it i
 </table>
 </div>
 <div class="paragraph">
-<p>The usage in the UI controller is very similar to the invocation of a client tier bean.. The <code>CreateDiseaseWarningMailing</code> screen controller looks like this:</p>
+<p>The usage in the UI controller is very similar to the invocation of a client tier bean. The <code>CreateDiseaseWarningMailing</code> screen controller looks like this:</p>
 </div>
 <div class="listingblock">
 <div class="title">CreateDiseaseWarningMailing.java</div>
@@ -452,7 +452,7 @@ This approach is acceptable if the logic is invoked from a single point and it i
 </table>
 </div>
 <div class="paragraph">
-<p>With that middleware service in place, the logic of creating disease warning mailings can now shared across UI screens in the web tier. Additionally any other middleware code can execute the logic, since
+<p>With that middleware service in place, the logic of creating disease warning mailings can now be shared across UI screens in the web tier. Additionally any other middleware code can execute the logic, since
 it is not tied to the web tier anymore. Furthermore it is possible to trigger it via the REST API and with that exposes it also to other UI technologies like the Polymer UI.</p>
 </div>
 </div>
@@ -495,7 +495,7 @@ it is not tied to the web tier anymore. Furthermore it is possible to trigger it
         <div class="panel">
             <h3>Table of contents</h3>
             <ul class="sectlevel1">
-<li><a href="#what_will_be_build">What will be build</a></li>
+<li><a href="#what_will_be_built">What will be built</a></li>
 <li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
 <li><a href="#business_logic_in_controllers">Business Logic in Controllers</a></li>
 <li><a href="#client_tier_beans">Client Tier Beans</a></li>
