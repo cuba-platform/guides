@@ -15,7 +15,7 @@ permalink: intro-working-with-data-in-cuba
 This guide walks you through the CUBA APIs for programmatically interacting with the database through the DataManager API.
 
 
-== What will be build
+== What will be built
 
 This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show different use cases regarding programmatic data access with the DataManager API. In particular, the following use cases will be covered:
 
@@ -82,7 +82,7 @@ private Pet loadPetByIdentificationNumber(String identificationNumber) {
 }
 ----
 
-DataManager has a https://martinfowler.com/bliki/FluentInterface.html[fluent API] which allows to chain operations on the load operation in order to define parameters to the execution. In this case, the interaction starts with `dataManager.load(Pet.class)`. Then the JPQL query is defined and the associated parameters are configured with the parameter values. The method call `one()` executes the load operation and fetches exactly one item that matches the criteria. If there are no results the corresponding exception is thrown.
+DataManager has a https://martinfowler.com/bliki/FluentInterface.html[fluent API] which allows to chain operations on the load operation in order to define parameters to the execution. In this case, the interaction starts with `dataManager.load(Pet.class)`. Then the JPQL query is defined and the associated parameters are configured with the parameter values. The `one()` method executes the load operation and fetches exactly one item that matches the criteria. If there are no results the corresponding exception is thrown.
 
 It is up to the application developer to decide if the query can return one or possibly multiple results. In this case it is only possible to create a Identification Number once, we can be sure that the query will return at the most one item.
 

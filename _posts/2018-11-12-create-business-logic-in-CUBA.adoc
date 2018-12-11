@@ -16,20 +16,20 @@ permalink: create-business-logic-in-cuba
 
 
 
-One of the first questions when developing a CUBA application is: _Where should I put my business logic?_ This guide will explain the different options available and its upsides and downsides.
+One of the first questions when developing a CUBA application is: _Where should I put my business logic?_ This guide will explain the different options available and their pros and cons.
 
-== What will be build
+== What will be built
 
-This guides enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show where business logic can be places in a CUBA application. Mainly discounts are calculated for Pets based on total amount of their visits in the Petclinic.
+This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show where business logic can be placed in a CUBA application. Mainly discounts are calculated for Pets based on total amount of their visits in the Petclinic.
 
 
 === Final Application
 
 ++++
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/login-screen.png"/></a>
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/login-screen.png"/></a>
 ++++
 
-include::/includes/guide_requirements.adoc[]
+include::includes/guide_requirements.adoc[]
 
 
 include::includes/petclinic_introduction.adoc[]
@@ -53,10 +53,9 @@ See the *Calculate discount* button in the petclinic application and the screen 
 @UiController("petclinic_Pet.browse")
 @UiDescriptor("pet-browse.xml")
 @LookupComponent("petsTable")
+@LoadDataBeforeShow
 public class PetBrowse extends StandardLookup<Pet> {
 
-
-    @Inject protected Screens screens;
 
     @Inject protected Notifications notifications;
 
@@ -115,7 +114,7 @@ The in-controller solution works as long as the logic should only be executed wi
 
 A managed bean is a class annotated with the `@Component` annotation. It can be injected via `@Inject` into other beans and screen controllers. If the bean has a separate interface, it can be accessed through the interface instead of the class.
 
-image::/images/creating-business-logic-in-cuba/using_client_beans_1.png[class diagramm using client tier beans]
+image::creating-business-logic-in-cuba/using_client_beans_1.png[class diagramm using client tier beans]
 
 Please note that in order to be accessible for screen controllers, the bean must be located in *global*, *gui* or *web* modules of the application. In the former case the bean will be also accessible for the middleware.
 
@@ -187,6 +186,7 @@ https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules
 @UiController("petclinic_Pet.edit")
 @UiDescriptor("pet-edit.xml")
 @EditedEntityContainer("petCt")
+@LoadDataBeforeShow
 public class PetEdit extends StandardEditor<Pet> {
 
     @Inject
@@ -222,15 +222,15 @@ The next approach on where to put the business logic is a https://doc.cuba-platf
 * APIs that are available only on the middleware: https://doc.cuba-platform.com/manual-{cuba_version}/entityManager.html[EntityManager], Transaction etc. are accessible to the business logic
 
 
-image::/images/creating-business-logic-in-cuba/using_services_1.png[class diagramm using services]
+image::creating-business-logic-in-cuba/using_services_1.png[class diagramm using services]
 
 In order to invoke a middleware business logic from the client, a service needs to be created. CUBA Studio streamlines the creation process of a service:
 
-* Switch to the *Middleware* section and click *New > Service*.
+* Select the *Middleware* section in the CUBA project tree and click *New > Service* in the context menu.
 
-* Change the service interface name to `DiseaseWarningMailingService`. The bean class and service names will be changed accordingly. Click *OK* or *Apply*.
+* Change the service interface name to `DiseaseWarningMailingService`. The bean class and service names will be changed accordingly. Click *OK*.
 
-* Click *IDE* and open the service interface in your IDE. Create a method and implement it in the service class.
+* Open the service interface in the editor. Create a method and implement it in the service class.
 
 In the petclinic application, the following service was created: `DiseaseWarningMailingService`. It sends out disease warning mailings for potential endangered pets.
 
@@ -285,7 +285,7 @@ public class DiseaseWarningMailingServiceBean implements DiseaseWarningMailingSe
 <2> Implementation of the business logic interface
 
 
-The usage in the UI controller is very similar to the invocation of a client tier bean.. The `CreateDiseaseWarningMailing` screen controller looks like this:
+The usage in the UI controller is very similar to the invocation of a client tier bean. The `CreateDiseaseWarningMailing` screen controller looks like this:
 
 
 .CreateDiseaseWarningMailing.java
@@ -320,7 +320,7 @@ public class CreateDiseaseWarningMailing extends Screen {
 <1> Injection of the middleware service via its interface definition
 <2> Invocation of the business logic in the controller action
 
-With that middleware service in place, the logic of creating disease warning mailings can now shared across UI screens in the web tier. Additionally any other middleware code can execute the logic, since
+With that middleware service in place, the logic of creating disease warning mailings can now be shared across UI screens in the web tier. Additionally any other middleware code can execute the logic, since
 it is not tied to the web tier anymore. Furthermore it is possible to trigger it via the REST API and with that exposes it also to other UI technologies like the Polymer UI.
 
 

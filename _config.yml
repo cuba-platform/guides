@@ -1,5 +1,6 @@
 title: CUBA Platform guides
 description: The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.
+baseurl: "/guides"
 exclude:
   - LICENSE.adoc
   - README.md
@@ -8,10 +9,10 @@ exclude:
   - Rakefile
 asciidoc: {}
 asciidoctor:
-  imagesdir: images
   base_dir: :docdir
   safe: unsafe
   attributes:
+    - imagesdir=/guides/images
     - idseparator=_
     - source-highlighter=coderay
     - icons=font
