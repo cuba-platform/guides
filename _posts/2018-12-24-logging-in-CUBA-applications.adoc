@@ -1,0 +1,99 @@
+---
+compatible_cuba_versions: 7.0
+project_id: cuba-petclinic-application-logging
+permalink: logging-in-cuba-applications
+---
+= Logging in CUBA applications
+:showtitle:
+:page-navtitle: Logging in CUBA applications
+:page-excerpt: Guide on why and how to use logging in a CUBA application in order to get insights
+:page-root: ../../../
+:project_id: cuba-petclinic-application-logging
+:java_version: 1.8
+:cuba_version: 7.0
+
+In order to get insights into a running CUBA application, Logging is one crucial part to get in place. The Java ecosystem has a very mature mechanisms to do application logging. This guide show how this ecosystem can be leveraged in a CUBA application.
+
+== What will be build
+
+This guides enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show how logging can be integrated, configured and viewed as part of the application itself or with the help of external tools.
+
+
+=== Final Application
+
+++++
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/login-screen.png"/></a>
+++++
+
+include::/includes/guide_requirements.adoc[]
+
+
+include::includes/petclinic_introduction.adoc[]
+
+
+== Why application logging is essential
+
+Logging information about the running application is essential in order to get insights on how the application behaves, what unexpected behavior occurs and how the users are interacting with the system.
+
+Logging is a common pattern of application development. The developer writes statements into the application source code indicating that certain actions happened. In the following example two possible log messages are written. In case of a successful saving of the `Pet` instance, an informal message is written with the details of the pet that has been stored. In case of a failure of storing the Pet, an error message is written with information about the failure.
+
+
+.PetServiceBean.java
+[source,java]
+----
+private Pet savePet(Pet pet) {
+    try {
+      Pet savedPet = dataManager.commit(pet);
+      log.info("Pet " + pet + " was saved correctly");
+      return savedPet;
+    }
+    catch(Exception e) {
+      log.error("Pet " + pet + " could not be saved", e);
+      return null;
+    }
+
+}
+----
+
+Those messages will be written in a configured place that some administrator or developer has access to for later use. Normally this are plain text files, but it is also possible to store the logging information in a Database or a centralized logging service.
+
+For development purposes the developer normally has the ability to debug the source code. For a running application this is normally not the case. Either because of security reasons or simply because the application is not run on a server that is under the control of the developer.
+
+Therefore logging is the another tool in the toolbox of a developer in order to do diagnostics of a running application.
+
+== The Java logging ecosystem
+
+In the Java ecosystem logging has (as in a lot of other ecosystems as well) played a substantial role. There are various mechanisms and abstractions out there on how to actually interact with the logging mechanisms of the platform the application is running on.
+
+Mainly these are various APIs of the JVM and different logging libraries that encapsulate the technical concern of logging to a file / database from the abstraction of "writing a log message".
+
+In recent years a commonly used combination has been adopted in the Java ecosystem:
+
+- Slf4J
+- Logback
+
+Slf4J is an abstract API that encapsulates the concrete details of the logging library. It offers different methods for logging information to the logging system with different servity levels (`DEBUG`, `INFO`, `WARN` etc.).
+
+Logback on the other hand is the logging library that fulfils this API and does the heavy lifting of writing the message to a log appender. It contains the options to configure where the log messages should go to.
+
+== How to log in a CUBA application
+
+=== Logging Levels
+
+=== Set logging context with MDC
+
+
+== Adjust logging configuration
+
+=== At deployment: logback.xml configuration file
+
+=== At runtime: CUBA logging UI
+
+
+== Logging to centralized Logging solution
+
+
+== Summary
+
+
+
