@@ -78,9 +78,44 @@ Logback on the other hand is the logging library that fulfils this API and does 
 
 == How to log in a CUBA application
 
+The usage of logging libraries within a CUBA application does not differ from other Java application in this regard. CUBA is by default configured with Sl4fJ and Logback in place. The framework itself uses logback for information about the execution of production. In order to log information within a class, an instance of a Logger has to be created in the class that wants to log information.
+
+.PetEdit.java
+[source,java]
+----
+@UiController("petclinic_Pet.edit")
+@UiDescriptor("pet-edit.xml")
+@LoadDataBeforeShow
+public class PetEdit extends StandardEditor<Pet> {
+
+    private static final Logger log = LoggerFactory.getLogger(PetEdit.class); // <1>
+
+    @Subscribe
+    protected void onInit(InitEvent event) {
+        log.debug("Pet editor opened"); // <2>
+    }
+
+}
+----
+<1> Logger configured for this class is defined through Slf4J
+<2> write debug log message when opening the screen
+
 === Logging Levels
 
+Slf4J allows to define the following logging levels:
+
+- TRACE
+- DEBUG
+- INFO
+- WARN
+- ERROR
+- FATAL
+
 === Set logging context with MDC
+
+Once the application has certain amount of logging information certain information get repeated in a lot of logging messages. In the petclinic example a lot of log messages would contain the Pet ID in order to get the context information in a fast manner. For those kinds of information, there is a context in Logback, called _MDC_.
+
+MDC allows to set certain values into a context, that gets logged every time alongside with the actual logging message.
 
 
 == Adjust logging configuration
