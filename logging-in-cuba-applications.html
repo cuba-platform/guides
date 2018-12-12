@@ -1,0 +1,323 @@
+<!doctype html>
+<!--[if IE 9]>
+<html class="lt-ie10" lang="en"> <![endif]-->
+<html class="no-js" lang="en" data-useragent="Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logging in CUBA applications</title>
+    <meta name="description" content="The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.">
+    <meta name="author" content="Haulmont">
+    <link rel="stylesheet" href="/guides/css/foundation.css">
+    <link rel="stylesheet" href="/guides/css/font-awesome.css">
+    <link rel="stylesheet" href="/guides/css/coderay.css">
+    <link rel="stylesheet" href="/guides/css/asciidoctor.css">
+    <link rel="stylesheet" href="/guides/css/cuba.css">
+    <script src="/guides/js/vendor/modernizr.js"></script>
+    <script src="/guides/js/toc.js"></script>
+</head>
+<body>
+
+
+<!-- Nav Bar -->
+
+<!--<nav class="top-bar" data-topbar>-->
+    <!--<ul class="title-area">-->
+        <!--&lt;!&ndash; Title Area &ndash;&gt;-->
+        <!--<li class="name">-->
+            <!--<h1>-->
+                <!--<a href="../../../">CUBA Platform guides</a>-->
+            <!--</h1>-->
+        <!--</li>-->
+        <!--<li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>-->
+    <!--</ul>-->
+<!--</nav>-->
+<!-- End Nav -->
+
+
+<!-- Main Page Content and Sidebar -->
+
+<div class="row">
+
+    <!-- Main Blog Content -->
+    <div class="large-9 columns" role="content">
+
+        <h1>Logging in CUBA applications</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In order to get insights into a running CUBA application, Logging is one crucial part to get in place. The Java ecosystem has a very mature mechanisms to do application logging. This guide show how this ecosystem can be leveraged in a CUBA application.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="what_will_be_build">What will be build</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This guides enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show how logging can be integrated, configured and viewed as part of the application itself or with the help of external tools.</p>
+</div>
+<div class="sect2">
+<h3 id="final_application">Final Application</h3>
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/login-screen.png"/></a>
+<div class="paragraph">
+<p>Unresolved directive in 2018-12-12-logging-in-CUBA-applications.adoc - include::/includes/guide_requirements.adoc[]</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="example_cuba_petclinic">Example: CUBA petclinic</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The project that is the basis for this example is <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a>. It is based on the commonly known <a href="https://github.com/spring-projects/spring-petclinic">Spring Petclinic</a>. The CUBA Petclinic application deals with the domain of a Pet clinic and the associated business workflows to manage a pet clinic.</p>
+</div>
+<div class="paragraph">
+<p>The underlying domain model for the application looks like this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/guides/images/domain-model.png" alt="Domain model">
+</div>
+</div>
+<div class="paragraph">
+<p>The main entities are <strong>Pet</strong> and <strong>Visit</strong>. A Pet is visiting the petclinic and during this Visit, a Vet will take care of it. A Pet belongs to a Owner, which can hold multiple pets. The visit describes the act of a pet visiting the clinic with the help of its owner.</p>
+</div>
+<a href="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/login-screen.png"/></a>
+</div>
+</div>
+<div class="sect1">
+<h2 id="why_application_logging_is_essential">Why application logging is essential</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Logging information about the running application is essential in order to get insights on how the application behaves, what unexpected behavior occurs and how the users are interacting with the system.</p>
+</div>
+<div class="paragraph">
+<p>Logging is a common pattern of application development. The developer writes statements into the application source code indicating that certain actions happened. In the following example two possible log messages are written. In case of a successful saving of the <code>Pet</code> instance, an informal message is written with the details of the pet that has been stored. In case of a failure of storing the Pet, an error message is written with information about the failure.</p>
+</div>
+<div class="listingblock">
+<div class="title">PetServiceBean.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">private</span> Pet savePet(Pet pet) {
+    <span class="keyword">try</span> {
+      Pet savedPet = dataManager.commit(pet);
+      log.info(<span class="string"><span class="delimiter">&quot;</span><span class="content">Pet </span><span class="delimiter">&quot;</span></span> + pet + <span class="string"><span class="delimiter">&quot;</span><span class="content"> was saved correctly</span><span class="delimiter">&quot;</span></span>);
+      <span class="keyword">return</span> savedPet;
+    }
+    <span class="keyword">catch</span>(<span class="exception">Exception</span> e) {
+      log.error(<span class="string"><span class="delimiter">&quot;</span><span class="content">Pet </span><span class="delimiter">&quot;</span></span> + pet + <span class="string"><span class="delimiter">&quot;</span><span class="content"> could not be saved</span><span class="delimiter">&quot;</span></span>, e);
+      <span class="keyword">return</span> <span class="predefined-constant">null</span>;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Those messages will be written in a configured place that some administrator or developer has access to for later use. Normally this are plain text files, but it is also possible to store the logging information in a Database or a centralized logging service.</p>
+</div>
+<div class="paragraph">
+<p>For development purposes the developer normally has the ability to debug the source code. For a running application this is normally not the case. Either because of security reasons or simply because the application is not run on a server that is under the control of the developer.</p>
+</div>
+<div class="paragraph">
+<p>Therefore logging is the another tool in the toolbox of a developer in order to do diagnostics of a running application.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="the_java_logging_ecosystem">The Java logging ecosystem</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the Java ecosystem logging has (as in a lot of other ecosystems as well) played a substantial role. There are various mechanisms and abstractions out there on how to actually interact with the logging mechanisms of the platform the application is running on.</p>
+</div>
+<div class="paragraph">
+<p>Mainly these are various APIs of the JVM and different logging libraries that encapsulate the technical concern of logging to a file / database from the abstraction of "writing a log message".</p>
+</div>
+<div class="paragraph">
+<p>In recent years a commonly used combination has been adopted in the Java ecosystem:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Slf4J</p>
+</li>
+<li>
+<p>Logback</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Slf4J is an abstract API that encapsulates the concrete details of the logging library. It offers different methods for logging information to the logging system with different servity levels (<code>DEBUG</code>, <code>INFO</code>, <code>WARN</code> etc.).</p>
+</div>
+<div class="paragraph">
+<p>Logback on the other hand is the logging library that fulfils this API and does the heavy lifting of writing the message to a log appender. It contains the options to configure where the log messages should go to.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="how_to_log_in_a_cuba_application">How to log in a CUBA application</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The usage of logging libraries within a CUBA application does not differ from other Java application in this regard. CUBA is by default configured with Sl4fJ and Logback in place. The framework itself uses logback for information about the execution of production. In order to log information within a class, an instance of a Logger has to be created in the class that wants to log information.</p>
+</div>
+<div class="listingblock">
+<div class="title">PetEdit.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@UiController</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_Pet.edit</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">pet-edit.xml</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@LoadDataBeforeShow</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">PetEdit</span> <span class="directive">extends</span> StandardEditor&lt;Pet&gt; {
+
+    <span class="directive">private</span> <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">Logger</span> log = LoggerFactory.getLogger(PetEdit.class); <i class="conum" data-value="1"></i><b>(1)</b>
+
+    <span class="annotation">@Subscribe</span>
+    <span class="directive">protected</span> <span class="type">void</span> onInit(InitEvent event) {
+        log.debug(<span class="string"><span class="delimiter">&quot;</span><span class="content">Pet editor opened</span><span class="delimiter">&quot;</span></span>); <i class="conum" data-value="2"></i><b>(2)</b>
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Logger configured for this class is defined through Slf4J</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>write debug log message when opening the screen</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="logging_levels">Logging Levels</h3>
+<div class="paragraph">
+<p>Slf4J allows to define the following logging levels:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>TRACE</p>
+</li>
+<li>
+<p>DEBUG</p>
+</li>
+<li>
+<p>INFO</p>
+</li>
+<li>
+<p>WARN</p>
+</li>
+<li>
+<p>ERROR</p>
+</li>
+<li>
+<p>FATAL</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="set_logging_context_with_mdc">Set logging context with MDC</h3>
+<div class="paragraph">
+<p>Once the application has certain amount of logging information certain information get repeated in a lot of logging messages. In the petclinic example a lot of log messages would contain the Pet ID in order to get the context information in a fast manner. For those kinds of information, there is a context in Logback, called <em>MDC</em>.</p>
+</div>
+<div class="paragraph">
+<p>MDC allows to set certain values into a context, that gets logged every time alongside with the actual logging message.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="adjust_logging_configuration">Adjust logging configuration</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="at_deployment_logback_xml_configuration_file">At deployment: logback.xml configuration file</h3>
+
+</div>
+<div class="sect2">
+<h3 id="at_runtime_cuba_logging_ui">At runtime: CUBA logging UI</h3>
+
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="logging_to_centralized_logging_solution">Logging to centralized Logging solution</h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="summary">Summary</h2>
+<div class="sectionbody">
+
+</div>
+</div>
+
+    </div>
+
+    <!-- End Main Content -->
+
+    <!-- Sidebar -->
+
+    <aside class="large-3 columns">
+
+        <br />
+        <br />
+
+        <div class="panel">
+            <h4>CUBA Version</h4>
+            <b>7.0</b>
+        </div>
+
+        <div class="panel">
+            <h4>Get the code</h4>
+
+            <a class="button expanded"  href="https://github.com/cuba-guides/cuba-petclinic-application-logging/archive/master.zip">Download</a>
+            <a href="https://github.com/cuba-guides/cuba-petclinic-application-logging">Github Repository</a>
+        </div>
+
+        <div class="panel">
+            <h3>Table of contents</h3>
+            <ul class="sectlevel1">
+<li><a href="#what_will_be_build">What will be build</a></li>
+<li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
+<li><a href="#why_application_logging_is_essential">Why application logging is essential</a></li>
+<li><a href="#the_java_logging_ecosystem">The Java logging ecosystem</a></li>
+<li><a href="#how_to_log_in_a_cuba_application">How to log in a CUBA application</a></li>
+<li><a href="#adjust_logging_configuration">Adjust logging configuration</a></li>
+<li><a href="#logging_to_centralized_logging_solution">Logging to centralized Logging solution</a></li>
+<li><a href="#summary">Summary</a></li>
+</ul>
+        </div>
+
+    </aside>
+
+    <!-- End Sidebar -->
+</div>
+
+<!-- End Main Content and Sidebar -->
+
+
+<!-- Footer -->
+
+<footer class="row">
+    <div class="large-12 columns">
+        <hr>
+        <div class="row">
+            <div class="large-12 columns">
+                <p>Copyright &#169; 2008-2018 Haulmont</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="/guides/js/vendor/jquery.js"></script>
+<script src="/guides/js/foundation.min.js"></script>
+<script src="https://unpkg.com/isotope-layout@3.0/dist/isotope.pkgd.js"></script>
+<script>
+$(document).foundation();
+var doc = document.documentElement;
+doc.setAttribute('data-useragent', navigator.userAgent);
+</script>
+</body>
+</html>
