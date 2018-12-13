@@ -222,7 +222,109 @@
 <p>Once the application has certain amount of logging information certain information get repeated in a lot of logging messages. In the petclinic example a lot of log messages would contain the Pet ID in order to get the context information in a fast manner. For those kinds of information, there is a context in Logback, called <em>MDC</em>.</p>
 </div>
 <div class="paragraph">
-<p>MDC allows to set certain values into a context, that gets logged every time alongside with the actual logging message.</p>
+<p>MDC allows to set certain values into a context, that gets logged every time alongside with the actual logging message. This way the context can be set once and the developer writing the actual logging statement does not need to include it into the log message anymore.</p>
+</div>
+<div class="paragraph">
+<p>In the example of the petclinic, the <code>PetContactFetcherBean</code> leverages the MDC context in the following manner: Directly after invoking the method <code>Optional&lt;Contact&gt; findContact(Pet pet)</code> the identification number of the Pet is set into the MDC context like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">PetContactFetcherBean.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Component</span>(PetContactFetcher.NAME)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">PetContactFetcherBean</span> <span class="directive">implements</span> PetContactFetcher {
+
+    <span class="directive">private</span> <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">Logger</span> log = LoggerFactory.getLogger(PetContactFetcherBean.class);
+
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> Optional&lt;Contact&gt; findContact(Pet pet) {
+
+        MDC.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">petId</span><span class="delimiter">&quot;</span></span>, pet.getIdentificationNumber()); <i class="conum" data-value="1"></i><b>(1)</b>
+
+        log.debug(<span class="string"><span class="delimiter">&quot;</span><span class="content">Searching Contact for Pet</span><span class="delimiter">&quot;</span></span>); <i class="conum" data-value="2"></i><b>(2)</b>
+
+        Optional&lt;<span class="predefined-type">Owner</span>&gt; petOwner = loadOwnerFor(pet);
+
+        <span class="keyword">if</span> (petOwner.isPresent()) {
+            log.debug(<span class="string"><span class="delimiter">&quot;</span><span class="content">Found Owner: {}</span><span class="delimiter">&quot;</span></span>, petOwner);
+
+            <span class="comment">// ...</span>
+
+            <span class="keyword">if</span> (isAvailable(telephone)) {
+                <span class="keyword">return</span> createContact(telephone, ContactType.TELEPHONE);
+            }
+
+            <span class="comment">// ...</span>
+
+        } <span class="keyword">else</span> {
+            <span class="keyword">return</span> Optional.empty();
+        }
+    }
+
+    <span class="directive">private</span> Optional&lt;Contact&gt; createContact(<span class="predefined-type">String</span> contactValue, ContactType contactType) {
+
+        Contact contact = <span class="keyword">new</span> Contact();
+        contact.setValue(contactValue);
+        contact.setType(contactType);
+
+        log.info(<span class="string"><span class="delimiter">&quot;</span><span class="content">Contact created: {}</span><span class="delimiter">&quot;</span></span>, contact); <i class="conum" data-value="3"></i><b>(3)</b>
+
+        MDC.remove(<span class="string"><span class="delimiter">&quot;</span><span class="content">petId</span><span class="delimiter">&quot;</span></span>); <i class="conum" data-value="4"></i><b>(4)</b>
+
+        <span class="keyword">return</span> Optional.of(contact);
+    }
+
+    <span class="comment">// ...</span>
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the Pets identification number is registered in the context under the key <code>petId</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the following logging messages do not need to include the Pet ID within the log message itself</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>the lifetime of a value in the MDC is independent of method boundaries</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>the key <code>petId</code> of the MDC is cleaned up at the end of the method</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The resulting logging output contains the petId (if configured in the logback configuration):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">2018-12-13 08:54:41.345 DEBUG [http-nio-8080-exec-7/petclinic/admin] [Pet: 205] c.h.s.p.c.PetContactFetcherBean - Searching Contact for Pet
+2018-12-13 08:54:41.354 DEBUG [http-nio-8080-exec-7/petclinic-core/admin] [Pet: 205] c.h.c.c.a.RdbmsStore - load: metaClass=petclinic_Owner, id=79fa17b9-a130-207d-5091-f79cceb9cf99, view=com.haulmont.sample.petclinic.entity.owner.Owner/_local
+2018-12-13 08:54:41.371 DEBUG [http-nio-8080-exec-7/petclinic/admin] [Pet: 205] c.h.s.p.c.PetContactFetcherBean - Found Owner: Optional[com.haulmont.sample.petclinic.entity.owner.Owner-79fa17b9-a130-207d-5091-f79cceb9cf99 [detached]]
+2018-12-13 08:54:41.374 INFO  [http-nio-8080-exec-7/petclinic/admin] [Pet: 205] c.h.s.p.c.PetContactFetcherBean - Contact created: TELEPHONE: 0049817312</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The log entries now contain the following part of the message: <code>[Pet: 205]</code>. This context entry is also used for CUBA internal logging messages like the logging message of the <code>RdbmsStore</code>.</p>
+</div>
+<div class="paragraph">
+<p>MDC has the following advantages over putting context values directly into the log message:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>resulting log messages are more structured and homogeneous</p>
+</li>
+<li>
+<p>the definition of the context can be extracted into a single place of the source code</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
