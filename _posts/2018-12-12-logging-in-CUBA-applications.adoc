@@ -115,7 +115,85 @@ Slf4J allows to define the following logging levels:
 
 Once the application has certain amount of logging information certain information get repeated in a lot of logging messages. In the petclinic example a lot of log messages would contain the Pet ID in order to get the context information in a fast manner. For those kinds of information, there is a context in Logback, called _MDC_.
 
-MDC allows to set certain values into a context, that gets logged every time alongside with the actual logging message.
+MDC allows to set certain values into a context, that gets logged every time alongside with the actual logging message. This way the context can be set once and the developer writing the actual logging statement does not need to include it into the log message anymore.
+
+In the example of the petclinic, the `PetContactFetcherBean` leverages the MDC context in the following manner: Directly after invoking the method `Optional<Contact> findContact(Pet pet)` the identification number of the Pet is set into the MDC context like this:
+
+
+.PetContactFetcherBean.java
+[source,java]
+----
+@Component(PetContactFetcher.NAME)
+public class PetContactFetcherBean implements PetContactFetcher {
+
+    private static final Logger log = LoggerFactory.getLogger(PetContactFetcherBean.class);
+
+
+    @Override
+    public Optional<Contact> findContact(Pet pet) {
+
+        MDC.put("petId", pet.getIdentificationNumber()); // <1>
+
+        log.debug("Searching Contact for Pet"); // <2>
+
+        Optional<Owner> petOwner = loadOwnerFor(pet);
+
+        if (petOwner.isPresent()) {
+            log.debug("Found Owner: {}", petOwner);
+
+            // ...
+
+            if (isAvailable(telephone)) {
+                return createContact(telephone, ContactType.TELEPHONE);
+            }
+
+            // ...
+
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    private Optional<Contact> createContact(String contactValue, ContactType contactType) {
+
+        Contact contact = new Contact();
+        contact.setValue(contactValue);
+        contact.setType(contactType);
+
+        log.info("Contact created: {}", contact); // <3>
+
+        MDC.remove("petId"); // <4>
+
+        return Optional.of(contact);
+    }
+
+    // ...
+
+}
+
+----
+<1> the Pets identification number is registered in the context under the key `petId`
+<2> the following logging messages do not need to include the Pet ID within the log message itself
+<3> the lifetime of a value in the MDC is independent of method boundaries
+<4> the key `petId` of the MDC is cleaned up at the end of the method
+
+
+The resulting logging output contains the petId (if configured in the logback configuration):
+
+[source,bash]
+----
+2018-12-13 08:54:41.345 DEBUG [http-nio-8080-exec-7/petclinic/admin] [Pet: 205] c.h.s.p.c.PetContactFetcherBean - Searching Contact for Pet
+2018-12-13 08:54:41.354 DEBUG [http-nio-8080-exec-7/petclinic-core/admin] [Pet: 205] c.h.c.c.a.RdbmsStore - load: metaClass=petclinic_Owner, id=79fa17b9-a130-207d-5091-f79cceb9cf99, view=com.haulmont.sample.petclinic.entity.owner.Owner/_local
+2018-12-13 08:54:41.371 DEBUG [http-nio-8080-exec-7/petclinic/admin] [Pet: 205] c.h.s.p.c.PetContactFetcherBean - Found Owner: Optional[com.haulmont.sample.petclinic.entity.owner.Owner-79fa17b9-a130-207d-5091-f79cceb9cf99 [detached]]
+2018-12-13 08:54:41.374 INFO  [http-nio-8080-exec-7/petclinic/admin] [Pet: 205] c.h.s.p.c.PetContactFetcherBean - Contact created: TELEPHONE: 0049817312
+----
+
+The log entries now contain the following part of the message: `[Pet: 205]`. This context entry is also used for CUBA internal logging messages like the logging message of the `RdbmsStore`.
+
+MDC has the following advantages over putting context values directly into the log message:
+
+- resulting log messages are more structured and homogeneous
+- the definition of the context can be extracted into a single place of the source code
 
 
 == Adjust logging configuration
