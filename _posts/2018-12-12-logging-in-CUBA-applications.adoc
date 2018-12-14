@@ -100,6 +100,12 @@ public class PetEdit extends StandardEditor<Pet> {
 <1> Logger configured for this class is defined through Slf4J
 <2> write debug log message when opening the screen
 
+=== View log messages through CUBA UI
+
+++++
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-application-logging/master/img/cuba-server-log-messages.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-application-logging/master/img/cuba-server-log-messages.png"/></a>
+++++
+
 === Logging Levels
 
 Slf4J allows to define the following logging levels:
@@ -110,6 +116,80 @@ Slf4J allows to define the following logging levels:
 - WARN
 - ERROR
 - FATAL
+
+== Adjust logging configuration
+
+In order to include the `petId` field into the log output the above mentioned logback configuration comes into play. Logback (alongside with other logging libraries) allows heavy customization on how and where the log information it processed and written to an output.
+
+Generally there are two options to adjust the configuration of logback. On the one side there is a configuration file called `logback.xml` where the configuration can be expressed. This adjustments happen at deployment time. Alternatively logback can (to a certain extend) be configured at runtime. CUBA offers a UI for adjusting logging configuration for this purpose.
+
+=== At deployment: logback.xml configuration file
+
+The configuration file `logback.xml` is the main place to adjust the configuration of logback. In a CUBA application this file is located in `deploy/tomcat/conf/logback.xml` (in case of http://fixMe[fast deployment] option). It looks like this:
+
+
+.logback.xml
+[source,xml]
+----
+<configuration debug="false" packagingData="true">
+
+    <property name="logDir" value="${catalina.base}/logs"/>
+
+    <appender name="File" class="ch.qos.logback.core.rolling.RollingFileAppender"> // <1>
+        <file>${logDir}/app.log</file>
+
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread%X{cubaApp}%X{cubaUser}] %logger - %msg%n</pattern> // <2>
+        </encoder>
+    </appender>
+
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender"> // <3>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level %-40logger{36}- %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root>
+        <appender-ref ref="Console"/>
+        <appender-ref ref="File"/>
+    </root>
+
+    <logger name="com.haulmont.sample.petclinic" level="DEBUG"/> // <4>
+    <logger name="com.haulmont.cuba" level="DEBUG"/>
+    <logger name="com.haulmont.cuba.core.sys" level="INFO"/>
+
+    <!-- ... -->
+
+</configuration>
+
+----
+<1> a file appender to write log messages to the logfile `app.log`
+<2> `pattern` configures how a single log message line within the file should look like
+<3> another appender writes the log messages to `STDOUT` (with different options)
+<3> logging levels can be configured on a per class / package basis
+
+CUBA by default configures multiple log appenders. An appender describes where the log information should be written to. There are multiple appenders available out of the box. Each appender has options to configure its behavior (like how the log message should be formatted, which information should be logged etc.). Common Log appenders are `FileAppender`, `ConsoleAppender` or `DatabaseAppender`.
+
+The configuration of loggers allow to define on a per class / package basis the threshold. This means that for certain subparts of the application, it is possible to get log messages that have been written as `DEBUG` while for certain other application parts it is only necessary to see log messages of `WARN` and `ERROR`.
+
+In the example above the package`com.haulmont.sample.petclinic` is set to level `DEBUG`. This means, that it will output all log messages that have _at least_  the level `DEBUG`. `TRACE` log messages would not be displayed.
+
+
+=== At runtime: CUBA logging UI
+
+Adjusting the configuration of the file requires a restart of the application. For temporary debugging sessions it is oftentimes helpful to not have to restart the server only to adjust the logging level or a certain subpart of the application code.
+
+For this use-case a CUBA application allows to reconfigure the levels of existing loggers and also add loggers at runtime trough a user interface.
+
+
+++++
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-application-logging/master/img/cuba-server-log-settings.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-application-logging/master/img/cuba-server-log-settings.png"/></a>
+++++
+
 
 === Set logging context with MDC
 
@@ -178,7 +258,35 @@ public class PetContactFetcherBean implements PetContactFetcher {
 <4> the key `petId` of the MDC is cleaned up at the end of the method
 
 
-The resulting logging output contains the petId (if configured in the logback configuration):
+Now that the MDC has values in it, the next step is to reconfigure logback in order to see the dedicated MDC values in the log output.
+
+
+.logback.xml
+[source,xml]
+----
+<configuration debug="false" packagingData="true">
+
+    <!-- ... -->
+
+    <appender name="File" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <!-- ... -->
+
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread%X{cubaApp}%X{cubaUser}] [Pet: %X{petId}] %logger - %msg%n</pattern> // <1>
+        </encoder>
+
+    </appender>
+
+    <!-- ... -->
+
+</configuration>
+
+----
+<1> `%X{petId}` takes the value with the key `petId` of the MDC and writes it to the log file
+
+
+The resulting logging output contains the Pet identification number:
 
 [source,bash]
 ----
@@ -192,15 +300,9 @@ The log entries now contain the following part of the message: `[Pet: 205]`. Thi
 
 MDC has the following advantages over putting context values directly into the log message:
 
-- resulting log messages are more structured and homogeneous
+- log messages are homogeneous across all usages of logging
+- log messages are structured allowing for explicit search
 - the definition of the context can be extracted into a single place of the source code
-
-
-== Adjust logging configuration
-
-=== At deployment: logback.xml configuration file
-
-=== At runtime: CUBA logging UI
 
 
 == Logging to centralized Logging solution
