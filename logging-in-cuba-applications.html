@@ -156,7 +156,7 @@
 <h2 id="how_to_log_in_a_cuba_application">How to log in a CUBA application</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The usage of logging libraries within a CUBA application does not differ from other Java application in this regard. CUBA is by default configured with Sl4fJ and Logback in place. The framework itself uses logback for information about the execution of production. In order to log information within a class, an instance of a Logger has to be created in the class that wants to log information.</p>
+<p>The usage of logging libraries within a CUBA application does not differ from other Java application in this regard. CUBA is by default configured with Sl4fJ and Logback in place. The framework itself uses logback for framework internal logging messages. In order to log information within a class, an instance of a Logger has to be created in the class that wants to log information.</p>
 </div>
 <div class="listingblock">
 <div class="title">PetEdit.java</div>
@@ -190,10 +190,25 @@
 </div>
 <div class="sect2">
 <h3 id="view_log_messages_through_cuba_ui">View log messages through CUBA UI</h3>
+<div class="paragraph">
+<p>There are several ways to get access to the log output of the running application. The most common way is a log file within the filesystem of the server. Unfortunately this oftentimes requires special permissions and knowledge to get access to.</p>
+</div>
+<div class="paragraph">
+<p>CUBA offers a user interface screen, which displays the log information of the running application. It can be found via <code>Administration &gt; Server Log</code>:</p>
+</div>
 <a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-application-logging/master/img/cuba-server-log-messages.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-application-logging/master/img/cuba-server-log-messages.png"/></a>
+<div class="paragraph">
+<p>The UI allows the user to display different log files or download them for later use. It gives also non-administrator roles access to the logs.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="logging_levels">Logging Levels</h3>
+<div class="paragraph">
+<p>Information that should be logged are of different types in multiple dimensions. In order to reason about the messages quickly and help the log message reader to distinguish between signal and noise, all logging libraries offer one very important dimension to categorize the messages: the Log level.</p>
+</div>
+<div class="paragraph">
+<p>The log level can be seen as how critical the message is. It is important to note that the log levels ordered and are based on each other.</p>
+</div>
 <div class="paragraph">
 <p>Slf4J allows to define the following logging levels:</p>
 </div>
@@ -226,10 +241,10 @@
 <h2 id="adjust_logging_configuration">Adjust logging configuration</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In order to include the <code>petId</code> field into the log output the above mentioned logback configuration comes into play. Logback (alongside with other logging libraries) allows heavy customization on how and where the log information it processed and written to an output.</p>
+<p>Logback (alongside with other logging libraries) allows customization on how and where the log information it processed and written to an output.</p>
 </div>
 <div class="paragraph">
-<p>Generally there are two options to adjust the configuration of logback. On the one side there is a configuration file called <code>logback.xml</code> where the configuration can be expressed. This adjustments happen at deployment time. Alternatively logback can (to a certain extend) be configured at runtime. CUBA offers a UI for adjusting logging configuration for this purpose.</p>
+<p>Generally there are two options to adjust the configuration of logback. On the one side there is a configuration file called <code>logback.xml</code> where the configuration can be expressed. This adjustments happen at deployment time. Alternatively logback can (to a certain extend) be configured at runtime. CUBA offers a UI for adjusting logging configuration for this purpose (<code>Administration &gt; Server Log</code>).</p>
 </div>
 <div class="sect2">
 <h3 id="at_deployment_logback_xml_configuration_file">At deployment: logback.xml configuration file</h3>
@@ -296,13 +311,13 @@
 </table>
 </div>
 <div class="paragraph">
-<p>CUBA by default configures multiple log appenders. An appender describes where the log information should be written to. There are multiple appenders available out of the box. Each appender has options to configure its behavior (like how the log message should be formatted, which information should be logged etc.). Common Log appenders are <code>FileAppender</code>, <code>ConsoleAppender</code> or <code>DatabaseAppender</code>.</p>
+<p>CUBA by default configures multiple log appender. An appender describes where the log information should be written to. There are multiple appender available out of the box. Each appender has options to configure its behavior (like how the log message should be formatted, which information should be logged etc.). Common Log appender are <code>FileAppender</code>, <code>ConsoleAppender</code> or <code>DatabaseAppender</code>.</p>
 </div>
 <div class="paragraph">
-<p>The configuration of loggers allow to define on a per class / package basis the threshold. This means that for certain subparts of the application, it is possible to get log messages that have been written as <code>DEBUG</code> while for certain other application parts it is only necessary to see log messages of <code>WARN</code> and <code>ERROR</code>.</p>
+<p>The configuration of loggers allow to define on a per class / package basis the threshold. This means that for certain sub-parts of the application, it is possible to get log messages that have been written as <code>DEBUG</code> while for certain other application parts it is only necessary to see log messages of <code>WARN</code> and <code>ERROR</code>.</p>
 </div>
 <div class="paragraph">
-<p>In the example above the package`com.haulmont.sample.petclinic` is set to level <code>DEBUG</code>. This means, that it will output all log messages that have <em>at least</em>  the level <code>DEBUG</code>. <code>TRACE</code> log messages would not be displayed.</p>
+<p>In the example above the package`com.haulmont.sample.petclinic` is set to level <code>DEBUG</code>. This means, that it will output all log messages that have <em>at least</em> the level <code>DEBUG</code>. Due to the semantic order of the log levels <code>INFO</code>, <code>WARN</code>, <code>ERROR</code> and <code>FATAL</code> will also be logged for this package. <code>TRACE</code> log messages on the other hand will not be displayed.</p>
 </div>
 </div>
 <div class="sect2">
@@ -451,7 +466,7 @@
 <div class="ulist">
 <ul>
 <li>
-<p>log messages are homogeneous across all usages of logging</p>
+<p>log messages are homogeneous for all logging messages</p>
 </li>
 <li>
 <p>log messages are structured allowing for explicit search</p>
@@ -473,7 +488,15 @@
 <div class="sect1">
 <h2 id="summary">Summary</h2>
 <div class="sectionbody">
-
+<div class="paragraph">
+<p>Logging is an essential part for developers and administrators to reason about a running application. It enables developers to observe a system through opening up the "black-box" and get valuable insights. The use cases go from debugging over performance analysis to observing user behavior.</p>
+</div>
+<div class="paragraph">
+<p>The logging facilities in the Java and CUBA ecosystem are very mature and can be used without any friction. But as the logging API is so generic and usable in multiple ways, it heavily depends on conventions in order to get qualitative logging messages in the application. There are different mechanisms to not get overwhelmed by raw logging messages through proper logging configuration, diagnosis contexts (MDC) and logging levels.</p>
+</div>
+<div class="paragraph">
+<p>CUBA offers an opinionated way of dealing with logging configuration and access to logs. But as it is based on standard Java logging mechanism it plays nicely with other solutions like centralized logging systems.</p>
+</div>
 </div>
 </div>
 
