@@ -78,7 +78,7 @@ Logback on the other hand is the logging library that fulfils this API and does 
 
 == How to log in a CUBA application
 
-The usage of logging libraries within a CUBA application does not differ from other Java application in this regard. CUBA is by default configured with Sl4fJ and Logback in place. The framework itself uses logback for information about the execution of production. In order to log information within a class, an instance of a Logger has to be created in the class that wants to log information.
+The usage of logging libraries within a CUBA application does not differ from other Java application in this regard. CUBA is by default configured with Sl4fJ and Logback in place. The framework itself uses logback for framework internal logging messages. In order to log information within a class, an instance of a Logger has to be created in the class that wants to log information.
 
 .PetEdit.java
 [source,java]
@@ -102,11 +102,21 @@ public class PetEdit extends StandardEditor<Pet> {
 
 === View log messages through CUBA UI
 
+There are several ways to get access to the log output of the running application. The most common way is a log file within the filesystem of the server. Unfortunately this oftentimes requires special permissions and knowledge to get access to.
+
+CUBA offers a user interface screen, which displays the log information of the running application. It can be found via `Administration > Server Log`:
+
 ++++
 <a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-application-logging/master/img/cuba-server-log-messages.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-application-logging/master/img/cuba-server-log-messages.png"/></a>
 ++++
 
+The UI allows the user to display different log files or download them for later use. It gives also non-administrator roles access to the logs.
+
 === Logging Levels
+
+Information that should be logged are of different types in multiple dimensions. In order to reason about the messages quickly and help the log message reader to distinguish between signal and noise, all logging libraries offer one very important dimension to categorize the messages: the Log level.
+
+The log level can be seen as how critical the message is. It is important to note that the log levels ordered and are based on each other.
 
 Slf4J allows to define the following logging levels:
 
@@ -119,9 +129,9 @@ Slf4J allows to define the following logging levels:
 
 == Adjust logging configuration
 
-In order to include the `petId` field into the log output the above mentioned logback configuration comes into play. Logback (alongside with other logging libraries) allows heavy customization on how and where the log information it processed and written to an output.
+Logback (alongside with other logging libraries) allows customization on how and where the log information it processed and written to an output.
 
-Generally there are two options to adjust the configuration of logback. On the one side there is a configuration file called `logback.xml` where the configuration can be expressed. This adjustments happen at deployment time. Alternatively logback can (to a certain extend) be configured at runtime. CUBA offers a UI for adjusting logging configuration for this purpose.
+Generally there are two options to adjust the configuration of logback. On the one side there is a configuration file called `logback.xml` where the configuration can be expressed. This adjustments happen at deployment time. Alternatively logback can (to a certain extend) be configured at runtime. CUBA offers a UI for adjusting logging configuration for this purpose (`Administration > Server Log`).
 
 === At deployment: logback.xml configuration file
 
@@ -170,13 +180,13 @@ The configuration file `logback.xml` is the main place to adjust the configurati
 <1> a file appender to write log messages to the logfile `app.log`
 <2> `pattern` configures how a single log message line within the file should look like
 <3> another appender writes the log messages to `STDOUT` (with different options)
-<3> logging levels can be configured on a per class / package basis
+<4> logging levels can be configured on a per class / package basis
 
-CUBA by default configures multiple log appenders. An appender describes where the log information should be written to. There are multiple appenders available out of the box. Each appender has options to configure its behavior (like how the log message should be formatted, which information should be logged etc.). Common Log appenders are `FileAppender`, `ConsoleAppender` or `DatabaseAppender`.
+CUBA by default configures multiple log appender. An appender describes where the log information should be written to. There are multiple appender available out of the box. Each appender has options to configure its behavior (like how the log message should be formatted, which information should be logged etc.). Common Log appender are `FileAppender`, `ConsoleAppender` or `DatabaseAppender`.
 
-The configuration of loggers allow to define on a per class / package basis the threshold. This means that for certain subparts of the application, it is possible to get log messages that have been written as `DEBUG` while for certain other application parts it is only necessary to see log messages of `WARN` and `ERROR`.
+The configuration of loggers allow to define on a per class / package basis the threshold. This means that for certain sub-parts of the application, it is possible to get log messages that have been written as `DEBUG` while for certain other application parts it is only necessary to see log messages of `WARN` and `ERROR`.
 
-In the example above the package`com.haulmont.sample.petclinic` is set to level `DEBUG`. This means, that it will output all log messages that have _at least_  the level `DEBUG`. `TRACE` log messages would not be displayed.
+In the example above the package`com.haulmont.sample.petclinic` is set to level `DEBUG`. This means, that it will output all log messages that have _at least_ the level `DEBUG`. Due to the semantic order of the log levels `INFO`, `WARN`, `ERROR` and `FATAL` will also be logged for this package. `TRACE` log messages on the other hand will not be displayed.
 
 
 === At runtime: CUBA logging UI
@@ -300,7 +310,7 @@ The log entries now contain the following part of the message: `[Pet: 205]`. Thi
 
 MDC has the following advantages over putting context values directly into the log message:
 
-- log messages are homogeneous across all usages of logging
+- log messages are homogeneous for all logging messages
 - log messages are structured allowing for explicit search
 - the definition of the context can be extracted into a single place of the source code
 
@@ -310,5 +320,10 @@ MDC has the following advantages over putting context values directly into the l
 
 == Summary
 
+Logging is an essential part for developers and administrators to reason about a running application. It enables developers to observe a system through opening up the "black-box" and get valuable insights. The use cases go from debugging over performance analysis to observing user behavior.
+
+The logging facilities in the Java and CUBA ecosystem are very mature and can be used without any friction. But as the logging API is so generic and usable in multiple ways, it heavily depends on conventions in order to get qualitative logging messages in the application. There are different mechanisms to not get overwhelmed by raw logging messages through proper logging configuration, diagnosis contexts (MDC) and logging levels.
+
+CUBA offers an opinionated way of dealing with logging configuration and access to logs. But as it is based on standard Java logging mechanism it plays nicely with other solutions like centralized logging systems.
 
 
