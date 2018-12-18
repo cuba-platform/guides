@@ -317,6 +317,73 @@ MDC has the following advantages over putting context values directly into the l
 
 == Logging to centralized Logging solution
 
+Having very detailed information about the execution of the running application is very important. But having to deal with a huge amount of log data is challenging. Storing this information in the filesystem of the server is not very accessible and also not very efficient to work with. This is why oftentimes centralized logging solutions are used for storing and accessing the log information.
+
+A very common open source centralized logging system is based on Elasticsearch - an full text search data store that turned out to be a great fit for the logging use case.
+
+Logback integrates easily with centralized logging solutions via the concept of appender. In the configuration file there were already two appender configured for the application: `ConsoleAppender` and `FileAppender`.
+
+For Elasticsearch there is a Logback Appender, that will directly send the logging information to the elasticsearch cluster instead of putting the log messages into a file. There are different option on how to configure logging to Elasticsearch (aka ELK-Stack). As this guide mainly deals with the integration with Logback within the application, configuring the Elasticsearch server in a production ready way is out of scope.
+
+In order to use Elasticsearch as a log storage backend a dependency needs to be added to the CUBA application. In the `build.gradle` file the following dependency has to be added to _all_ modules: `runtime "com.internetitem:logback-elasticsearch-appender:1.6"`
+
+The `logback.xml` configuration file should be extended to contain an additional appender:
+
+.logback.xml
+[source,xml]
+----
+<configuration debug="false" packagingData="true">
+
+    <!-- ... -->
+
+    <appender name="elasticsearch" class="com.internetitem.logback.elasticsearch.ElasticsearchAppender"> // <1>
+        <url>${ELASTICSEARCH_CLUSTER_URL}</url> // <2>
+        <index>cuba-petclinic-logs-%date{yyyy-MM-dd}</index> // <3>
+        <type>cuba-petclinic</type>
+        <errorLoggerName>es-error-logger</errorLoggerName>
+        <includeMdc>true</includeMdc>
+        <properties>
+            <property>
+                <name>host</name>
+                <value>${HOSTNAME}</value>
+                <allowEmpty>false</allowEmpty>
+            </property>
+            <property>
+                <name>severity</name>
+                <value>%level</value>
+            </property>
+            <property>
+                <name>thread</name>
+                <value>%thread</value>
+            </property>
+            <property>
+                <name>logger</name>
+                <value>%logger</value>
+            </property>
+            <property>
+                <name>stacktrace</name>
+                <value>%ex</value>
+            </property>
+        </properties>
+    </appender>
+
+
+    <!-- ... -->
+
+</configuration>
+
+----
+<1> an `elasticsearch` appender of type `ElasticsearchAppender` is registered for the application
+<2> the URL of the elasticsearch cluster is extracted form the environment variables
+<3> The elasticsearch index for the application logs is `cuba-petclinic-logs-%date{yyyy-MM-dd}` with a daily rotation
+
+With that configuration in place, the application will take the log messages and send them to elasticsearch. Kibana as a user interface for accessing data in elasticsearch is capable of displaying the log information properly. Via the structured as well as full text search capabilities, the log information can be accessed in a much easier way compared to direct access to the log files.
+
+
+++++
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-application-logging/master/img/centralized-logging-with-kibana-and-cuba.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-application-logging/master/img/centralized-logging-with-kibana-and-cuba.png"/></a>
+++++
+
 
 == Summary
 
