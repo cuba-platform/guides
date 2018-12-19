@@ -35,7 +35,9 @@ include::includes/petclinic_introduction.adoc[]
 
 Logging information about the running application is essential in order to get insights on how the application behaves, what unexpected behavior occurs and how the users are interacting with the system.
 
-Logging is a common pattern of application development. The developer writes statements into the application source code indicating that certain actions happened. In the following example two possible log messages are written. In case of a successful saving of the `Pet` instance, an informal message is written with the details of the pet that has been stored. In case of a failure of storing the Pet, an error message is written with information about the failure.
+Logging is a common tool of application development and operation. The developer writes statements into the application source code indicating that certain actions happened.
+
+In the following petclinic example two possible log messages are written. In case of a successful storage of the `Pet` instance, an informal message is written with the details of the pet that has been stored. In case of a failure of storing the Pet, an error message is written with information about the failure.
 
 
 .PetServiceBean.java
@@ -55,9 +57,11 @@ private Pet savePet(Pet pet) {
 }
 ----
 
-Those messages will be written in a configured place that some administrator or developer has access to for later use. Normally this are plain text files, but it is also possible to store the logging information in a Database or a centralized logging service.
+Those messages will be written in a configured place that some administrator or developer has access to for later use. Normally this place is a plain text file, but it is also possible to store the logging information in a Database or a centralized logging service.
 
-For development purposes the developer normally has the ability to debug the source code. For a running application this is normally not the case. Either because of security reasons or simply because the application is not run on a server that is under the control of the developer.
+While the application is developed there is the ability to debug the source code. This gives the developer the ability to stop the application at any point in time and reason about its internal state.
+
+For a running application this is normally not the case. Either because of security reasons or simply because the application is not run on a server that is under the control of the developer.
 
 Therefore logging is the another tool in the toolbox of a developer in order to do diagnostics of a running application.
 
@@ -74,51 +78,69 @@ In recent years a commonly used combination has been adopted in the Java ecosyst
 
 Slf4J is an abstract API that encapsulates the concrete details of the logging library. It offers different methods for logging information to the logging system with different servity levels (`DEBUG`, `INFO`, `WARN` etc.).
 
-Logback on the other hand is the logging library that fulfils this API and does the heavy lifting of writing the message to a log appender. It contains the options to configure where the log messages should go to.
+Logback on the other hand is the logging library that fulfils this API and does the heavy lifting of writing the message to a log appender. A appender is a component within the logging library that takes a logging event created by the application developer and writes it to a specific output. Logback contains the options to configure how the logging system should behave, which log information go into which appender etc.
 
 == How to log in a CUBA application
 
-The usage of logging libraries within a CUBA application does not differ from other Java application in this regard. CUBA is by default configured with Sl4fJ and Logback in place. The framework itself uses logback for framework internal logging messages. In order to log information within a class, an instance of a Logger has to be created in the class that wants to log information.
+The usage of logging libraries within a CUBA application does not differ from other Java application in this regard. CUBA is by default configured with Sl4fJ and Logback in place. The framework itself uses them for framework internal logging messages.
 
-.PetEdit.java
+In order to log information within a class, an instance of a Logger has to be created in the class that wants to log information.
+
+.DiseaseWarningMailingServiceBean.java
 [source,java]
 ----
-@UiController("petclinic_Pet.edit")
-@UiDescriptor("pet-edit.xml")
-@LoadDataBeforeShow
-public class PetEdit extends StandardEditor<Pet> {
+@Service(DiseaseWarningMailingService.NAME)
+public class DiseaseWarningMailingServiceBean implements DiseaseWarningMailingService {
 
-    private static final Logger log = LoggerFactory.getLogger(PetEdit.class); // <1>
 
-    @Subscribe
-    protected void onInit(InitEvent event) {
-        log.debug("Pet editor opened"); // <2>
-    }
+  private static final Logger log = LoggerFactory.getLogger(DiseaseWarningMailingServiceBean.class); // <1>
+
+  // ...
+
+  @Override
+  public int warnAboutDisease(PetType petType, String disease, String city) {
+
+    log.debug("Disease warnings should be send out for Pet type: {}, Disease: {} in the area of {}", petType, disease, city); // <2>
+
+    List<Pet> petsInDiseaseCity = findPetsInDiseaseCity(petType, city);
+    List<Pet> petsWithEmail = filterPetsWithValidOwnersEmail(petsInDiseaseCity);
+
+    log.debug("possible pets in danger: {}", petsWithEmail);
+
+    petsWithEmail.forEach(pet -> sendEmailToPetsOwner(pet, disease, city));
+    int amountOfInformedPets = petsWithEmail.size();
+
+    log.info("Summary: Disease warning send out to {} Pet(s) in {}", amountOfInformedPets, city); // <3>
+
+    return amountOfInformedPets;
+  }
+
+
+  // ...
 
 }
 ----
 <1> Logger configured for this class is defined through Slf4J
-<2> write debug log message when opening the screen
+<2> write debug log message when `warnAboutDisease` is initiated
+<3> write summary info message about the outcome of the method execution. Variable parts of the log message can be passed into the method as parameters and marked in the log message as the following placeholder: `{}`
 
 === View log messages through CUBA UI
 
-There are several ways to get access to the log output of the running application. The most common way is a log file within the filesystem of the server. Unfortunately this oftentimes requires special permissions and knowledge to get access to.
+There are several ways to get access to the log output of the running application. The most common way is a log file within the filesystem of the server. Unfortunately this oftentimes requires special permissions and knowledge to get access to the file.
 
-CUBA offers a user interface screen, which displays the log information of the running application. It can be found via `Administration > Server Log`:
+CUBA offers a user interface screen, which displays the log information of the running application. It can be found via `Administration > Server Log > View`:
 
 ++++
 <a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-application-logging/master/img/cuba-server-log-messages.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-application-logging/master/img/cuba-server-log-messages.png"/></a>
 ++++
 
-The UI allows the user to display different log files or download them for later use. It gives also non-administrator roles access to the logs.
+The UI allows the user to display different log files or download them for later use. It gives also non-administrator roles access to the logs, while it is still possible to restrict access only to allowed roles.
 
 === Logging Levels
 
 Information that should be logged are of different types in multiple dimensions. In order to reason about the messages quickly and help the log message reader to distinguish between signal and noise, all logging libraries offer one very important dimension to categorize the messages: the Log level.
 
-The log level can be seen as how critical the message is. It is important to note that the log levels ordered and are based on each other.
-
-Slf4J allows to define the following logging levels:
+The log level can be seen as how critical / urgent the message is. It is important to note that the log levels ordered and are based on each other. Slf4J defines the following https://www.slf4j.org/api/org/apache/log4j/Level.html(logging levels) that can be used by in an application:
 
 - TRACE
 - DEBUG
@@ -127,15 +149,19 @@ Slf4J allows to define the following logging levels:
 - ERROR
 - FATAL
 
+The list is sorted by urgency descending. `DEBUG` log messages on the one end are normally used for information that help to identify the internal state of the application for application developers.
+
+`ERROR` and `FATAL` are normally used in cases where an unexpected situation within the application occurred up to the point that the application cannot fulfil its purpose anymore.
+
 == Adjust logging configuration
 
-Logback (alongside with other logging libraries) allows customization on how and where the log information it processed and written to an output.
+Logback (alongside with other logging libraries) allows customization on how and where the log information it processed and written to an output, mainly through the already mentioned `appender` concept.
 
-Generally there are two options to adjust the configuration of logback. On the one side there is a configuration file called `logback.xml` where the configuration can be expressed. This adjustments happen at deployment time. Alternatively logback can (to a certain extend) be configured at runtime. CUBA offers a UI for adjusting logging configuration for this purpose (`Administration > Server Log`).
+Generally there are two options to adjust the configuration of logback. On the one side there is a configuration file called `logback.xml` where the configuration can be expressed. This adjustments happen at deployment time. Alternatively logback can (to a certain extend) be configured at runtime. CUBA offers a UI for adjusting logging configuration for this purpose (`Administration > Server Log > Options`).
 
 === At deployment: logback.xml configuration file
 
-The configuration file `logback.xml` is the main place to adjust the configuration of logback. In a CUBA application this file is located in `deploy/tomcat/conf/logback.xml` (in case of http://fixMe[fast deployment] option). It looks like this:
+The configuration file `logback.xml` is the main place to adjust the configuration of logback. In a CUBA application this file is located in `deploy/tomcat/conf/logback.xml` (in case of https://doc.cuba-platform.com/manual-{cuba_version}/fast_deployment.html[fast deployment] option). It looks like this:
 
 
 .logback.xml
@@ -182,11 +208,11 @@ The configuration file `logback.xml` is the main place to adjust the configurati
 <3> another appender writes the log messages to `STDOUT` (with different options)
 <4> logging levels can be configured on a per class / package basis
 
-CUBA by default configures multiple log appender. An appender describes where the log information should be written to. There are multiple appender available out of the box. Each appender has options to configure its behavior (like how the log message should be formatted, which information should be logged etc.). Common Log appender are `FileAppender`, `ConsoleAppender` or `DatabaseAppender`.
+CUBA by default configures multiple log appender. An appender describes where the log information should be written to. There are multiple appender available out of the box. Each appender has options to configure its behavior (like how the log message should be formatted, which information should be logged etc.). Common Log appender are `FileAppender` and `ConsoleAppender`.
 
-The configuration of loggers allow to define on a per class / package basis the threshold. This means that for certain sub-parts of the application, it is possible to get log messages that have been written as `DEBUG` while for certain other application parts it is only necessary to see log messages of `WARN` and `ERROR`.
+The configuration of loggers allow to define the threshold on a per class / package basis. This means that for certain sub-parts of the application, it is possible to get log messages that have been written as `DEBUG` while for other parts it is only necessary to see log messages of `WARN` and `ERROR`.
 
-In the example above the package`com.haulmont.sample.petclinic` is set to level `DEBUG`. This means, that it will output all log messages that have _at least_ the level `DEBUG`. Due to the semantic order of the log levels `INFO`, `WARN`, `ERROR` and `FATAL` will also be logged for this package. `TRACE` log messages on the other hand will not be displayed.
+In the example above the package `com.haulmont.sample.petclinic` is set to level `DEBUG`. This means, that it will output all log messages that have _at least_ the level `DEBUG`. Due to the semantic order of the log levels `INFO`, `WARN`, `ERROR` and `FATAL` will also be logged for this package. `TRACE` log messages on the other hand will not be displayed.
 
 
 === At runtime: CUBA logging UI
@@ -394,3 +420,6 @@ The logging facilities in the Java and CUBA ecosystem are very mature and can be
 CUBA offers an opinionated way of dealing with logging configuration and access to logs. But as it is based on standard Java logging mechanism it plays nicely with other solutions like centralized logging systems.
 
 
+== Further information
+
+* https://blog.scalyr.com/2017/12/logging-levels/(Explanation of Logging levels)
