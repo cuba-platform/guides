@@ -11,84 +11,87 @@
     <link rel="stylesheet" href="{{ '/css/foundation.css' | prepend: site.baseurl }}">
     <link rel="stylesheet" href="{{ '/css/font-awesome.css' | prepend: site.baseurl }}">
     <link rel="stylesheet" href="{{ '/css/coderay.css' | prepend: site.baseurl }}">
-    <link rel="stylesheet" href="{{ '/css/asciidoctor.css' | prepend: site.baseurl }}">
-    <link rel="stylesheet" href="{{ '/css/cuba.css' | prepend: site.baseurl }}">
+    <link rel="stylesheet" href="{{ '/css/bootstrap.css' | prepend: site.baseurl }}">
+    <link rel="stylesheet" href="https://www.cuba-platform.com/sites/all/themes/cuba_adaptive/css/reset.css">
+    <link rel="stylesheet" href="https://www.cuba-platform.com/sites/all/themes/cuba_adaptive/css/animate.css">
+    <link rel="stylesheet" href="{{ '/css/extra.css' | prepend: site.baseurl }}">
+    <link rel="stylesheet" href="{{ '/css/extra2.css' | prepend: site.baseurl }}">
+    <link rel="stylesheet" href="{{ '/css/guides.css' | prepend: site.baseurl }}">
     <script src="{{ '/js/vendor/modernizr.js' | prepend: site.baseurl }}"></script>
-    <script src="{{ '/js/toc.js' | prepend: site.baseurl }}"></script>
-
-    <style type="text/css">
-
-        .guide-item {
-            width: 100%;
-            background: #ddd;
-            padding: 20px;
-            margin-top: 10px;
-            font-size: 18px;
-            color: #fff;
-        }
-    </style>
+    <script src="{{ '/js/jquery_v2.1.min.js' | prepend: site.baseurl }}"></script
 </head>
-<body>
+<body class="cuba-website-styles html not-front not-logged-in no-sidebars page-webinars service-booking i18n-en">
 
+<section id="wrapper">
+    {% include header.html %}
 
-<!-- Nav Bar -->
-<!--<nav class="top-bar" data-topbar>-->
-<!--<ul class="title-area">-->
-<!--&lt;!&ndash; Title Area &ndash;&gt;-->
-<!--<li class="name">-->
-<!--<h1>-->
-<!--<a href="{{page.root}}">{{site.title}}</a>-->
-<!--</h1>-->
-<!--</li>-->
-<!--<li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>-->
-<!--</ul>-->
-<!--</nav>-->
-<!-- End Nav -->
+    <!-- Main Page Content and Sidebar -->
+    <div class="content-wrapper">
+        <div class="text-node">
+            <div class="region region-content">
+                <section id="block-system-main" class="block block-system clearfix">
+                    <div class="panel-display panel-1col clearfix" id="webinars-page">
+                        <div class="panel-panel panel-col">
+                            <div>
+                                <!-- Title -->
+                                <div class="panel-pane pane-custom pane-1">
+                                    <div class="pane-content">
+                                        <div class="sb-block sb-head">
+                                            <h2>Guides</h2>
+                                            <span>Comprehensive articles about CUBA Platform specifics (version 7.0+)</span>
+                                        </div>
+                                    </div>
+                                </div>
 
-
-<!-- Main Page Content and Sidebar -->
-
-<div class="row">
-
-    <!-- Main Blog Content -->
-    <div class="large-12 columns" role="content">
-
-
-        {{ content }}
-
-        <div class="grid">
-            {% for post in site.posts %}
-            <div class="element-item {{ post.category }} guide-item">
-                <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+                                <!-- Accordion -->
+                                <div class="panel-pane pane-custom pane-2 cuba-container">
+                                    <div class="pane-content">
+                                        <div class="accordion-webinars">
+                                            {% for post in site.posts %}
+                                            <div class="item">
+                                                <a name="tr1"></a>
+                                                <div class="item-head collapsed" data-toggle="collapse" data-target="#{{ post.permalink }}" href="#{{ post.permalink }}" aria-expanded="false">
+                                                    <a>
+                                                        <span>{{ post.navtitle }}</span>
+                                                        <i></i>
+                                                    </a>
+                                                </div>
+                                                <div class="item-body collapse" id="{{ post.permalink }}" aria-expanded="false" style="height: 0px;">
+                                                    <div class="descr">
+                                                        <div class="main">
+                                                            <h6 class="single">Description</h6>
+                                                            {{ post.excerpt }}
+                                                        </div>
+                                                        <div class="btn-wrapper">
+                                                            <a href="{{ post.url | prepend: site.baseurl }}" class="button join-webinar">Read now</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <!-- End of accordion -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </div>
-            {% endfor %}
-        </div>
-
-
-    </div>
-
-    <!-- End Main Content -->
-</div>
-
-<!-- End Main Content and Sidebar -->
-
-
-<!-- Footer -->
-
-<footer class="row">
-    <div class="large-12 columns">
-        <hr>
-        <div class="row">
-            <div class="large-12 columns">
-                <p>Copyright &#169; 2008-{{ site.time | date: '%Y' }} Haulmont</p>
-            </div>
         </div>
     </div>
-</footer>
+    <!-- End Main Content and Sidebar -->
+
+    <!-- Footer -->
+    {% include footer.html %}
+</section>
 
 
-<script src="{{'/js/vendor/jquery.js' | prepend: site.baseurl }}"></script>
+<script src="{{ '/js/toc.js' | prepend: site.baseurl }}"></script>
 <script src="{{'/js/foundation.min.js' | prepend: site.baseurl }}"></script>
+<script src="{{ '/js/navigation.js' | prepend: site.baseurl }}"></script>
+<script src="{{ '/js/extra.js' | prepend: site.baseurl }}"></script>
+<script src="{{ '/js/extra2.js' | prepend: site.baseurl }}"></script>
 <script>
 $(document).foundation();
 var doc = document.documentElement;
