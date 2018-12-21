@@ -5,6 +5,8 @@ permalink: intro-working-with-data-in-cuba
 ---
 = Introduction to working with Data in CUBA
 :showtitle:
+:sectlinks:
+:sectanchors:
 :page-navtitle: Introduction to working with Data in CUBA
 :page-excerpt: Overview on how to read and write data in a CUBA application
 :page-root: ../../../

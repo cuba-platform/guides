@@ -5,6 +5,8 @@ permalink: decouple-business-logic-with-app-events
 ---
 = Decouple business logic with application events
 :showtitle:
+:sectlinks:
+:sectanchors:
 :page-navtitle: Decouple business logic with application events
 :page-excerpt: Overview on how application events can be used in a CUBA application to decouple business logic
 :page-root: ../../../

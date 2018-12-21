@@ -5,6 +5,8 @@ permalink: create-business-logic-in-cuba
 ---
 = Create business logic in CUBA
 :showtitle:
+:sectlinks:
+:sectanchors:
 :page-navtitle: Create business logic in CUBA
 :page-excerpt: Guide on what options are available for putting business logic into a CUBA application
 :page-root: ../../../
