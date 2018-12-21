@@ -11,95 +11,82 @@
     <link rel="stylesheet" href="{{ '/css/foundation.css' | prepend: site.baseurl }}">
     <link rel="stylesheet" href="{{ '/css/font-awesome.css' | prepend: site.baseurl }}">
     <link rel="stylesheet" href="{{ '/css/coderay.css' | prepend: site.baseurl }}">
-    <link rel="stylesheet" href="{{ '/css/asciidoctor.css' | prepend: site.baseurl }}">
-    <link rel="stylesheet" href="{{ '/css/cuba.css' | prepend: site.baseurl }}">
-    <script src="{{ '/js/vendor/modernizr.js' | prepend: site.baseurl }}"></script>
-    <script src="{{ '/js/toc.js' | prepend: site.baseurl }}"></script>
+    <link rel="stylesheet" href="{{ '/css/bootstrap.css' | prepend: site.baseurl }}">
+    <link rel="stylesheet" href="https://www.cuba-platform.com/sites/all/themes/cuba_adaptive/css/reset.css">
+    <link rel="stylesheet" href="https://www.cuba-platform.com/sites/all/themes/cuba_adaptive/css/animate.css">
+    <link rel="stylesheet" href="{{ '/css/extra.css' | prepend: site.baseurl }}">
+    <link rel="stylesheet" href="{{ '/css/extra2.css' | prepend: site.baseurl }}">
+    <link rel="stylesheet" href="{{ '/css/font-awesome.min.css' | prepend: site.baseurl }}">
+    <link rel="stylesheet" href="{{ '/css/guides.css' | prepend: site.baseurl }}">
+    <script src="{{ '/js/jquery_v2.1.min.js' | prepend: site.baseurl }}"></script>
 </head>
-<body>
+<body class="html not-front not-logged-in no-sidebars page-node page-node- page-node-962 node-type-blog-post i18n-en">
 
+<section id="wrapper">
+    {% include header.html %}
 
-<!-- Nav Bar -->
+    <!-- Main Page Content and Sidebar -->
+    <div class="content-wrapper">
+        <div class="cuba-container text-node blog">
+            <!-- Main content (left column) -->
+            <div class="region region-content">
+                <section id="block-system-main" class="block block-system clearfix">
+                    <div id="node-962" class="article node node-blog-post node-promoted clearfix">
+                        <div class="content">
+                            <div class="field field-name-body field-type-text-with-summary field-label-hidden">
+                                <div class="field-items">
+                                    <div class="field-item even" property="content: encoded">
+                                        {{ content }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
 
-<!--<nav class="top-bar" data-topbar>-->
-    <!--<ul class="title-area">-->
-        <!--&lt;!&ndash; Title Area &ndash;&gt;-->
-        <!--<li class="name">-->
-            <!--<h1>-->
-                <!--<a href="{{page.root}}">{{site.title}}</a>-->
-            <!--</h1>-->
-        <!--</li>-->
-        <!--<li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>-->
-    <!--</ul>-->
-<!--</nav>-->
-<!-- End Nav -->
+            <!-- Sidebar (right column) -->
+            <div id="blog-sidebar">
+                <div class="region region-sidebar">
+                    <section id="block-block-29" class="block block-block clearfix">
+                        <div class="guide-panel cuba-version">
+                            <h4>CUBA Version {{ page.compatible_cuba_versions }}</h4>
+                        </div>
 
+                        <div class="guide-panel download">
+                            <h4>Get the code</h4>
+                            <a class="button expanded"  href="https://github.com/cuba-guides/{{ page.project_id }}/archive/master.zip" target="_blank">Download</a>
+                            <a href="https://github.com/cuba-guides/{{ page.project_id }}" class="github-link" target="_blank">Github</a>
+                        </div>
 
-<!-- Main Page Content and Sidebar -->
-
-<div class="row">
-
-    <!-- Main Blog Content -->
-    <div class="large-9 columns" role="content">
-
-        {{ content }}
-
-    </div>
-
-    <!-- End Main Content -->
-
-    <!-- Sidebar -->
-
-    <aside class="large-3 columns">
-
-        <br />
-        <br />
-
-        <div class="panel">
-            <h4>CUBA Version</h4>
-            <b>{{ page.compatible_cuba_versions }}</b>
-        </div>
-
-        <div class="panel">
-            <h4>Get the code</h4>
-
-            <a class="button expanded"  href="https://github.com/cuba-guides/{{ page.project_id }}/archive/master.zip">Download</a>
-            <a href="https://github.com/cuba-guides/{{ page.project_id }}">Github Repository</a>
-        </div>
-
-        <div class="panel">
-            <h3>Table of contents</h3>
-            {{ page.document | tocify_asciidoc: 1 }}
-        </div>
-
-    </aside>
-
-    <!-- End Sidebar -->
-</div>
-
-<!-- End Main Content and Sidebar -->
-
-
-<!-- Footer -->
-
-<footer class="row">
-    <div class="large-12 columns">
-        <hr>
-        <div class="row">
-            <div class="large-12 columns">
-                <p>Copyright &#169; 2008-{{ site.time | date: '%Y' }} Haulmont</p>
+                        <div class="guide-panel">
+                            <h4>Table of contents</h4>
+                            {{ page.document | tocify_asciidoc: 1 }}
+                        </div>
+                    </section>
+                </div>
             </div>
         </div>
     </div>
-</footer>
 
-<script src="{{'/js/vendor/jquery.js' | prepend: site.baseurl }}"></script>
+    <!-- Footer -->
+    {% include footer.html %}
+</section>
+
 <script src="{{'/js/foundation.min.js'  | prepend: site.baseurl }}"></script>
 <script src="https://unpkg.com/isotope-layout@3.0/dist/isotope.pkgd.js"></script>
+<script src="{{ '/js/vendor/modernizr.js' | prepend: site.baseurl }}"></script>
+<script src="{{ '/js/toc.js' | prepend: site.baseurl }}"></script>
+<script src="{{ '/js/navigation.js' | prepend: site.baseurl }}"></script>
+<script src="{{ '/js/navbar.js' | prepend: site.baseurl }}"></script>
+<script src="{{ '/js/extra.js' | prepend: site.baseurl }}"></script>
+<script src="{{ '/js/extra2.js' | prepend: site.baseurl }}"></script>
 <script>
-$(document).foundation();
-var doc = document.documentElement;
-doc.setAttribute('data-useragent', navigator.userAgent);
+(function ($) {
+  $(document).foundation();
+  var doc = document.documentElement;
+  doc.setAttribute('data-useragent', navigator.userAgent)
+})(jQuery);
 </script>
 </body>
 </html>

@@ -1,0 +1,307 @@
+/* Index layout */
+.item-head {cursor:pointer;}
+.descr a.button {
+    background: #ffffff;
+    border: 2px solid #0276b5;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    color: #0276b5;
+    font-size: 12px;
+    line-height: 12px;
+    text-transform: uppercase;
+    font-family: 'Source Sans Pro Semibold';
+    padding: 13px 25px 12px 25px;
+    float: right;
+    text-decoration: none;
+    outline: none;
+    margin-top: 1px;
+}
+.service-booking .content-wrapper .accordion-webinars .item .item-head {
+    padding-left:25px;
+}
+.blue-message a {
+    color: #006BAC;
+    font-size: 18px;
+    line-height: 24px;
+    padding-top: 24px;
+    padding-bottom: 28px;
+    width: 493px;
+    margin:0 auto;
+    display:block;
+}
+.blue-message a:hover {
+    text-decoration:none;
+}
+.page-webinars .content-wrapper .sb-block.sb-footer .columns-wrapper .column img {
+    height:64px;
+}
+.page-webinars .content-wrapper .sb-block.sb-speakers .sb-speakers-wrapper .item .about-speaker .role {
+    color: #333333;
+    font-weight: 600;
+}
+.service-booking .content-wrapper .accordion-webinars .item .item-head,
+.service-booking .content-wrapper .accordion-trainings .item .item-head {
+    padding-top: 25px;
+    padding-bottom: 25px;
+}
+.service-booking .content-wrapper .accordion-webinars .item .item-head a i,
+.service-booking .content-wrapper .accordion-trainings .item .item-head a i {
+    top: 37px;
+}
+.service-booking .content-wrapper .accordion-webinars .item .item-body .descr h6,
+.service-booking .content-wrapper .accordion-trainings .item .item-body .descr h6 {
+    margin-bottom: 0.5em;
+}
+
+.service-booking .content-wrapper .accordion-webinars .item .item-body .descr {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.service-booking .content-wrapper .accordion-webinars .item .item-body .descr .btn-wrapper {
+    min-width: 125px;
+}
+.service-booking .content-wrapper .accordion-webinars .item .item-body .descr {
+    padding-bottom: 10px;
+}
+@media screen and (min-width: 768px) {
+    .page-webinars .content-wrapper .sb-block.sb-footer .columns-wrapper .column {
+        max-width: 50%;
+        margin: 0 auto;
+    }
+}
+@media screen and (max-width: 767px) {
+    .service-booking .content-wrapper .accordion-webinars .item .item-head {
+        padding: 20px 50px 20px 20px;
+    }
+    .service-booking .content-wrapper .accordion-webinars .item .item-head a i {
+        top: 32px;
+    }
+    .service-booking .content-wrapper .accordion-webinars .item .item-body .descr {
+        padding-bottom: 25px;
+    }
+    .service-booking .content-wrapper .accordion-webinars .item .item-body {
+        padding-left: 27px;
+        padding-right: 20px;
+        cursor: default;
+    }
+}
+@media screen and (max-width: 507px) {
+    .service-booking .content-wrapper .accordion-webinars .item .item-body .descr {
+        display: block;
+    }
+    .service-booking .content-wrapper .accordion-webinars .item .item-body .descr .btn-wrapper {
+        text-align: center;
+        margin-top: 15px;
+        height: 38px;
+    }
+    .descr a.button {
+        float: none;
+    }
+}
+
+/* Defeault layout */
+.blog .content .field-item {
+    margin-bottom: 7em;
+}
+
+.blog h1,
+.blog .region-content h2.line {
+    padding-bottom: 1em;
+}
+
+.blog h2 {
+    padding: 1em 0;
+}
+
+.blog h3 {
+    padding: 1em 0;
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.blog h4 {
+    font-size: 16px;
+    margin: 1em 0;
+}
+
+.node-blog-post .content p {
+    line-height: 24px;
+    padding: 0 0 1em;
+}
+
+.node-blog-post .content ul li p {
+    padding: 0;
+    line-height: 26px;
+}
+
+pre.CodeRay {
+    padding: 40px 20px 20px;
+}
+
+.listingblock .title {
+    font-weight: 700;
+    padding-left: 5px;
+    font-style: italic
+}
+
+.blog img,
+.blog .listingblock {
+    padding: 1em 0;
+}
+
+.blog .tip {
+    background: #f7f7f7;
+    border: 1px solid #ebebeb;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -o-border-radius: 3px;
+    width: 100%;
+    padding: 0.5em 18px;
+    margin: 1em 0;
+}
+
+.blog .tip .icon i {
+    font-size: 30px;
+    padding-top: 15px;
+}
+
+.blog .tip td.icon {
+    padding: 0 0.5em 0 0;
+    vertical-align: top;
+}
+
+.blog .tip td.content {
+    line-height: 24px;
+}
+
+.blog .tip .icon i:before {
+    /* fa-exclamation-circle */
+    content: "\f071";
+}
+
+.blog .colist {
+    margin: 1em 0;
+}
+
+.blog .colist.arabic td i.conum + b {
+    color: #fff;
+    background-color: #000;
+    border-radius: 15px;
+    padding: 0 6px 1px 6px;
+}
+
+.blog .colist table tr.even, table tr.alt, table tr:nth-of-type(even) {
+    background: #fff;
+}
+
+.node-blog-post .content ul li, .node-blog-post .content ol li {
+    margin-bottom: 0;
+}
+
+/* Right panel */
+.blog #blog-sidebar {
+    position: relative;
+}
+
+.blog .region-sidebar > section {
+    top: 20px;
+    /*width: 280px;*/
+}
+
+.blog .github-link {
+    position: relative;
+    padding-left: 32px;
+    font-weight: 600;
+    color: #b2b2b2;
+}
+
+.blog .github-link:before {
+    position: absolute;
+    content: '';
+    background-image: url("/guides/images/icon-github.svg");
+    width: 18px;
+    height: 18px;
+    left: 3px;
+    top: 1px;
+}
+
+.blog .guide-panel {
+    background: #f7f7f7;
+    border: 1px solid #ebebeb;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -o-border-radius: 3px;
+    width: 100%;
+    padding: 0.5em 18px;
+    margin: 0 0 2em 0;
+}
+
+.blog .guide-panel  h4 {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 18px;
+}
+
+.blog .guide-panel ul {
+    padding-left: 0;
+}
+
+.blog .guide-panel ul li {
+    list-style: none;
+    line-height: 26px;
+}
+
+.blog .guide-panel ul li a {
+    font-weight: 500;
+    position: relative;
+    line-height: 26px;
+}
+
+.blog .guide-panel ul li a::after {
+    content: ' \226B';
+    font-size: 9px;
+    position: absolute;
+    padding-left: 5px;
+    line-height: 26px;
+}
+
+.blog .guide-panel.cuba-version {
+    text-align: center;
+    padding: 10px;
+}
+
+.blog .guide-panel.cuba-version h4 {
+    display: inline-block;
+    font-weight: 600;
+    color: #006bac;
+    font-size: 18px;
+}
+
+.blog .guide-panel.download {
+    padding: 0.5em 18px 1.5em;
+}
+
+.blog .guide-panel.download .button {
+    background: #006bac;
+    border: 1px solid #006bac;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    color: #fff;
+    padding: 13px;
+    width: 100%;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    height: 40px;
+}
+
+.blog .guide-panel.download .button:hover {
+    text-decoration: none;
+}
