@@ -12,7 +12,7 @@ permalink: create-business-logic-in-cuba
 :java_version: 1.8
 :cuba_version: 7.0
 
-:proj_business_logic: https://github.com/cuba-platform/sample-business-logic
+:proj_business_logic: https://github.com/cuba-guides/cuba-petclinic-business-logic
 
 
 
