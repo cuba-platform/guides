@@ -11,97 +11,321 @@
     <link rel="stylesheet" href="/guides/css/foundation.css">
     <link rel="stylesheet" href="/guides/css/font-awesome.css">
     <link rel="stylesheet" href="/guides/css/coderay.css">
-    <link rel="stylesheet" href="/guides/css/asciidoctor.css">
-    <link rel="stylesheet" href="/guides/css/cuba.css">
+    <link rel="stylesheet" href="/guides/css/bootstrap.css">
+    <link rel="stylesheet" href="https://www.cuba-platform.com/sites/all/themes/cuba_adaptive/css/reset.css">
+    <link rel="stylesheet" href="https://www.cuba-platform.com/sites/all/themes/cuba_adaptive/css/animate.css">
+    <link rel="stylesheet" href="/guides/css/extra.css">
+    <link rel="stylesheet" href="/guides/css/extra2.css">
+    <link rel="stylesheet" href="/guides/css/guides.css">
     <script src="/guides/js/vendor/modernizr.js"></script>
-    <script src="/guides/js/toc.js"></script>
-
-    <style type="text/css">
-
-        .guide-item {
-            width: 100%;
-            background: #ddd;
-            padding: 20px;
-            margin-top: 10px;
-            font-size: 18px;
-            color: #fff;
-        }
-    </style>
+    <script src="/guides/js/jquery_v2.1.min.js"></script
 </head>
-<body>
+<body class="cuba-website-styles html not-front not-logged-in no-sidebars page-webinars service-booking i18n-en">
 
-
-<!-- Nav Bar -->
-<!--<nav class="top-bar" data-topbar>-->
-<!--<ul class="title-area">-->
-<!--&lt;!&ndash; Title Area &ndash;&gt;-->
-<!--<li class="name">-->
-<!--<h1>-->
-<!--<a href="">CUBA Platform guides</a>-->
-<!--</h1>-->
-<!--</li>-->
-<!--<li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>-->
-<!--</ul>-->
-<!--</nav>-->
-<!-- End Nav -->
-
-
-<!-- Main Page Content and Sidebar -->
-
-<div class="row">
-
-    <!-- Main Blog Content -->
-    <div class="large-12 columns" role="content">
-
-
-        <h1>CUBA Platform Guides</h1>
-
-
-        <div class="grid">
-            
-            <div class="element-item  guide-item">
-                <a class="post-link" href="/guides/logging-in-cuba-applications">Logging in CUBA applications</a>
+<section id="wrapper">
+    <!-- BEGIN HEADER -->
+<header id="header">
+    <div class="upper-header">
+        <div class="upper-header-wrapper cuba-container">
+            <div class="header-logo">
+                <a href="/"></a>
             </div>
-            
-            <div class="element-item  guide-item">
-                <a class="post-link" href="/guides/decouple-business-logic-with-app-events">Decouple business logic with application events</a>
+            <div class="header-options"></div>
+            <div class="header-menu" role="navigation">
+                <div class="region region-nav-main">
+                    <section id="block-menu-menu-nav" class="block block-menu clearfix">
+                        <ul class="menu nav">
+                            <li class="first expanded dropdown">
+                                <a href="/framework" data-target="#" class="dropdown-toggle" data-toggle="dropdown">Platform <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li class="first leaf"><a href="/framework">The Framework</a></li>
+                                    <li class="leaf"><a href="/development-tools">Development Tools</a></li>
+                                    <li class="leaf"><a href="/marketplace">Marketplace</a></li>
+                                    <li class="last leaf"><a href="/license-pricing">License &amp; Pricing</a></li>
+                                </ul>
+                            </li>
+                            <li class="leaf"><a href="/download">Download</a></li>
+                            <li class="expanded active-trail active dropdown">
+                                <a href="/online-demo" class="active-trail dropdown-toggle" data-target="#" data-toggle="dropdown">Learn <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li class="first leaf"><a href="/online-demo">Online Demo</a></li>
+                                    <li class="leaf"><a href="/quickstart">Quick Start</a></li>
+                                    <li class="leaf"><a href="/tutorials">Tutorials</a></li>
+                                    <li class="leaf"><a href="/sample-projects">Sample Projects</a></li>
+                                    <li class="leaf"><a href="/webinars">Webinars</a></li>
+                                    <li class="leaf"><a href="/documentation">Documentation</a></li>
+                                    <li class="last leaf"><a href="/faq">FAQ</a></li>
+                                </ul>
+                            </li>
+                            <li class="expanded dropdown">
+                                <a href="https://www.cuba-platform.com/discuss/" data-target="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    Community
+                                    <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li class="first leaf"><a href="https://www.cuba-platform.com/discuss/">Forum</a></li>
+                                    <li class="collapsed"><a href="/testimonials">Customer stories</a></li>
+                                    <li class="last leaf"><a href="/blog">Blog</a></li>
+                                </ul>
+                            </li>
+                            <li class="expanded dropdown">
+                                <a href="/training" data-target="#" class="dropdown-toggle" data-toggle="dropdown">Services <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li class="first leaf"><a href="/training">Training</a></li>
+                                    <li class="leaf"><a href="/support-options">Support</a></li>
+                                    <li class="last leaf"><a href="/development">Development</a></li>
+                                </ul>
+                            </li>
+                            <li class="leaf"><a href="/store">Store</a></li>
+                            <li class="last leaf"><a href="/contacts">Contacts</a></li>
+                        </ul>
+                    </section>
+                </div>
             </div>
-            
-            <div class="element-item  guide-item">
-                <a class="post-link" href="/guides/create-business-logic-in-cuba">Create business logic in CUBA</a>
+        </div>
+    </div>
+</header>
+
+<!-- BEGIN LOWER HEADER -->
+<div class="lower-header std">
+    <div class="submenu">
+        <div class="submenu-title-wrapper">
+            <div class="cuba-container">
+                <div class="region region-lower-header-submenu">
+                    <section id="block-menu-block-1" class="block block-menu-block clearfix">
+
+                        <h2 class="block-title">Learn</h2>
+
+                        <div class="menu-block-wrapper menu-block-1 menu-name-menu-nav parent-mlid-0 menu-level-2">
+                            <ul class="menu nav">
+                                <li class="first leaf menu-mlid-1329"><a href="/online-demo">Online Demo</a></li>
+                                <li class="leaf menu-mlid-1327"><a href="/quickstart">Quick Start</a></li>
+                                <li class="leaf menu-mlid-1328"><a href="/tutorials">Tutorials</a></li>
+                                <li class="leaf menu-mlid-1730"><a href="/sample-projects">Sample Projects</a></li>
+                                <li class="leaf"><a href="/webinars">Webinars</a></li>
+                                <li class="leaf menu-mlid-1326"><a href="/documentation">Documentation</a></li>
+                                <li class="last leaf menu-mlid-1591"><a href="/faq">FAQ</a></li>
+                            </ul>
+                        </div>
+
+                    </section>
+                </div>
             </div>
-            
-            <div class="element-item  guide-item">
-                <a class="post-link" href="/guides/intro-working-with-data-in-cuba">Introduction to working with Data in CUBA</a>
-            </div>
-            
         </div>
 
+        <!-- WILL BE SHOWN UPON CONDITION -->
+
+        <!-- WILL BE SHOWN UPON CONDITION -->
 
     </div>
-
-    <!-- End Main Content -->
 </div>
 
-<!-- End Main Content and Sidebar -->
+<style>
+    .upper-header .header-options {
+        display: none;
+    }
 
+    .upper-header .upper-header-wrapper .header-menu div .nav > li:last-child > a {
+        padding-right: 0;
+    }
+</style>
 
-<!-- Footer -->
+    <!-- Main Page Content and Sidebar -->
+    <div class="content-wrapper">
+        <div class="text-node">
+            <div class="region region-content">
+                <section id="block-system-main" class="block block-system clearfix">
+                    <div class="panel-display panel-1col clearfix" id="webinars-page">
+                        <div class="panel-panel panel-col">
+                            <div>
+                                <!-- Title -->
+                                <div class="panel-pane pane-custom pane-1">
+                                    <div class="pane-content">
+                                        <div class="sb-block sb-head">
+                                            <h2>Guides</h2>
+                                            <span>Comprehensive articles about CUBA Platform specifics (version 7.0+)</span>
+                                        </div>
+                                    </div>
+                                </div>
 
-<footer class="row">
-    <div class="large-12 columns">
-        <hr>
-        <div class="row">
-            <div class="large-12 columns">
-                <p>Copyright &#169; 2008-2018 Haulmont</p>
+                                <!-- Accordion -->
+                                <div class="panel-pane pane-custom pane-2 cuba-container">
+                                    <div class="pane-content">
+                                        <div class="accordion-webinars">
+                                            
+                                            <div class="item">
+                                                <a name="tr1"></a>
+                                                <div class="item-head collapsed" data-toggle="collapse" data-target="#decouple-business-logic-with-app-events" href="#decouple-business-logic-with-app-events" aria-expanded="false">
+                                                    <a>
+                                                        <span>Decouple business logic with application events</span>
+                                                        <i></i>
+                                                    </a>
+                                                </div>
+                                                <div class="item-body collapse" id="decouple-business-logic-with-app-events" aria-expanded="false" style="height: 0px;">
+                                                    <div class="descr">
+                                                        <div class="main">
+                                                            <h6 class="single">Description</h6>
+                                                            Overview on how application events can be used in a CUBA application to decouple business logic
+                                                        </div>
+                                                        <div class="btn-wrapper">
+                                                            <a href="/guides/decouple-business-logic-with-app-events" class="button join-webinar">Read now</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="item">
+                                                <a name="tr1"></a>
+                                                <div class="item-head collapsed" data-toggle="collapse" data-target="#intro-working-with-data-in-cuba" href="#intro-working-with-data-in-cuba" aria-expanded="false">
+                                                    <a>
+                                                        <span>Introduction to working with Data in CUBA</span>
+                                                        <i></i>
+                                                    </a>
+                                                </div>
+                                                <div class="item-body collapse" id="intro-working-with-data-in-cuba" aria-expanded="false" style="height: 0px;">
+                                                    <div class="descr">
+                                                        <div class="main">
+                                                            <h6 class="single">Description</h6>
+                                                            Overview on how to read and write data in a CUBA application
+                                                        </div>
+                                                        <div class="btn-wrapper">
+                                                            <a href="/guides/intro-working-with-data-in-cuba" class="button join-webinar">Read now</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="item">
+                                                <a name="tr1"></a>
+                                                <div class="item-head collapsed" data-toggle="collapse" data-target="#create-business-logic-in-cuba" href="#create-business-logic-in-cuba" aria-expanded="false">
+                                                    <a>
+                                                        <span>Create business logic in CUBA</span>
+                                                        <i></i>
+                                                    </a>
+                                                </div>
+                                                <div class="item-body collapse" id="create-business-logic-in-cuba" aria-expanded="false" style="height: 0px;">
+                                                    <div class="descr">
+                                                        <div class="main">
+                                                            <h6 class="single">Description</h6>
+                                                            Guide on what options are available for putting business logic into a CUBA application
+                                                        </div>
+                                                        <div class="btn-wrapper">
+                                                            <a href="/guides/create-business-logic-in-cuba" class="button join-webinar">Read now</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                    <!-- End of accordion -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </div>
         </div>
     </div>
+    <!-- End Main Content and Sidebar -->
+
+    <!-- Footer -->
+    <!-- BEGIN FOOTER -->
+<footer id="footer">
+    <div class="footer-wrapper cuba-container">
+        <div class="region region-footer-sitemap">
+            <section id="block-footer-sitemap-footer-sitemap" class="block block-footer-sitemap clearfix">
+                <div id="footer-sitemap" class="clearfix">
+                    <div class="fs-block-content">
+                        <div class="menu-footer-sitemap">
+                            <ul class="footer_links_menu-footer-sitemap total-items-5 parent-items-0 single-items-0">
+                                <li class="menu-1466 depth-1 total-children-4 parent-children-0 single-children-4  first">
+                                    <a href="/framework" class="fs-root-link">Platform</a>
+                                    <ul class="footer_links_menu-footer-sitemap total-items-4 parent-items-0 single-items-0">
+                                        <li class="menu-2770 depth-2 fs-no-children  first"><a href="/framework">The Framework</a></li>
+                                        <li class="menu-1473 depth-2 fs-no-children"><a href="/development-tools">Development Tools</a></li>
+                                        <li class="menu-2838 depth-2 fs-no-children"><a href="/marketplace">Marketplace</a></li>
+                                        <li class="menu-2771 depth-2 fs-no-children  last"><a href="/license-pricing">License &amp; Pricing</a></li>
+                                    </ul>
+                                </li>
+                                <li class="menu-1469 depth-1 total-children-7 parent-children-0 single-children-7">
+                                    <a href="/online-demo" class="fs-root-link">Learn</a>
+                                    <ul class="footer_links_menu-footer-sitemap total-items-7 parent-items-0 single-items-0">
+                                        <li class="menu-1479 depth-2 fs-no-children first"><a href="/online-demo">Online demo</a></li>
+                                        <li class="menu-1477 depth-2 fs-no-children"><a href="/quickstart">Quick start</a></li>
+                                        <li class="menu-1478 depth-2 fs-no-children"><a href="/tutorials">Tutorials</a></li>
+                                        <li class="menu-1731 depth-2 fs-no-children"><a href="/sample-projects">Sample Projects</a></li>
+                                        <li class="menu-1773 depth-2 fs-no-children"><a href="/webinars">Webinars</a></li>
+                                        <li class="menu-1476 depth-2 fs-no-children"><a href="/documentation">Documentation</a></li>
+                                        <li class="menu-1602 depth-2 fs-no-children last"><a href="/faq">FAQ</a></li>
+                                    </ul>
+                                </li>
+                                <li class="menu-1603 depth-1 total-children-3 parent-children-0 single-children-3"><a
+                                        href="https://www.cuba-platform.com/discuss/" class="fs-root-link">Community</a>
+                                    <ul class="footer_links_menu-footer-sitemap total-items-3 parent-items-0 single-items-0">
+                                        <li class="menu-1604 depth-2 fs-no-children first"><a href="https://www.cuba-platform.com/discuss/">Forum</a></li>
+                                        <li class="menu-1692 depth-2 fs-no-children"><a href="/testimonials">Customer stories</a></li>
+                                        <li class="menu-1615 depth-2 fs-no-children last"><a href="/blog">Blog</a></li>
+                                    </ul>
+                                </li>
+                                <li class="menu-1663 depth-1 total-children-3 parent-children-0 single-children-3"><a
+                                        href="/training" class="fs-root-link">Services</a>
+                                    <ul class="footer_links_menu-footer-sitemap total-items-3 parent-items-0 single-items-0">
+                                        <li class="menu-1756 depth-2 fs-no-children first"><a href="/training">Training</a></li>
+                                        <li class="menu-1757 depth-2 fs-no-children"><a href="/support-options">Support</a></li>
+                                        <li class="menu-1758 depth-2 fs-no-children last"><a href="/deployment">Development</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="menu-1612 depth-1 total-children-3 parent-children-0 single-children-3  last">
+                                    <a href="/download" class="fs-root-link">More</a>
+                                    <ul class="footer_links_menu-footer-sitemap total-items-3 parent-items-0 single-items-0">
+                                        <li class="menu-2773 depth-2 fs-no-children first"><a href="/download">Download</a></li>
+                                        <li class="menu-2775 depth-2 fs-no-children"><a href="/store">Store</a></li>
+                                        <li class="menu-1480 depth-2 fs-no-children last"><a href="/contacts">Contacts</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+        </div>
+        <div class="region region-footer-copyright">
+            <section id="block-block-14" class="block block-block clearfix">
+                <div class="footer-copyright">
+                    <div class="copyright">Copyright &copy; 2008-2018 Haulmont</div>
+                    <div class="licences"><a href="/terms-of-use">Terms of Use</a></div>
+                    <div class="socials">
+                        <ul>
+                            <li><a href="https://github.com/cuba-platform/cuba" class="socials-icon github"></a></li>
+                            <li><a href="https://www.youtube.com/c/CubaPlatform" class="socials-icon youtube"></a></li>
+                            <li><a href="https://www.facebook.com/CUBAplatform" class="socials-icon facebook"></a></li>
+                            <li><a href="https://twitter.com/CubaPlatform" class="socials-icon twitter"></a></li>
+                            <li><a href="https://www.linkedin.com/company/cuba-platform" class="socials-icon linkedin"></a></li>
+                            <li><a href="https://www.cuba-platform.com/rss.xml" class="socials-icon rss"></a></li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Place this tag in your head or just before your close body tag. -->
+                <script async defer src="https://buttons.github.io/buttons.js"></script>
+            </section>
+        </div>
+    </div>
+    <!--<script src="https://www.cuba-platform.com/sites/default/files/js/js_OmOCame-fnmHrN5e61CZ6Qi6MS5rHZ2jo6O0qsiYS1Q.js"></script>
+    <script src="https://www.cuba-platform.com/sites/default/files/js/js_Es7w5kWiS8CGph1E0HE2jrcO3tONeJfC-cTNWigk87E.js"></script>-->
 </footer>
+<!-- END FOOTER -->
+<div class="scrollTop"></div>
+</section>
 
 
-<script src="/guides/js/vendor/jquery.js"></script>
+<script src="/guides/js/toc.js"></script>
 <script src="/guides/js/foundation.min.js"></script>
+<script src="/guides/js/navigation.js"></script>
+<script src="/guides/js/extra.js"></script>
+<script src="/guides/js/extra2.js"></script>
 <script>
 $(document).foundation();
 var doc = document.documentElement;
