@@ -144,7 +144,7 @@ The UI allows the user to display different log files or download them for later
 
 Information that should be logged are of different types in multiple dimensions. In order to reason about the messages quickly and help the log message reader to distinguish between signal and noise, all logging libraries offer one very important dimension to categorize the messages: the Log level.
 
-The log level can be seen as how critical / urgent the message is. It is important to note that the log levels ordered and are based on each other. Slf4J defines the following https://www.slf4j.org/api/org/apache/log4j/Level.html(logging levels) that can be used by in an application:
+The log level can be seen as how critical / urgent the message is. It is important to note that the log levels ordered and are based on each other. Slf4J defines the following https://www.slf4j.org/api/org/apache/log4j/Level.html[logging levels] that can be used by in an application:
 
 - TRACE
 - DEBUG
@@ -165,7 +165,7 @@ Generally there are two options to adjust the configuration of logback. On the o
 
 === At deployment: logback.xml configuration file
 
-The configuration file `logback.xml` is the main place to adjust the configuration of logback. In a CUBA application this file is located in `deploy/tomcat/conf/logback.xml` (in case of https://doc.cuba-platform.com/manual-{cuba_version}/fast_deployment.html(fast deployment) option). It looks like this:
+The configuration file `logback.xml` is the main place to adjust the configuration of logback. In a CUBA application this file is located in `deploy/tomcat/conf/logback.xml` (in case of https://doc.cuba-platform.com/manual-{cuba_version}/fast_deployment.html[fast deployment] option). It looks like this:
 
 
 .logback.xml
@@ -218,7 +218,7 @@ The configuration of loggers allow to define the threshold on a per class / pack
 
 In the example above the package `com.haulmont.sample.petclinic` is set to level `DEBUG`. This means, that it will output all log messages that have _at least_ the level `DEBUG`. Due to the semantic order of the log levels `INFO`, `WARN`, `ERROR` and `FATAL` will also be logged for this package. `TRACE` log messages on the other hand will not be displayed.
 
-Depending on how the application is deployed there are several options on where to place the logback.xml file. Besides the above mentioned https://doc.cuba-platform.com/manual-{cuba_version}/fast_deployment.html(fast deployment) the `logback.xml` can be placed within the application itself or configure it to be outside of the application at a given path.
+Depending on how the application is deployed there are several options on where to place the logback.xml file. Besides the above mentioned https://doc.cuba-platform.com/manual-{cuba_version}/fast_deployment.html[fast deployment] the `logback.xml` can be placed within the application itself or configure it to be outside of the application at a given path. See <<Further information>> for more information.
 
 === At runtime: CUBA logging UI
 
@@ -427,7 +427,7 @@ CUBA offers an opinionated way of dealing with logging configuration and access 
 
 == Further information
 
-* https://blog.scalyr.com/2017/12/logging-levels/(Explanation of Logging levels)
-* https://doc.cuba-platform.com/manual-{cuba-version}/logging_setup_tomcat.html(Docs: Setup Logging for local development)
-* https://doc.cuba-platform.com/manual-{cuba-version}/log_dir.html(Docs: Log directory of CUBA application)
-* https://doc.cuba-platform.com/manual-{cuba-version}/build.gradle_buildWar.html(Docs: Build WAR with logging configuration)
+* https://blog.scalyr.com/2017/12/logging-levels/[Blog article: Explanation of Logging levels]
+* https://doc.cuba-platform.com/manual-{cuba-version}/logging_setup_tomcat.html[CUBA docs: Setup Logging for local development]
+* https://doc.cuba-platform.com/manual-{cuba-version}/log_dir.html[CUBA docs: Log directory of CUBA application]
+* https://doc.cuba-platform.com/manual-{cuba-version}/build.gradle_buildWar.html[CUBA docs: Build WAR with logging configuration]
