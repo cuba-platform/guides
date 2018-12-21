@@ -86,7 +86,14 @@
   $(document).foundation();
   var doc = document.documentElement;
   doc.setAttribute('data-useragent', navigator.userAgent)
-})(jQuery);
+
+  /* Issue #24 */
+  $(".blog .content img").each(function() {
+    var imgMarkup = $(this)[0].outerHTML;
+    console.log(imgMarkup);
+    $(this).replaceWith('<div class="img-center">' + imgMarkup + '</div>');
+  });
+})(jQuery); 
 </script>
 </body>
 </html>

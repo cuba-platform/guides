@@ -305,3 +305,13 @@ pre.CodeRay {
 .blog .guide-panel.download .button:hover {
     text-decoration: none;
 }
+
+/* Issue #24 */
+.blog .content img {
+    padding: 0 10%;
+}
+
+.blog .content .img-center {
+    width: 100%;
+    text-align: center;
+}
