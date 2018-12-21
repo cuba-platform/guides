@@ -328,6 +328,6 @@ it is not tied to the web tier anymore. Furthermore it is possible to trigger it
 
 There are several options when it comes to where to put the business logic in a CUBA application. A controller can be a good and easy start, although it has some downsides when it comes to sharing code. A client bean solves this problem to some degree. Middleware services allow for sharing business logic across different clients (e.g. Polymer Client) and is the most appropriate way of putting business logic.
 
-Additionally there are several advanced techniques like https://doc.cuba-platform.com/manual-7.0/jmx_beans.html[JMX Beans] or https://doc.cuba-platform.com/manual-7.0/entity_listeners.html[Entity Listeners] that also allow for certain business logic to be executed in particular scenarios. The decision where to put the business logic for a given case should be done on a case to case basis. But the mentioned main places of Controllers & Spring Beans / Spring Services for placing business logic are a good starting point.
+Additionally there are several advanced techniques like https://doc.cuba-platform.com/manual-{cuba_version}/jmx_beans.html[JMX Beans] or https://doc.cuba-platform.com/manual-{cuba_version}/entity_listeners.html[Entity Listeners] that also allow for certain business logic to be executed in particular scenarios. The decision where to put the business logic for a given case should be done on a case to case basis. But the mentioned main places of Controllers & Spring Beans / Spring Services for placing business logic are a good starting point.
 
 
