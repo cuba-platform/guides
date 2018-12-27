@@ -411,10 +411,7 @@ The `logback.xml` configuration file should be extended to contain an additional
 With that configuration in place, the application will take the log messages and send them to elasticsearch. Kibana as a user interface for accessing data in elasticsearch is capable of displaying the log information properly. Via the structured as well as full text search capabilities, the log information can be accessed in a much easier way compared to direct access to the log files.
 
 
-++++
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-application-logging/master/img/centralized-logging-with-kibana-and-cuba.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-application-logging/master/img/centralized-logging-with-kibana-and-cuba.png"/></a>
-++++
-
+image::application-logging-in-cuba/elasticsearch-kibana-ui-logging.png[Elasticsearch Kibana UI logging]
 
 == Summary
 
