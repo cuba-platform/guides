@@ -153,7 +153,7 @@ The log level can be seen as how critical / urgent the message is. It is importa
 - ERROR
 - FATAL
 
-The list is sorted by urgency descending. `DEBUG` log messages on the one end are normally used for information that help to identify the internal state of the application for application developers.
+`DEBUG` log messages on the one end are normally used for information that help to identify the internal state of the application for application developers.
 
 `ERROR` and `FATAL` are normally used in cases where an unexpected situation within the application occurred up to the point that the application cannot fulfil its purpose anymore.
 
@@ -173,9 +173,9 @@ The configuration file `logback.xml` is the main place to adjust the configurati
 ----
 <configuration debug="false" packagingData="true">
 
-    <property name="logDir" value="${catalina.base}/logs"/>
+    <property name="logDir" value="${catalina.base}/logs"/> // <1>
 
-    <appender name="File" class="ch.qos.logback.core.rolling.RollingFileAppender"> // <1>
+    <appender name="File" class="ch.qos.logback.core.rolling.RollingFileAppender"> // <2>
         <file>${logDir}/app.log</file>
 
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -183,11 +183,11 @@ The configuration file `logback.xml` is the main place to adjust the configurati
         </filter>
 
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread%X{cubaApp}%X{cubaUser}] %logger - %msg%n</pattern> // <2>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread%X{cubaApp}%X{cubaUser}] %logger - %msg%n</pattern> // <3>
         </encoder>
     </appender>
 
-    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender"> // <3>
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender"> // <4>
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} %-5level %-40logger{36}- %msg%n</pattern>
         </encoder>
@@ -198,7 +198,7 @@ The configuration file `logback.xml` is the main place to adjust the configurati
         <appender-ref ref="File"/>
     </root>
 
-    <logger name="com.haulmont.sample.petclinic" level="DEBUG"/> // <4>
+    <logger name="com.haulmont.sample.petclinic" level="DEBUG"/> // <5>
     <logger name="com.haulmont.cuba" level="DEBUG"/>
     <logger name="com.haulmont.cuba.core.sys" level="INFO"/>
 
@@ -207,10 +207,11 @@ The configuration file `logback.xml` is the main place to adjust the configurati
 </configuration>
 
 ----
-<1> a file appender to write log messages to the logfile `app.log`
-<2> `pattern` configures how a single log message line within the file should look like
-<3> another appender writes the log messages to `STDOUT` (with different options)
-<4> logging levels can be configured on a per class / package basis
+<1> `logDir` is a variable defined for the configuration and describes where the file based logfiles should be placed. It uses a special variable `catalina.base` from tomcat to reference the installation directory.
+<2> a file appender to write log messages to the logfile `app.log`
+<3> `pattern` configures how a single log message line within the file should look like
+<4> another appender writes the log messages to `STDOUT` (with different options)
+<5> logging levels can be configured on a per class / package basis
 
 CUBA by default configures multiple log appender. An appender describes where the log information should be written to. There are multiple appender available out of the box. Each appender has options to configure its behavior (like how the log message should be formatted, which information should be logged etc.). Common Log appender are `FileAppender` and `ConsoleAppender`.
 
@@ -238,6 +239,8 @@ Once the application has certain amount of logging information certain informati
 
 MDC allows to set certain values into a context, that gets logged every time alongside with the actual logging message. This way the context can be set once and the developer writing the actual logging statement does not need to include it into the log message anymore.
 
+CUBA itself uses MDC in order to attach different context values to the logging messages. Mainly those are the current user as well as the current application. This means that the resulting logging messages can be filtered by user.
+
 In the example of the petclinic, the `PetContactFetcherBean` leverages the MDC context in the following manner: Directly after invoking the method `Optional<Contact> findContact(Pet pet)` the identification number of the Pet is set into the MDC context like this:
 
 
@@ -257,21 +260,26 @@ public class PetContactFetcherBean implements PetContactFetcher {
 
         log.debug("Searching Contact for Pet"); // <2>
 
-        Optional<Owner> petOwner = loadOwnerFor(pet);
+        try {
+          Optional<Owner> petOwner = loadOwnerFor(pet);
 
-        if (petOwner.isPresent()) {
-            log.debug("Found Owner: {}", petOwner);
+          if (petOwner.isPresent()) {
+              log.debug("Found Owner: {}", petOwner);
 
-            // ...
+              // ...
 
-            if (isAvailable(telephone)) {
-                return createContact(telephone, ContactType.TELEPHONE);
-            }
+              if (isAvailable(telephone)) {
+                  return createContact(telephone, ContactType.TELEPHONE);
+              }
 
-            // ...
+              // ...
 
-        } else {
-            return Optional.empty();
+          } else {
+              return Optional.empty();
+          }
+        }
+        finally {
+          MDC.remove("petId"); // <4>
         }
     }
 
@@ -282,8 +290,6 @@ public class PetContactFetcherBean implements PetContactFetcher {
         contact.setType(contactType);
 
         log.info("Contact created: {}", contact); // <3>
-
-        MDC.remove("petId"); // <4>
 
         return Optional.of(contact);
     }
