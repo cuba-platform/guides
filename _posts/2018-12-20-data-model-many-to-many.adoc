@@ -1,0 +1,73 @@
+---
+compatible_cuba_versions: 7.0
+project_id: cuba-petclinic-data-model-many-to-many
+permalink: data-model-many-to-many
+---
+= Data model: many to many
+:showtitle:
+:sectlinks:
+:sectanchors:
+:page-navtitle: Data model: many to many
+:page-excerpt: Overview on how application events can be used in a CUBA application to decouple business logic
+:page-root: ../../../
+:project_id: cuba-petclinic-data-model-many-to-many
+:java_version: 1.8
+:cuba_version: 7.0
+
+This guides will explain
+The many-to-many association implies that multiple records in one entity are related to multiple records in another entity. The joining table will store primary keys of both related entities. Optionally, this table may contain additional columns.
+
+Depending on whether you need additional fields in the joining table, you can implement many-to-many relationship with an additional entity or without it. The following examples illustrate both approaches.
+
+== What will be build
+
+This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show different use cases of application events. In particular, the following use cases will be covered:
+
+* generate a room keycode when a visit is going to be created
+* refresh the visits list once a visit is marked as completed
+
+=== Final Application
+
+++++
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-application-events/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-application-events/master/img/login-screen.png"/></a>
+++++
+
+include::includes/guide_requirements.adoc[]
+
+
+include::includes/petclinic_introduction.adoc[]
+
+== Different kinds of Many to many relationships
+
+
+== Direct Many to Many relationship
+
+An example of a direct many 2 many relationship is the following in the petclinic example:
+
+Vet <--> Specialities
+
+A Vet can have multiple specialities and a Speciality can also be linked to multiple Vets.
+
+It is modelled internally via a Join Table, but there is no explicit entity defined as the joining entity.
+
+== Indirect Many to Many relationship with Joining Entity
+
+An example of an indirect many 2 many relationship is the following in the petclinic example:
+
+Vet <--> Clinic
+
+A Vet can work for multiple clinic and a Clinic can also be employ multiple Vets.
+
+It is modelled internally via a Join Table and there is an explicit entity defined as the joining entity called `Employment`.
+
+The Employment entity also holds additional information about the employment. This information are the validity range in which the Vet is employed at the clinic. Therefore it has the values `validFrom` and `validUntil`.
+
+
+
+== Summary
+
+...
+
+=== Further information
+
+* https://doc.cuba-platform.com/manual-{cuba_version}/events.html[Events reference documentation]
