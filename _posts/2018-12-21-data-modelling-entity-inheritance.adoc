@@ -1,0 +1,47 @@
+---
+compatible_cuba_versions: 7.0
+project_id: cuba-petclinic-data-model-entity-inheritance
+permalink: data-modelling-entity-inheritance
+---
+= Data modelling: Entity inheritance
+:showtitle:
+:sectlinks:
+:sectanchors:
+:page-navtitle: Data modelling: Entity inheritance
+:page-excerpt: Data modelling guide: How entity inheritance can be used in a CUBA application
+:page-root: ../../../
+:project_id: cuba-petclinic-data-model-entity-inheritance
+:java_version: 1.8
+:cuba_version: 7.0
+
+This guide demonstrates how to use entity inheritance in CUBA applications.
+
+In the petclinic example different types of Pets are groomed during their stay in the clinic - cats, birds and rats. All this types of pets have some common attributes. The application should store common attributes within one table and use separate linked tables to store specific attributes for the different pet types.
+
+
+== What will be build
+
+This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show the mechanism to define entity inheritance. In particular, the following use cases will be covered:
+
+* `Pet` entity becomes a the superclass for all Pet types
+* `Cat`, `Bird` and `` will be created as concrete Pet type entities
+* The user has the choice between different Pet types at creation time of the Pet. The system will show the corresponding editor accordingly so that the user can also enter the type specific information.
+
+
+=== Final Application
+
+++++
+<a href="https://raw.githubusercontent.com/cuba-guides/{project_id}/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/{project_id}/master/img/login-screen.png"/></a>
+++++
+
+include::includes/guide_requirements.adoc[]
+
+
+include::includes/petclinic_introduction.adoc[]
+
+
+== Entity inheritance structure
+
+== Pet Editor screens
+
+== Summary
