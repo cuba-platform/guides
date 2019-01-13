@@ -45,7 +45,7 @@ image::data-model-many-to-many/direct_many_to_many.png[align="center"]
 
 A `Vet` can have multiple specialities and a `Speciality` on the other hand can also be linked to multiple Vets.
 
-On the database it is represented as a Join Table, but there is no explicit entity defined as the joining entity.
+On the database it is represented as a Join Table, but there is _no_ explicit entity defined as the joining entity.
 
 
 TIP: In the Studio entity designer, set the following settings for the `specialties` attribute: *Attribute type* - `ASSOCIATION`, *Cardinality* - `MANY_TO_MANY`. `Vet` will be marked as the owning side of the relationship, and Studio will suggest to create the corresponding `vets` attribute in the `Specialty` entity as the inverse side of the association.
@@ -87,7 +87,7 @@ So, the `Vet` and the `Specialty` editors are absolutely symmetrical.
 
 == Indirect Many-to-Many association with Joining Entity
 
-The many-to-many association is always implemented using a joining table, but creating an entity to reflect this table is optional. The joining entity can be created in case you want to store some additional fields in the joining table.
+The many-to-many association is always implemented using a joining table, but creating an entity to reflect this table is optional. The joining entity can be created when some additional attributes should be stored in the joining table.
 
 An example of an indirect many-to-many association is the following in the petclinic example:
 
@@ -95,7 +95,7 @@ image::data-model-many-to-many/indirect_many_to_many.png[align="center"]
 
 A `Pet` might over the years be insured by different `InsuranceCompanies` and a `InsuranceCompany` on the other hand has multiple memberships.
 
-On the database it is represented as a Join Table and there is an explicit entity defined as the joining entity called `InsuranceMembership`. It also holds additional information about the membership: the validity range in which the Pet is insured by the insurance company. Therefore it has the values `validFrom` and `validUntil`.
+On the database it is represented as a Join Table and there _is_ an explicit entity defined as the joining entity called `InsuranceMembership`. It also holds additional information about the membership: the validity range in which the Pet is insured by the insurance company. Therefore it has the values `validFrom` and `validUntil`.
 
 
 
@@ -160,28 +160,20 @@ protected Date validUntil;
 +
 The `insuranceCompany-with-memberships` view follows the same logic: it includes the composition of `memberships` (referencing the `InsuranceMembership` joining entity) with `pet` and the additional validity information: `validFrom` and `validUntil`.
 
-* https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/pet/pet/pet-edit.xml[pet-edit.xml] - the XML descriptor of the pet editor defines a datasource for the `Pet` instance and a nested one for its `insuranceMemberships`. It also contains a table displaying memberships and the custom action to pick an airport directly, bypassing the `AirportDutyFree` editor.
+* https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/pet/pet/pet-edit.xml[pet-edit.xml] - the XML descriptor of the pet editor defines a datasource for the `Pet` instance and a nested one for its `insuranceCompany` instances (through the `InsuranceMembership` relationship). It also contains a table displaying memberships and the custom action to pick an `InsuranceCompany` directly, bypassing the `InsuranceMembership` editor.
 
 As a result, editing of a `InsuranceMembership` instance works as follows:
 
 The `Pet` edit screen shows a list of airports and the currency drop-down.
 
 
-A user can click *Add Insurance*, the `InsuranceCompany` lookup will be opened, and the user can either select an insurance company to add or open its editor. When the user selects an insurance company, the new `InsuranceMembership` instance https://github.com/cuba-platform/sample-model/blob/master/modules/web/src/com/company/sample/web/dutyfree/DutyFreeEdit.java#L29[is created] with the default validity range. This instance it is not saved to the database, but added to the `insuranceMembershipsDs` datasource of the `Pet` editor.
+A user can click *Add Insurance*, the `InsuranceCompany` lookup will be opened, and the user can either select an insurance company to add or create a new insurance company. When the user selects an insurance company, the new `InsuranceMembership` instance https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/pet/pet/PetEdit.java#L57[is created] with the default validity range. This instance it is not saved to the database directly, but added to the `insuranceMembershipsDs` datasource of the `Pet` editor.
 
-When OK is clicked in the https://github.com/cuba-platform/sample-model/blob/master/modules/web/src/com/company/sample/web/airports/airport/airport-edit.xml[`InsuranceCompany` editor], the updated instance of the insurance company is saved both to the database and to the https://github.com/cuba-platform/sample-model/blob/master/modules/web/src/com/company/sample/web/dutyfree/duty-free-edit.xml#L12[`insuranceMembershipsDs` datasource] of the `Pet` editor, as the `InsuranceCompany` entity is fully independent.
-
-The user can create new insurance companies and delete existing ones, and all changes will be saved to the database in separate transactions and to the `insuranceMembershipsDs` datasource as well.
+TIP: When within the above described creation of a many-to-many relationship from the Pet editor a `InsuranceCompany` is created or updated through the https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/insurance/insurancecompany/InsuranceCompanyEdit.java[`InsuranceCompany` editor], the created / updated instance of the insurance company is directly saved both to the database and to the https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/pet/pet/pet-edit.xml#L11[`insuranceMembershipsDs` datasource] of the Pet editor, as the `InsuranceCompany` entity is fully independent. The user can create new insurance companies and delete existing ones. All changes will be saved to the database in separate transactions and to the `insuranceMembershipsDs` datasource as well.
 
 When a user clicks OK in the pet edit screen, the updated `Pet` instance together with all the updated `InsuranceMembership` instances is submitted to the `DataManager.commit()` method on the middleware and saved to the database within a single transaction.
-
 
 
 == Summary
 
 In this data modelling guide the many-to-many association was shown. Many-to-many associations are valuable if both sides of the association should be linked to multiple items of the other side as shown for the `Vet` <--> `Specialty` case. If required by the business case, this association can also enhanced via additional information that describe the association further as it was shown with the `validFrom` & `validUntil` attributes for the `InsuranceMembership` entity.
-
-
-=== Further information
-
-* https://doc.cuba-platform.com/manual-{cuba_version}/events.html[Events reference documentation]
