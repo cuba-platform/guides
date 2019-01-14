@@ -24,7 +24,7 @@ In the petclinic example different types of Pets are groomed during their stay i
 This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show the mechanism to define entity inheritance. In particular, the following use cases will be covered:
 
 * `Pet` entity becomes a the superclass for all Pet types
-* `Cat`, `Bird` and `` will be created as concrete Pet type entities
+* `Cat`, `Bird` and `Rat` will be created as concrete Pet type entities
 * The user has the choice between different Pet types at creation time of the Pet. The system will show the corresponding editor accordingly so that the user can also enter the type specific information.
 
 
@@ -40,7 +40,59 @@ include::includes/guide_requirements.adoc[]
 include::includes/petclinic_introduction.adoc[]
 
 
-== Entity inheritance structure
+== Entity inheritance in JPA
+
+
+The data model contains the `Pet` entity, which is a base class stored in the table: `PETCLINIC_PET`. The entity inheritace is configured with the inheritance strategy `JOINED`. Therefore the data for the subclasses `Cat`, `Bird` and `Rat` are stored in two different tables.
+
+In the `PETCLINIC_PET` table all attributes that are inherited from the `Pet` Entity are stored. The attributes that are additionally defined in the subclasses (like `Bird.wingSpread`) are stored in the dedicated subclass tables: `PETCLINIC_CAT`, `PETCLINIC_BIRD` and `PETCLINIC_RAT`.
+
+The link between the two entries within the two tables (`PETCLINIC_PET` and `PETCLINIC_BIRD` e.g.) are done via a foreign key.
+
+Additionally there is a special kind of column in the superclass called `DTYPE`. This column is only used internally by the object relational mapper (JPA) in order to create the right instances in the java application when loading data from the database.
+
+For every class in this class hierarchy a particular value is defined that identifies the (sub-)class of the hierarchy. In case of the `Pet` class hierarchy use the following values: `CAT`, `BIRD`, `RAT` as well as `PET` for instances of the superclass itself.
+
+The discriminator column value is defined through the `@DiscriminatorValue("BIRD")` annotation on the entity. This special column in the database is normally not exposed as an attribute to the entity layer. Instead it is just used internally by the persistence layer to distinguish between the entity instances.
+
+TIP: In case the type attribute should be used by the user, it is worth considering creating another `type` attribute as an `Enum` within the superclass that contains all possible subclasses as entries. This allows to use the type information throughout the system in order to e.g. filter or sort through the UI.
+
+In the example the entity inheritance looks like this:
+
+
+=== Pet superclass
+
+The superclass has three annotations in place:
+
+
+.Pet.java
+[source, java]
+----
+@DiscriminatorColumn(name = "DTYPE", discriminatorType = DiscriminatorType.STRING) // <1>
+@Inheritance(strategy = InheritanceType.JOINED) // <2>
+@DiscriminatorValue("PET") // <3>
+public class Pet extends NamedEntity {
+
+
+    @NotNull
+    @Column(name = "IDENTIFICATION_NUMBER", nullable = false)
+    protected String identificationNumber; // <4>
+
+    @Temporal(TemporalType.DATE)
+    @Column(name = "BIRTH_DATE")
+    protected Date birthDate;
+
+    // ..
+
+}
+----
+<1> the discription of the Discriminator column with the column name and the datatype
+<2> the inheritance strategy for the class hierarchy (possible options are `SINGLE_TABLE`, `TABLE_PER_CLASS` and `JOINED`)
+<3> the discriminator column for the superclass itself. Sometimes instances of superclasses make sense. In the case of the `Pet` example, creating a generic `Pet` does not reflect the real world
+<4> the common attributes that are shared with all subclasses
+
+
+image::data-model-entity-inheritance/pet-inheritance.png[align="center"]
 
 == Pet Editor screens
 
