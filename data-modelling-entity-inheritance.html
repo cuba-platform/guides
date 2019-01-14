@@ -164,7 +164,7 @@
 <p><code>Pet</code> entity becomes a the superclass for all Pet types</p>
 </li>
 <li>
-<p><code>Cat</code>, <code>Bird</code> and `` will be created as concrete Pet type entities</p>
+<p><code>Cat</code>, <code>Bird</code> and <code>Rat</code> will be created as concrete Pet type entities</p>
 </li>
 <li>
 <p>The user has the choice between different Pet types at creation time of the Pet. The system will show the corresponding editor accordingly so that the user can also enter the type specific information.</p>
@@ -226,9 +226,94 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="entity_inheritance_structure"><a class="anchor" href="#entity_inheritance_structure"></a><a class="link" href="#entity_inheritance_structure">Entity inheritance structure</a></h2>
+<h2 id="entity_inheritance_in_jpa"><a class="anchor" href="#entity_inheritance_in_jpa"></a><a class="link" href="#entity_inheritance_in_jpa">Entity inheritance in JPA</a></h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>The data model contains the <code>Pet</code> entity, which is a base class stored in the table: <code>PETCLINIC_PET</code>. The entity inheritace is configured with the inheritance strategy <code>JOINED</code>. Therefore the data for the subclasses <code>Cat</code>, <code>Bird</code> and <code>Rat</code> are stored in two different tables.</p>
+</div>
+<div class="paragraph">
+<p>In the <code>PETCLINIC_PET</code> table all attributes that are inherited from the <code>Pet</code> Entity are stored. The attributes that are additionally defined in the subclasses (like <code>Bird.wingSpread</code>) are stored in the dedicated subclass tables: <code>PETCLINIC_CAT</code>, <code>PETCLINIC_BIRD</code> and <code>PETCLINIC_RAT</code>.</p>
+</div>
+<div class="paragraph">
+<p>The link between the two entries within the two tables (<code>PETCLINIC_PET</code> and <code>PETCLINIC_BIRD</code> e.g.) are done via a foreign key.</p>
+</div>
+<div class="paragraph">
+<p>Additionally there is a special kind of column in the superclass called <code>DTYPE</code>. This column is only used internally by the object relational mapper (JPA) in order to create the right instances in the java application when loading data from the database.</p>
+</div>
+<div class="paragraph">
+<p>For every class in this class hierarchy a particular value is defined that identifies the (sub-)class of the hierarchy. In case of the <code>Pet</code> class hierarchy use the following values: <code>CAT</code>, <code>BIRD</code>, <code>RAT</code> as well as <code>PET</code> for instances of the superclass itself.</p>
+</div>
+<div class="paragraph">
+<p>The discriminator column value is defined through the <code>@DiscriminatorValue("BIRD")</code> annotation on the entity. This special column in the database is normally not exposed as an attribute to the entity layer. Instead it is just used internally by the persistence layer to distinguish between the entity instances.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+In case the type attribute should be used by the user, it is worth considering creating another <code>type</code> attribute as an <code>Enum</code> within the superclass that contains all possible subclasses as entries. This allows to use the type information throughout the system in order to e.g. filter or sort through the UI.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In the example the entity inheritance looks like this:</p>
+</div>
+<div class="sect2">
+<h3 id="pet_superclass"><a class="anchor" href="#pet_superclass"></a><a class="link" href="#pet_superclass">Pet superclass</a></h3>
+<div class="paragraph">
+<p>The superclass has three annotations in place:</p>
+</div>
+<div class="listingblock">
+<div class="title">Pet.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@DiscriminatorColumn</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">DTYPE</span><span class="delimiter">&quot;</span></span>, discriminatorType = DiscriminatorType.STRING) <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="annotation">@Inheritance</span>(strategy = InheritanceType.JOINED) <i class="conum" data-value="2"></i><b>(2)</b>
+<span class="annotation">@DiscriminatorValue</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">PET</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="3"></i><b>(3)</b>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Pet</span> <span class="directive">extends</span> NamedEntity {
 
+
+    <span class="annotation">@NotNull</span>
+    <span class="annotation">@Column</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">IDENTIFICATION_NUMBER</span><span class="delimiter">&quot;</span></span>, nullable = <span class="predefined-constant">false</span>)
+    <span class="directive">protected</span> <span class="predefined-type">String</span> identificationNumber; <i class="conum" data-value="4"></i><b>(4)</b>
+
+    <span class="annotation">@Temporal</span>(TemporalType.DATE)
+    <span class="annotation">@Column</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">BIRTH_DATE</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">protected</span> <span class="predefined-type">Date</span> birthDate;
+
+    <span class="comment">// ..</span>
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the discription of the Discriminator column with the column name and the datatype</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the inheritance strategy for the class hierarchy (possible options are <code>SINGLE_TABLE</code>, <code>TABLE_PER_CLASS</code> and <code>JOINED</code>)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>the discriminator column for the superclass itself. Sometimes instances of superclasses make sense. In the case of the <code>Pet</code> example, creating a generic <code>Pet</code> does not reflect the real world</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>the common attributes that are shared with all subclasses</td>
+</tr>
+</table>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/data-model-entity-inheritance/pet-inheritance.png" alt="pet inheritance">
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -270,7 +355,7 @@
                             <ul class="sectlevel1">
 <li><a href="#what_will_be_build">What will be build</a></li>
 <li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
-<li><a href="#entity_inheritance_structure">Entity inheritance structure</a></li>
+<li><a href="#entity_inheritance_in_jpa">Entity inheritance in JPA</a></li>
 <li><a href="#pet_editor_screens">Pet Editor screens</a></li>
 <li><a href="#summary">Summary</a></li>
 </ul>
