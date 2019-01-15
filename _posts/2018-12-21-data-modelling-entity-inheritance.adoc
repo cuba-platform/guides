@@ -19,7 +19,7 @@ This guide demonstrates how to use entity inheritance in CUBA applications.
 In the petclinic example different types of Pets are groomed during their stay in the clinic - cats, birds and rats. All this types of pets have some common attributes. The application should store common attributes within one table and use separate linked tables to store specific attributes for the different pet types.
 
 
-== What will be build
+== What will be built
 
 This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show the mechanism to define entity inheritance. In particular, the following use cases will be covered:
 
@@ -57,7 +57,10 @@ The discriminator column value is defined through the `@DiscriminatorValue("BIRD
 
 TIP: In case the type attribute should be used by the user, it is worth considering creating another `type` attribute as an `Enum` within the superclass that contains all possible subclasses as entries. This allows to use the type information throughout the system in order to e.g. filter or sort through the UI.
 
-In the example the entity inheritance looks like this:
+In the Petclinic example the `Pet` entity inheritance looks like this:
+
+
+image::data-model-entity-inheritance/pet-inheritance.png[align="center"]
 
 
 === Pet superclass
@@ -86,13 +89,35 @@ public class Pet extends NamedEntity {
 
 }
 ----
-<1> the discription of the Discriminator column with the column name and the datatype
+<1> the description of the Discriminator column with the column name and the data type
 <2> the inheritance strategy for the class hierarchy (possible options are `SINGLE_TABLE`, `TABLE_PER_CLASS` and `JOINED`)
 <3> the discriminator column for the superclass itself. Sometimes instances of superclasses make sense. In the case of the `Pet` example, creating a generic `Pet` does not reflect the real world
 <4> the common attributes that are shared with all subclasses
 
+=== Cat subclass
 
-image::data-model-entity-inheritance/pet-inheritance.png[align="center"]
+The Cat subclass as one example of a concrete Pet type looks contains two inheritance related annotations.
+
+
+.Cat.java
+[source, java]
+----
+@PrimaryKeyJoinColumn(name = "ID", referencedColumnName = "ID") // <1>
+@DiscriminatorValue("CAT") // <2>
+@Table(name = "PETCLINIC_CAT")
+@Entity(name = "petclinic_Cat")
+public class Cat extends Pet {
+
+    @Column(name = "CLAW_LENGTH")
+    protected Integer clawLength; // <3>
+
+    // ...
+}
+----
+<1> the information about how to join the data between the two tables `PETCLINIC_PET` and `PETCLINIC_CAT`
+<2> the discriminator value that should be used for instances of this class
+<3> the additional attributes that are only relevant to cats
+
 
 == Pet Editor screens
 
