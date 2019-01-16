@@ -118,7 +118,12 @@ public class Cat extends Pet {
 <2> the discriminator value that should be used for instances of this class
 <3> the additional attributes that are only relevant to cats
 
+With this configuration in place, it is possible to create instances of cats through the JPA layer, where all `Pet` related attributes are stored
+into the `PETCLINIC_PET` table and the `Cat` related attributes are stored into the `PETCLINIC_CAT` table.
 
-== Pet Editor screens
+== UI screens for entity inheritance
+
+In order
+
 
 == Summary
