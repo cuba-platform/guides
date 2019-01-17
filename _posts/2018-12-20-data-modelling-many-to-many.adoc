@@ -1,5 +1,6 @@
 ---
-compatible_cuba_versions: 7.0
+compatible_cuba_versions: 7.0+
+compatible_java_versions: 8+
 project_id: cuba-petclinic-data-model-many-to-many
 permalink: data-modelling-many-to-many-association
 ---

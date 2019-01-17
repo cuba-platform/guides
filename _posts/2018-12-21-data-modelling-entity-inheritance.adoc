@@ -1,5 +1,6 @@
 ---
-compatible_cuba_versions: 7.0
+compatible_cuba_versions: 7.0+
+compatible_java_versions: 8+
 project_id: cuba-petclinic-data-model-entity-inheritance
 permalink: data-modelling-entity-inheritance
 ---
@@ -121,9 +122,14 @@ public class Cat extends Pet {
 With this configuration in place, it is possible to create instances of cats through the JPA layer, where all `Pet` related attributes are stored
 into the `PETCLINIC_PET` table and the `Cat` related attributes are stored into the `PETCLINIC_CAT` table.
 
-== UI screens for entity inheritance
+== UI for entity inheritance
 
-In order
+In order to create different types of Pet instances it is required to differentiate at some point in the user interface between the concrete type, that should be created. Also when it comes to selecting an concrete entity instance during a selection process, it is sometimes required to differentiate between the available types to select.
 
+=== UI for creating Pets
+
+The user interface for creating a new Pet will be adjusted so that within the browse screen of the Pet, the selection for a
+
+image::data-model-entity-inheritance/pet-browse-screen-inheritance.png[Pet browse screen with entity inheritance]
 
 == Summary

@@ -1,5 +1,6 @@
 ---
-compatible_cuba_versions: 7.0
+compatible_cuba_versions: 7.0+
+compatible_java_versions: 8+
 project_id: cuba-petclinic-intro-to-application-events
 permalink: decouple-business-logic-with-app-events
 ---
