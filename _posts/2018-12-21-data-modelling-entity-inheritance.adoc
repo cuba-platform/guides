@@ -128,8 +128,88 @@ In order to create different types of Pet instances it is required to differenti
 
 === UI for creating Pets
 
-The user interface for creating a new Pet will be adjusted so that within the browse screen of the Pet, the selection for a
+The user interface for creating a new Pet will be adjusted so that within the browse screen of the Pet. When creating a new Pet, the concrete subclass has to be selected.
 
 image::data-model-entity-inheritance/pet-browse-screen-inheritance.png[Pet browse screen with entity inheritance]
+
+
+
+.PetBrowse.java
+[source, java]
+----
+public class PetBrowse extends StandardLookup<Pet> {
+
+    @Inject
+    protected ScreenBuilders screenBuilders;
+
+    @Inject
+    protected GroupTable<Pet> petsTable;
+
+    @Inject
+    protected Metadata metadata;
+
+    @Subscribe("createBtn.createCat")
+    protected void onCreateBtnCreateCat(Action.ActionPerformedEvent event) {
+        Cat cat = metadata.create(Cat.class); // <1>
+        showCreateEditorForPet(cat);
+    }
+
+    @Subscribe("createBtn.createBird")
+    protected void onCreateBtnCreateBird(Action.ActionPerformedEvent event) {
+        Bird bird = metadata.create(Bird.class);
+        showCreateEditorForPet(bird);
+    }
+
+    @Subscribe("createBtn.createRat")
+    protected void onCreateBtnCreateRat(Action.ActionPerformedEvent event) {
+        Rat rat = metadata.create(Rat.class);
+        showCreateEditorForPet(rat);
+    }
+
+    private void showCreateEditorForPet(Pet pet) {
+        screenBuilders.editor(petsTable)
+                .editEntity(pet) // <2>
+                .build()
+                .show();
+    }
+
+}
+----
+<1> the concrete subclass will be created before opening the screen (a `Cat` instance in this case`)
+<2> The `ScreenBuilders` API allows to create a custom editor with the concrete subclass as an instance
+
+With this dispatching code in place, the correct Editor screen for the concrete subclass will be opened. Within the Screen editor for the subclass (in this case `CatEdit`) the additional attributes of the `Cat` entity can be entered as well.
+
+
+.cat-edit.xml
+[source, xml]
+----
+<data>
+    <instance id="catDc"
+              class="com.haulmont.sample.petclinic.entity.pet.Cat"
+              view="pet-with-owner-and-type">
+        <loader/>
+    </instance>
+    <!-- ... -->
+</data>
+<layout expand="editActions" spacing="true">
+    <form id="form" dataContainer="catDc">
+        <column width="250px">
+            <textField id="nameField" property="name"/> // <1>
+            <textField id="identificationNumberField" property="identificationNumber"/>
+            <dateField id="birthDateField" property="birthDate"/>
+
+            <lookupPickerField property="type" optionsContainer="typesCt"/>
+            <lookupPickerField property="owner" optionsContainer="ownersCt"/>
+
+            <textField id="clawLengthField" property="clawLength"/> // <2>
+        </column>
+    </form>
+    <!-- ... -->
+</layout>
+----
+<1> the attributes of the `Pet` entity can be entered
+<2> `clawLength` as one additional attribute of the `Cat` entity can also be entered
+
 
 == Summary
