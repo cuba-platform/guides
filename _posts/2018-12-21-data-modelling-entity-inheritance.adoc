@@ -124,14 +124,38 @@ into the `PETCLINIC_PET` table and the `Cat` related attributes are stored into 
 
 == UI for entity inheritance
 
-In order to create different types of Pet instances it is required to differentiate at some point in the user interface between the concrete type, that should be created. Also when it comes to selecting an concrete entity instance during a selection process, it is sometimes required to differentiate between the available types to select.
+Creating UIs based on entity inheritance needs some special treatment. In browse screens there are options to either display all entries independent of the concrete subclass or only specific for a particular subclass. For editor screens the concrete subclass has to be used in order to being able to enter the subclass specific information of the entity.
+
+=== Pet browse UI
+
+In the example case of the Petclinic, there is a main menu entry point `Petclinic > Pets`. In this screen all pets independent of their concrete type should be displayed. This behavior is possible when using the superclass `Pet` in the JPQL query.
+
+.bet-browse.xml
+[source, xml]
+----
+<data readOnly="true">
+    <collection id="petsCt"
+                class="com.haulmont.sample.petclinic.entity.pet.Pet"
+                view="pet-with-owner-and-type">
+        <loader id="petsLd">
+            <query><![CDATA[select e from petclinic_Pet e]]></query>
+        </loader>
+    </collection>
+</data>
+----
+
+With that data container in place, all pets (Cats, Birds and Rats) are displayed in the browse screen.
+
+In this case, it is obviously not possible to display specific attributes of one or more subclasses in the table, since the superclass `Pet` is not aware of specific attributes like `Cat.clawLength`.
+
 
 === UI for creating Pets
+
+In order to create different types of Pet instances it is required to differentiate at some point in the user interface between the concrete type, that should be created. Also when it comes to selecting an concrete entity instance during a selection process, it is sometimes required to differentiate between the available types to select.
 
 The user interface for creating a new Pet will be adjusted so that within the browse screen of the Pet. When creating a new Pet, the concrete subclass has to be selected.
 
 image::data-model-entity-inheritance/pet-browse-screen-inheritance.png[Pet browse screen with entity inheritance]
-
 
 
 .PetBrowse.java
@@ -180,7 +204,6 @@ public class PetBrowse extends StandardLookup<Pet> {
 
 With this dispatching code in place, the correct Editor screen for the concrete subclass will be opened. Within the Screen editor for the subclass (in this case `CatEdit`) the additional attributes of the `Cat` entity can be entered as well.
 
-
 .cat-edit.xml
 [source, xml]
 ----
@@ -208,8 +231,103 @@ With this dispatching code in place, the correct Editor screen for the concrete 
     <!-- ... -->
 </layout>
 ----
-<1> the attributes of the `Pet` entity can be entered
-<2> `clawLength` as one additional attribute of the `Cat` entity can also be entered
 
+
+=== Selecting a specific subclasses
+
+Oftentimes it is also required to through an polymorphic association only select a specific subclass. In the Petclinic example, it should be possible to create a specific `Visit` that has some special settings for a visit of a cat. When a visit specificly for cats is created the selection for the pet within the visit editor should be filtered to allow only select `Cat` entity instances. Furthermore it should display the visit attributes that are only necessary for a cat visit.
+
+In order to achieve this kind of behavior, first a `CatVisit` entity is created which extends `Visit`.
+
+
+
+.CatVisit.java
+[source, java]
+----
+@DiscriminatorValue("CATVISIT")
+@Entity(name = "petclinic_CatVisit")
+public class CatVisit extends Visit {
+
+    @Column(name = "CAT_TREE_REQUIRED")
+    protected Boolean catTreeRequired;
+
+    // ...
+}
+----
+
+In this case `SINGLE_TABLE` inheritance is used, which means that there is only one table containing all attributes of the superclass as well as all subclasses.
+
+TIP: When inheritance type `SINGLE_TABLE` is used, the additional attributes of a subclass cannot have a `NOT NULL` DB constraint, because for other entities within the entity hierachy it is not possible to fulfil this requirement. The usage of `@NotNull` bean validation annotation within the entity layer is possible though.
+
+In order to create a specific `CatVisit` instance through the UI, the same pattern from above is used. In order to achieve the filtering of the `Visit.pet` attribute within the cat visit editor, the `lookupPickerField` is adjusted slightly:
+
+
+.cat-edit.xml
+[source, xml]
+----
+<data>
+    <instance id="catVisitDc"
+              class="com.haulmont.sample.petclinic.entity.visit.CatVisit"
+              view="visit-with-pet">
+        <loader/>
+    </instance>
+
+    <collection id="catsDc" class="com.haulmont.sample.petclinic.entity.pet.Cat" view="_base"> // <1>
+        <loader>
+            <query>
+                select e from petclinic_Cat e
+            </query>
+        </loader>
+    </collection>
+</data>
+<layout expand="editActions" spacing="true">
+    <form id="form" dataContainer="catVisitDc">
+        <column width="250px">
+
+            <lookupPickerField id="petField" property="pet" optionsContainer="catsDc" caption="msg://cat"/> // <2>
+
+            <checkBox id="catTreeRequiredField" property="catTreeRequired"/> // <3>
+
+        </column>
+    </form>
+</layout>
+----
+<1> The data container for (`catsDc`) only selects `Cat` instances
+<2> `petField` field gets the `catsDc` as a options container so that only cats are displayed
+<3> Additional `CatVisit` specific attributes can be defined
+
+With that configuration in place, the lookup field for the pet only displays cats:
+
+image::data-model-entity-inheritance/cat-visit-editor-with-filtered-pet-selection.png[Cat visit editor with filtered pet selection]
+
+TIP: TODO: change picture; add cat pokemon (Meowth - #052; Persian - #053; Mewtwo - #150; Mew - #151; Espeon - #196; Raikou - #243;
+
+
+== Mapped Superclasses
+
+Another type of inheritance is the usage of the `@MappedSuperclass` annotation. Mapped superclasses allow to share attributes and behavior on a entity level, but on the database layer is explicitly not involved in the inheritance. In the Petclinic example, there is a class called `NamedEntity`. A named entity is a CUBA `StandardEntity` plus it adds one specific field: `name`.
+
+.NamedEntity.java
+[source, java]
+----
+@NamePattern("%s|name")
+@MappedSuperclass
+public class NamedEntity extends StandardEntity {
+
+    @Column(name = "NAME")
+    protected String name;
+
+}
+----
+
+This class is annotated with `@MappedSuperclass` indicating that it can be used for inheritance, but there is no explicit database table associated. A class that is extending `NamedEntity` like `Specialty` inherits all attributes from this class and stores them in its own table `PETCLINIC_SPECIALTY`.
+
+TIP: CUBA itself offers mapped superclasses for defining standard attributes across all tables within a CUBA application. `StandardEntity` is the most commonly known example. It e.g. contains the timestamp related attributes `createTs` and `updateTs`.
 
 == Summary
+
+In this data modelling guide entity inheritance was introduced. Inheritance is a common way in object oriented programming to share data and behavior through a class hierarchy. On the database level, the concept of inheritance is not directly available. But still JPA as the OR-Mapper allows to express inheritance with different patterns to bridge the gab between the two worlds.
+
+Entity inheritance is possible in different ways.  `MappedSuperclass` allows to only share attributes without using a shared Table at all. When inheritance also should be represented JPAs `@Inheritance` annotation can be used. In this case it is possible that other entities can create associations that reference the entity inheritance structure (like `Visit` -> `Pet` where `Pet` is an entity inheritance).
+
+On a UI layer the entity inheritance has to be reflected as well. Depending on the use case, CUBA screens can be adjusted so that the user interface displays all entity instances of a hierarchy as well as only sub-parts of an entity inheritance.
