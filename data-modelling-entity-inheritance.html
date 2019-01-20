@@ -362,10 +362,39 @@ into the <code>PETCLINIC_PET</code> table and the <code>Cat</code> related attri
 <h2 id="ui_for_entity_inheritance"><a class="anchor" href="#ui_for_entity_inheritance"></a><a class="link" href="#ui_for_entity_inheritance">UI for entity inheritance</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In order to create different types of Pet instances it is required to differentiate at some point in the user interface between the concrete type, that should be created. Also when it comes to selecting an concrete entity instance during a selection process, it is sometimes required to differentiate between the available types to select.</p>
+<p>Creating UIs based on entity inheritance needs some special treatment. In browse screens there are options to either display all entries independent of the concrete subclass or only specific for a particular subclass. For editor screens the concrete subclass has to be used in order to being able to enter the subclass specific information of the entity.</p>
+</div>
+<div class="sect2">
+<h3 id="pet_browse_ui"><a class="anchor" href="#pet_browse_ui"></a><a class="link" href="#pet_browse_ui">Pet browse UI</a></h3>
+<div class="paragraph">
+<p>In the example case of the Petclinic, there is a main menu entry point <code>Petclinic &gt; Pets</code>. In this screen all pets independent of their concrete type should be displayed. This behavior is possible when using the superclass <code>Pet</code> in the JPQL query.</p>
+</div>
+<div class="listingblock">
+<div class="title">bet-browse.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;data</span> <span class="attribute-name">readOnly</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;collection</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">petsCt</span><span class="delimiter">&quot;</span></span>
+                <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.haulmont.sample.petclinic.entity.pet.Pet</span><span class="delimiter">&quot;</span></span>
+                <span class="attribute-name">view</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">pet-with-owner-and-type</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;loader</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">petsLd</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+            <span class="tag">&lt;query&gt;</span><span class="inline-delimiter">&lt;![CDATA[</span>select e from petclinic_Pet e<span class="inline-delimiter">]]&gt;</span><span class="tag">&lt;/query&gt;</span>
+        <span class="tag">&lt;/loader&gt;</span>
+    <span class="tag">&lt;/collection&gt;</span>
+<span class="tag">&lt;/data&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With that data container in place, all pets (Cats, Birds and Rats) are displayed in the browse screen.</p>
+</div>
+<div class="paragraph">
+<p>In this case, it is obviously not possible to display specific attributes of one or more subclasses in the table, since the superclass <code>Pet</code> is not aware of specific attributes like <code>Cat.clawLength</code>.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="ui_for_creating_pets"><a class="anchor" href="#ui_for_creating_pets"></a><a class="link" href="#ui_for_creating_pets">UI for creating Pets</a></h3>
+<div class="paragraph">
+<p>In order to create different types of Pet instances it is required to differentiate at some point in the user interface between the concrete type, that should be created. Also when it comes to selecting an concrete entity instance during a selection process, it is sometimes required to differentiate between the available types to select.</p>
+</div>
 <div class="paragraph">
 <p>The user interface for creating a new Pet will be adjusted so that within the browse screen of the Pet. When creating a new Pet, the concrete subclass has to be selected.</p>
 </div>
@@ -459,15 +488,111 @@ into the <code>PETCLINIC_PET</code> table and the <code>Cat</code> related attri
 <span class="tag">&lt;/layout&gt;</span></code></pre>
 </div>
 </div>
+</div>
+<div class="sect2">
+<h3 id="selecting_a_specific_subclasses"><a class="anchor" href="#selecting_a_specific_subclasses"></a><a class="link" href="#selecting_a_specific_subclasses">Selecting a specific subclasses</a></h3>
+<div class="paragraph">
+<p>Oftentimes it is also required to through an polymorphic association only select a specific subclass. In the Petclinic example, it should be possible to create a specific <code>Visit</code> that has some special settings for a visit of a cat. When a visit specificly for cats is created the selection for the pet within the visit editor should be filtered to allow only select <code>Cat</code> entity instances. Furthermore it should display the visit attributes that are only necessary for a cat visit.</p>
+</div>
+<div class="paragraph">
+<p>In order to achieve this kind of behavior, first a <code>CatVisit</code> entity is created which extends <code>Visit</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">CatVisit.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@DiscriminatorValue</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">CATVISIT</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@Entity</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_CatVisit</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">CatVisit</span> <span class="directive">extends</span> Visit {
+
+    <span class="annotation">@Column</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">CAT_TREE_REQUIRED</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">protected</span> <span class="predefined-type">Boolean</span> catTreeRequired;
+
+    <span class="comment">// ...</span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this case <code>SINGLE_TABLE</code> inheritance is used, which means that there is only one table containing all attributes of the superclass as well as all subclasses.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+When inheritance type <code>SINGLE_TABLE</code> is used, the additional attributes of a subclass cannot have a <code>NOT NULL</code> DB constraint, because for other entities within the entity hierachy it is not possible to fulfil this requirement. The usage of <code>@NotNull</code> bean validation annotation within the entity layer is possible though.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In order to create a specific <code>CatVisit</code> instance through the UI, the same pattern from above is used. In order to achieve the filtering of the <code>Visit.pet</code> attribute within the cat visit editor, the <code>lookupPickerField</code> is adjusted slightly:</p>
+</div>
+<div class="listingblock">
+<div class="title">cat-edit.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;data&gt;</span>
+    <span class="tag">&lt;instance</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">catVisitDc</span><span class="delimiter">&quot;</span></span>
+              <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.haulmont.sample.petclinic.entity.visit.CatVisit</span><span class="delimiter">&quot;</span></span>
+              <span class="attribute-name">view</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">visit-with-pet</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;loader</span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;/instance&gt;</span>
+
+    <span class="tag">&lt;collection</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">catsDc</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.haulmont.sample.petclinic.entity.pet.Cat</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">view</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">_base</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
+        <span class="tag">&lt;loader&gt;</span>
+            <span class="tag">&lt;query&gt;</span>
+                select e from petclinic_Cat e
+            <span class="tag">&lt;/query&gt;</span>
+        <span class="tag">&lt;/loader&gt;</span>
+    <span class="tag">&lt;/collection&gt;</span>
+<span class="tag">&lt;/data&gt;</span>
+<span class="tag">&lt;layout</span> <span class="attribute-name">expand</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">editActions</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">spacing</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;form</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">form</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">dataContainer</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">catVisitDc</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;column</span> <span class="attribute-name">width</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">250px</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+
+            <span class="tag">&lt;lookupPickerField</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">petField</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">property</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">pet</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">optionsContainer</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">catsDc</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">caption</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">msg://cat</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
+
+            <span class="tag">&lt;checkBox</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">catTreeRequiredField</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">property</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">catTreeRequired</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span> <i class="conum" data-value="3"></i><b>(3)</b>
+
+        <span class="tag">&lt;/column&gt;</span>
+    <span class="tag">&lt;/form&gt;</span>
+<span class="tag">&lt;/layout&gt;</span></code></pre>
+</div>
+</div>
 <div class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>the attributes of the <code>Pet</code> entity can be entered</td>
+<td>The data container for (<code>catsDc</code>) only selects <code>Cat</code> instances</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td><code>clawLength</code> as one additional attribute of the <code>Cat</code> entity can also be entered</td>
+<td><code>petField</code> field gets the <code>catsDc</code> as a options container so that only cats are displayed</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Additional <code>CatVisit</code> specific attributes can be defined</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>With that configuration in place, the lookup field for the pet only displays cats:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/guides/images/data-model-entity-inheritance/cat-visit-editor-with-filtered-pet-selection.png" alt="Cat visit editor with filtered pet selection">
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+TODO: change picture; add cat pokemon (Meowth - #052; Persian - #053; Mewtwo - #150; Mew - #151; Espeon - #196; Raikou - #243;
+</td>
 </tr>
 </table>
 </div>
@@ -475,9 +600,53 @@ into the <code>PETCLINIC_PET</code> table and the <code>Cat</code> related attri
 </div>
 </div>
 <div class="sect1">
+<h2 id="mapped_superclasses"><a class="anchor" href="#mapped_superclasses"></a><a class="link" href="#mapped_superclasses">Mapped Superclasses</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Another type of inheritance is the usage of the <code>@MappedSuperclass</code> annotation. Mapped superclasses allow to share attributes and behavior on a entity level, but on the database layer is explicitly not involved in the inheritance. In the Petclinic example, there is a class called <code>NamedEntity</code>. A named entity is a CUBA <code>StandardEntity</code> plus it adds one specific field: <code>name</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">NamedEntity.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@NamePattern</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">%s|name</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@MappedSuperclass</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">NamedEntity</span> <span class="directive">extends</span> StandardEntity {
+
+    <span class="annotation">@Column</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">NAME</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">protected</span> <span class="predefined-type">String</span> name;
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This class is annotated with <code>@MappedSuperclass</code> indicating that it can be used for inheritance, but there is no explicit database table associated. A class that is extending <code>NamedEntity</code> like <code>Specialty</code> inherits all attributes from this class and stores them in its own table <code>PETCLINIC_SPECIALTY</code>.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+CUBA itself offers mapped superclasses for defining standard attributes across all tables within a CUBA application. <code>StandardEntity</code> is the most commonly known example. It e.g. contains the timestamp related attributes <code>createTs</code> and <code>updateTs</code>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
 <div class="sectionbody">
-
+<div class="paragraph">
+<p>In this data modelling guide entity inheritance was introduced. Inheritance is a common way in object oriented programming to share data and behavior through a class hierarchy. On the database level, the concept of inheritance is not directly available. But still JPA as the OR-Mapper allows to express inheritance with different patterns to bridge the gab between the two worlds.</p>
+</div>
+<div class="paragraph">
+<p>Entity inheritance is possible in different ways.  <code>MappedSuperclass</code> allows to only share attributes without using a shared Table at all. When inheritance also should be represented JPAs <code>@Inheritance</code> annotation can be used. In this case it is possible that other entities can create associations that reference the entity inheritance structure (like <code>Visit</code> &#8594; <code>Pet</code> where <code>Pet</code> is an entity inheritance).</p>
+</div>
+<div class="paragraph">
+<p>On a UI layer the entity inheritance has to be reflected as well. Depending on the use case, CUBA screens can be adjusted so that the user interface displays all entity instances of a hierarchy as well as only sub-parts of an entity inheritance.</p>
+</div>
 </div>
 </div>
                                     </div>
@@ -501,6 +670,7 @@ into the <code>PETCLINIC_PET</code> table and the <code>Cat</code> related attri
 <li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
 <li><a href="#entity_inheritance_in_jpa">Entity inheritance in JPA</a></li>
 <li><a href="#ui_for_entity_inheritance">UI for entity inheritance</a></li>
+<li><a href="#mapped_superclasses">Mapped Superclasses</a></li>
 <li><a href="#summary">Summary</a></li>
 </ul>
                         </div>
