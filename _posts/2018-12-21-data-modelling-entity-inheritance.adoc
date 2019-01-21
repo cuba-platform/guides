@@ -32,7 +32,7 @@ This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA pet
 === Final Application
 
 ++++
-<a href="https://raw.githubusercontent.com/cuba-guides/{project_id}/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/{project_id}/master/img/login-screen.png"/></a>
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-data-model-entity-inheritance/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-data-model-entity-inheritance/master/img/login-screen.png"/></a>
 ++++
 
 include::includes/guide_requirements.adoc[]
@@ -299,8 +299,6 @@ In order to create a specific `CatVisit` instance through the UI, the same patte
 With that configuration in place, the lookup field for the pet only displays cats:
 
 image::data-model-entity-inheritance/cat-visit-editor-with-filtered-pet-selection.png[Cat visit editor with filtered pet selection]
-
-TIP: TODO: change picture; add cat pokemon (Meowth - #052; Persian - #053; Mewtwo - #150; Mew - #151; Espeon - #196; Raikou - #243;
 
 
 == Mapped Superclasses
