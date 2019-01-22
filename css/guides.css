@@ -336,3 +336,11 @@ pre.CodeRay {
     content: "▼";
     font-size: 20px;
 }
+
+#example_cuba_petclinic .link {
+    border-bottom: 1px dotted #006bac;
+}
+
+#example_cuba_petclinic .link:hover {
+    border-bottom: none;
+}
