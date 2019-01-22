@@ -58,13 +58,23 @@
     width: 100%;
     display: flex;
     justify-content: space-between;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.service-booking .content-wrapper .accordion-webinars .item .item-body .descr .main {
+    display: flex;
+    align-items: center;
 }
 
 .service-booking .content-wrapper .accordion-webinars .item .item-body .descr .btn-wrapper {
     min-width: 125px;
+    display: flex;
+    align-items: center;
+    height: 100%;
 }
-.service-booking .content-wrapper .accordion-webinars .item .item-body .descr {
-    padding-bottom: 10px;
+.service-booking .content-wrapper .accordion-webinars .item .item-body .descr .btn-wrapper a {
+    margin-bottom: 1px;
 }
 @media screen and (min-width: 768px) {
     .page-webinars .content-wrapper .sb-block.sb-footer .columns-wrapper .column {
@@ -152,7 +162,8 @@ pre.CodeRay {
     padding: 1em 0;
 }
 
-.blog .tip {
+.blog .tip {display: flex;
+    align-items: center;
     background: #f7f7f7;
     border: 1px solid #ebebeb;
     border-radius: 3px;
@@ -165,8 +176,8 @@ pre.CodeRay {
 }
 
 .blog .tip .icon i {
-    font-size: 30px;
-    padding-top: 15px;
+    font-size: 38px;
+    padding: 12px 3px 0;
 }
 
 .blog .tip td.icon {
@@ -179,8 +190,7 @@ pre.CodeRay {
 }
 
 .blog .tip .icon i:before {
-    /* fa-exclamation-circle */
-    content: "\f071";
+    content: "\f0eb";
 }
 
 .blog .colist {
@@ -270,6 +280,18 @@ pre.CodeRay {
     line-height: 26px;
 }
 
+.blog .guide-panel.cuba-version {
+    text-align: center;
+    padding: 10px;
+}
+
+.blog .guide-panel.cuba-version h4 {
+    display: inline-block;
+    font-weight: 600;
+    color: #006bac;
+    font-size: 18px;
+}
+
 .blog .guide-panel.download {
     padding: 0.5em 18px 1.5em;
 }
@@ -302,4 +324,15 @@ pre.CodeRay {
 .blog .content .img-center {
     width: 100%;
     text-align: center;
+}
+
+/* Issue #9 */
+#example_cuba_petclinic::before {
+    color: #006bac;
+    content: "▶";
+    margin-right: 0.25em;
+}
+#example_cuba_petclinic.expanded::before {
+    content: "▼";
+    font-size: 20px;
 }
