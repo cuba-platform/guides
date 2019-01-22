@@ -44,7 +44,7 @@ include::includes/petclinic_introduction.adoc[]
 == Entity Inheritance in JPA
 
 
-The data model contains the `Pet` entity, which is a base class stored in the table: `PETCLINIC_PET`. The entity inheritace is configured with the inheritance strategy `JOINED`. Therefore the data for the subclasses `Cat`, `Bird` and `Rat` are stored in two different tables.
+The data model contains the `Pet` entity, which is a base class stored in the table: `PETCLINIC_PET`. The entity inheritace is configured with the inheritance strategy `JOINED`. Therefore the data for the subclasses `Cat`, `Bird` and `Rat` are stored in three different tables.
 
 In the `PETCLINIC_PET` table all attributes that are inherited from the `Pet` Entity are stored. The attributes that are additionally defined in the subclasses (like `Bird.wingSpread`) are stored in the dedicated subclass tables: `PETCLINIC_CAT`, `PETCLINIC_BIRD` and `PETCLINIC_RAT`.
 
@@ -92,7 +92,7 @@ public class Pet extends NamedEntity {
 ----
 <1> the description of the Discriminator column with the column name and the data type
 <2> the inheritance strategy for the class hierarchy (possible options are `SINGLE_TABLE`, `TABLE_PER_CLASS` and `JOINED`)
-<3> the discriminator column for the superclass itself. Sometimes instances of superclasses make sense. In the case of the `Pet` example, creating a generic `Pet` does not reflect the real world
+<3> the discriminator column value for the superclass itself. Sometimes instances of superclasses make sense. In the case of the `Pet` example, creating a generic `Pet` does not reflect the real world
 <4> the common attributes that are shared with all subclasses
 
 === Cat Subclass
@@ -153,7 +153,8 @@ In this case, it is obviously not possible to display specific attributes of one
 
 In order to create different types of Pet instances it is required to differentiate at some point in the user interface between the concrete type, that should be created. Also when it comes to selecting an concrete entity instance during a selection process, it is sometimes required to differentiate between the available types to select.
 
-The user interface for creating a new Pet will be adjusted so that within the browse screen of the Pet. When creating a new Pet, the concrete subclass has to be selected.
+The user interface for creating a new Pet will be adjusted within the browse screen of the Pet.
+ When creating a new Pet, the concrete subclass has to be selected.
 
 image::data-model-entity-inheritance/pet-browse-screen-inheritance.png[Pet browse screen with entity inheritance]
 
@@ -231,11 +232,12 @@ With this dispatching code in place, the correct Editor screen for the concrete 
     <!-- ... -->
 </layout>
 ----
-
+<1> attributes of the `Pet` superclass
+<2> additional attributes of the `Cat` subclass
 
 === Selecting a Specific Subclasses
 
-Oftentimes it is also required to through an polymorphic association only select a specific subclass. In the Petclinic example, it should be possible to create a specific `Visit` that has some special settings for a visit of a cat. When a visit specificly for cats is created the selection for the pet within the visit editor should be filtered to allow only select `Cat` entity instances. Furthermore it should display the visit attributes that are only necessary for a cat visit.
+In the Petclinic example, it should be possible to create a specific `Visit` that has some special settings for a visit of a cat. When a `Visit for Cats` is created the selection for the pet within the visit editor should be filtered to allow only select `Cat` entity instances. Furthermore it should display the visit attributes that are only necessary for a cat visit.
 
 In order to achieve this kind of behavior, first a `CatVisit` entity is created which extends `Visit`.
 
