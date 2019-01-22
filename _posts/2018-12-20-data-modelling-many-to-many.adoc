@@ -4,11 +4,11 @@ compatible_java_versions: 8+
 project_id: cuba-petclinic-data-model-many-to-many
 permalink: data-modelling-many-to-many-association
 ---
-= Data modelling: Many-to-Many association
+= Data Modelling: Many-to-Many Association
 :showtitle:
 :sectlinks:
 :sectanchors:
-:page-navtitle: Data modelling: Many-to-Many association
+:page-navtitle: Data Modelling: Many-to-Many Association
 :page-excerpt: Data modelling guide: what are Many-to-Many associations and when to use them
 :page-root: ../../../
 :project_id: cuba-petclinic-data-model-many-to-many
@@ -19,7 +19,7 @@ The many-to-many association implies that multiple records of one table are rela
 
 Depending on whether additional fields in the joining table are needed, it can be implemented via a many to many association with an additional entity or without it. The following examples illustrate both approaches.
 
-== What will be built
+== What Will be Build
 
 This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show different use cases of many to many associations. In particular, the following use cases will be covered:
 
@@ -38,7 +38,7 @@ include::includes/guide_requirements.adoc[]
 include::includes/petclinic_introduction.adoc[]
 
 
-== Direct Many-to-Many association
+== Direct Many-to-Many Association
 
 An example of a direct many to many relationship is the following in the petclinic example:
 
@@ -86,7 +86,7 @@ protected List<Vet> vets;
 So, the `Vet` and the `Specialty` editors are absolutely symmetrical.
 
 
-== Indirect Many-to-Many association with Joining Entity
+== Indirect Many-to-Many Association with Joining Entity
 
 The many-to-many association is always implemented using a joining table, but creating an entity to reflect this table is optional. The joining entity can be created when some additional attributes should be stored in the joining table.
 
