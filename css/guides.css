@@ -58,13 +58,23 @@
     width: 100%;
     display: flex;
     justify-content: space-between;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.service-booking .content-wrapper .accordion-webinars .item .item-body .descr .main {
+    display: flex;
+    align-items: center;
 }
 
 .service-booking .content-wrapper .accordion-webinars .item .item-body .descr .btn-wrapper {
     min-width: 125px;
+    display: flex;
+    align-items: center;
+    height: 100%;
 }
-.service-booking .content-wrapper .accordion-webinars .item .item-body .descr {
-    padding-bottom: 10px;
+.service-booking .content-wrapper .accordion-webinars .item .item-body .descr .btn-wrapper a {
+    margin-bottom: 1px;
 }
 @media screen and (min-width: 768px) {
     .page-webinars .content-wrapper .sb-block.sb-footer .columns-wrapper .column {
@@ -152,7 +162,8 @@ pre.CodeRay {
     padding: 1em 0;
 }
 
-.blog .tip {
+.blog .tip {display: flex;
+    align-items: center;
     background: #f7f7f7;
     border: 1px solid #ebebeb;
     border-radius: 3px;
