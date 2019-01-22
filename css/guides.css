@@ -325,3 +325,14 @@ pre.CodeRay {
     width: 100%;
     text-align: center;
 }
+
+/* Issue #9 */
+#example_cuba_petclinic::before {
+    color: #006bac;
+    content: "▶";
+    margin-right: 0.25em;
+}
+#example_cuba_petclinic.expanded::before {
+    content: "▼";
+    font-size: 20px;
+}
