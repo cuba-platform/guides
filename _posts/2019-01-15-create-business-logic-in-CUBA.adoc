@@ -18,11 +18,11 @@ permalink: create-business-logic-in-cuba
 
 
 
-One of the first questions when developing a CUBA application is: _Where should I put my business logic?_ This guide will explain the different options available and their pros and cons.
+One of the first questions when developing a CUBA application is: _Where should I put my business logic?_ This guide will explain the options available and their pros and cons.
 
 == What will be built
 
-This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show where business logic can be placed in a CUBA application. Mainly discounts are calculated for Pets based on total amount of their visits in the Petclinic.
+This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show where business logic can be placed in a CUBA application. Mainly discounts are calculated for Pets based on the total amount of their visits in the Petclinic.
 
 
 === Final Application
@@ -112,15 +112,15 @@ TIP: This approach is acceptable if the logic is invoked from a single point and
 == Client Tier Beans
 
 
-The in-controller solution works as long as the logic should only be executed within one screen. Once the calculation should be executed in multiple UI screens there is a better way to not duplicate the code. The logic can be extracted to a common place available for both controllers. This option is using a Spring bean in the client tier.
+The in-controller solution works as long as the logic should only be executed within one screen. Once the calculation should be executed in multiple UI screens there is a better way not to duplicate the code. The logic can be extracted to a common place available for both controllers. This option is using a Spring bean in the client tier.
 
-A managed bean is a class annotated with the `@Component` annotation. It can be injected via `@Inject` into other beans and screen controllers. If the bean has a separate interface, it can be accessed through the interface instead of the class.
+A managed bean is a class annotated with `@Component` annotation. It can be injected via `@Inject` into other beans and screen controllers. If a bean has a separate interface, it can be accessed through the interface instead of the class.
 
 image::creating-business-logic-in-cuba/using_client_beans_1.png[class diagramm using client tier beans]
 
 Please note that in order to be accessible for screen controllers, the bean must be located in *global*, *gui* or *web* modules of the application. In the former case the bean will be also accessible for the middleware.
 
-The example that is implemented as (multiple) client tier beans is to display the contact information of the pet's owner directly from the pet browser or pet detail screen.
+The example that is implemented as (multiple) client tier beans is to display the contact information of the pet's owner directly from the pet browser or the pet details screen.
 
 
 ++++
@@ -130,7 +130,7 @@ The example that is implemented as (multiple) client tier beans is to display th
 For this there are two Spring beans:
 
 * https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/global/src/com/cubaplatform/petclinic/contact/PetContactFetcherBean.java[PetContactFetcher] that deals with fetching of the appropriate contact data
-* https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetContactDisplay.java[PetContactDisplay] for displaying the contact information as notifications
+* https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetContactDisplay.java[PetContactDisplay] for displaying contact information as notifications
 
 .PetContactFetcherBean.java
 [source,java]
@@ -178,7 +178,7 @@ public class PetContactFetcherBean implements PetContactFetcher {
 
 
 The beans are used in the https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetBrowse.java#L24[Pet browse screen] and the
-https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetEdit.java#L19[Pet detail screen]. The usage looks like this:
+https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetEdit.java#L19[Pet details screen]. The usage looks like this:
 
 
 .PetEdit.java
@@ -212,21 +212,21 @@ public class PetEdit extends StandardEditor<Pet> {
 
 The benefit compared to the first in-controller solution is that the code-reuse is higher. It is possible to use the logic in different places.
 
-`PetContactDisplay` is a bean in the web module, therefore is only available within the client tier.
-`PetContactFetcher` on the other hand is a bean in the global module which means that it is also possible to use the logic in the middleware as well as the client tier.
+`PetContactDisplay` is a bean in the web module, therefore it is only available within the client tier.
+`PetContactFetcher`, on the other hand, is a bean in the global module which means that it is also possible to use the logic in the middleware as well as the client tier.
 
 == Middleware Services
 
-The next approach on where to put the business logic is a https://doc.cuba-platform.com/manual-{cuba_version}/services.html[middleware service]. A service is the most appropriate place for business logic, because it achieves the following goals:
+The next approach on where to put the business logic is a https://doc.cuba-platform.com/manual-{cuba_version}/services.html[middleware service]. The service is the most appropriate place for business logic, because it achieves the following goals:
 
 * The business logic will be available for all types of clients including the Polymer UI.
 
-* APIs that are available only on the middleware: https://doc.cuba-platform.com/manual-{cuba_version}/entityManager.html[EntityManager], Transaction etc. are accessible to the business logic
+* APIs that are available only on the middleware: https://doc.cuba-platform.com/manual-{cuba_version}/entityManager.html[EntityManager], Transaction, etc. are accessible to the business logic
 
 
 image::creating-business-logic-in-cuba/using_services_1.png[class diagramm using services]
 
-In order to invoke a middleware business logic from the client, a service needs to be created. CUBA Studio streamlines the creation process of a service:
+In order to invoke the middleware business logic from the client, a service needs to be created. CUBA Studio streamlines the creation process of a service:
 
 * Select the *Middleware* section in the CUBA project tree and click *New > Service* in the context menu.
 
@@ -234,7 +234,7 @@ In order to invoke a middleware business logic from the client, a service needs 
 
 * Open the service interface in the editor. Create a method and implement it in the service class.
 
-In the petclinic application, the following service was created: `DiseaseWarningMailingService`. It sends out disease warning mailings for potential endangered pets.
+In the Petclinic application, the following service was created: `DiseaseWarningMailingService`. It sends out disease warning mailings to the potentially endangered pets' owners.
 
 
 ++++
@@ -246,9 +246,9 @@ In the petclinic application, the following service was created: `DiseaseWarning
 
 * https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/cubaplatform/petclinic/service/DiseaseWarningMailingServiceBean.java[DiseaseWarningMailingServiceBean] - service implementation
 
-* https://github.com/cuba-guides/{project_id}/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/CreateDiseaseWarningMailing.java[CreateDiseaseWarningMailing] - screen controller that use the service
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/CreateDiseaseWarningMailing.java[CreateDiseaseWarningMailing] - screen controller that uses the service
 
-The implementation of a service looks like this in case of the `DiseaseWarningMailingService`:
+The implementation of a service looks like this in case of `DiseaseWarningMailingService`:
 
 .DiseaseWarningMailingServiceBean.java
 [source,java]
@@ -283,11 +283,11 @@ public class DiseaseWarningMailingServiceBean implements DiseaseWarningMailingSe
 }
 ----
 
-<1> Declaration of the `DiseaseWarningMailingServiceBean` as the Middleware Service implementation
+<1> Declaration of `DiseaseWarningMailingServiceBean` as the Middleware Service implementation
 <2> Implementation of the business logic interface
 
 
-The usage in the UI controller is very similar to the invocation of a client tier bean. The `CreateDiseaseWarningMailing` screen controller looks like this:
+The UI controller usage is very similar to the invocation of a client tier bean. The `CreateDiseaseWarningMailing` screen controller looks like this:
 
 
 .CreateDiseaseWarningMailing.java
@@ -323,13 +323,11 @@ public class CreateDiseaseWarningMailing extends Screen {
 <2> Invocation of the business logic in the controller action
 
 With that middleware service in place, the logic of creating disease warning mailings can now be shared across UI screens in the web tier. Additionally any other middleware code can execute the logic, since
-it is not tied to the web tier anymore. Furthermore it is possible to trigger it via the REST API and with that exposes it also to other UI technologies like the Polymer UI.
+it is not tied to the web tier anymore. Furthermore, it is possible to trigger it via the REST API and with that to expose it also to other UI technologies like the Polymer UI.
 
 
 == Summary
 
-There are several options when it comes to where to put the business logic in a CUBA application. A controller can be a good and easy start, although it has some downsides when it comes to sharing code. A client bean solves this problem to some degree. Middleware services allow for sharing business logic across different clients (e.g. Polymer Client) and is the most appropriate way of putting business logic.
+There are several options when it comes to where to put the business logic in a CUBA application. A controller can be a good and easy start, although it has some downsides when it comes to sharing the code. A client bean solves this problem to some degree. Middleware services allow for sharing business logic across different clients (e.g. Polymer Client) and is the most appropriate way of putting business logic.
 
-Additionally there are several advanced techniques like https://doc.cuba-platform.com/manual-{cuba_version}/jmx_beans.html[JMX Beans] or https://doc.cuba-platform.com/manual-{cuba_version}/entity_listeners.html[Entity Listeners] that also allow for certain business logic to be executed in particular scenarios. The decision where to put the business logic for a given case should be done on a case to case basis. But the mentioned main places of Controllers & Spring Beans / Spring Services for placing business logic are a good starting point.
-
-
+Additionally, there are several advanced techniques like https://doc.cuba-platform.com/manual-6.10/jmx_beans.html[JMX Beans] or https://doc.cuba-platform.com/manual-6.10/entity_listeners.html[Entity Listeners] that also allow for certain business logic to be executed in particular scenarios. The decision where to put the business logic for a given case should be done on a case to case basis. But the mentioned main places of Controllers & Spring Beans / Spring Services for placing business logic are a good starting point.
