@@ -4,11 +4,11 @@ compatible_java_versions: 8+
 project_id: cuba-petclinic-data-model-entity-inheritance
 permalink: data-modelling-entity-inheritance
 ---
-= Data modelling: Entity inheritance
+= Data Modelling: Entity Inheritance
 :showtitle:
 :sectlinks:
 :sectanchors:
-:page-navtitle: Data modelling: Entity inheritance
+:page-navtitle: Data Modelling: Entity Inheritance
 :page-excerpt: Data modelling guide: How entity inheritance can be used in a CUBA application
 :page-root: ../../../
 :project_id: cuba-petclinic-data-model-entity-inheritance
@@ -20,7 +20,7 @@ This guide demonstrates how to use entity inheritance in CUBA applications.
 In the petclinic example different types of Pets are groomed during their stay in the clinic - cats, birds and rats. All this types of pets have some common attributes. The application should store common attributes within one table and use separate linked tables to store specific attributes for the different pet types.
 
 
-== What will be built
+== What Will be Build
 
 This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show the mechanism to define entity inheritance. In particular, the following use cases will be covered:
 
@@ -41,7 +41,7 @@ include::includes/guide_requirements.adoc[]
 include::includes/petclinic_introduction.adoc[]
 
 
-== Entity inheritance in JPA
+== Entity Inheritance in JPA
 
 
 The data model contains the `Pet` entity, which is a base class stored in the table: `PETCLINIC_PET`. The entity inheritace is configured with the inheritance strategy `JOINED`. Therefore the data for the subclasses `Cat`, `Bird` and `Rat` are stored in two different tables.
@@ -64,7 +64,7 @@ In the Petclinic example the `Pet` entity inheritance looks like this:
 image::data-model-entity-inheritance/pet-inheritance.png[align="center"]
 
 
-=== Pet superclass
+=== Pet Superclass
 
 The superclass has three annotations in place:
 
@@ -95,7 +95,7 @@ public class Pet extends NamedEntity {
 <3> the discriminator column for the superclass itself. Sometimes instances of superclasses make sense. In the case of the `Pet` example, creating a generic `Pet` does not reflect the real world
 <4> the common attributes that are shared with all subclasses
 
-=== Cat subclass
+=== Cat Subclass
 
 The Cat subclass as one example of a concrete Pet type looks contains two inheritance related annotations.
 
@@ -122,11 +122,11 @@ public class Cat extends Pet {
 With this configuration in place, it is possible to create instances of cats through the JPA layer, where all `Pet` related attributes are stored
 into the `PETCLINIC_PET` table and the `Cat` related attributes are stored into the `PETCLINIC_CAT` table.
 
-== UI for entity inheritance
+== UI for Entity Inheritance
 
 Creating UIs based on entity inheritance needs some special treatment. In browse screens there are options to either display all entries independent of the concrete subclass or only specific for a particular subclass. For editor screens the concrete subclass has to be used in order to being able to enter the subclass specific information of the entity.
 
-=== Pet browse UI
+=== Pet Browse UI
 
 In the example case of the Petclinic, there is a main menu entry point `Petclinic > Pets`. In this screen all pets independent of their concrete type should be displayed. This behavior is possible when using the superclass `Pet` in the JPQL query.
 
@@ -149,7 +149,7 @@ With that data container in place, all pets (Cats, Birds and Rats) are displayed
 In this case, it is obviously not possible to display specific attributes of one or more subclasses in the table, since the superclass `Pet` is not aware of specific attributes like `Cat.clawLength`.
 
 
-=== UI for creating Pets
+=== UI for Creating Pets
 
 In order to create different types of Pet instances it is required to differentiate at some point in the user interface between the concrete type, that should be created. Also when it comes to selecting an concrete entity instance during a selection process, it is sometimes required to differentiate between the available types to select.
 
@@ -233,7 +233,7 @@ With this dispatching code in place, the correct Editor screen for the concrete 
 ----
 
 
-=== Selecting a specific subclasses
+=== Selecting a Specific Subclasses
 
 Oftentimes it is also required to through an polymorphic association only select a specific subclass. In the Petclinic example, it should be possible to create a specific `Visit` that has some special settings for a visit of a cat. When a visit specificly for cats is created the selection for the pet within the visit editor should be filtered to allow only select `Cat` entity instances. Furthermore it should display the visit attributes that are only necessary for a cat visit.
 
