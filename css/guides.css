@@ -176,8 +176,8 @@ pre.CodeRay {
 }
 
 .blog .tip .icon i {
-    font-size: 30px;
-    padding-top: 15px;
+    font-size: 38px;
+    padding: 12px 3px 0;
 }
 
 .blog .tip td.icon {
@@ -190,8 +190,7 @@ pre.CodeRay {
 }
 
 .blog .tip .icon i:before {
-    /* fa-exclamation-circle */
-    content: "\f071";
+    content: "\f0eb";
 }
 
 .blog .colist {
