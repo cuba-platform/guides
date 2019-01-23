@@ -2026,5 +2026,12 @@
     }
   })
 
+  /* Issue #9 */
+  $('#example_cuba_petclinic ~ .sectionbody').addClass('hide');
+  $('#example_cuba_petclinic').click(function () {
+    $('#example_cuba_petclinic ~ .sectionbody').toggleClass('hide');
+    $(this).toggleClass('expanded');
+  });
+
 }(jQuery);
 ;

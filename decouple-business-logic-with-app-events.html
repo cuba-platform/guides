@@ -5,9 +5,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Decouple Business Logic with Application Events</title>
+    <title>Decouple business logic with application events</title>
     <meta name="description" content="The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.">
     <meta name="author" content="Haulmont">
+    <link rel="shortcut icon" href="/guides/images/favicon.png" type="image/png" />
     <link rel="stylesheet" href="/guides/css/foundation.css">
     <link rel="stylesheet" href="/guides/css/font-awesome.css">
     <link rel="stylesheet" href="/guides/css/coderay.css">
@@ -141,7 +142,7 @@
                             <div class="field field-name-body field-type-text-with-summary field-label-hidden">
                                 <div class="field-items">
                                     <div class="field-item even" property="content: encoded">
-                                        <h1>Decouple Business Logic with Application Events</h1>
+                                        <h1>Decouple business logic with application events</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
@@ -150,7 +151,7 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="what_will_be_build"><a class="anchor" href="#what_will_be_build"></a><a class="link" href="#what_will_be_build">What Will Be Build</a></h2>
+<h2 id="what_will_be_built"><a class="anchor" href="#what_will_be_built"></a><a class="link" href="#what_will_be_built">What will be built</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show different use cases of application events. In particular, the following use cases will be covered:</p>
@@ -216,7 +217,7 @@
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="/guides/images/domain-model.png" alt="Domain model">
+<img src="/guides/images/domain-model2.png" alt="Domain model">
 </div>
 </div>
 <div class="paragraph">
@@ -226,7 +227,7 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="benefits_of_an_event_based_business_logic"><a class="anchor" href="#benefits_of_an_event_based_business_logic"></a><a class="link" href="#benefits_of_an_event_based_business_logic">Benefits of an Event Based Business Logic</a></h2>
+<h2 id="benefits_of_an_event_based_business_logic"><a class="anchor" href="#benefits_of_an_event_based_business_logic"></a><a class="link" href="#benefits_of_an_event_based_business_logic">Benefits of an event based business logic</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The most common approach of communicating across application logic is to do method invocation. In CUBA and Spring this is done via Java objects, Spring components &amp; CUBA services that interact with each other. There are good reasons to use this communication pattern, but it is not the only one. Method invocation is oftentimes overused which can lead to bad maintainability of the overall system due to highly coupled application parts.</p>
@@ -269,7 +270,7 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="available_types_of_events_in_a_cuba_application"><a class="anchor" href="#available_types_of_events_in_a_cuba_application"></a><a class="link" href="#available_types_of_events_in_a_cuba_application">Available Types of Events in a CUBA Application</a></h2>
+<h2 id="available_types_of_events_in_a_cuba_application"><a class="anchor" href="#available_types_of_events_in_a_cuba_application"></a><a class="link" href="#available_types_of_events_in_a_cuba_application">Available types of events in a CUBA application</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>There are different kinds of application events within a CUBA application. The main categories are:</p>
@@ -291,7 +292,7 @@
 </ul>
 </div>
 <div class="sect2">
-<h3 id="entity_changes_through_entitychangedevent"><a class="anchor" href="#entity_changes_through_entitychangedevent"></a><a class="link" href="#entity_changes_through_entitychangedevent">Entity Changes Through EntityChangedEvent</a></h3>
+<h3 id="entity_changes_through_entitychangedevent"><a class="anchor" href="#entity_changes_through_entitychangedevent"></a><a class="link" href="#entity_changes_through_entitychangedevent">Entity changes through EntityChangedEvent</a></h3>
 <div class="paragraph">
 <p>In the petclinic example the following logic will be implemented: The petclinic has rooms for the stay of the pets during their time in the clinic. The rooms have no traditional keys or keycards, but instead have a 6 digit keycode to enter at the entrance door. This keycode has to be given to the pet&#8217;s owner once a new visit is booked. The transportation of the keycode should happen via SMS notification from the application.</p>
 </div>
@@ -426,7 +427,7 @@ When having multiple event listeners the invocation order oftentimes does not ma
 </table>
 </div>
 <div class="sect3">
-<h4 id="naming_conventions_of_events"><a class="anchor" href="#naming_conventions_of_events"></a><a class="link" href="#naming_conventions_of_events">Naming Conventions of Events</a></h4>
+<h4 id="naming_conventions_of_events"><a class="anchor" href="#naming_conventions_of_events"></a><a class="link" href="#naming_conventions_of_events">Naming Conventions of events</a></h4>
 <div class="paragraph">
 <p>Events are normally named in simple past: "Entity <strong>Changed</strong> Event". This is a common pattern, because it stresses that an event is an immutable fact that happened in the past and is not changeable anymore. Event listeners on the other hand should be named in present tense.</p>
 </div>
@@ -439,7 +440,7 @@ When having multiple event listeners the invocation order oftentimes does not ma
 </div>
 </div>
 <div class="sect2">
-<h3 id="custom_application_logic_events"><a class="anchor" href="#custom_application_logic_events"></a><a class="link" href="#custom_application_logic_events">Custom Application Logic Events</a></h3>
+<h3 id="custom_application_logic_events"><a class="anchor" href="#custom_application_logic_events"></a><a class="link" href="#custom_application_logic_events">Custom Application Logic events</a></h3>
 <div class="paragraph">
 <p>The next example is using custom application events to send messages between different parts of the application in a loosely coupled manner. When the pet is recovered and checked out the visit is marked as complete. When this event happens, certain downstream process can be kicked off as well. One of them, which this example deals with is that the invoicing process starts.</p>
 </div>
@@ -600,7 +601,7 @@ There are two ways to listen to events. Above <code>@TransactionalEventListener<
 <p>On the UI layer there are two main use cases for events. The first is that the framework itself sends events for certain interactions that happen within the user interface of the application. Additionally, it is also possible just like in the middleware layer to send custom application UI events. Both kinds of events have in common that instead of the middleware events the UI events are always scoped to one instance of the UI. Furthermore, the events are scoped towards a single browser tab.</p>
 </div>
 <div class="sect3">
-<h4 id="framework_ui_events"><a class="anchor" href="#framework_ui_events"></a><a class="link" href="#framework_ui_events">Framework UI Events</a></h4>
+<h4 id="framework_ui_events"><a class="anchor" href="#framework_ui_events"></a><a class="link" href="#framework_ui_events">Framework UI events</a></h4>
 <div class="paragraph">
 <p>With CUBA 7 the API of the UI components changed from programmatically defined event listener and template method pattern towards declarative event subscriptions via annotations. It is possible to register event listeners in the controller using the <code>@Subscribe</code> annotation.</p>
 </div>
@@ -648,7 +649,7 @@ There are two ways to listen to events. Above <code>@TransactionalEventListener<
 </div>
 </div>
 <div class="sect3">
-<h4 id="custom_ui_events"><a class="anchor" href="#custom_ui_events"></a><a class="link" href="#custom_ui_events">Custom UI Events</a></h4>
+<h4 id="custom_ui_events"><a class="anchor" href="#custom_ui_events"></a><a class="link" href="#custom_ui_events">Custom UI events</a></h4>
 <div class="paragraph">
 <p>Just like for custom application events, custom UI events allow sending notifications about business / UI related facts as objects. The same UI instance is able to register for those events and execute further decoupled logic. In the petclinic, the following use case is modeled as a custom UI event. Once the visit is marked as complete through the UI button, the table of the screen should be updated.</p>
 </div>
@@ -734,7 +735,7 @@ There are two ways to listen to events. Above <code>@TransactionalEventListener<
 </div>
 </div>
 <div class="sect2">
-<h3 id="sending_events_between_layers"><a class="anchor" href="#sending_events_between_layers"></a><a class="link" href="#sending_events_between_layers">Sending Events Between Layers</a></h3>
+<h3 id="sending_events_between_layers"><a class="anchor" href="#sending_events_between_layers"></a><a class="link" href="#sending_events_between_layers">Sending events between layers</a></h3>
 <div class="paragraph">
 <p>Technically there is one main constraint to think about when interacting with events in a CUBA application. This is that as CUBA is a multi-module application that can be deployed as two main parts: frontend (web module) and middleware (core module) sending events between the two layers is not directly possible.</p>
 </div>
@@ -766,7 +767,7 @@ There are two ways to listen to events. Above <code>@TransactionalEventListener<
 <p>Ultimately, modelling and using application events right prevents application logic from ending up in a big ball of mud with invocations between business logic from any parts of the system to any other parts of the system. Sending messages across application parts is a more maintainable way of arranging application logic and oftentimes represents the workflows of the problem domain in a more accurate way as they exist in the real world.</p>
 </div>
 <div class="sect2">
-<h3 id="further_information"><a class="anchor" href="#further_information"></a><a class="link" href="#further_information">Further Information</a></h3>
+<h3 id="further_information"><a class="anchor" href="#further_information"></a><a class="link" href="#further_information">Further information</a></h3>
 <div class="ulist">
 <ul>
 <li>
@@ -789,26 +790,33 @@ There are two ways to listen to events. Above <code>@TransactionalEventListener<
             <div id="blog-sidebar">
                 <div class="region region-sidebar">
                     <section id="block-block-29" class="block block-block clearfix">
-                        <div class="guide-panel cuba-version">
-                            <h4>CUBA Version 7.0</h4>
-                        </div>
 
-                        <div class="guide-panel download">
-                            <h4>Get the code</h4>
-                            <a class="button expanded"  href="https://github.com/cuba-guides/cuba-petclinic-intro-to-application-events/archive/master.zip" target="_blank">Download</a>
-                            <a href="https://github.com/cuba-guides/cuba-petclinic-intro-to-application-events" class="github-link" target="_blank">Github</a>
-                        </div>
 
                         <div class="guide-panel">
                             <h4>Table of contents</h4>
                             <ul class="sectlevel1">
-<li><a href="#what_will_be_build">What Will Be Build</a></li>
+<li><a href="#what_will_be_built">What will be built</a></li>
 <li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
-<li><a href="#benefits_of_an_event_based_business_logic">Benefits of an Event Based Business Logic</a></li>
-<li><a href="#available_types_of_events_in_a_cuba_application">Available Types of Events in a CUBA Application</a></li>
+<li><a href="#benefits_of_an_event_based_business_logic">Benefits of an event based business logic</a></li>
+<li><a href="#available_types_of_events_in_a_cuba_application">Available types of events in a CUBA application</a></li>
 <li><a href="#summary">Summary</a></li>
 </ul>
                         </div>
+
+
+                        <div class="guide-panel download">
+                            <h4>Example code</h4>
+                            <a class="button expanded"  href="https://github.com/cuba-guides/cuba-petclinic-intro-to-application-events/archive/master.zip" target="_blank">Download</a>
+                            <a href="https://github.com/cuba-guides/cuba-petclinic-intro-to-application-events" class="github-link" target="_blank">Github</a>
+                        </div>
+                        <div class="guide-panel cuba-version">
+                            <h4>Supported Versions</h4>
+                            <ul>
+                                <li>CUBA: 7.0+</li>
+                                <li>Java: 8+</li>
+                            </ul>
+                        </div>
+
                     </section>
                 </div>
             </div>

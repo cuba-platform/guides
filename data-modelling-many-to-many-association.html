@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Introduction to working with Data in CUBA</title>
+    <title>Data modelling: Many-to-Many association</title>
     <meta name="description" content="The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.">
     <meta name="author" content="Haulmont">
     <link rel="shortcut icon" href="/guides/images/favicon.png" type="image/png" />
@@ -142,11 +142,14 @@
                             <div class="field field-name-body field-type-text-with-summary field-label-hidden">
                                 <div class="field-items">
                                     <div class="field-item even" property="content: encoded">
-                                        <h1>Introduction to working with Data in CUBA</h1>
+                                        <h1>Data modelling: Many-to-Many association</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>This guide walks you through the CUBA APIs for programmatically interacting with the database through the DataManager API.</p>
+<p>The many-to-many association implies that multiple records of one table are related to multiple records of another table. The joining table will store primary keys of both related entities. Optionally, this table may contain additional columns.</p>
+</div>
+<div class="paragraph">
+<p>Depending on whether additional fields in the joining table are needed, it can be implemented via a many to many association with an additional entity or without it. The following examples illustrate both approaches.</p>
 </div>
 </div>
 </div>
@@ -154,21 +157,21 @@
 <h2 id="what_will_be_built"><a class="anchor" href="#what_will_be_built"></a><a class="link" href="#what_will_be_built">What will be built</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show different use cases regarding programmatic data access with the DataManager API. In particular, the following use cases will be covered:</p>
+<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show different use cases of many to many associations. In particular, the following use cases will be covered:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>automatic creation of a Visit for a given Pet Identification Number</p>
+<p><code>Vet</code> &#8592;&#8594; <code>Specialty</code> is modelled as a direct Many-to-Many association and the UI is updated accordingly</p>
 </li>
 <li>
-<p>automatic "Disease Warning Mailing" for endangered pets</p>
+<p><code>Pet</code> &#8592;&#8594; <code>InsuranceCompany</code> is modelled as an indirect Many-to-Many association with an explicit entity to store the validity range</p>
 </li>
 </ul>
 </div>
 <div class="sect2">
 <h3 id="final_application"><a class="anchor" href="#final_application"></a><a class="link" href="#final_application">Final Application</a></h3>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/login-screen.png"/></a>
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-application-events/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-application-events/master/img/login-screen.png"/></a>
 </div>
 <div class="sect2">
 <h3 id="requirements"><a class="anchor" href="#requirements"></a><a class="link" href="#requirements">Requirements</a></h3>
@@ -192,10 +195,10 @@
 </ul>
 </div>
 <div class="paragraph">
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-intro-to-datamanager/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
 </div>
 <div class="paragraph">
-<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-intro-to-datamanager.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-intro-to-datamanager.git</a></code></p>
+<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many.git</a></code></p>
 </div>
 </div>
 </div>
@@ -221,159 +224,21 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="programmatic_data_access_interactions"><a class="anchor" href="#programmatic_data_access_interactions"></a><a class="link" href="#programmatic_data_access_interactions">Programmatic data access interactions</a></h2>
+<h2 id="direct_many_to_many_association"><a class="anchor" href="#direct_many_to_many_association"></a><a class="link" href="#direct_many_to_many_association">Direct Many-to-Many association</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Oftentimes it is necessary to interact with the database in a programmatic manner. In a CUBA based application, these cases are not as omnipresent as in other frameworks due to its declarative nature of data-binding for UIs, but still, there are
-a lot of cases where data has to be loaded from the database or stored in the database as part of a business process.</p>
+<p>An example of a direct many to many relationship is the following in the petclinic example:</p>
 </div>
-<div class="paragraph">
-<p>The main interaction point that CUBA provides is the <a href="https://doc.cuba-platform.com/manual-7.0/dataManager.html">DataManager</a> API. This API allows the developer of a CUBA application to load and store data in the database through the general abstraction of entities.</p>
-</div>
-<div class="paragraph">
-<p>DataManager is an Abstraction on top of the Java Persistence API (JPA). It hides away certain details that are not required on a day-to-day basis.</p>
-</div>
-<div class="paragraph">
-<p>It also adds certain capabilities that are not available out-of-the-box in JPA. Those capabilities are mainly the <a href="https://doc.cuba-platform.com/manual-7.0/views.html">Views concept</a> as well as the application of <a href="https://doc.cuba-platform.com/manual-7.0/security_subsystem.html">security constraints</a>. More information about differences between JPA and DataManager can be found in the docs on <a href="https://doc.cuba-platform.com/manual-7.0/dm_vs_em.html">DataManager vs. EntityManager</a>.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="load_data_with_datamanager"><a class="anchor" href="#load_data_with_datamanager"></a><a class="link" href="#load_data_with_datamanager">Load data with DataManager</a></h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>DataManager has multiple ways to load data from the database. In this guide, the two main options are covered: load a single item as well as multiple items based on Queries.</p>
-</div>
-<div class="sect2">
-<h3 id="single_item"><a class="anchor" href="#single_item"></a><a class="link" href="#single_item">Single Item</a></h3>
-<div class="paragraph">
-<p>The first option is to load a single Entity instance from the database. This option is often required if reference data needs to be read from the database in order to execute some logic for that entity instance or with the help of that entity instance.</p>
-</div>
-<div class="paragraph">
-<p>In the case of the Petclinic example, there is some business logic which should create a new Visit for a given Pet by its Identification Number.</p>
-</div>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-visit-for-pet.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-visit-for-pet.png"/></a>
-<div class="paragraph">
-<p>The source code that loads the Pet instance by its Identification Number is located in <a href="https://github.com/cuba-guides/cuba-petclinic-intro-to-datamanager/blob/master/modules/core/src/com/cubaplatform/petclinic/service/visit/VisitServiceBean.java#L47">VisitServiceBean.java</a> in the example application. The usage of the DataManager API looks like this:</p>
-</div>
-<div class="listingblock">
-<div class="title">VisitServiceBean.java</div>
+<div class="imageblock text-center">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Inject</span>
-DataManager dataManager;
-
-<span class="comment">/**
- * loads a Pet by its Identification Number
- * @param identificationNumber the Identification Number to load
- * @return the Pet for the given Identification Number
- */</span>
-<span class="directive">private</span> Pet loadPetByIdentificationNumber(<span class="predefined-type">String</span> identificationNumber) {
-    <span class="keyword">return</span> dataManager.load(Pet.class)
-            .query(<span class="string"><span class="delimiter">&quot;</span><span class="content">select e from petclinic$Pet e where e.identificationNumber = :identificationNumber</span><span class="delimiter">&quot;</span></span>)
-            .parameter(<span class="string"><span class="delimiter">&quot;</span><span class="content">identificationNumber</span><span class="delimiter">&quot;</span></span>, identificationNumber)
-            .one();
-}</code></pre>
+<img src="/guides/images/data-model-many-to-many/direct_many_to_many.png" alt="direct many to many">
 </div>
 </div>
 <div class="paragraph">
-<p>DataManager has a <a href="https://martinfowler.com/bliki/FluentInterface.html">fluent API</a> which allows to chain operations on the load operation in order to define parameters to the execution. In this case, the interaction starts with <code>dataManager.load(Pet.class)</code>. Then the JPQL query is defined and the associated parameters are configured with the parameter values. The <code>one()</code> method executes the load operation and fetches exactly one item that matches the criteria. If there are no results the corresponding exception is thrown.</p>
+<p>A <code>Vet</code> can have multiple specialties and a <code>Speciality</code> on the other hand can also be linked to multiple vets.</p>
 </div>
 <div class="paragraph">
-<p>It is up to the application developer to decide if the query can return one or possibly multiple results. In this case, it is only possible to create an Identification Number once, we can be sure that the query will return at the most one item.</p>
-</div>
-<div class="paragraph">
-<p>In this case, the attribute <code>identificationNumber</code> is not the primary key of the entity. But it represents a globally unique identification number given by proper Pet authorities - therefore it is modeled uniquely within the application.</p>
-</div>
-<div class="paragraph">
-<p>If the task is to load a Pet by its primary key (<code>id</code>) the query is easier to create as the query part is not needed: <code>dataManager.load(Pet.class).id(id).one();</code></p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="multiple_items_by_query"><a class="anchor" href="#multiple_items_by_query"></a><a class="link" href="#multiple_items_by_query">Multiple Items by Query</a></h3>
-<div class="paragraph">
-<p>The next very common option is to load multiple items defined by a query.</p>
-</div>
-<div class="paragraph">
-<p>The Petclinic application has the capability to let the user send out Disease Warning Mailings. The user has to define the location of a known disease as well as the type of Pet that is endangered by this disease. The system will find all endangered Pets and send out a Mailing to the owners.</p>
-</div>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-disease-warning-mailing.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-disease-warning-mailing.png"/></a>
-<div class="paragraph">
-<p>The part that finds the endangered Pets looks like this with the use of the DataManager API:</p>
-</div>
-<div class="listingblock">
-<div class="title">DiseaseWarningMailingServiceBean.java</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Inject</span>
-DataManager dataManager;
-
-<span class="directive">private</span> <span class="predefined-type">List</span>&lt;Pet&gt; findEndangeredPets(PetType petType, <span class="predefined-type">String</span> city) {
-    <span class="keyword">return</span> dataManager.load(Pet.class)
-                .query(<span class="string"><span class="delimiter">&quot;</span><span class="content">select e from petclinic$Pet e where e.owner.city = :ownerCity and e.type.id = :petType</span><span class="delimiter">&quot;</span></span>)
-                .parameter(<span class="string"><span class="delimiter">&quot;</span><span class="content">ownerCity</span><span class="delimiter">&quot;</span></span>, city)
-                .parameter(<span class="string"><span class="delimiter">&quot;</span><span class="content">petType</span><span class="delimiter">&quot;</span></span>, petType)
-                .view(<span class="string"><span class="delimiter">&quot;</span><span class="content">pet-with-owner-and-type</span><span class="delimiter">&quot;</span></span>)
-                .list();
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The query part is a little more complicated compared to above, but the same pattern applies. The differences in this example are the usage of the <code>list()</code> method as we expect multiple Pets from the database query. Also, a specific view has been used, because not only the Pet data but also the Owner data has to be loaded in order to send out the Mailings.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="write_data_with_datamanager"><a class="anchor" href="#write_data_with_datamanager"></a><a class="link" href="#write_data_with_datamanager">Write Data with DataManager</a></h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>DataManager is also responsible for writing data into the database. There are also different ways to achieve it based on the case at hand.</p>
-</div>
-<div class="sect2">
-<h3 id="single_item_2"><a class="anchor" href="#single_item_2"></a><a class="link" href="#single_item_2">Single Item</a></h3>
-<div class="paragraph">
-<p>The first most commonly used case is to update or create a single item in the database. There are no major differences between creating and updating an entity from the usage perspective.</p>
-</div>
-<div class="paragraph">
-<p>When revisiting the example from above, where a new Visit for a given Pet ID is created, we only looked at the part which loads the Pet by its Pet ID. In this case, we are more interested in the creation part of the Visit entity. The source code to create and save a Visit looks like this:</p>
-</div>
-<div class="listingblock">
-<div class="title">VisitServiceBean.java</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Inject</span>
-DataManager dataManager;
-
-<span class="directive">private</span> Visit createVisitForPet(Pet pet) {
-
-    Visit visit = dataManager.create(Visit.class); <i class="conum" data-value="1"></i><b>(1)</b>
-
-    visit.setPet(pet);
-    visit.setVisitDate(timeSource.currentTimestamp());
-
-    <span class="keyword">return</span> dataManager.commit(visit); <i class="conum" data-value="2"></i><b>(2)</b>
-
-}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>an entity instance is created with all initializations in memory</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>the entity instance is stored in the DB</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>The creation of an instance through DataManager does the initialization of the instance as well. It is important not to create an instance via <code>new Visit()</code> but rather through this Factory method, so that CUBA can do all the required initialization (like <code>@PostConstruct</code> annotated methods e.g.).</p>
-</div>
-<div class="paragraph">
-<p>Once the entity instance was created, the data of that entity has to be set through its corresponding setter methods. In this case, the database instance of the Pet is set as well as the current date as the visit date.</p>
-</div>
-<div class="paragraph">
-<p>The process of storing an entity instance contains a few steps like security checks, execution of Entity Listeners and so on. The return value of the commit method is the stored instance with all the properties set that have been added during the storage phase.</p>
+<p>On the database it is represented as a Join Table, but there is <em>no</em> explicit entity defined as the joining entity.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -382,67 +247,188 @@ DataManager dataManager;
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-There is a couple of other convenience API methods for storing entites. For more information about those variants see the <a href="http://files.cuba-platform.com/javadoc/cuba/7.0/com/haulmont/cuba/core/global/DataManager.html">DataManager API reference</a>.
+In the Studio entity designer, set the following settings for the <code>specialties</code> attribute: <strong>Attribute type</strong> - <code>ASSOCIATION</code>, <strong>Cardinality</strong> - <code>MANY_TO_MANY</code>. <code>Vet</code> will be marked as the owning side of the relationship, and Studio will suggest to create the corresponding <code>vets</code> attribute in the <code>Specialty</code> entity as the inverse side of the association.
 </td>
 </tr>
 </table>
 </div>
-</div>
-<div class="sect2">
-<h3 id="transactions_commit_context"><a class="anchor" href="#transactions_commit_context"></a><a class="link" href="#transactions_commit_context">Transactions &amp; Commit Context</a></h3>
 <div class="paragraph">
-<p>The example from above shows how to store a single item in the database. Although this is oftentimes sufficient, a lot of cases require to store multiple items in a single transaction. The default example for this is the bank transfer from one account to another. In this case, it is crucial that the update of both accounts happens together or not at all, but never only one of them.</p>
-</div>
-<div class="paragraph">
-<p>The DataManager API always encapsulates the database operation in a transaction. This means that by default the <code>commit(visit)</code> call is executed in one transaction. Another call to <code>commit</code> would create another transaction.</p>
-</div>
-<div class="paragraph">
-<p>To execute updates on multiple entity instances there is the concept of a <code>CommitContext</code>. The commit context defines all entity instances that should get created / updated and removed. The DataManager accepts a <code>CommitContext</code> object as an alternative to an entity instance. In this case, all entity instances that are held by the commit context will get transferred to the database within one transaction.</p>
-</div>
-<div class="paragraph">
-<p>The <code>CommitContext</code> has two main methods: <a href="http://files.cuba-platform.com/javadoc/cuba/7.0/com/haulmont/cuba/core/global/CommitContext.html#addInstanceToCommit-com.haulmont.cuba.core.entity.Entity-">addInstanceToCommit</a> as well as <a href="http://files.cuba-platform.com/javadoc/cuba/7.0/com/haulmont/cuba/core/global/CommitContext.html#addInstanceToRemove-com.haulmont.cuba.core.entity.Entity-">addInstancesToRemove</a> which allow defining which items should be added / updated as well as removed within one transaction.</p>
-</div>
-<div class="paragraph">
-<p>In case multiple visits should be updated within one transaction, the usage of <code>CommitContext</code> looks like this:</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/vet/Vet.java">Vet.java</a> - the <code>Vet</code> entity contains a many-to-many list of <code>specialties</code>.</p>
 </div>
 <div class="listingblock">
+<div class="title">Vet.java</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Inject</span>
-DataManager dataManager;
-
-<span class="directive">private</span> <span class="type">void</span> createVisitForPet(Pet pet) {
-
-    Visit todaysVisit = createVisitInstance(pet);
-    todaysVisit.setVisitDate(today());
-
-    Visit followUpCheckVisit = createVisitInstance(pet);
-    followUpCheckVisit.setVisitDate(nextWeek());
-
-
-    CommitContext commitContext = <span class="keyword">new</span> CommitContext();
-
-    commitContext.addInstanceToCommit(todaysVisit); <i class="conum" data-value="1"></i><b>(1)</b>
-    commitContext.addInstanceToCommit(followUpCheckVisit);
-
-    dataManager.commit(commitContext); <i class="conum" data-value="2"></i><b>(2)</b>
-}</code></pre>
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@JoinTable</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">PETCLINIC_VET_SPECIALTY_LINK</span><span class="delimiter">&quot;</span></span>,
+        joinColumns = <span class="annotation">@JoinColumn</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">VET_ID</span><span class="delimiter">&quot;</span></span>),
+        inverseJoinColumns = <span class="annotation">@JoinColumn</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">SPECIALTY_ID</span><span class="delimiter">&quot;</span></span>))
+<span class="annotation">@ManyToMany</span>(mappedBy = <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">protected</span> <span class="predefined-type">Set</span>&lt;Specialty&gt; specialties;</code></pre>
 </div>
 </div>
-<div class="colist arabic">
+<div class="paragraph">
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/vet/Specialty.java">Specialty.java</a> - the <code>Specialty</code> entity now contains the many-to-many list of <code>vets</code>: <strong>Attribute type</strong> - <code>ASSOCIATION</code>, <strong>Cardinality</strong> - <code>MANY_TO_MANY</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">Specialty.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@JoinTable</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">PETCLINIC_VET_SPECIALTY_LINK</span><span class="delimiter">&quot;</span></span>,
+        joinColumns = <span class="annotation">@JoinColumn</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">SPECIALTY_ID</span><span class="delimiter">&quot;</span></span>),
+        inverseJoinColumns = <span class="annotation">@JoinColumn</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">VET_ID</span><span class="delimiter">&quot;</span></span>))
+<span class="annotation">@ManyToMany</span>
+<span class="directive">protected</span> <span class="predefined-type">List</span>&lt;Vet&gt; vets;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>Specialty</code> will be <em>also</em> marked by default as the owning side of the relationship, which enables modification of the collections on the both sides.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/cuba-platform/sample-model/blob/master/modules/global/src/com/company/sample/views.xml">views.xml</a> - the <code>vet-with-specialties</code> view of the vet editing screen contains the specialties association attribute with the <code>_minimal</code> view. The <code>specialty-with-vets</code> view includes the vets association as well.</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/vet/vet/vet-edit.xml">vet-edit.xml</a> - the XML descriptor of the vet editor defines a datasource for the <code>Vet</code> instance and a nested one for its specialties. It also contains a table displaying specialties and the actions <a href="https://doc.cuba-platform.com/manual-latest/list_actions.html#addAction">add</a> and <a href="https://doc.cuba-platform.com/manual-latest/list_actions.html#removeAction">remove</a>.</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/vet/specialty/specialty-edit.xml">specialty-edit.xml</a> - the XML descriptor of the specialty editor defines a datasource for the <code>Specialty</code> instance and a nested one for its vets. It also contains a table displaying vets and the actions <strong>add</strong> and <strong>remove</strong>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>So, the <code>Vet</code> and the <code>Specialty</code> editors are absolutely symmetrical.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="indirect_many_to_many_association_with_joining_entity"><a class="anchor" href="#indirect_many_to_many_association_with_joining_entity"></a><a class="link" href="#indirect_many_to_many_association_with_joining_entity">Indirect Many-to-Many association with Joining Entity</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The many-to-many association is always implemented using a joining table, but creating an entity to reflect this table is optional. The joining entity can be created when some additional attributes should be stored in the joining table.</p>
+</div>
+<div class="paragraph">
+<p>An example of an indirect many-to-many association is the following in the petclinic example:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/data-model-many-to-many/indirect_many_to_many.png" alt="indirect many to many">
+</div>
+</div>
+<div class="paragraph">
+<p>A <code>Pet</code> might over the years be insured by different <code>InsuranceCompanies</code> and a <code>InsuranceCompany</code> on the other hand has multiple memberships.</p>
+</div>
+<div class="paragraph">
+<p>On the database it is represented as a Join Table and there <em>is</em> an explicit entity defined as the joining entity called <code>InsuranceMembership</code>. It also holds additional information about the membership: the validity range in which the Pet is insured by the insurance company. Therefore it has the values <code>validFrom</code> and <code>validUntil</code>.</p>
+</div>
+<div class="admonitionblock tip">
 <table>
 <tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td><code>addInstanceToCommit</code> allows adding entity instances to the commit context</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td><code>commit</code> can take a <code>CommitContext</code> instance for storing multiple entity instances in one transaction</td>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+In the Studio entity designer, set the following settings for the <code>insuranceMemberships</code> attribute: <strong>Attribute type</strong> - <code>COMPOSITION</code>, <strong>Cardinality</strong> - <code>ONE_TO_MANY</code>.
+</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>Sometimes the fact that DataManager API always creates a new transaction is not the desired behavior. Instead, an already running transaction should be re-used. In this case, a very similar API called <code>TransactionalDataManager</code> can be used. It behaves basically the same as the regular <code>DataManager</code> with the difference that it allows to join an existing transaction as well as enabling programmatic transaction handling.</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/pet/Pet.java">Pet.java</a> - the <code>Pet</code> entity contains a one-to-many composition of <code>InsuranceMembership</code> instances.</p>
 </div>
+<div class="listingblock">
+<div class="title">Pet.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Composition</span>
+<span class="annotation">@OnDelete</span>(DeletePolicy.CASCADE)
+<span class="annotation">@OneToMany</span>(mappedBy = <span class="string"><span class="delimiter">&quot;</span><span class="content">pet</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">protected</span> <span class="predefined-type">List</span>&lt;InsuranceMembership&gt; insurancesMemberships;</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+In the Studio entity designer, set the following settings for the <code>memberships</code> attribute: <strong>Attribute type</strong> - <code>COMPOSITION</code>, <strong>Cardinality</strong> - <code>ONE_TO_MANY</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/insurance/InsuranceCompany.java">InsuranceCompany.java</a> - the <code>InsuranceCompany</code> entity contains a one-to-many composition of <code>InsuranceMembership</code> instances.</p>
+</div>
+<div class="listingblock">
+<div class="title">InsuranceCompany.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Composition</span>
+<span class="annotation">@OnDelete</span>(DeletePolicy.CASCADE)
+<span class="annotation">@OneToMany</span>(mappedBy = <span class="string"><span class="delimiter">&quot;</span><span class="content">insuranceCompany</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">protected</span> <span class="predefined-type">List</span>&lt;InsuranceMembership&gt; memberships;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/insurance/InsuranceMembership.java">InsuranceMembership.java</a> - thus, the <code>InsuranceMembership</code> entity contains two many-to-one references: <code>pet</code> and <code>insuranceCompany</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">InsuranceMembership.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@NotNull</span>
+<span class="annotation">@ManyToOne</span>(fetch = FetchType.LAZY, optional = <span class="predefined-constant">false</span>)
+<span class="annotation">@JoinColumn</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">PET_ID</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">protected</span> Pet pet;
+
+<span class="annotation">@NotNull</span>
+<span class="annotation">@ManyToOne</span>(fetch = FetchType.LAZY, optional = <span class="predefined-constant">false</span>)
+<span class="annotation">@JoinColumn</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">INSURANCE_COMPANY_ID</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">protected</span> InsuranceCompany insuranceCompany;
+
+<span class="annotation">@Temporal</span>(TemporalType.DATE)
+<span class="annotation">@NotNull</span>
+<span class="annotation">@Column</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">VALID_FROM</span><span class="delimiter">&quot;</span></span>, nullable = <span class="predefined-constant">false</span>)
+<span class="directive">protected</span> <span class="predefined-type">Date</span> validFrom;
+
+<span class="annotation">@Temporal</span>(TemporalType.DATE)
+<span class="annotation">@Column</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">VALID_UNTIL</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">protected</span> <span class="predefined-type">Date</span> validUntil;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/global/src/com/haulmont/sample/petclinic/views.xml">views.xml</a> - the <code>pet-with-owner-and-type-and-memberships</code> view of the pet editing screen contains the composition of <code>insuranceMemberships</code> (referencing the <code>InsuranceMembership</code> joining entity) with <code>insuranceCompany</code> and the additional validity information: <code>validFrom</code> and <code>validUntil</code>.</p>
+<div class="paragraph">
+<p>The <code>insuranceCompany-with-memberships</code> view follows the same logic: it includes the composition of <code>memberships</code> (referencing the <code>InsuranceMembership</code> joining entity) with <code>pet</code> and the additional validity information: <code>validFrom</code> and <code>validUntil</code>.</p>
+</div>
+</li>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/pet/pet/pet-edit.xml">pet-edit.xml</a> - the XML descriptor of the pet editor defines a data container for the <code>Pet</code> instance and a nested one for its <code>insuranceCompany</code> instances (through the <code>InsuranceMembership</code> relationship). It also contains a table displaying memberships and the custom action to pick an <code>InsuranceCompany</code> directly, bypassing the <code>InsuranceMembership</code> editor.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>As a result, editing of a <code>InsuranceMembership</code> instance works as follows:</p>
+</div>
+<div class="paragraph">
+<p>The <code>Pet</code> edit screen shows a list of insurance companies and the validity range of the membership.</p>
+</div>
+<div class="paragraph">
+<p>A user can click <strong>Add Insurance</strong>, the <code>InsuranceCompany</code> lookup will be opened, and the user can either select an insurance company to add or create a new insurance company. When the user selects an insurance company, the new <code>InsuranceMembership</code> instance <a href="https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/pet/pet/PetEdit.java#L57">is created</a> with the default validity range. This instance it is not saved to the database directly, but added to the <code>insurancesMembershipsDc</code> data container of the <code>Pet</code> editor.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+When within the above described creation of a many-to-many relationship from the Pet editor a <code>InsuranceCompany</code> is created or updated through the <a href="https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/insurance/insurancecompany/InsuranceCompanyEdit.java"><code>InsuranceCompany</code> editor</a>, the created / updated instance of the insurance company is directly saved to the database as the <code>InsuranceCompany</code> entity is fully independent. The user can create new insurance companies and delete existing ones. All changes will be saved to the database in separate transactions.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>When a user clicks OK in the pet edit screen, the updated <code>Pet</code> instance together with all the updated <code>InsuranceMembership</code> instances is submitted to the <code>DataManager.commit()</code> method on the middleware and saved to the database within a single transaction.</p>
 </div>
 </div>
 </div>
@@ -450,20 +436,7 @@ DataManager dataManager;
 <h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The Data Manager API is a CUBA abstraction that allows an application developer to fulfill common use-cases for working with databases. It has multiple operations to allow for regular create, read, update and delete operations (CRUD). Entity instances can be stored directly or within a Commit Context. Every operation will be encapsulated in a new transaction.</p>
-</div>
-<div class="sect2">
-<h3 id="further_information"><a class="anchor" href="#further_information"></a><a class="link" href="#further_information">Further information</a></h3>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="https://doc.cuba-platform.com/manual-7.0/dataManager.html">DataManager reference documentation</a></p>
-</li>
-<li>
-<p><a href="https://www.cuba-platform.com/webinars/working-data">Working with Data (Webinar)</a></p>
-</li>
-</ul>
-</div>
+<p>In this data modelling guide the many-to-many association was shown. Many-to-many associations are valuable if both sides of the association should be linked to multiple items of the other side as shown for the <code>Vet</code> &#8592;&#8594; <code>Specialty</code> case. If required by the business case, this association can also enhanced via additional information that describe the association further as it was shown with the <code>validFrom</code> &amp; <code>validUntil</code> attributes for the <code>InsuranceMembership</code> entity.</p>
 </div>
 </div>
 </div>
@@ -486,9 +459,8 @@ DataManager dataManager;
                             <ul class="sectlevel1">
 <li><a href="#what_will_be_built">What will be built</a></li>
 <li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
-<li><a href="#programmatic_data_access_interactions">Programmatic data access interactions</a></li>
-<li><a href="#load_data_with_datamanager">Load data with DataManager</a></li>
-<li><a href="#write_data_with_datamanager">Write Data with DataManager</a></li>
+<li><a href="#direct_many_to_many_association">Direct Many-to-Many association</a></li>
+<li><a href="#indirect_many_to_many_association_with_joining_entity">Indirect Many-to-Many association with Joining Entity</a></li>
 <li><a href="#summary">Summary</a></li>
 </ul>
                         </div>
@@ -496,8 +468,8 @@ DataManager dataManager;
 
                         <div class="guide-panel download">
                             <h4>Example code</h4>
-                            <a class="button expanded"  href="https://github.com/cuba-guides/cuba-petclinic-intro-to-datamanager/archive/master.zip" target="_blank">Download</a>
-                            <a href="https://github.com/cuba-guides/cuba-petclinic-intro-to-datamanager" class="github-link" target="_blank">Github</a>
+                            <a class="button expanded"  href="https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/archive/master.zip" target="_blank">Download</a>
+                            <a href="https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many" class="github-link" target="_blank">Github</a>
                         </div>
                         <div class="guide-panel cuba-version">
                             <h4>Supported Versions</h4>
