@@ -280,18 +280,6 @@ pre.CodeRay {
     line-height: 26px;
 }
 
-.blog .guide-panel.cuba-version {
-    text-align: center;
-    padding: 10px;
-}
-
-.blog .guide-panel.cuba-version h4 {
-    display: inline-block;
-    font-weight: 600;
-    color: #006bac;
-    font-size: 18px;
-}
-
 .blog .guide-panel.download {
     padding: 0.5em 18px 1.5em;
 }
