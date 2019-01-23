@@ -3,7 +3,7 @@ compatible_cuba_versions: 7.0
 project_id: cuba-petclinic-guide-business-logic
 permalink: create-business-logic-in-cuba
 ---
-= Create business logic in CUBA
+= Create Business Logic in CUBA
 :showtitle:
 :sectlinks:
 :sectanchors:
@@ -20,7 +20,7 @@ permalink: create-business-logic-in-cuba
 
 One of the first questions when developing a CUBA application is: _Where should I put my business logic?_ This guide will explain the options available and their pros and cons.
 
-== What will be built
+== What Will Be Build
 
 This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show where business logic can be placed in a CUBA application. Mainly discounts are calculated for Pets based on the total amount of their visits in the Petclinic.
 
