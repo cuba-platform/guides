@@ -3,7 +3,7 @@ compatible_cuba_versions: 7.0
 project_id: cuba-petclinic-application-logging
 permalink: logging-in-cuba-applications
 ---
-= Logging in CUBA applications
+= Logging in CUBA Applications
 :showtitle:
 :sectlinks:
 :sectanchors:
@@ -18,12 +18,12 @@ permalink: logging-in-cuba-applications
 
 In order to get insights into a running CUBA application, Logging is one crucial part to get in place. The Java ecosystem has very mature mechanisms to do application logging. This guide shows how this ecosystem can be leveraged in a CUBA application.
 
-== What will be built
+== What Will Be Build
 
 This guides enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show how logging can be integrated, configured and viewed as part of the application itself or with the help of external tools.
 
 
-=== Final application
+=== Final Application
 
 ++++
 <a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/login-screen.png"/></a>
@@ -35,7 +35,7 @@ include::includes/guide_requirements.adoc[]
 include::includes/petclinic_introduction.adoc[]
 
 
-== Why application logging is essential
+== Why Application Logging is Essential
 
 Logging information about the running application is essential in order to get insights on how the application behaves, what unexpected behavior occurs and how the users are interacting with the system.
 
@@ -69,7 +69,7 @@ For a running application, this is normally not the case. Either because of secu
 
 Therefore logging is another tool in the toolbox of a developer in order to do diagnostics of a running application.
 
-== The Java logging ecosystem
+== The Java Logging Ecosystem
 
 In the Java ecosystem logging has (as in a lot of other ecosystems as well) played a substantial role. There are various mechanisms and abstractions out there on how to actually interact with the logging mechanisms of the platform the application is running on.
 
@@ -84,7 +84,7 @@ Slf4J is an abstract API that encapsulates the concrete details of the logging l
 
 Logback, on the other hand, is the logging library that fulfills this API and does the heavy lifting of writing the message to a log appender. An appender is a component within the logging library that takes a logging event created by an application developer and writes it to a specific output. Logback contains the options to configure how the logging system should behave, which log information go into which appender etc.
 
-== How to log in a CUBA application
+== How to Log in a CUBA Application
 
 The usage of logging libraries within a CUBA application does not differ from other Java applications in this regard. CUBA is by default configured with Sl4fJ and Logback in place. The framework itself uses them for framework internal logging messages.
 
@@ -128,7 +128,7 @@ public class DiseaseWarningMailingServiceBean implements DiseaseWarningMailingSe
 <2> Write debug log message when `warnAboutDisease` is initiated
 <3> Write summary info message about the outcome of the method execution. Variable parts of the log message can be passed into the method as parameters and marked in the log message as the following placeholder: `{}`
 
-=== View log messages through CUBA UI
+=== View Log Messages Through CUBA UI
 
 There are several ways to get access to the log output of the running application. The most common way is a log file within the filesystem of the server. Unfortunately, this oftentimes requires special permissions and knowledge to get access to the file.
 
@@ -140,7 +140,7 @@ CUBA offers a user interface screen, which displays the log information of the r
 
 The UI allows the user to display different log files or download them for later use. It gives also non-administrator roles access to the logs, while it is still possible to restrict access only to allowed roles.
 
-=== Logging levels
+=== Logging Levels
 
 Information that should be logged is of different types in multiple dimensions. In order to reason about the messages quickly and help the log message reader to distinguish between signal and noise, all logging libraries offer one very important dimension to categorize the messages: the Log level.
 
@@ -157,13 +157,13 @@ The log level can show how critical / urgent the message is. It is important to 
 
 `ERROR` and `FATAL` are normally used in cases where an unexpected situation within the application occurred up to the point where the application cannot fulfill its purpose anymore.
 
-== Adjust logging configuration
+== Adjust Logging Configuration
 
 Logback (alongside with other logging libraries) allows customization on how and where the log information is processed and written to the output, mainly through the already mentioned `appender` concept.
 
 Generally there are two options to adjust the configuration of logback. On the one side, there is a configuration file called `logback.xml` where the configuration can be expressed. These adjustments happen at deployment time. Alternatively, logback can (to a certain extent) be configured at runtime. CUBA offers a UI for adjusting logging configuration for this purpose (`Administration > Server Log > Options`).
 
-=== At deployment: logback.xml configuration file
+=== At Deployment: logback.xml Configuration File
 
 The configuration file `logback.xml` is the main place to adjust the configuration of logback. In a CUBA application this file is located in `deploy/tomcat/conf/logback.xml` (in case of https://doc.cuba-platform.com/manual-{cuba_version}/fast_deployment.html[fast deployment] option). It looks like this:
 
@@ -219,9 +219,9 @@ The configuration of loggers allows defining the threshold on a per class / pack
 
 In the example above the package `com.haulmont.sample.petclinic` is set to level `DEBUG`. This means that it will output all log messages that have _at least_ the `DEBUG` level. Due to the semantic order of the log levels `INFO`, `WARN`, `ERROR` and `FATAL` will also be logged for this package. `TRACE` log messages, on the other hand, will not be displayed.
 
-Depending on how the application is deployed there are several options on where to place the logback.xml file. Besides the above mentioned https://doc.cuba-platform.com/manual-{cuba_version}/fast_deployment.html[fast deployment], the `logback.xml` can be placed within the application itself or configure it to be outside of the application at a given path. See <<Further information>> for more information.
+Depending on how the application is deployed there are several options on where to place the logback.xml file. Besides the above mentioned https://doc.cuba-platform.com/manual-{cuba_version}/fast_deployment.html[fast deployment], the `logback.xml` can be placed within the application itself or configure it to be outside of the application at a given path. See <<Further Information>> for more information.
 
-=== At runtime: CUBA logging UI
+=== At Runtime: CUBA Logging UI
 
 Adjusting the configuration of the file requires a restart of the application. For temporary debugging sessions, it is oftentimes helpful not to have to restart the server only to adjust the logging level or a certain subpart of the application code.
 
@@ -233,7 +233,7 @@ For this use-case, a CUBA application allows reconfiguring the levels of existin
 ++++
 
 
-=== Set logging context with MDC
+=== Set Logging Context with MDC
 
 Once the application has a certain amount of logging information certain information gets repeated in a lot of logging messages. In the petclinic example, a lot of log messages would contain the Pet ID in order to get the context information in a fast manner. For those kinds of information, there is a context in Logback, called _MDC_.
 
@@ -352,7 +352,7 @@ MDC has the following advantages over putting context values directly into the l
 - the definition of the context can be extracted into a single place of the source code
 
 
-== Logging to centralized logging solution
+== Logging to Centralized Logging Solution
 
 Having very detailed information about the execution of the running application is very important. But having to deal with a huge amount of log data is challenging. Storing this information in the filesystem of the server is not very accessible and also not very efficient to work with. This is why oftentimes centralized logging solutions are used for storing and accessing the log information.
 
@@ -428,7 +428,7 @@ The logging facilities in the Java and CUBA ecosystem are very mature and can be
 CUBA offers an opinionated way of dealing with logging configuration and access to logs. But as it is based on standard Java logging mechanism it plays nicely with other solutions like centralized logging systems.
 
 
-== Further information
+== Further Information
 
 * https://blog.scalyr.com/2017/12/logging-levels/[Blog article: Explanation of Logging levels]
 * https://doc.cuba-platform.com/manual-{cuba-version}/logging_setup_tomcat.html[CUBA docs: Setup Logging for local development]
