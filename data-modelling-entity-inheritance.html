@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data modelling: Entity inheritance</title>
+    <title>Data Modelling: Entity Inheritance</title>
     <meta name="description" content="The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.">
     <meta name="author" content="Haulmont">
     <link rel="shortcut icon" href="/guides/images/favicon.png" type="image/png" />
@@ -142,7 +142,7 @@
                             <div class="field field-name-body field-type-text-with-summary field-label-hidden">
                                 <div class="field-items">
                                     <div class="field-item even" property="content: encoded">
-                                        <h1>Data modelling: Entity inheritance</h1>
+                                        <h1>Data Modelling: Entity Inheritance</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
@@ -154,7 +154,7 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="what_will_be_built"><a class="anchor" href="#what_will_be_built"></a><a class="link" href="#what_will_be_built">What will be built</a></h2>
+<h2 id="what_will_be_build"><a class="anchor" href="#what_will_be_build"></a><a class="link" href="#what_will_be_build">What Will be Build</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show the mechanism to define entity inheritance. In particular, the following use cases will be covered:</p>
@@ -217,7 +217,7 @@
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="/guides/images/domain-model.png" alt="Domain model">
+<img src="/guides/images/domain-model2.png" alt="Domain model">
 </div>
 </div>
 <div class="paragraph">
@@ -227,10 +227,10 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="entity_inheritance_in_jpa"><a class="anchor" href="#entity_inheritance_in_jpa"></a><a class="link" href="#entity_inheritance_in_jpa">Entity inheritance in JPA</a></h2>
+<h2 id="entity_inheritance_in_jpa"><a class="anchor" href="#entity_inheritance_in_jpa"></a><a class="link" href="#entity_inheritance_in_jpa">Entity Inheritance in JPA</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The data model contains the <code>Pet</code> entity, which is a base class stored in the table: <code>PETCLINIC_PET</code>. The entity inheritace is configured with the inheritance strategy <code>JOINED</code>. Therefore the data for the subclasses <code>Cat</code>, <code>Bird</code> and <code>Rat</code> are stored in two different tables.</p>
+<p>The data model contains the <code>Pet</code> entity, which is a base class stored in the table: <code>PETCLINIC_PET</code>. The entity inheritace is configured with the inheritance strategy <code>JOINED</code>. Therefore the data for the subclasses <code>Cat</code>, <code>Bird</code> and <code>Rat</code> are stored in three different tables.</p>
 </div>
 <div class="paragraph">
 <p>In the <code>PETCLINIC_PET</code> table all attributes that are inherited from the <code>Pet</code> Entity are stored. The attributes that are additionally defined in the subclasses (like <code>Bird.wingSpread</code>) are stored in the dedicated subclass tables: <code>PETCLINIC_CAT</code>, <code>PETCLINIC_BIRD</code> and <code>PETCLINIC_RAT</code>.</p>
@@ -268,7 +268,7 @@ In case the type attribute should be used by the user, it is worth considering c
 </div>
 </div>
 <div class="sect2">
-<h3 id="pet_superclass"><a class="anchor" href="#pet_superclass"></a><a class="link" href="#pet_superclass">Pet superclass</a></h3>
+<h3 id="pet_superclass"><a class="anchor" href="#pet_superclass"></a><a class="link" href="#pet_superclass">Pet Superclass</a></h3>
 <div class="paragraph">
 <p>The superclass has three annotations in place:</p>
 </div>
@@ -306,7 +306,7 @@ In case the type attribute should be used by the user, it is worth considering c
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>the discriminator column for the superclass itself. Sometimes instances of superclasses make sense. In the case of the <code>Pet</code> example, creating a generic <code>Pet</code> does not reflect the real world</td>
+<td>the discriminator column value for the superclass itself. Sometimes instances of superclasses make sense. In the case of the <code>Pet</code> example, creating a generic <code>Pet</code> does not reflect the real world</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
@@ -316,7 +316,7 @@ In case the type attribute should be used by the user, it is worth considering c
 </div>
 </div>
 <div class="sect2">
-<h3 id="cat_subclass"><a class="anchor" href="#cat_subclass"></a><a class="link" href="#cat_subclass">Cat subclass</a></h3>
+<h3 id="cat_subclass"><a class="anchor" href="#cat_subclass"></a><a class="link" href="#cat_subclass">Cat Subclass</a></h3>
 <div class="paragraph">
 <p>The Cat subclass as one example of a concrete Pet type looks contains two inheritance related annotations.</p>
 </div>
@@ -360,13 +360,13 @@ into the <code>PETCLINIC_PET</code> table and the <code>Cat</code> related attri
 </div>
 </div>
 <div class="sect1">
-<h2 id="ui_for_entity_inheritance"><a class="anchor" href="#ui_for_entity_inheritance"></a><a class="link" href="#ui_for_entity_inheritance">UI for entity inheritance</a></h2>
+<h2 id="ui_for_entity_inheritance"><a class="anchor" href="#ui_for_entity_inheritance"></a><a class="link" href="#ui_for_entity_inheritance">UI for Entity Inheritance</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Creating UIs based on entity inheritance needs some special treatment. In browse screens there are options to either display all entries independent of the concrete subclass or only specific for a particular subclass. For editor screens the concrete subclass has to be used in order to being able to enter the subclass specific information of the entity.</p>
 </div>
 <div class="sect2">
-<h3 id="pet_browse_ui"><a class="anchor" href="#pet_browse_ui"></a><a class="link" href="#pet_browse_ui">Pet browse UI</a></h3>
+<h3 id="pet_browse_ui"><a class="anchor" href="#pet_browse_ui"></a><a class="link" href="#pet_browse_ui">Pet Browse UI</a></h3>
 <div class="paragraph">
 <p>In the example case of the Petclinic, there is a main menu entry point <code>Petclinic &gt; Pets</code>. In this screen all pets independent of their concrete type should be displayed. This behavior is possible when using the superclass <code>Pet</code> in the JPQL query.</p>
 </div>
@@ -392,12 +392,13 @@ into the <code>PETCLINIC_PET</code> table and the <code>Cat</code> related attri
 </div>
 </div>
 <div class="sect2">
-<h3 id="ui_for_creating_pets"><a class="anchor" href="#ui_for_creating_pets"></a><a class="link" href="#ui_for_creating_pets">UI for creating Pets</a></h3>
+<h3 id="ui_for_creating_pets"><a class="anchor" href="#ui_for_creating_pets"></a><a class="link" href="#ui_for_creating_pets">UI for Creating Pets</a></h3>
 <div class="paragraph">
 <p>In order to create different types of Pet instances it is required to differentiate at some point in the user interface between the concrete type, that should be created. Also when it comes to selecting an concrete entity instance during a selection process, it is sometimes required to differentiate between the available types to select.</p>
 </div>
 <div class="paragraph">
-<p>The user interface for creating a new Pet will be adjusted so that within the browse screen of the Pet. When creating a new Pet, the concrete subclass has to be selected.</p>
+<p>The user interface for creating a new Pet will be adjusted within the browse screen of the Pet.
+ When creating a new Pet, the concrete subclass has to be selected.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -489,11 +490,23 @@ into the <code>PETCLINIC_PET</code> table and the <code>Cat</code> related attri
 <span class="tag">&lt;/layout&gt;</span></code></pre>
 </div>
 </div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>attributes of the <code>Pet</code> superclass</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>additional attributes of the <code>Cat</code> subclass</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect2">
-<h3 id="selecting_a_specific_subclasses"><a class="anchor" href="#selecting_a_specific_subclasses"></a><a class="link" href="#selecting_a_specific_subclasses">Selecting a specific subclasses</a></h3>
+<h3 id="selecting_a_specific_subclasses"><a class="anchor" href="#selecting_a_specific_subclasses"></a><a class="link" href="#selecting_a_specific_subclasses">Selecting a Specific Subclasses</a></h3>
 <div class="paragraph">
-<p>Oftentimes it is also required to through an polymorphic association only select a specific subclass. In the Petclinic example, it should be possible to create a specific <code>Visit</code> that has some special settings for a visit of a cat. When a visit specificly for cats is created the selection for the pet within the visit editor should be filtered to allow only select <code>Cat</code> entity instances. Furthermore it should display the visit attributes that are only necessary for a cat visit.</p>
+<p>In the Petclinic example, it should be possible to create a specific <code>Visit</code> that has some special settings for a visit of a cat. When a <code>Visit for Cats</code> is created the selection for the pet within the visit editor should be filtered to allow only select <code>Cat</code> entity instances. Furthermore it should display the visit attributes that are only necessary for a cat visit.</p>
 </div>
 <div class="paragraph">
 <p>In order to achieve this kind of behavior, first a <code>CatVisit</code> entity is created which extends <code>Visit</code>.</p>
@@ -655,10 +668,10 @@ CUBA itself offers mapped superclasses for defining standard attributes across a
                         <div class="guide-panel">
                             <h4>Table of contents</h4>
                             <ul class="sectlevel1">
-<li><a href="#what_will_be_built">What will be built</a></li>
+<li><a href="#what_will_be_build">What Will be Build</a></li>
 <li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
-<li><a href="#entity_inheritance_in_jpa">Entity inheritance in JPA</a></li>
-<li><a href="#ui_for_entity_inheritance">UI for entity inheritance</a></li>
+<li><a href="#entity_inheritance_in_jpa">Entity Inheritance in JPA</a></li>
+<li><a href="#ui_for_entity_inheritance">UI for Entity Inheritance</a></li>
 <li><a href="#mapped_superclasses">Mapped Superclasses</a></li>
 <li><a href="#summary">Summary</a></li>
 </ul>
