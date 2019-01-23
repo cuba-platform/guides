@@ -4,14 +4,14 @@ compatible_java_versions: 8+
 project_id: cuba-petclinic-my-guide
 permalink: guide-template-url
 ---
-= CUBA Guide template
+= CUBA Guide Template
 :showtitle:
-:page-navtitle: CUBA Guide template
+:page-navtitle: CUBA Guide Template
 :page-excerpt: CUBA Guide that can be used as a CUBA guide template
 :page-root: ../../../
 :project_id: cuba-petclinic-my-guide
 :java_version: 1.8
-:cuba_version: 6.10
+:cuba_version: 7.0+
 
 
 One (max. two) sentence(s) that outlines the guide and the scope of it.
@@ -19,7 +19,7 @@ One (max. two) sentence(s) that outlines the guide and the scope of it.
 Example:
 This guide walks you through the CUBA APIs for programmatically interacting with the database through the DataManager API.
 
-== What will be built
+== What Will Be Build
 
 This guides enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to...
 
@@ -39,7 +39,7 @@ image:https://dummyimage.com/600x400/00b5ec/ffffff.png&text=CUBA Petclinic Overv
 
 include::includes/guide_requirements.adoc[]
 
-== Start of content
+== Start of Content
 
 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
 
@@ -50,7 +50,7 @@ Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit ame
 
 TIP: Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
 
-== More content
+== More Content
 
 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
 
@@ -62,6 +62,6 @@ WARNING: Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonum
 
 This section summarizes what was done in this guide. The main learning points have to be layed out here.
 
-=== Futher information
+=== Further Information
 
 * https://doc.cuba-platform.com/manual-{cuba_version}[Reference documentation]

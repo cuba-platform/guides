@@ -4,7 +4,7 @@ compatible_java_versions: 8+
 project_id: cuba-petclinic-intro-to-datamanager
 permalink: intro-working-with-data-in-cuba
 ---
-= Introduction to working with Data in CUBA
+= Introduction to Working with Data in Cuba
 :showtitle:
 :sectlinks:
 :sectanchors:
@@ -18,7 +18,7 @@ permalink: intro-working-with-data-in-cuba
 This guide walks you through the CUBA APIs for programmatically interacting with the database through the DataManager API.
 
 
-== What will be built
+== What Will Be Build
 
 This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show different use cases regarding programmatic data access with the DataManager API. In particular, the following use cases will be covered:
 
@@ -37,7 +37,7 @@ include::includes/guide_requirements.adoc[]
 include::includes/petclinic_introduction.adoc[]
 
 
-== Programmatic data access interactions
+== Programmatic Data Access Interactions
 
 Oftentimes it is necessary to interact with the database in a programmatic manner. In a CUBA based application, these cases are not as omnipresent as in other frameworks due to its declarative nature of data-binding for UIs, but still, there are
 a lot of cases where data has to be loaded from the database or stored in the database as part of a business process.
@@ -49,7 +49,7 @@ DataManager is an Abstraction on top of the Java Persistence API (JPA). It hides
 It also adds certain capabilities that are not available out-of-the-box in JPA. Those capabilities are mainly the https://doc.cuba-platform.com/manual-{cuba_version}/views.html[Views concept] as well as the application of https://doc.cuba-platform.com/manual-{cuba_version}/security_subsystem.html[security constraints]. More information about differences between JPA and DataManager can be found in the docs on https://doc.cuba-platform.com/manual-{cuba_version}/dm_vs_em.html[DataManager vs. EntityManager].
 
 
-== Load data with DataManager
+== Load Data with Datamanager
 
 DataManager has multiple ways to load data from the database. In this guide, the two main options are covered: load a single item as well as multiple items based on Queries.
 
@@ -209,7 +209,7 @@ Sometimes the fact that DataManager API always creates a new transaction is not 
 
 The Data Manager API is a CUBA abstraction that allows an application developer to fulfill common use-cases for working with databases. It has multiple operations to allow for regular create, read, update and delete operations (CRUD). Entity instances can be stored directly or within a Commit Context. Every operation will be encapsulated in a new transaction.
 
-=== Further information
+=== Further Information
 
 * https://doc.cuba-platform.com/manual-{cuba_version}/dataManager.html[DataManager reference documentation]
 * https://www.cuba-platform.com/webinars/working-data[Working with Data (Webinar)]
