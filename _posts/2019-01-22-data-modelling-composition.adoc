@@ -15,9 +15,6 @@ permalink: data-modelling-composition
 :java_version: 1.8
 :cuba_version: 7.0
 
-In this guide the relationship structure _Composition_ is
-CUBA platform supports two types of relationship between entities: association and composition. They are called ASSOCIATION and COMPOSITION respectively in the CUBA Studio interface. Association is a relationship between the objects that can exist separately from each other. Composition, on the other hand, is used for "master-detail" relations, when the detail instances can exist only as part of the master. A case of an airport and its terminals may be considered an example of composition: a terminal that does not belong to any airport does not make sense.
-
 
 == What Will be Build
 
@@ -27,6 +24,10 @@ This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA pet
 * `Cat`, `Bird` and `Rat` will be created as concrete Pet type entities
 * The user has the choice between different Pet types at creation time of the Pet. The system will show the corresponding editor accordingly so that the user can also enter the type specific information.
 
+
+* One level: Owner <>--> Address
+* Two levels: Pet <>--> Health Records <>--> Attachment
+* Three levels: Owner --> Pet --> Visit --> Note
 
 === Final Application
 
@@ -39,294 +40,44 @@ include::includes/guide_requirements.adoc[]
 
 include::includes/petclinic_introduction.adoc[]
 
+== Composition vs. Association
 
-== Entity Inheritance in JPA
+CUBA platform supports two types of relationship between entities: association and composition. They are called ASSOCIATION and COMPOSITION respectively in the CUBA Studio interface. Association is a relationship between the objects that can exist separately from each other. Composition, on the other hand, is used for "master-detail" relations, when the detail instances can exist only as part of the master.
 
+In the Petclinic example a case of an `Owner` and its `Addresses` may be considered an example of composition: an `Address` that does not belong to any `Owner` does not make sense.
 
-The data model contains the `Pet` entity, which is a base class stored in the table: `PETCLINIC_PET`. The entity inheritace is configured with the inheritance strategy `JOINED`. Therefore the data for the subclasses `Cat`, `Bird` and `Rat` are stored in three different tables.
 
-In the `PETCLINIC_PET` table all attributes that are inherited from the `Pet` Entity are stored. The attributes that are additionally defined in the subclasses (like `Bird.wingSpread`) are stored in the dedicated subclass tables: `PETCLINIC_CAT`, `PETCLINIC_BIRD` and `PETCLINIC_RAT`.
+Typically, the entities belonging to a composition are edited together since it is more natural. A user opens the `Owner` editing screen and sees the list of `addresses`, so the user can create and edit them, but all changes both for the `Owner` and the `Address` are saved to the database together in one transaction, and only after the user confirms saving of the master entity (the `Owner`).
 
-The link between the two entries within the two tables (`PETCLINIC_PET` and `PETCLINIC_BIRD` e.g.) are done via a foreign key.
+===== One-to-Many: One Level of Nesting
 
-Additionally there is a special kind of column in the superclass called `DTYPE`. This column is only used internally by the object relational mapper (JPA) in order to create the right instances in the java application when loading data from the database.
+A one-to-many composition using the `Owner` and the `Address` entities as an example:
 
-For every class in this class hierarchy a particular value is defined that identifies the (sub-)class of the hierarchy. In case of the `Pet` class hierarchy use the following values: `CAT`, `BIRD`, `RAT` as well as `PET` for instances of the superclass itself.
+image::data-model-composition/composition_domain_model_one_level.png[align="center"]
 
-The discriminator column value is defined through the `@DiscriminatorValue("BIRD")` annotation on the entity. This special column in the database is normally not exposed as an attribute to the entity layer. Instead it is just used internally by the persistence layer to distinguish between the entity instances.
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/owner/Address.java[Address.java] - the `Address` entity contains a mandatory link to the `Owner`.
++
 
-TIP: In case the type attribute should be used by the user, it is worth considering creating another `type` attribute as an `Enum` within the superclass that contains all possible subclasses as entries. This allows to use the type information throughout the system in order to e.g. filter or sort through the UI.
+NOTE: In the Studio entity designer, the `airport` attribute: *Attribute type* - ASSOCIATION, *Cardinality* - MANY_TO_ONE, *Mandatory* - on.
 
-In the Petclinic example the `Pet` entity inheritance looks like this:
+* {proj_model}/blob/master/modules/global/src/com/company/sample/entity/airports/Airport.java[Airport.java] - the `Airport` entity contains a one-to-many collection of terminals. The corresponding field is annotated with <<composition_annotation,@Composition>> in order to implement composition, and <<onDelete_annotation,@OnDelete>> for cascaded soft delete.
++
+In the Studio entity designer, set for the `terminals` attribute: *Attribute type* - COMPOSITION, *Cardinality* - ONE_TO_MANY, *On delete* - CASCADE.
 
+* {proj_model}/blob/master/modules/global/src/com/company/sample/views.xml[views.xml] - the `airport-terminals` <<views,view>> of the airport editing screen contains the `terminals` collection attribute. We are using the `_local` view for this attribute, because the `airport` attribute of the `Terminal` entity is set only at the creation of a new `Terminal` instance and never changes after that, so we do not need to load it.
 
-image::data-model-entity-inheritance/pet-inheritance.png[align="center"]
+* {proj_model}/blob/master/modules/web/src/com/company/sample/web/airports/airport/airport-edit.xml[airport-edit.xml] - the XML descriptor of the airport editor defines a datasource for the `Airport` instance and a nested one for its terminals. It also contains a table displaying terminals.
 
+* {proj_model}/blob/master/modules/web/src/com/company/sample/web/airports/terminal/terminal-edit.xml[terminal-edit.xml] - a standard editor for the `Terminal` entity.
 
-=== Pet Superclass
+As a result, editing of an airport instance works as follows:
 
-The superclass has three annotations in place:
+* The airport edit screen shows a list of terminals.
 
+* A user can pick a terminal and open its editor. When *OK* is clicked in the terminal editor, the updated instance of the terminal is not saved to the database, but to the `terminalsDs` datasource of the airport editor.
 
-.Pet.java
-[source, java]
-----
-@DiscriminatorColumn(name = "DTYPE", discriminatorType = DiscriminatorType.STRING) // <1>
-@Inheritance(strategy = InheritanceType.JOINED) // <2>
-@DiscriminatorValue("PET") // <3>
-public class Pet extends NamedEntity {
+* The user can create new terminals and delete existing ones. All changes will be saved to the `terminalsDs` datasource.
 
-
-    @NotNull
-    @Column(name = "IDENTIFICATION_NUMBER", nullable = false)
-    protected String identificationNumber; // <4>
-
-    @Temporal(TemporalType.DATE)
-    @Column(name = "BIRTH_DATE")
-    protected Date birthDate;
-
-    // ..
-
-}
-----
-<1> the description of the Discriminator column with the column name and the data type
-<2> the inheritance strategy for the class hierarchy (possible options are `SINGLE_TABLE`, `TABLE_PER_CLASS` and `JOINED`)
-<3> the discriminator column value for the superclass itself. Sometimes instances of superclasses make sense. In the case of the `Pet` example, creating a generic `Pet` does not reflect the real world
-<4> the common attributes that are shared with all subclasses
-
-=== Cat Subclass
-
-The Cat subclass as one example of a concrete Pet type looks contains two inheritance related annotations.
-
-
-.Cat.java
-[source, java]
-----
-@PrimaryKeyJoinColumn(name = "ID", referencedColumnName = "ID") // <1>
-@DiscriminatorValue("CAT") // <2>
-@Table(name = "PETCLINIC_CAT")
-@Entity(name = "petclinic_Cat")
-public class Cat extends Pet {
-
-    @Column(name = "CLAW_LENGTH")
-    protected Integer clawLength; // <3>
-
-    // ...
-}
-----
-<1> the information about how to join the data between the two tables `PETCLINIC_PET` and `PETCLINIC_CAT`
-<2> the discriminator value that should be used for instances of this class
-<3> the additional attributes that are only relevant to cats
-
-With this configuration in place, it is possible to create instances of cats through the JPA layer, where all `Pet` related attributes are stored
-into the `PETCLINIC_PET` table and the `Cat` related attributes are stored into the `PETCLINIC_CAT` table.
-
-== UI for Entity Inheritance
-
-Creating UIs based on entity inheritance needs some special treatment. In browse screens there are options to either display all entries independent of the concrete subclass or only specific for a particular subclass. For editor screens the concrete subclass has to be used in order to being able to enter the subclass specific information of the entity.
-
-=== Pet Browse UI
-
-In the example case of the Petclinic, there is a main menu entry point `Petclinic > Pets`. In this screen all pets independent of their concrete type should be displayed. This behavior is possible when using the superclass `Pet` in the JPQL query.
-
-.bet-browse.xml
-[source, xml]
-----
-<data readOnly="true">
-    <collection id="petsCt"
-                class="com.haulmont.sample.petclinic.entity.pet.Pet"
-                view="pet-with-owner-and-type">
-        <loader id="petsLd">
-            <query><![CDATA[select e from petclinic_Pet e]]></query>
-        </loader>
-    </collection>
-</data>
-----
-
-With that data container in place, all pets (Cats, Birds and Rats) are displayed in the browse screen.
-
-In this case, it is obviously not possible to display specific attributes of one or more subclasses in the table, since the superclass `Pet` is not aware of specific attributes like `Cat.clawLength`.
-
-
-=== UI for Creating Pets
-
-In order to create different types of Pet instances it is required to differentiate at some point in the user interface between the concrete type, that should be created. Also when it comes to selecting an concrete entity instance during a selection process, it is sometimes required to differentiate between the available types to select.
-
-The user interface for creating a new Pet will be adjusted within the browse screen of the Pet.
- When creating a new Pet, the concrete subclass has to be selected.
-
-image::data-model-entity-inheritance/pet-browse-screen-inheritance.png[Pet browse screen with entity inheritance]
-
-
-.PetBrowse.java
-[source, java]
-----
-public class PetBrowse extends StandardLookup<Pet> {
-
-    @Inject
-    protected ScreenBuilders screenBuilders;
-
-    @Inject
-    protected GroupTable<Pet> petsTable;
-
-    @Inject
-    protected Metadata metadata;
-
-    @Subscribe("createBtn.createCat")
-    protected void onCreateBtnCreateCat(Action.ActionPerformedEvent event) {
-        Cat cat = metadata.create(Cat.class); // <1>
-        showCreateEditorForPet(cat);
-    }
-
-    @Subscribe("createBtn.createBird")
-    protected void onCreateBtnCreateBird(Action.ActionPerformedEvent event) {
-        Bird bird = metadata.create(Bird.class);
-        showCreateEditorForPet(bird);
-    }
-
-    @Subscribe("createBtn.createRat")
-    protected void onCreateBtnCreateRat(Action.ActionPerformedEvent event) {
-        Rat rat = metadata.create(Rat.class);
-        showCreateEditorForPet(rat);
-    }
-
-    private void showCreateEditorForPet(Pet pet) {
-        screenBuilders.editor(petsTable)
-                .editEntity(pet) // <2>
-                .build()
-                .show();
-    }
-
-}
-----
-<1> the concrete subclass will be created before opening the screen (a `Cat` instance in this case`)
-<2> The `ScreenBuilders` API allows to create a custom editor with the concrete subclass as an instance
-
-With this dispatching code in place, the correct Editor screen for the concrete subclass will be opened. Within the Screen editor for the subclass (in this case `CatEdit`) the additional attributes of the `Cat` entity can be entered as well.
-
-.cat-edit.xml
-[source, xml]
-----
-<data>
-    <instance id="catDc"
-              class="com.haulmont.sample.petclinic.entity.pet.Cat"
-              view="pet-with-owner-and-type">
-        <loader/>
-    </instance>
-    <!-- ... -->
-</data>
-<layout expand="editActions" spacing="true">
-    <form id="form" dataContainer="catDc">
-        <column width="250px">
-            <textField id="nameField" property="name"/> // <1>
-            <textField id="identificationNumberField" property="identificationNumber"/>
-            <dateField id="birthDateField" property="birthDate"/>
-
-            <lookupPickerField property="type" optionsContainer="typesCt"/>
-            <lookupPickerField property="owner" optionsContainer="ownersCt"/>
-
-            <textField id="clawLengthField" property="clawLength"/> // <2>
-        </column>
-    </form>
-    <!-- ... -->
-</layout>
-----
-<1> attributes of the `Pet` superclass
-<2> additional attributes of the `Cat` subclass
-
-=== Selecting a Specific Subclasses
-
-In the Petclinic example, it should be possible to create a specific `Visit` that has some special settings for a visit of a cat. When a `Visit for Cats` is created the selection for the pet within the visit editor should be filtered to allow only select `Cat` entity instances. Furthermore it should display the visit attributes that are only necessary for a cat visit.
-
-In order to achieve this kind of behavior, first a `CatVisit` entity is created which extends `Visit`.
-
-
-
-.CatVisit.java
-[source, java]
-----
-@DiscriminatorValue("CATVISIT")
-@Entity(name = "petclinic_CatVisit")
-public class CatVisit extends Visit {
-
-    @Column(name = "CAT_TREE_REQUIRED")
-    protected Boolean catTreeRequired;
-
-    // ...
-}
-----
-
-In this case `SINGLE_TABLE` inheritance is used, which means that there is only one table containing all attributes of the superclass as well as all subclasses.
-
-TIP: When inheritance type `SINGLE_TABLE` is used, the additional attributes of a subclass cannot have a `NOT NULL` DB constraint, because for other entities within the entity hierachy it is not possible to fulfil this requirement. The usage of `@NotNull` bean validation annotation within the entity layer is possible though.
-
-In order to create a specific `CatVisit` instance through the UI, the same pattern from above is used. In order to achieve the filtering of the `Visit.pet` attribute within the cat visit editor, the `lookupPickerField` is adjusted slightly:
-
-
-.cat-edit.xml
-[source, xml]
-----
-<data>
-    <instance id="catVisitDc"
-              class="com.haulmont.sample.petclinic.entity.visit.CatVisit"
-              view="visit-with-pet">
-        <loader/>
-    </instance>
-
-    <collection id="catsDc" class="com.haulmont.sample.petclinic.entity.pet.Cat" view="_base"> // <1>
-        <loader>
-            <query>
-                select e from petclinic_Cat e
-            </query>
-        </loader>
-    </collection>
-</data>
-<layout expand="editActions" spacing="true">
-    <form id="form" dataContainer="catVisitDc">
-        <column width="250px">
-
-            <lookupPickerField id="petField" property="pet" optionsContainer="catsDc" caption="msg://cat"/> // <2>
-
-            <checkBox id="catTreeRequiredField" property="catTreeRequired"/> // <3>
-
-        </column>
-    </form>
-</layout>
-----
-<1> The data container for (`catsDc`) only selects `Cat` instances
-<2> `petField` field gets the `catsDc` as a options container so that only cats are displayed
-<3> Additional `CatVisit` specific attributes can be defined
-
-With that configuration in place, the lookup field for the pet only displays cats:
-
-image::data-model-entity-inheritance/cat-visit-editor-with-filtered-pet-selection.png[Cat visit editor with filtered pet selection]
-
-
-== Mapped Superclasses
-
-Another type of inheritance is the usage of the `@MappedSuperclass` annotation. Mapped superclasses allow to share attributes and behavior on a entity level, but on the database layer is explicitly not involved in the inheritance. In the Petclinic example, there is a class called `NamedEntity`. A named entity is a CUBA `StandardEntity` plus it adds one specific field: `name`.
-
-.NamedEntity.java
-[source, java]
-----
-@NamePattern("%s|name")
-@MappedSuperclass
-public class NamedEntity extends StandardEntity {
-
-    @Column(name = "NAME")
-    protected String name;
-
-}
-----
-
-This class is annotated with `@MappedSuperclass` indicating that it can be used for inheritance, but there is no explicit database table associated. A class that is extending `NamedEntity` like `Specialty` inherits all attributes from this class and stores them in its own table `PETCLINIC_SPECIALTY`.
-
-TIP: CUBA itself offers mapped superclasses for defining standard attributes across all tables within a CUBA application. `StandardEntity` is the most commonly known example. It e.g. contains the timestamp related attributes `createTs` and `updateTs`.
+* When a user clicks *OK* in the airport edit screen, the updated `Airport` instance together with all the updated `Terminal` instances is submitted to the <<dataManager,DataManager>>.commit() method on the middleware and saved to the database within a single transaction.
 
 == Summary
-
-In this data modelling guide entity inheritance was introduced. Inheritance is a common way in object oriented programming to share data and behavior through a class hierarchy. On the database level, the concept of inheritance is not directly available. But still JPA as the OR-Mapper allows to express inheritance with different patterns to bridge the gab between the two worlds.
-
-Entity inheritance is possible in different ways.  `MappedSuperclass` allows to only share attributes without using a shared Table at all. When inheritance also should be represented JPAs `@Inheritance` annotation can be used. In this case it is possible that other entities can create associations that reference the entity inheritance structure (like `Visit` -> `Pet` where `Pet` is an entity inheritance).
-
-On a UI layer the entity inheritance has to be reflected as well. Depending on the use case, CUBA screens can be adjusted so that the user interface displays all entity instances of a hierarchy as well as only sub-parts of an entity inheritance.
