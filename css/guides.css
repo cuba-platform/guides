@@ -334,20 +334,44 @@ pre.CodeRay {
 }
 
 /* Issue #9 */
-#example_cuba_petclinic::before {
-    color: #006bac;
-    content: "▶";
-    margin-right: 0.25em;
+#example_cuba_petclinic .link:hover {
+    text-decoration: none;
 }
-#example_cuba_petclinic.expanded::before {
-    content: "▼";
+
+.example_cuba_petclinic-wrapper {
+    border: 1px solid #e5e5e5;
+    padding: 25px;
+    position: relative;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+#example_cuba_petclinic a {
+    width: 100%;
+    display: block;
+}
+
+#example_cuba_petclinic a::after {
+    color: #006bac;
+    content: "";
+    margin-right: 0.25em;
+    position: absolute;
+    right: 20px;
+    width: 12px;
+    height: 8px;
+    top: 35px;
+    background: url(https://www.cuba-platform.com/sites/all/themes/cuba_adaptive/img/arrow-icon-inv.png) no-repeat;
+}
+
+#example_cuba_petclinic.expanded a::after {
+    background: url(https://www.cuba-platform.com/sites/all/themes/cuba_adaptive/img/arrow-icon.png) no-repeat;
     font-size: 20px;
 }
 
-#example_cuba_petclinic .link {
-    border-bottom: 2px dotted #006bac;
+#example_cuba_petclinic {
+    padding: 0;
 }
 
-#example_cuba_petclinic .link:hover {
-    border-bottom: none;
+.example_cuba_petclinic-wrapper .sectionbody {
+    padding-top: 2em;
 }
