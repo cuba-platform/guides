@@ -57,27 +57,26 @@ image::data-model-composition/composition_domain_model_one_level.png[align="cent
 
 * https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/owner/Address.java[Address.java] - the `Address` entity contains a mandatory link to the `Owner`.
 +
+NOTE: In the Studio entity designer, set the following settings for the `owner` attribute: *Attribute type* - `ASSOCIATION`, *Cardinality* - `MANY_TO_ONE`, *Mandatory* - `on`.
 
-NOTE: In the Studio entity designer, the `airport` attribute: *Attribute type* - ASSOCIATION, *Cardinality* - MANY_TO_ONE, *Mandatory* - on.
-
-* {proj_model}/blob/master/modules/global/src/com/company/sample/entity/airports/Airport.java[Airport.java] - the `Airport` entity contains a one-to-many collection of terminals. The corresponding field is annotated with <<composition_annotation,@Composition>> in order to implement composition, and <<onDelete_annotation,@OnDelete>> for cascaded soft delete.
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/owner/Owner.java[Owner.java] - the `Owner` entity contains a one-to-many collection of `addresses`. The corresponding field is annotated with `@Composition` in order to implement composition, and `@OnDelete for cascaded soft delete.
 +
-In the Studio entity designer, set for the `terminals` attribute: *Attribute type* - COMPOSITION, *Cardinality* - ONE_TO_MANY, *On delete* - CASCADE.
+NOTE: In the Studio entity designer, set the following settings for the `addresses` attribute: *Attribute type* - `COMPOSITION`, *Cardinality* - `ONE_TO_MANY`, *On delete* - `CASCADE`.
 
-* {proj_model}/blob/master/modules/global/src/com/company/sample/views.xml[views.xml] - the `airport-terminals` <<views,view>> of the airport editing screen contains the `terminals` collection attribute. We are using the `_local` view for this attribute, because the `airport` attribute of the `Terminal` entity is set only at the creation of a new `Terminal` instance and never changes after that, so we do not need to load it.
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/views.xml[views.xml] - the `owner-with-pets-and-addresses` view of the `Owner` editing screen contains the `addresses` collection attribute. `addresses` itself are loaded with `_local` view, because the `owner` attribute of the `Address` entity is set only at the creation of a new `Address` instance and never changes after that, so there is no need to load it.
 
-* {proj_model}/blob/master/modules/web/src/com/company/sample/web/airports/airport/airport-edit.xml[airport-edit.xml] - the XML descriptor of the airport editor defines a datasource for the `Airport` instance and a nested one for its terminals. It also contains a table displaying terminals.
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/owner/owner/owner-edit.xml[owner-edit.xml] - the XML descriptor of the `Owner` editor screen defines a datasource for the `Owner` instance and a nested one for its `addresses`. It also contains a table for managing the `Address` instances.
 
-* {proj_model}/blob/master/modules/web/src/com/company/sample/web/airports/terminal/terminal-edit.xml[terminal-edit.xml] - a standard editor for the `Terminal` entity.
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/owner/address/address-edit.xml[address-edit.xml] - a standard editor for the `Address` entity.
 
-As a result, editing of an airport instance works as follows:
+As a result, editing of an `Owner` instance works as follows:
 
-* The airport edit screen shows a list of terminals.
+* The `Owner` edit screen shows a list of `addresses`.
 
-* A user can pick a terminal and open its editor. When *OK* is clicked in the terminal editor, the updated instance of the terminal is not saved to the database, but to the `terminalsDs` datasource of the airport editor.
+* A user can pick a `address` and open its editor. When *OK* is clicked in the `Address` editor, the updated instance of the `Address` is not yet saved to the database, but to the `addressesDc` data container of the `Owner` editor.
 
-* The user can create new terminals and delete existing ones. All changes will be saved to the `terminalsDs` datasource.
+* The user can create new `Address` instances and delete existing ones. All changes will be saved to the `terminalsDc` data container.
 
-* When a user clicks *OK* in the airport edit screen, the updated `Airport` instance together with all the updated `Terminal` instances is submitted to the <<dataManager,DataManager>>.commit() method on the middleware and saved to the database within a single transaction.
+* When a user clicks *OK* in the `Owner` edit screen, the updated `Owner` instance together with all the updated `Address` instances is submitted to the <<dataManager,DataManager>>.commit() method on the middleware and saved to the database within a single transaction.
 
 == Summary
