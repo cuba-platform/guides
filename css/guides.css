@@ -340,7 +340,6 @@ pre.CodeRay {
 
 .example_cuba_petclinic-wrapper {
     border: 1px solid #e5e5e5;
-    padding: 25px;
     position: relative;
     margin-top: 1em;
     margin-bottom: 1em;
@@ -373,5 +372,9 @@ pre.CodeRay {
 }
 
 .example_cuba_petclinic-wrapper .sectionbody {
-    padding-top: 2em;
+    padding: 0 25px 25px 25px;
+}
+
+#example_cuba_petclinic a.link {
+    padding: 25px;
 }
