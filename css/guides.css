@@ -340,10 +340,17 @@ pre.CodeRay {
 
 .example_cuba_petclinic-wrapper {
     border: 1px solid #e5e5e5;
+    background-color: #f7f7f7;
     position: relative;
     margin-top: 1em;
     margin-bottom: 1em;
+
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -o-border-radius: 3px;
 }
+
 
 #example_cuba_petclinic a {
     width: 100%;
@@ -369,10 +376,11 @@ pre.CodeRay {
 
 #example_cuba_petclinic {
     padding: 0;
+    border-bottom: 1px solid #e5e5e5;
 }
 
 .example_cuba_petclinic-wrapper .sectionbody {
-    padding: 0 25px 25px 25px;
+    padding: 15px 25px 25px 25px;
 }
 
 #example_cuba_petclinic a.link {
