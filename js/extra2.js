@@ -2027,7 +2027,6 @@
   })
 
   /* Issue #9 */
-  $('#example_cuba_petclinic').parent().addClass('example_cuba_petclinic-wrapper');
   $('#example_cuba_petclinic ~ .sectionbody').addClass('hide');
   $('#example_cuba_petclinic').click(function () {
     $('#example_cuba_petclinic ~ .sectionbody').toggleClass('hide');
