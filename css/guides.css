@@ -162,7 +162,8 @@ pre.CodeRay {
     padding: 1em 0;
 }
 
-.blog .tip {display: flex;
+.blog .admonitionblock {
+    display: flex;
     align-items: center;
     background: #f7f7f7;
     border: 1px solid #ebebeb;
@@ -175,22 +176,28 @@ pre.CodeRay {
     margin: 1em 0;
 }
 
-.blog .tip .icon i {
+.blog .admonitionblock .icon i {
     font-size: 38px;
-    padding: 12px 3px 0;
+    padding: 12px 0 0;
+    min-width: 40px;
 }
 
-.blog .tip td.icon {
+.blog .admonitionblock td.icon {
     padding: 0 0.5em 0 0;
     vertical-align: top;
 }
 
-.blog .tip td.content {
+.blog .admonitionblock td.content {
     line-height: 24px;
 }
 
-.blog .tip .icon i:before {
+.blog .admonitionblock.tip .icon i:before {
     content: "\f0eb";
+    font-size: 40px;
+    padding: 12px 8px;
+}
+.blog .admonitionblock.warning .icon i:before {
+    content: "\f071";
 }
 
 .blog .colist {
@@ -278,6 +285,18 @@ pre.CodeRay {
     position: absolute;
     padding-left: 5px;
     line-height: 26px;
+}
+
+.blog .guide-panel.cuba-version {
+    text-align: center;
+    padding: 10px;
+}
+
+.blog .guide-panel.cuba-version h4 {
+    display: inline-block;
+    font-weight: 600;
+    color: #006bac;
+    font-size: 18px;
 }
 
 .blog .guide-panel.download {
