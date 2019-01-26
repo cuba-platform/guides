@@ -27,7 +27,7 @@ This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA pet
 
 * One level: Owner <>--> Address
 * Two levels: Pet <>--> Health Records <>--> Attachment
-* Three levels: Owner --> Pet --> Visit --> Note
+* Three levels: Owner <>--> Pet <>--> Visit <>--> Note
 
 === Final Application
 
@@ -49,7 +49,13 @@ In the Petclinic example a case of an `Owner` and its `Addresses` may be conside
 
 Typically, the entities belonging to a composition are edited together since it is more natural. A user opens the `Owner` editing screen and sees the list of `addresses`, so the user can create and edit them, but all changes both for the `Owner` and the `Address` are saved to the database together in one transaction, and only after the user confirms saving of the master entity (the `Owner`).
 
-===== One-to-Many: One Level of Nesting
+== Composition examples
+
+In this guide different variants of using the Composition relationship will be shown. Compositions can be `ONE-TO-MANY` as well as `ONE-TO-ONE`. Also it is possible to have multiple levels of nested composition in the application.
+
+TIP: With the release of CUBA 7, there is no limit of how many layers of nesting are defined anymore. Still, having too many levels of nesting is oftentimes source of confusion for the user when interacting with the user interface. Therefore it is suggested to not use the nested compositions with too many levels.
+
+=== One-to-Many: One Level of Nesting
 
 A one-to-many composition using the `Owner` and the `Address` entities as an example:
 
@@ -65,11 +71,14 @@ NOTE: In the Studio entity designer, set the following settings for the `address
 
 * https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/views.xml[views.xml] - the `owner-with-pets-and-addresses` view of the `Owner` editing screen contains the `addresses` collection attribute. `addresses` itself are loaded with `_local` view, because the `owner` attribute of the `Address` entity is set only at the creation of a new `Address` instance and never changes after that, so there is no need to load it.
 
-* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/owner/owner/owner-edit.xml[owner-edit.xml] - the XML descriptor of the `Owner` editor screen defines a datasource for the `Owner` instance and a nested one for its `addresses`. It also contains a table for managing the `Address` instances.
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/owner/owner/owner-edit.xml[owner-edit.xml] - the XML descriptor of the `Owner` editor screen defines a data container for the `Owner` instance and a nested collection data container for its `addresses`. It also contains a table for managing the `Address` instances.
 
 * https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/owner/address/address-edit.xml[address-edit.xml] - a standard editor for the `Address` entity.
 
 As a result, editing of an `Owner` instance works as follows:
+
+image::data-model-composition/one-level-owner-editor-address-composition.png[align="center"]
+
 
 * The `Owner` edit screen shows a list of `addresses`.
 
@@ -78,5 +87,35 @@ As a result, editing of an `Owner` instance works as follows:
 * The user can create new `Address` instances and delete existing ones. All changes will be saved to the `terminalsDc` data container.
 
 * When a user clicks *OK* in the `Owner` edit screen, the updated `Owner` instance together with all the updated `Address` instances is submitted to the <<dataManager,DataManager>>.commit() method on the middleware and saved to the database within a single transaction.
+
+=== One-to-Many: Two Levels of Nesting
+
+Composition can also be multiple levels. The next example shows a Composition of two levels. In the Petclinic there is need to store health records of the pets. The `Pet` -> `HealthRecord` relationship is another composition. However, also the health record has another composition, since there can be multiple Attachments created for a given health record.
+
+image::data-model-composition/composition_domain_model_two_levels.png[align="center"]
+
+The `Pet` entity contains the `healthRecords` attribute – a collection of the `HealthRecord` instances. In order for all three entities to become a single composition and be edited together, the following should be done in addition to the steps described above:
+
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/pet/HealthRecord.java[HealthRecord.java] - the `attachments` attribute of the `HealthRecord` class is marked as `@Composition` and `@OnDelete` similarly to the `healthRecords` attribute of the `Pet` class.
+
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/views.xml[views.xml] - the `health-record-with-attachments` view of the `HealthRecord` class contains the `attachments` collection attribute. This view is used in the `pet-with-owner-and-type-and-health-records` view of the `Pet` entity.
+
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/pet/pet/pet-edit.xml[pet-edit.xml] - the XML descriptor of the `Pet` editor screen defines a data container for the `Pet` instance and a nested collection data container for its `healthRecords`. It also contains a table for managing the `HealthRecord` instances.
+
++
+[TIP]
+====
+CUBA 7+ removed the previous need to define datasources for the second level of nested compositions in the editor of the top level entity with the release of data containers. In CUBA 7+ this definition is *not* required anymore.
+====
+
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/pet/healthrecord/healthrecord/health-record-edit.xml[health-record-edit.xml] - the XML descriptor of the `HealthRecord` editor screen defines a data container for the `HealthRecord` instance and a nested collection data container for its `attachments`. It also contains a table for managing the `HealthRecordAttachment` instances.
+
+
+As a result, the updated instances of the `HealthRecordAttachment`, as well as the `HealthRecord` instances, will be saved to the database only with the `Pet` instance in the same transaction.
+
+
+image::data-model-composition/two-levels-pet-editor-health-records-composition.png[align="center"]
+image::data-model-composition/two-levels-healthRecord-editor-health-record-attachments-composition.png[align="center"]
+
 
 == Summary
