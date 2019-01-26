@@ -167,7 +167,7 @@
 <p>Two levels: Pet &lt;&gt;-&#8594; Health Records &lt;&gt;-&#8594; Attachment</p>
 </li>
 <li>
-<p>Three levels: Owner -&#8594; Pet -&#8594; Visit -&#8594; Note</p>
+<p>Three levels: Owner &lt;&gt;-&#8594; Pet &lt;&gt;-&#8594; Visit &lt;&gt;-&#8594; Note</p>
 </li>
 </ul>
 </div>
@@ -237,8 +237,28 @@
 <div class="paragraph">
 <p>Typically, the entities belonging to a composition are edited together since it is more natural. A user opens the <code>Owner</code> editing screen and sees the list of <code>addresses</code>, so the user can create and edit them, but all changes both for the <code>Owner</code> and the <code>Address</code> are saved to the database together in one transaction, and only after the user confirms saving of the master entity (the <code>Owner</code>).</p>
 </div>
-<div class="sect4">
-<h5 id="one_to_many_one_level_of_nesting"><a class="anchor" href="#one_to_many_one_level_of_nesting"></a><a class="link" href="#one_to_many_one_level_of_nesting">One-to-Many: One Level of Nesting</a></h5>
+</div>
+</div>
+<div class="sect1">
+<h2 id="composition_examples"><a class="anchor" href="#composition_examples"></a><a class="link" href="#composition_examples">Composition examples</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this guide different variants of using the Composition relationship will be shown. Compositions can be <code>ONE-TO-MANY</code> as well as <code>ONE-TO-ONE</code>. Also it is possible to have multiple levels of nested composition in the application.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+With the release of CUBA 7, there is no limit of how many layers of nesting are defined anymore. Still, having too many levels of nesting is oftentimes source of confusion for the user when interacting with the user interface. Therefore it is suggested to not use the nested compositions with too many levels.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="one_to_many_one_level_of_nesting"><a class="anchor" href="#one_to_many_one_level_of_nesting"></a><a class="link" href="#one_to_many_one_level_of_nesting">One-to-Many: One Level of Nesting</a></h3>
 <div class="paragraph">
 <p>A one-to-many composition using the <code>Owner</code> and the <code>Address</code> entities as an example:</p>
 </div>
@@ -283,7 +303,7 @@ In the Studio entity designer, set the following settings for the <code>addresse
 <p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/views.xml">views.xml</a> - the <code>owner-with-pets-and-addresses</code> view of the <code>Owner</code> editing screen contains the <code>addresses</code> collection attribute. <code>addresses</code> itself are loaded with <code>_local</code> view, because the <code>owner</code> attribute of the <code>Address</code> entity is set only at the creation of a new <code>Address</code> instance and never changes after that, so there is no need to load it.</p>
 </li>
 <li>
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/owner/owner/owner-edit.xml">owner-edit.xml</a> - the XML descriptor of the <code>Owner</code> editor screen defines a datasource for the <code>Owner</code> instance and a nested one for its <code>addresses</code>. It also contains a table for managing the <code>Address</code> instances.</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/owner/owner/owner-edit.xml">owner-edit.xml</a> - the XML descriptor of the <code>Owner</code> editor screen defines a data container for the <code>Owner</code> instance and a nested collection data container for its <code>addresses</code>. It also contains a table for managing the <code>Address</code> instances.</p>
 </li>
 <li>
 <p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/owner/address/address-edit.xml">address-edit.xml</a> - a standard editor for the <code>Address</code> entity.</p>
@@ -292,6 +312,11 @@ In the Studio entity designer, set the following settings for the <code>addresse
 </div>
 <div class="paragraph">
 <p>As a result, editing of an <code>Owner</code> instance works as follows:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/data-model-composition/one-level-owner-editor-address-composition.png" alt="one level owner editor address composition">
+</div>
 </div>
 <div class="ulist">
 <ul>
@@ -308,6 +333,63 @@ In the Studio entity designer, set the following settings for the <code>addresse
 <p>When a user clicks <strong>OK</strong> in the <code>Owner</code> edit screen, the updated <code>Owner</code> instance together with all the updated <code>Address</code> instances is submitted to the <a href="#dataManager">DataManager</a>.commit() method on the middleware and saved to the database within a single transaction.</p>
 </li>
 </ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="one_to_many_two_levels_of_nesting"><a class="anchor" href="#one_to_many_two_levels_of_nesting"></a><a class="link" href="#one_to_many_two_levels_of_nesting">One-to-Many: Two Levels of Nesting</a></h3>
+<div class="paragraph">
+<p>Composition can also be multiple levels. The next example shows a Composition of two levels. In the Petclinic there is need to store health records of the pets. The <code>Pet</code> &#8594; <code>HealthRecord</code> relationship is another composition. However, also the health record has another composition, since there can be multiple Attachments created for a given health record.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/data-model-composition/composition_domain_model_two_levels.png" alt="composition domain model two levels">
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>Pet</code> entity contains the <code>healthRecords</code> attribute – a collection of the <code>HealthRecord</code> instances. In order for all three entities to become a single composition and be edited together, the following should be done in addition to the steps described above:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/pet/HealthRecord.java">HealthRecord.java</a> - the <code>attachments</code> attribute of the <code>HealthRecord</code> class is marked as <code>@Composition</code> and <code>@OnDelete</code> similarly to the <code>healthRecords</code> attribute of the <code>Pet</code> class.</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/views.xml">views.xml</a> - the <code>health-record-with-attachments</code> view of the <code>HealthRecord</code> class contains the <code>attachments</code> collection attribute. This view is used in the <code>pet-with-owner-and-type-and-health-records</code> view of the <code>Pet</code> entity.</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/pet/pet/pet-edit.xml">pet-edit.xml</a> - the XML descriptor of the <code>Pet</code> editor screen defines a data container for the <code>Pet</code> instance and a nested collection data container for its <code>healthRecords</code>. It also contains a table for managing the <code>HealthRecord</code> instances.</p>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>CUBA 7+ removed the previous need to define datasources for the second level of nested compositions in the editor of the top level entity with the release of data containers. In CUBA 7+ this definition is <strong>not</strong> required anymore.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/pet/healthrecord/healthrecord/health-record-edit.xml">health-record-edit.xml</a> - the XML descriptor of the <code>HealthRecord</code> editor screen defines a data container for the <code>HealthRecord</code> instance and a nested collection data container for its <code>attachments</code>. It also contains a table for managing the <code>HealthRecordAttachment</code> instances.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>As a result, the updated instances of the <code>HealthRecordAttachment</code>, as well as the <code>HealthRecord</code> instances, will be saved to the database only with the <code>Pet</code> instance in the same transaction.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/data-model-composition/two-levels-pet-editor-health-records-composition.png" alt="two levels pet editor health records composition">
+</div>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/data-model-composition/two-levels-healthRecord-editor-health-record-attachments-composition.png" alt="two levels healthRecord editor health record attachments composition">
+</div>
 </div>
 </div>
 </div>
@@ -346,6 +428,7 @@ In the Studio entity designer, set the following settings for the <code>addresse
 <li><a href="#what_will_be_build">What Will be Build</a></li>
 <li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
 <li><a href="#composition_vs_association">Composition vs. Association</a></li>
+<li><a href="#composition_examples">Composition examples</a></li>
 <li><a href="#summary">Summary</a></li>
 </ul>
                         </div>
