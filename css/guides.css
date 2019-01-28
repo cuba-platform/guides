@@ -162,7 +162,8 @@ pre.CodeRay {
     padding: 1em 0;
 }
 
-.blog .tip {display: flex;
+.blog .admonitionblock {
+    display: flex;
     align-items: center;
     background: #f7f7f7;
     border: 1px solid #ebebeb;
@@ -175,22 +176,28 @@ pre.CodeRay {
     margin: 1em 0;
 }
 
-.blog .tip .icon i {
+.blog .admonitionblock .icon i {
     font-size: 38px;
-    padding: 12px 3px 0;
+    padding: 12px 0 0;
+    min-width: 40px;
 }
 
-.blog .tip td.icon {
+.blog .admonitionblock td.icon {
     padding: 0 0.5em 0 0;
     vertical-align: top;
 }
 
-.blog .tip td.content {
+.blog .admonitionblock td.content {
     line-height: 24px;
 }
 
-.blog .tip .icon i:before {
+.blog .admonitionblock.tip .icon i:before {
     content: "\f0eb";
+    font-size: 40px;
+    padding: 12px 8px;
+}
+.blog .admonitionblock.warning .icon i:before {
+    content: "\f071";
 }
 
 .blog .colist {
@@ -327,20 +334,55 @@ pre.CodeRay {
 }
 
 /* Issue #9 */
-#example_cuba_petclinic::before {
-    color: #006bac;
-    content: "▶";
-    margin-right: 0.25em;
+#example_cuba_petclinic .link:hover {
+    text-decoration: none;
 }
-#example_cuba_petclinic.expanded::before {
-    content: "▼";
+
+.example_cuba_petclinic-wrapper {
+    border: 1px solid #e5e5e5;
+    background-color: #f7f7f7;
+    position: relative;
+    margin-top: 1em;
+    margin-bottom: 1em;
+
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -o-border-radius: 3px;
+}
+
+
+#example_cuba_petclinic a {
+    width: 100%;
+    display: block;
+}
+
+#example_cuba_petclinic a::after {
+    color: #006bac;
+    content: "";
+    margin-right: 0.25em;
+    position: absolute;
+    right: 20px;
+    width: 12px;
+    height: 8px;
+    top: 35px;
+    background: url(https://www.cuba-platform.com/sites/all/themes/cuba_adaptive/img/arrow-icon-inv.png) no-repeat;
+}
+
+#example_cuba_petclinic.expanded a::after {
+    background: url(https://www.cuba-platform.com/sites/all/themes/cuba_adaptive/img/arrow-icon.png) no-repeat;
     font-size: 20px;
 }
 
-#example_cuba_petclinic .link {
-    border-bottom: 2px dotted #006bac;
+#example_cuba_petclinic {
+    padding: 0;
+    border-bottom: 1px solid #e5e5e5;
 }
 
-#example_cuba_petclinic .link:hover {
-    border-bottom: none;
+.example_cuba_petclinic-wrapper .sectionbody {
+    padding: 15px 25px 25px 25px;
+}
+
+#example_cuba_petclinic a.link {
+    padding: 25px;
 }
