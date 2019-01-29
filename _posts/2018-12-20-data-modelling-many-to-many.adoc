@@ -4,27 +4,27 @@ compatible_java_versions: 8+
 project_id: cuba-petclinic-data-model-many-to-many
 permalink: data-modelling-many-to-many-association
 ---
-= Data modelling: Many-to-Many association
+= Data Modelling: Many-to-Many Association
 :showtitle:
 :sectlinks:
 :sectanchors:
-:page-navtitle: Data modelling: Many-to-Many association
+:page-navtitle: Data Modelling: Many-to-Many Association
 :page-excerpt: Data modelling guide: what are Many-to-Many associations and when to use them
 :page-root: ../../../
 :project_id: cuba-petclinic-data-model-many-to-many
 :java_version: 1.8
 :cuba_version: 7.0
 
-The many-to-many association implies that multiple records of one table are related to multiple records of another table. The joining table will store primary keys of both related entities. Optionally, this table may contain additional columns.
+The many-to-many association implies that multiple records of one table are related to multiple records of another table. The joining table will store the primary keys of both related entities. Optionally, this table may contain additional columns.
 
 Depending on whether additional fields in the joining table are needed, it can be implemented via a many to many association with an additional entity or without it. The following examples illustrate both approaches.
 
-== What will be built
+== What Will be Built
 
 This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show different use cases of many to many associations. In particular, the following use cases will be covered:
 
-* `Vet` <--> `Specialty` is modelled as a direct Many-to-Many association and the UI is updated accordingly
-* `Pet` <--> `InsuranceCompany` is modelled as an indirect Many-to-Many association with an explicit entity to store the validity range
+* `Vet` <--> `Specialty` is modeled as a direct Many-to-Many association and the UI is updated accordingly
+* `Pet` <--> `InsuranceCompany` is modeled as an indirect Many-to-Many association with an explicit entity to store the validity range
 
 === Final Application
 
@@ -38,18 +38,18 @@ include::includes/guide_requirements.adoc[]
 include::includes/petclinic_introduction.adoc[]
 
 
-== Direct Many-to-Many association
+== Direct Many-to-Many Association
 
-An example of a direct many to many relationship is the following in the petclinic example:
+An example of direct many-to-many relationships is the following in the petclinic example:
 
 image::data-model-many-to-many/direct_many_to_many.png[align="center"]
 
 A `Vet` can have multiple specialties and a `Speciality` on the other hand can also be linked to multiple vets.
 
-On the database it is represented as a Join Table, but there is _no_ explicit entity defined as the joining entity.
+On the database, it is represented as a Join Table, but there is _no_ explicit entity defined as the joining entity.
 
 
-TIP: In the Studio entity designer, set the following settings for the `specialties` attribute: *Attribute type* - `ASSOCIATION`, *Cardinality* - `MANY_TO_MANY`. `Vet` will be marked as the owning side of the relationship, and Studio will suggest to create the corresponding `vets` attribute in the `Specialty` entity as the inverse side of the association.
+TIP: In the Studio entity designer, set the following settings for the `specialties` attribute: *Attribute type* - `ASSOCIATION`, *Cardinality* - `MANY_TO_MANY`. `Vet` will be marked as the owning side of the relationship, and Studio will suggest creating the corresponding `vets` attribute in the `Specialty` entity as the inverse side of the association.
 
 https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/vet/Vet.java[Vet.java] - the `Vet` entity contains a many-to-many list of `specialties`.
 
@@ -75,18 +75,18 @@ https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/maste
 protected List<Vet> vets;
 ----
 
-`Specialty` will be _also_ marked by default as the owning side of the relationship, which enables modification of the collections on the both sides.
+`Specialty` will be _also_ marked by default as the owning side of the relationship, which enables modification of the collections on both sides.
 
 * https://github.com/cuba-platform/sample-model/blob/master/modules/global/src/com/company/sample/views.xml[views.xml] - the `vet-with-specialties` view of the vet editing screen contains the specialties association attribute with the `_minimal` view. The `specialty-with-vets` view includes the vets association as well.
 
-* https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/vet/vet/vet-edit.xml[vet-edit.xml] - the XML descriptor of the vet editor defines a datasource for the `Vet` instance and a nested one for its specialties. It also contains a table displaying specialties and the actions https://doc.cuba-platform.com/manual-latest/list_actions.html#addAction[add] and https://doc.cuba-platform.com/manual-latest/list_actions.html#removeAction[remove].
+* https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/vet/vet/vet-edit.xml[vet-edit.xml] - the XML descriptor of the vet editor defines a datasource for the `Vet` instance and a nested one for its specialties. It also contains a table displaying specialties and https://doc.cuba-platform.com/manual-latest/list_actions.html#addAction[add] and https://doc.cuba-platform.com/manual-latest/list_actions.html#removeAction[remove] actions.
 
-* https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/vet/specialty/specialty-edit.xml[specialty-edit.xml] - the XML descriptor of the specialty editor defines a datasource for the `Specialty` instance and a nested one for its vets. It also contains a table displaying vets and the actions *add* and *remove*.
+* https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/vet/specialty/specialty-edit.xml[specialty-edit.xml] - the XML descriptor of the specialty editor defines a datasource for the `Specialty` instance and a nested one for its vets. It also contains a table displaying vets and *add* and *remove* actions .
 
 So, the `Vet` and the `Specialty` editors are absolutely symmetrical.
 
 
-== Indirect Many-to-Many association with Joining Entity
+== Indirect Many-to-Many Association with Joining Entity
 
 The many-to-many association is always implemented using a joining table, but creating an entity to reflect this table is optional. The joining entity can be created when some additional attributes should be stored in the joining table.
 
@@ -94,9 +94,9 @@ An example of an indirect many-to-many association is the following in the petcl
 
 image::data-model-many-to-many/indirect_many_to_many.png[align="center"]
 
-A `Pet` might over the years be insured by different `InsuranceCompanies` and a `InsuranceCompany` on the other hand has multiple memberships.
+A `Pet` might over the years be insured by different `InsuranceCompanies` and an `InsuranceCompany` on the other hand has multiple memberships.
 
-On the database it is represented as a Join Table and there _is_ an explicit entity defined as the joining entity called `InsuranceMembership`. It also holds additional information about the membership: the validity range in which the Pet is insured by the insurance company. Therefore it has the values `validFrom` and `validUntil`.
+On the database, it is represented as a Join Table and there _is_ an explicit entity defined as the joining entity called `InsuranceMembership`. It also holds additional information about the membership: the validity range in which the Pet is insured by the insurance company. Therefore it has values `validFrom` and `validUntil`.
 
 
 
@@ -163,18 +163,18 @@ The `insuranceCompany-with-memberships` view follows the same logic: it includes
 
 * https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/pet/pet/pet-edit.xml[pet-edit.xml] - the XML descriptor of the pet editor defines a data container for the `Pet` instance and a nested one for its `insuranceCompany` instances (through the `InsuranceMembership` relationship). It also contains a table displaying memberships and the custom action to pick an `InsuranceCompany` directly, bypassing the `InsuranceMembership` editor.
 
-As a result, editing of a `InsuranceMembership` instance works as follows:
+As a result, editing of an `InsuranceMembership` instance works as follows:
 
 The `Pet` edit screen shows a list of insurance companies and the validity range of the membership.
 
 
-A user can click *Add Insurance*, the `InsuranceCompany` lookup will be opened, and the user can either select an insurance company to add or create a new insurance company. When the user selects an insurance company, the new `InsuranceMembership` instance https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/pet/pet/PetEdit.java#L57[is created] with the default validity range. This instance it is not saved to the database directly, but added to the `insurancesMembershipsDc` data container of the `Pet` editor.
+A user can click *Add Insurance*, the `InsuranceCompany` lookup will be opened, and the user can either select an insurance company to add or create a new insurance company. When the user selects an insurance company, a new `InsuranceMembership` instance https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/pet/pet/PetEdit.java#L57[is created] with the default validity range. This instance is not saved to the database directly, but added to the `insurancesMembershipsDc` data container of the `Pet` editor.
 
-TIP: When within the above described creation of a many-to-many relationship from the Pet editor a `InsuranceCompany` is created or updated through the https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/insurance/insurancecompany/InsuranceCompanyEdit.java[`InsuranceCompany` editor], the created / updated instance of the insurance company is directly saved to the database as the `InsuranceCompany` entity is fully independent. The user can create new insurance companies and delete existing ones. All changes will be saved to the database in separate transactions.
+TIP: When within the above described creation of a many-to-many relationship from the Pet editor an `InsuranceCompany` is created or updated through the https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/insurance/insurancecompany/InsuranceCompanyEdit.java[`InsuranceCompany` editor], the created / updated instance of the insurance company is directly saved to the database as the `InsuranceCompany` entity is fully independent. A user can create new insurance companies and delete existing ones. All changes will be saved to the database in separate transactions.
 
 When a user clicks OK in the pet edit screen, the updated `Pet` instance together with all the updated `InsuranceMembership` instances is submitted to the `DataManager.commit()` method on the middleware and saved to the database within a single transaction.
 
 
 == Summary
 
-In this data modelling guide the many-to-many association was shown. Many-to-many associations are valuable if both sides of the association should be linked to multiple items of the other side as shown for the `Vet` <--> `Specialty` case. If required by the business case, this association can also enhanced via additional information that describe the association further as it was shown with the `validFrom` & `validUntil` attributes for the `InsuranceMembership` entity.
+In this data modelling guide the many-to-many association was shown. Many-to-many associations are valuable if both sides of the association should be linked to multiple items of the other side as shown for the `Vet` <--> `Specialty` case. If required by the business case, this association can be also enhanced via additional information that describes the association further as it was shown with the `validFrom` & `validUntil` attributes for the `InsuranceMembership` entity.
