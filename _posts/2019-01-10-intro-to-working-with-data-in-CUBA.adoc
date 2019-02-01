@@ -189,7 +189,6 @@ private void createVisitForPet(Pet pet) {
     Visit followUpCheckVisit = createVisitInstance(pet);
     followUpCheckVisit.setVisitDate(nextWeek());
 
-
     CommitContext commitContext = new CommitContext();
 
     commitContext.addInstanceToCommit(todaysVisit); // <1>

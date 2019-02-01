@@ -82,7 +82,6 @@ TIP: There are two different kinds of annotations to register for as an event li
 .RoomKeycodeToOwnerSender.java
 [source,java]
 ----
-
 @Component("petclinic_roomKeycodeToOwnerSender")
 public class RoomKeycodeToOwnerSender {
 
@@ -103,7 +102,6 @@ public class RoomKeycodeToOwnerSender {
 
     private void tryToSendRoomKeycodeToPetsOwner(Visit visit) {
 
-
         if (visit.getPet().getOwner() != null) {
 
             String phoneNumber = visit.getPet().getOwner().getTelephone();
@@ -114,15 +112,12 @@ public class RoomKeycodeToOwnerSender {
                 mobilePhoneNotificationGateway.sendNotification(phoneNumber, notificationText);
             }
         }
-
     }
-
 
     // ...
 
 }
 ----
-
 <1> registration of `sendRoomKeycode` as an event listener
 <2> scoping `EntityChangedEvent` only to Events which changed `Visit` entities
 <3> access to `Visit` identifier of the created instance
@@ -138,7 +133,6 @@ The following event listener will take over the responsibility to notify the roo
 .RoomSystemNotifier.java
 [source,java]
 ----
-
 @Component("petclinic_roomSystemNotifier")
 public class RoomSystemNotifier {
 
@@ -187,7 +181,6 @@ The first step towards custom application event is to define an event as a class
 ----
 package com.haulmont.sample.petclinic.core.visit;
 
-
 public class VisitCompletedEvent extends ApplicationEvent { // <1>
 
     private final Visit visit;
@@ -195,7 +188,6 @@ public class VisitCompletedEvent extends ApplicationEvent { // <1>
     public VisitCompletedEvent(Object source, Visit visit) {
 
         super(source);
-
         this.visit = visit;
     }
 
@@ -236,7 +228,6 @@ public class VisitStatusServiceBean implements VisitStatusService {
 
             return true;
         }
-
         // ...
     }
 
@@ -251,7 +242,6 @@ public class VisitStatusServiceBean implements VisitStatusService {
     }
 }
 ----
-
 <1> Injecting CUBAs `Events` Spring bean
 <2> Publishing a new `VisitCompletedEvent` once the visit's status is updated
 
@@ -298,12 +288,11 @@ public class InvoicingProcessInitializer implements ApplicationListener<VisitCom
     }
 
     //...
-
 }
 ----
 
 
-=== CUBA UI events
+=== CUBA UI Events
 
 On the UI layer there are two main use cases for events. The first is that the framework itself sends events for certain interactions that happen within the user interface of the application. Additionally, it is also possible just like in the middleware layer to send custom application UI events. Both kinds of events have in common that instead of the middleware events the UI events are always scoped to one instance of the UI. Furthermore, the events are scoped towards a single browser tab.
 
@@ -325,7 +314,6 @@ For the petclinic, the VisitEdit controller leverages the `InitEntityEvent` for 
 .VisitEdit.java
 [source,java]
 ----
-
 @UiController("petclinic_Visit.edit")
 @UiDescriptor("visit-edit.xml")
 @EditedEntityContainer("visitCt")
@@ -342,7 +330,6 @@ public class VisitEdit extends StandardEditor<Visit> {
     }
 }
 ----
-
 <1> Registering `onInitEntity` as an event listener for the `InitEntityEvent<Visit>`
 <2> Setting the room keycode of the newly created visit entity
 
@@ -376,7 +363,6 @@ public class VisitBrowse extends StandardLookup<Visit> {
     @Inject
     private Events events; // <1>
 
-
     @Subscribe("visitsTable.completeVisit")
     protected void completeVisit(Action.ActionPerformedEvent event) {
         Visit visit = visitsTable.getSingleSelected();
@@ -399,7 +385,6 @@ public class VisitBrowse extends StandardLookup<Visit> {
     }
 }
 ----
-
 <1> Using CUBAs `Events` mechanism
 <2> Sending a `VisitCompletedUiEvent`
 <3> Registering `updateDataOnVisitCompleted` as an event listener for `VisitCompletedUiEvent` events
@@ -409,7 +394,6 @@ In this example the sender and the receiver are the same class, but this does no
 
 === Sending Events Between Layers
 
-
 Technically there is one main constraint to think about when interacting with events in a CUBA application. This is that as CUBA is a multi-module application that can be deployed as two main parts: frontend (web module) and middleware (core module) sending events between the two layers is not directly possible.
 
 The underlying framework for the events mechanism is Spring which has the facility to send application events within one application, more precisely within one JVM process. Since frontend and middleware can be two different JVM processes on different servers, Spring by default has no capabilities to interact across JVM processes.
@@ -417,7 +401,6 @@ The underlying framework for the events mechanism is Spring which has the facili
 There are two ways to solve this problem. The first one is to leverage an external message broker like RabbitMQ to interact between applications (or layers of applications in this case). An internal application event can be send internally. An event listener (e.g. `RabbitMqForwarder`) then takes this message and forwards it to the external message broker. On the receiver side another Event listener for external RabbitMQ messages converts the messages back to an internal CUBA / Spring messages. With that the application can transparently communicate between JVM boundaries.
 
 The other way is to use an existing application component called `global-events`. Global events is an application component from Haulmont that especially addresses the problem of communicating between CUBA middleware and frontend parts.
-
 
 
 == Summary
