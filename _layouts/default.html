@@ -50,20 +50,27 @@
             <div id="blog-sidebar">
                 <div class="region region-sidebar">
                     <section id="block-block-29" class="block block-block clearfix">
-                        <div class="guide-panel cuba-version">
-                            <h4>CUBA Version {{ page.compatible_cuba_versions }}</h4>
-                        </div>
 
-                        <div class="guide-panel download">
-                            <h4>Get the code</h4>
-                            <a class="button expanded"  href="https://github.com/cuba-guides/{{ page.project_id }}/archive/master.zip" target="_blank">Download</a>
-                            <a href="https://github.com/cuba-guides/{{ page.project_id }}" class="github-link" target="_blank">Github</a>
-                        </div>
 
                         <div class="guide-panel">
                             <h4>Table of contents</h4>
                             {{ page.document | tocify_asciidoc: 1 }}
                         </div>
+
+
+                        <div class="guide-panel download">
+                            <h4>Example code</h4>
+                            <a class="button expanded"  href="https://github.com/cuba-guides/{{ page.project_id }}/archive/master.zip" target="_blank">Download</a>
+                            <a href="https://github.com/cuba-guides/{{ page.project_id }}" class="github-link" target="_blank">Github</a>
+                        </div>
+                        <div class="guide-panel cuba-version">
+                            <h4>Supported Versions</h4>
+                            <ul>
+                                <li>CUBA: {{ page.compatible_cuba_versions }}</li>
+                                <li>Java: {{ page.compatible_java_versions }}</li>
+                            </ul>
+                        </div>
+
                     </section>
                 </div>
             </div>
