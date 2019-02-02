@@ -102,7 +102,7 @@
                                 <li class="first leaf menu-mlid-1329"><a href="/online-demo">Online Demo</a></li>
                                 <li class="leaf menu-mlid-1327"><a href="/quickstart">Quick Start</a></li>
                                 <li class="leaf menu-mlid-1328"><a href="/tutorials">Tutorials</a></li>
-                                <li class="leaf menu-mlid-3012 active-trail active active"><a href="/guides/" class="active-trail active-trail active">Guides</a></li>
+                                <li class="leaf menu-mlid-1730"><a href="/sample-projects">Sample Projects</a></li>
                                 <li class="leaf"><a href="/webinars">Webinars</a></li>
                                 <li class="leaf menu-mlid-1326"><a href="/documentation">Documentation</a></li>
                                 <li class="last leaf menu-mlid-1591"><a href="/faq">FAQ</a></li>
@@ -235,6 +235,7 @@
       log.error(<span class="string"><span class="delimiter">&quot;</span><span class="content">Pet </span><span class="delimiter">&quot;</span></span> + pet + <span class="string"><span class="delimiter">&quot;</span><span class="content"> could not be saved</span><span class="delimiter">&quot;</span></span>, e);
       <span class="keyword">return</span> <span class="predefined-constant">null</span>;
     }
+
 }</code></pre>
 </div>
 </div>
@@ -297,6 +298,7 @@
 <pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Service</span>(DiseaseWarningMailingService.NAME)
 <span class="directive">public</span> <span class="type">class</span> <span class="class">DiseaseWarningMailingServiceBean</span> <span class="directive">implements</span> DiseaseWarningMailingService {
 
+
   <span class="directive">private</span> <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">Logger</span> log = LoggerFactory.getLogger(DiseaseWarningMailingServiceBean.class); <i class="conum" data-value="1"></i><b>(1)</b>
 
   <span class="comment">// ...</span>
@@ -319,7 +321,9 @@
     <span class="keyword">return</span> amountOfInformedPets;
   }
 
+
   <span class="comment">// ...</span>
+
 }</code></pre>
 </div>
 </div>
@@ -448,7 +452,7 @@
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td><code>logDir</code> is a variable defined for the configuration, it describes where the file-based log files should be placed. It uses a special variable <code>catalina.base</code> from tomcat to reference the installation directory</td>
+<td><code>logDir</code> is a variable defined for the configuration, it describes where the file-based logfiles should be placed. It uses a special variable <code>catalina.base</code> from tomcat to reference the installation directory</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -513,6 +517,7 @@
 
     <span class="directive">private</span> <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">Logger</span> log = LoggerFactory.getLogger(PetContactFetcherBean.class);
 
+
     <span class="annotation">@Override</span>
     <span class="directive">public</span> Optional&lt;Contact&gt; findContact(Pet pet) {
 
@@ -555,6 +560,7 @@
     }
 
     <span class="comment">// ...</span>
+
 }</code></pre>
 </div>
 </div>
@@ -703,6 +709,7 @@
         <span class="tag">&lt;/properties&gt;</span>
     <span class="tag">&lt;/appender&gt;</span>
 
+
     <span class="comment">&lt;!-- ... --&gt;</span>
 
 <span class="tag">&lt;/configuration&gt;</span></code></pre>
@@ -729,7 +736,7 @@
 </div>
 <div class="imageblock">
 <div class="content">
-<a class="image" href="images/application-logging-in-cuba/elasticsearch-kibana-ui-logging.png"><img src="/guides/images/application-logging-in-cuba/elasticsearch-kibana-ui-logging.png" alt="Elasticsearch Kibana UI logging"></a>
+<img src="/guides/images/application-logging-in-cuba/elasticsearch-kibana-ui-logging.png" alt="Elasticsearch Kibana UI logging">
 </div>
 </div>
 </div>
@@ -781,15 +788,7 @@
             <div id="blog-sidebar">
                 <div class="region region-sidebar">
                     <section id="block-block-29" class="block block-block clearfix">
-                        <div class="guide-panel cuba-version">
-                            <h4>CUBA Version 7.0</h4>
-                        </div>
 
-                        <div class="guide-panel download">
-                            <h4>Get the code</h4>
-                            <a class="button expanded"  href="https://github.com/cuba-guides/cuba-petclinic-application-logging/archive/master.zip" target="_blank">Download</a>
-                            <a href="https://github.com/cuba-guides/cuba-petclinic-application-logging" class="github-link" target="_blank">Github</a>
-                        </div>
 
                         <div class="guide-panel">
                             <h4>Table of contents</h4>
@@ -805,6 +804,21 @@
 <li><a href="#further_information">Further Information</a></li>
 </ul>
                         </div>
+
+
+                        <div class="guide-panel download">
+                            <h4>Example code</h4>
+                            <a class="button expanded"  href="https://github.com/cuba-guides/cuba-petclinic-application-logging/archive/master.zip" target="_blank">Download</a>
+                            <a href="https://github.com/cuba-guides/cuba-petclinic-application-logging" class="github-link" target="_blank">Github</a>
+                        </div>
+                        <div class="guide-panel cuba-version">
+                            <h4>Supported Versions</h4>
+                            <ul>
+                                <li>CUBA: 7.0</li>
+                                <li>Java: </li>
+                            </ul>
+                        </div>
+
                     </section>
                 </div>
             </div>
