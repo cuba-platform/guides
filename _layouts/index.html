@@ -48,7 +48,7 @@
                                 <div class="panel-pane pane-custom pane-2 cuba-container">
                                     <div class="pane-content">
                                         <div class="accordion-webinars">
-                                            {% for post in site.posts %}
+                                            {% for post in site.posts reversed %}
                                             <div class="item">
                                                 <a name="tr1"></a>
                                                 <div class="item-head collapsed" data-toggle="collapse" data-target="#{{ post.permalink }}" href="#{{ post.permalink }}" aria-expanded="false">
