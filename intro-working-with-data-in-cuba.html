@@ -102,7 +102,7 @@
                                 <li class="first leaf menu-mlid-1329"><a href="/online-demo">Online Demo</a></li>
                                 <li class="leaf menu-mlid-1327"><a href="/quickstart">Quick Start</a></li>
                                 <li class="leaf menu-mlid-1328"><a href="/tutorials">Tutorials</a></li>
-                                <li class="leaf menu-mlid-1730"><a href="/sample-projects">Sample Projects</a></li>
+                                <li class="leaf menu-mlid-3012 active-trail active active"><a href="/guides/" class="active-trail active-trail active">Guides</a></li>
                                 <li class="leaf"><a href="/webinars">Webinars</a></li>
                                 <li class="leaf menu-mlid-1326"><a href="/documentation">Documentation</a></li>
                                 <li class="last leaf menu-mlid-1591"><a href="/faq">FAQ</a></li>
@@ -418,7 +418,6 @@ DataManager dataManager;
     Visit followUpCheckVisit = createVisitInstance(pet);
     followUpCheckVisit.setVisitDate(nextWeek());
 
-
     CommitContext commitContext = <span class="keyword">new</span> CommitContext();
 
     commitContext.addInstanceToCommit(todaysVisit); <i class="conum" data-value="1"></i><b>(1)</b>
@@ -479,7 +478,15 @@ DataManager dataManager;
             <div id="blog-sidebar">
                 <div class="region region-sidebar">
                     <section id="block-block-29" class="block block-block clearfix">
+                        <div class="guide-panel cuba-version">
+                            <h4>CUBA Version 7.0</h4>
+                        </div>
 
+                        <div class="guide-panel download">
+                            <h4>Get the code</h4>
+                            <a class="button expanded"  href="https://github.com/cuba-guides/cuba-petclinic-intro-to-datamanager/archive/master.zip" target="_blank">Download</a>
+                            <a href="https://github.com/cuba-guides/cuba-petclinic-intro-to-datamanager" class="github-link" target="_blank">Github</a>
+                        </div>
 
                         <div class="guide-panel">
                             <h4>Table of contents</h4>
@@ -492,21 +499,6 @@ DataManager dataManager;
 <li><a href="#summary">Summary</a></li>
 </ul>
                         </div>
-
-
-                        <div class="guide-panel download">
-                            <h4>Example code</h4>
-                            <a class="button expanded"  href="https://github.com/cuba-guides/cuba-petclinic-intro-to-datamanager/archive/master.zip" target="_blank">Download</a>
-                            <a href="https://github.com/cuba-guides/cuba-petclinic-intro-to-datamanager" class="github-link" target="_blank">Github</a>
-                        </div>
-                        <div class="guide-panel cuba-version">
-                            <h4>Supported Versions</h4>
-                            <ul>
-                                <li>CUBA: 7.0+</li>
-                                <li>Java: 8+</li>
-                            </ul>
-                        </div>
-
                     </section>
                 </div>
             </div>

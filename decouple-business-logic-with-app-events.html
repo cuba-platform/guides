@@ -102,7 +102,7 @@
                                 <li class="first leaf menu-mlid-1329"><a href="/online-demo">Online Demo</a></li>
                                 <li class="leaf menu-mlid-1327"><a href="/quickstart">Quick Start</a></li>
                                 <li class="leaf menu-mlid-1328"><a href="/tutorials">Tutorials</a></li>
-                                <li class="leaf menu-mlid-1730"><a href="/sample-projects">Sample Projects</a></li>
+                                <li class="leaf menu-mlid-3012 active-trail active active"><a href="/guides/" class="active-trail active-trail active">Guides</a></li>
                                 <li class="leaf"><a href="/webinars">Webinars</a></li>
                                 <li class="leaf menu-mlid-1326"><a href="/documentation">Documentation</a></li>
                                 <li class="last leaf menu-mlid-1591"><a href="/faq">FAQ</a></li>
@@ -340,7 +340,6 @@ There are two different kinds of annotations to register for as an event listene
 
     <span class="directive">private</span> <span class="type">void</span> tryToSendRoomKeycodeToPetsOwner(Visit visit) {
 
-
         <span class="keyword">if</span> (visit.getPet().getOwner() != <span class="predefined-constant">null</span>) {
 
             <span class="predefined-type">String</span> phoneNumber = visit.getPet().getOwner().getTelephone();
@@ -351,9 +350,7 @@ There are two different kinds of annotations to register for as an event listene
                 mobilePhoneNotificationGateway.sendNotification(phoneNumber, notificationText);
             }
         }
-
     }
-
 
     <span class="comment">// ...</span>
 
@@ -452,7 +449,6 @@ When having multiple event listeners the invocation order oftentimes does not ma
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.haulmont.sample.petclinic.core.visit</span>;
 
-
 <span class="directive">public</span> <span class="type">class</span> <span class="class">VisitCompletedEvent</span> <span class="directive">extends</span> ApplicationEvent { <i class="conum" data-value="1"></i><b>(1)</b>
 
     <span class="directive">private</span> <span class="directive">final</span> Visit visit;
@@ -460,7 +456,6 @@ When having multiple event listeners the invocation order oftentimes does not ma
     <span class="directive">public</span> VisitCompletedEvent(<span class="predefined-type">Object</span> source, Visit visit) {
 
         <span class="local-variable">super</span>(source);
-
         <span class="local-variable">this</span>.visit = visit;
     }
 
@@ -508,7 +503,6 @@ When having multiple event listeners the invocation order oftentimes does not ma
 
             <span class="keyword">return</span> <span class="predefined-constant">true</span>;
         }
-
         <span class="comment">// ...</span>
     }
 
@@ -590,13 +584,12 @@ There are two ways to listen to events. Above <code>@TransactionalEventListener<
     }
 
     <span class="comment">//...</span>
-
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="cuba_ui_events"><a class="anchor" href="#cuba_ui_events"></a><a class="link" href="#cuba_ui_events">CUBA UI events</a></h3>
+<h3 id="cuba_ui_events"><a class="anchor" href="#cuba_ui_events"></a><a class="link" href="#cuba_ui_events">CUBA UI Events</a></h3>
 <div class="paragraph">
 <p>On the UI layer there are two main use cases for events. The first is that the framework itself sends events for certain interactions that happen within the user interface of the application. Additionally, it is also possible just like in the middleware layer to send custom application UI events. Both kinds of events have in common that instead of the middleware events the UI events are always scoped to one instance of the UI. Furthermore, the events are scoped towards a single browser tab.</p>
 </div>
@@ -684,7 +677,6 @@ There are two ways to listen to events. Above <code>@TransactionalEventListener<
 
     <span class="annotation">@Inject</span>
     <span class="directive">private</span> Events events; <i class="conum" data-value="1"></i><b>(1)</b>
-
 
     <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">visitsTable.completeVisit</span><span class="delimiter">&quot;</span></span>)
     <span class="directive">protected</span> <span class="type">void</span> completeVisit(<span class="predefined-type">Action</span>.ActionPerformedEvent event) {
@@ -790,7 +782,15 @@ There are two ways to listen to events. Above <code>@TransactionalEventListener<
             <div id="blog-sidebar">
                 <div class="region region-sidebar">
                     <section id="block-block-29" class="block block-block clearfix">
+                        <div class="guide-panel cuba-version">
+                            <h4>CUBA Version 7.0</h4>
+                        </div>
 
+                        <div class="guide-panel download">
+                            <h4>Get the code</h4>
+                            <a class="button expanded"  href="https://github.com/cuba-guides/cuba-petclinic-intro-to-application-events/archive/master.zip" target="_blank">Download</a>
+                            <a href="https://github.com/cuba-guides/cuba-petclinic-intro-to-application-events" class="github-link" target="_blank">Github</a>
+                        </div>
 
                         <div class="guide-panel">
                             <h4>Table of contents</h4>
@@ -802,21 +802,6 @@ There are two ways to listen to events. Above <code>@TransactionalEventListener<
 <li><a href="#summary">Summary</a></li>
 </ul>
                         </div>
-
-
-                        <div class="guide-panel download">
-                            <h4>Example code</h4>
-                            <a class="button expanded"  href="https://github.com/cuba-guides/cuba-petclinic-intro-to-application-events/archive/master.zip" target="_blank">Download</a>
-                            <a href="https://github.com/cuba-guides/cuba-petclinic-intro-to-application-events" class="github-link" target="_blank">Github</a>
-                        </div>
-                        <div class="guide-panel cuba-version">
-                            <h4>Supported Versions</h4>
-                            <ul>
-                                <li>CUBA: 7.0+</li>
-                                <li>Java: 8+</li>
-                            </ul>
-                        </div>
-
                     </section>
                 </div>
             </div>

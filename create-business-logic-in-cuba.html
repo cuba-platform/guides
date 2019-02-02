@@ -102,7 +102,7 @@
                                 <li class="first leaf menu-mlid-1329"><a href="/online-demo">Online Demo</a></li>
                                 <li class="leaf menu-mlid-1327"><a href="/quickstart">Quick Start</a></li>
                                 <li class="leaf menu-mlid-1328"><a href="/tutorials">Tutorials</a></li>
-                                <li class="leaf menu-mlid-1730"><a href="/sample-projects">Sample Projects</a></li>
+                                <li class="leaf menu-mlid-3012 active-trail active active"><a href="/guides/" class="active-trail active-trail active">Guides</a></li>
                                 <li class="leaf"><a href="/webinars">Webinars</a></li>
                                 <li class="leaf menu-mlid-1326"><a href="/documentation">Documentation</a></li>
                                 <li class="last leaf menu-mlid-1591"><a href="/faq">FAQ</a></li>
@@ -229,13 +229,11 @@
 <span class="annotation">@LoadDataBeforeShow</span>
 <span class="directive">public</span> <span class="type">class</span> <span class="class">PetBrowse</span> <span class="directive">extends</span> StandardLookup&lt;Pet&gt; {
 
-
     <span class="annotation">@Inject</span> <span class="directive">protected</span> Notifications notifications;
 
     <span class="annotation">@Inject</span> <span class="directive">protected</span> Metadata metadata;
 
     <span class="annotation">@Inject</span> <span class="directive">protected</span> GroupTable&lt;Pet&gt; petsTable;
-
 
     <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petsTable.calculateDiscount</span><span class="delimiter">&quot;</span></span>)
     <span class="directive">public</span> <span class="type">void</span> calculateDiscount(<span class="predefined-type">Action</span>.ActionPerformedEvent actionPerformedEvent) {
@@ -270,8 +268,6 @@
             .setType(Notifications.NotificationType.TRAY)
             .show();
     }
-
-
 }</code></pre>
 </div>
 </div>
@@ -359,7 +355,6 @@ This approach is acceptable if the logic is invoked from a single point and it i
         } <span class="keyword">else</span> {
             <span class="keyword">return</span> Optional.empty();
         }
-
     }
 
     <span class="comment">//...</span>
@@ -384,7 +379,6 @@ This approach is acceptable if the logic is invoked from a single point and it i
 
     <span class="annotation">@Inject</span>
     PetContactDisplay petContactDisplay;
-
 
     <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">fetchContact</span><span class="delimiter">&quot;</span></span>)
     <span class="directive">public</span> <span class="type">void</span> fetchContact() {
@@ -473,10 +467,8 @@ This approach is acceptable if the logic is invoked from a single point and it i
   <span class="annotation">@Inject</span>
   <span class="directive">protected</span> DataManager dataManager;
 
-
   <span class="annotation">@Inject</span>
   <span class="directive">protected</span> EmailerAPI emailerAPI;
-
 
   <span class="annotation">@Override</span>
   <span class="directive">public</span> <span class="type">int</span> warnAboutDisease(PetType petType, <span class="predefined-type">String</span> disease, <span class="predefined-type">String</span> city) { <i class="conum" data-value="2"></i><b>(2)</b>
@@ -489,7 +481,6 @@ This approach is acceptable if the logic is invoked from a single point and it i
 
     <span class="keyword">return</span> petsWithEmail.size();
   }
-
 
   <span class="comment">// ...</span>
 
@@ -518,11 +509,9 @@ This approach is acceptable if the logic is invoked from a single point and it i
 <span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">create-disease-warning-mailing.xml</span><span class="delimiter">&quot;</span></span>)
 <span class="directive">public</span> <span class="type">class</span> <span class="class">CreateDiseaseWarningMailing</span> <span class="directive">extends</span> Screen {
 
-
     <span class="annotation">@Inject</span> <span class="directive">protected</span> DiseaseWarningMailingService diseaseWarningMailingService; <i class="conum" data-value="1"></i><b>(1)</b>
 
     <span class="annotation">@Inject</span> <span class="directive">protected</span> Notifications notifications;
-
 
     <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">createDiseaseWarningMailing</span><span class="delimiter">&quot;</span></span>)
     <span class="directive">protected</span> <span class="type">void</span> createDiseaseWarningMailing(<span class="predefined-type">Action</span>.ActionPerformedEvent event) {
@@ -580,7 +569,15 @@ it is not tied to the web tier anymore. Furthermore, it is possible to trigger i
             <div id="blog-sidebar">
                 <div class="region region-sidebar">
                     <section id="block-block-29" class="block block-block clearfix">
+                        <div class="guide-panel cuba-version">
+                            <h4>CUBA Version 7.0</h4>
+                        </div>
 
+                        <div class="guide-panel download">
+                            <h4>Get the code</h4>
+                            <a class="button expanded"  href="https://github.com/cuba-guides/cuba-petclinic-guide-business-logic/archive/master.zip" target="_blank">Download</a>
+                            <a href="https://github.com/cuba-guides/cuba-petclinic-guide-business-logic" class="github-link" target="_blank">Github</a>
+                        </div>
 
                         <div class="guide-panel">
                             <h4>Table of contents</h4>
@@ -593,21 +590,6 @@ it is not tied to the web tier anymore. Furthermore, it is possible to trigger i
 <li><a href="#summary">Summary</a></li>
 </ul>
                         </div>
-
-
-                        <div class="guide-panel download">
-                            <h4>Example code</h4>
-                            <a class="button expanded"  href="https://github.com/cuba-guides/cuba-petclinic-guide-business-logic/archive/master.zip" target="_blank">Download</a>
-                            <a href="https://github.com/cuba-guides/cuba-petclinic-guide-business-logic" class="github-link" target="_blank">Github</a>
-                        </div>
-                        <div class="guide-panel cuba-version">
-                            <h4>Supported Versions</h4>
-                            <ul>
-                                <li>CUBA: 7.0+</li>
-                                <li>Java: 8+</li>
-                            </ul>
-                        </div>
-
                     </section>
                 </div>
             </div>
