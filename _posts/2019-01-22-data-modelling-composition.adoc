@@ -26,8 +26,8 @@ This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA pet
 
 
 * One level: Owner <>--> Address
-* Two levels: Pet <>--> Health Records <>--> Attachment
-* Three levels: Owner <>--> Pet <>--> Visit <>--> Note
+* Two levels: Pet <>--> Health Record <>--> Health Record Attachment
+* Three levels: Owner <>--> Pet <>--> Health Record <>--> Health Record Attachment
 
 === Final Application
 
@@ -77,7 +77,7 @@ NOTE: In the Studio entity designer, set the following settings for the `address
 
 As a result, editing of an `Owner` instance works as follows:
 
-image::data-model-composition/one-level-owner-editor-address-composition.png[align="center"]
+image::data-model-composition/one-level-owner-editor-address-composition.png[align="center",link="images/data-model-composition/one-level-owner-editor-address-composition.png"]
 
 
 * The `Owner` edit screen shows a list of `addresses`.
@@ -86,7 +86,7 @@ image::data-model-composition/one-level-owner-editor-address-composition.png[ali
 
 * The user can create new `Address` instances and delete existing ones. All changes will be saved to the `terminalsDc` data container.
 
-* When a user clicks *OK* in the `Owner` edit screen, the updated `Owner` instance together with all the updated `Address` instances is submitted to the <<dataManager,DataManager>>.commit() method on the middleware and saved to the database within a single transaction.
+* When a user clicks *OK* in the `Owner` edit screen, the updated `Owner` instance together with all the updated `Address` instances is submitted to the `dataManager.commit()` method on the middleware and saved to the database within a single transaction.
 
 === One-to-Many: Two Levels of Nesting
 
@@ -113,9 +113,18 @@ CUBA 7+ removed the previous need to define datasources for the second level of 
 
 As a result, the updated instances of the `HealthRecordAttachment`, as well as the `HealthRecord` instances, will be saved to the database only with the `Pet` instance in the same transaction.
 
+==== Health Record Composition within the Pet Editor
+image::data-model-composition/two-levels-pet-editor-health-records-composition.png[align="center",link="images/data-model-composition/two-levels-pet-editor-health-records-composition.png"]
 
-image::data-model-composition/two-levels-pet-editor-health-records-composition.png[align="center"]
-image::data-model-composition/two-levels-healthRecord-editor-health-record-attachments-composition.png[align="center"]
+==== Health Record Attachment Composition within the Health Record Editor
+image::data-model-composition/two-levels-healthRecord-editor-health-record-attachments-composition.png[align="center",link="images/data-model-composition/two-levels-healthRecord-editor-health-record-attachments-composition.png"]
+
+
+=== More Levels of Nesting
+
+As stated above, CUBA 7+ does not have the restriction of maximal two levels of nesting for composition anymore. This means that three (or more) levels of nesting are possible. The example for two levels of nesting can be extended towards: `Owner` -> `Pet` -> `Health Record` -> `Health Record Attachment` and in fact has been done within the demo application.
+
+Having too many levels of composition has to be treated with caution, though. It requires an additional burden on the user, to understand at which point which data is stored.
 
 
 == Summary
