@@ -52,20 +52,17 @@ See the *Calculate discount* button in the petclinic application and the screen 
 .PetBrowse.java
 [source,java]
 ----
-
 @UiController("petclinic_Pet.browse")
 @UiDescriptor("pet-browse.xml")
 @LookupComponent("petsTable")
 @LoadDataBeforeShow
 public class PetBrowse extends StandardLookup<Pet> {
 
-
     @Inject protected Notifications notifications;
 
     @Inject protected Metadata metadata;
 
     @Inject protected GroupTable<Pet> petsTable;
-
 
     @Subscribe("petsTable.calculateDiscount")
     public void calculateDiscount(Action.ActionPerformedEvent actionPerformedEvent) {
@@ -100,14 +97,10 @@ public class PetBrowse extends StandardLookup<Pet> {
             .setType(Notifications.NotificationType.TRAY)
             .show();
     }
-
-
 }
 ----
 
 TIP: This approach is acceptable if the logic is invoked from a single point and it is not too complex to fit into a couple of short methods.
-
-
 
 
 == Client Tier Beans
@@ -170,7 +163,6 @@ public class PetContactFetcherBean implements PetContactFetcher {
         } else {
             return Optional.empty();
         }
-
     }
 
     //...
@@ -185,7 +177,6 @@ https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules
 .PetEdit.java
 [source,java]
 ----
-
 @UiController("petclinic_Pet.edit")
 @UiDescriptor("pet-edit.xml")
 @EditedEntityContainer("petCt")
@@ -197,7 +188,6 @@ public class PetEdit extends StandardEditor<Pet> {
 
     @Inject
     PetContactDisplay petContactDisplay;
-
 
     @Subscribe("fetchContact")
     public void fetchContact() {
@@ -261,10 +251,8 @@ public class DiseaseWarningMailingServiceBean implements DiseaseWarningMailingSe
   @Inject
   protected DataManager dataManager;
 
-
   @Inject
   protected EmailerAPI emailerAPI;
-
 
   @Override
   public int warnAboutDisease(PetType petType, String disease, String city) { // <2>
@@ -278,12 +266,10 @@ public class DiseaseWarningMailingServiceBean implements DiseaseWarningMailingSe
     return petsWithEmail.size();
   }
 
-
   // ...
 
 }
 ----
-
 <1> Declaration of `DiseaseWarningMailingServiceBean` as the Middleware Service implementation
 <2> Implementation of the business logic interface
 
@@ -294,16 +280,13 @@ The UI controller usage is very similar to the invocation of a client tier bean.
 .CreateDiseaseWarningMailing.java
 [source,java]
 ----
-
 @UiController
 @UiDescriptor("create-disease-warning-mailing.xml")
 public class CreateDiseaseWarningMailing extends Screen {
 
-
     @Inject protected DiseaseWarningMailingService diseaseWarningMailingService; // <1>
 
     @Inject protected Notifications notifications;
-
 
     @Subscribe("createDiseaseWarningMailing")
     protected void createDiseaseWarningMailing(Action.ActionPerformedEvent event) {
@@ -319,7 +302,6 @@ public class CreateDiseaseWarningMailing extends Screen {
         );
     }
 ----
-
 <1> Injection of the middleware service via its interface definition
 <2> Invocation of the business logic in the controller action
 

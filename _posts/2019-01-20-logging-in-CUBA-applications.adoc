@@ -57,7 +57,6 @@ private Pet savePet(Pet pet) {
       log.error("Pet " + pet + " could not be saved", e);
       return null;
     }
-
 }
 ----
 
@@ -96,7 +95,6 @@ In order to log information within a class, an instance of a Logger has to be cr
 @Service(DiseaseWarningMailingService.NAME)
 public class DiseaseWarningMailingServiceBean implements DiseaseWarningMailingService {
 
-
   private static final Logger log = LoggerFactory.getLogger(DiseaseWarningMailingServiceBean.class); // <1>
 
   // ...
@@ -119,9 +117,7 @@ public class DiseaseWarningMailingServiceBean implements DiseaseWarningMailingSe
     return amountOfInformedPets;
   }
 
-
   // ...
-
 }
 ----
 <1> Logger configured for this class is defined through Slf4J
@@ -205,9 +201,8 @@ The configuration file `logback.xml` is the main place to adjust the configurati
     <!-- ... -->
 
 </configuration>
-
 ----
-<1> `logDir` is a variable defined for the configuration, it describes where the file-based logfiles should be placed. It uses a special variable `catalina.base` from tomcat to reference the installation directory
+<1> `logDir` is a variable defined for the configuration, it describes where the file-based log files should be placed. It uses a special variable `catalina.base` from tomcat to reference the installation directory
 <2> A file appender to write log messages to the logfile `app.log`
 <3> `pattern` configures how a single log message line within the file should look like
 <4> Another appender writes the log messages to `STDOUT` (with different options)
@@ -252,7 +247,6 @@ public class PetContactFetcherBean implements PetContactFetcher {
 
     private static final Logger log = LoggerFactory.getLogger(PetContactFetcherBean.class);
 
-
     @Override
     public Optional<Contact> findContact(Pet pet) {
 
@@ -295,7 +289,6 @@ public class PetContactFetcherBean implements PetContactFetcher {
     }
 
     // ...
-
 }
 
 ----
@@ -328,7 +321,6 @@ Now that the MDC has values in it, the next step is to reconfigure logback in or
     <!-- ... -->
 
 </configuration>
-
 ----
 <1> `%X{petId}` takes the value with the key `petId` of the MDC and writes it to the log file
 
@@ -404,11 +396,9 @@ The `logback.xml` configuration file should be extended to contain an additional
         </properties>
     </appender>
 
-
     <!-- ... -->
 
 </configuration>
-
 ----
 <1> An `elasticsearch` appender of `ElasticsearchAppender` type is registered for the application
 <2> The URL of the elasticsearch cluster is extracted from the environment variables
@@ -417,7 +407,7 @@ The `logback.xml` configuration file should be extended to contain an additional
 With that configuration in place, the application will take the log messages and send them to elasticsearch. Kibana as a user interface for accessing data in elasticsearch is capable of displaying the log information properly. Via the structured as well as full-text search capabilities, the log information can be accessed in a much easier way compared to direct access to the log files.
 
 
-image::application-logging-in-cuba/elasticsearch-kibana-ui-logging.png[Elasticsearch Kibana UI logging]
+image::application-logging-in-cuba/elasticsearch-kibana-ui-logging.png[Elasticsearch Kibana UI logging, link="images/application-logging-in-cuba/elasticsearch-kibana-ui-logging.png"]
 
 == Summary
 
