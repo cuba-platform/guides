@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Introduction to Working with Data in Cuba</title>
+    <title>Data Modelling: Composition</title>
     <meta name="description" content="The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.">
     <meta name="author" content="Haulmont">
     <link rel="shortcut icon" href="/guides/images/favicon.png" type="image/png" />
@@ -142,33 +142,29 @@
                             <div class="field field-name-body field-type-text-with-summary field-label-hidden">
                                 <div class="field-items">
                                     <div class="field-item even" property="content: encoded">
-                                        <h1>Introduction to Working with Data in Cuba</h1>
-<div id="preamble">
-<div class="sectionbody">
-<div class="paragraph">
-<p>This guide walks you through the CUBA APIs for programmatically interacting with the database through the DataManager API.</p>
-</div>
-</div>
-</div>
+                                        <h1>Data Modelling: Composition</h1>
 <div class="sect1">
-<h2 id="what_will_be_build"><a class="anchor" href="#what_will_be_build"></a><a class="link" href="#what_will_be_build">What Will Be Build</a></h2>
+<h2 id="what_will_be_build"><a class="anchor" href="#what_will_be_build"></a><a class="link" href="#what_will_be_build">What Will be Build</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show different use cases regarding programmatic data access with the DataManager API. In particular, the following use cases will be covered:</p>
+<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show various example of a composition relationship between entities. In particular, the following use cases will be covered:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>automatic creation of a Visit for a given Pet Identification Number</p>
+<p><code>Owner</code> entity gets an relationship to an <code>Address</code></p>
 </li>
 <li>
-<p>automatic "Disease Warning Mailing" for endangered pets</p>
+<p><code>Pet</code> can contain multiple <code>HealthRecord</code> instances, which itself can contain multiple <code>HealthRecordAttachment</code> instances</p>
+</li>
+<li>
+<p>The <code>Owner</code> entity <code>Pet</code> can contain multiple <code>HealthRecord</code> instances, which itself can contain multiple <code>HealthRecordAttachment</code> instances</p>
 </li>
 </ul>
 </div>
 <div class="sect2">
 <h3 id="final_application"><a class="anchor" href="#final_application"></a><a class="link" href="#final_application">Final Application</a></h3>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/login-screen.png"/></a>
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-data-model-entity-inheritance/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-data-model-entity-inheritance/master/img/login-screen.png"/></a>
 </div>
 <div class="sect2">
 <h3 id="requirements"><a class="anchor" href="#requirements"></a><a class="link" href="#requirements">Requirements</a></h3>
@@ -192,10 +188,10 @@
 </ul>
 </div>
 <div class="paragraph">
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-intro-to-datamanager/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
 </div>
 <div class="paragraph">
-<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-intro-to-datamanager.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-intro-to-datamanager.git</a></code></p>
+<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-data-model-composition.git</a></code></p>
 </div>
 </div>
 </div>
@@ -221,159 +217,24 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="programmatic_data_access_interactions"><a class="anchor" href="#programmatic_data_access_interactions"></a><a class="link" href="#programmatic_data_access_interactions">Programmatic Data Access Interactions</a></h2>
+<h2 id="composition_vs_association"><a class="anchor" href="#composition_vs_association"></a><a class="link" href="#composition_vs_association">Composition vs. Association</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Oftentimes it is necessary to interact with the database in a programmatic manner. In a CUBA based application, these cases are not as omnipresent as in other frameworks due to its declarative nature of data-binding for UIs, but still, there are
-a lot of cases where data has to be loaded from the database or stored in the database as part of a business process.</p>
+<p>CUBA platform supports two types of relationship between entities: association and composition. They are called ASSOCIATION and COMPOSITION respectively in the CUBA Studio interface. Association is a relationship between the objects that can exist separately from each other. Composition, on the other hand, is used for "master-detail" relations, when the detail instances can exist only as part of the master.</p>
 </div>
 <div class="paragraph">
-<p>The main interaction point that CUBA provides is the <a href="https://doc.cuba-platform.com/manual-7.0/dataManager.html">DataManager</a> API. This API allows the developer of a CUBA application to load and store data in the database through the general abstraction of entities.</p>
+<p>In the Petclinic example a case of an <code>Owner</code> and its <code>Addresses</code> may be considered an example of composition: an <code>Address</code> that does not belong to any <code>Owner</code> does not make sense.</p>
 </div>
 <div class="paragraph">
-<p>DataManager is an Abstraction on top of the Java Persistence API (JPA). It hides away certain details that are not required on a day-to-day basis.</p>
-</div>
-<div class="paragraph">
-<p>It also adds certain capabilities that are not available out-of-the-box in JPA. Those capabilities are mainly the <a href="https://doc.cuba-platform.com/manual-7.0/views.html">Views concept</a> as well as the application of <a href="https://doc.cuba-platform.com/manual-7.0/security_subsystem.html">security constraints</a>. More information about differences between JPA and DataManager can be found in the docs on <a href="https://doc.cuba-platform.com/manual-7.0/dm_vs_em.html">DataManager vs. EntityManager</a>.</p>
+<p>Typically, the entities belonging to a composition are edited together since it is more natural. A user opens the <code>Owner</code> editing screen and sees the list of <code>addresses</code>, so the user can create and edit them, but all changes both for the <code>Owner</code> and the <code>Address</code> are saved to the database together in one transaction, and only after the user confirms saving of the master entity (the <code>Owner</code>).</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="load_data_with_datamanager"><a class="anchor" href="#load_data_with_datamanager"></a><a class="link" href="#load_data_with_datamanager">Load Data with Datamanager</a></h2>
+<h2 id="one_to_many_composition"><a class="anchor" href="#one_to_many_composition"></a><a class="link" href="#one_to_many_composition">One-to-Many Composition</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>DataManager has multiple ways to load data from the database. In this guide, the two main options are covered: load a single item as well as multiple items based on Queries.</p>
-</div>
-<div class="sect2">
-<h3 id="single_item"><a class="anchor" href="#single_item"></a><a class="link" href="#single_item">Single Item</a></h3>
-<div class="paragraph">
-<p>The first option is to load a single Entity instance from the database. This option is often required if reference data needs to be read from the database in order to execute some logic for that entity instance or with the help of that entity instance.</p>
-</div>
-<div class="paragraph">
-<p>In the case of the Petclinic example, there is some business logic which should create a new Visit for a given Pet by its Identification Number.</p>
-</div>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-visit-for-pet.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-visit-for-pet.png"/></a>
-<div class="paragraph">
-<p>The source code that loads the Pet instance by its Identification Number is located in <a href="https://github.com/cuba-guides/cuba-petclinic-intro-to-datamanager/blob/master/modules/core/src/com/cubaplatform/petclinic/service/visit/VisitServiceBean.java#L47">VisitServiceBean.java</a> in the example application. The usage of the DataManager API looks like this:</p>
-</div>
-<div class="listingblock">
-<div class="title">VisitServiceBean.java</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Inject</span>
-DataManager dataManager;
-
-<span class="comment">/**
- * loads a Pet by its Identification Number
- * @param identificationNumber the Identification Number to load
- * @return the Pet for the given Identification Number
- */</span>
-<span class="directive">private</span> Pet loadPetByIdentificationNumber(<span class="predefined-type">String</span> identificationNumber) {
-    <span class="keyword">return</span> dataManager.load(Pet.class)
-            .query(<span class="string"><span class="delimiter">&quot;</span><span class="content">select e from petclinic$Pet e where e.identificationNumber = :identificationNumber</span><span class="delimiter">&quot;</span></span>)
-            .parameter(<span class="string"><span class="delimiter">&quot;</span><span class="content">identificationNumber</span><span class="delimiter">&quot;</span></span>, identificationNumber)
-            .one();
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>DataManager has a <a href="https://martinfowler.com/bliki/FluentInterface.html">fluent API</a> which allows to chain operations on the load operation in order to define parameters to the execution. In this case, the interaction starts with <code>dataManager.load(Pet.class)</code>. Then the JPQL query is defined and the associated parameters are configured with the parameter values. The <code>one()</code> method executes the load operation and fetches exactly one item that matches the criteria. If there are no results the corresponding exception is thrown.</p>
-</div>
-<div class="paragraph">
-<p>It is up to the application developer to decide if the query can return one or possibly multiple results. In this case, it is only possible to create an Identification Number once, we can be sure that the query will return at the most one item.</p>
-</div>
-<div class="paragraph">
-<p>In this case, the attribute <code>identificationNumber</code> is not the primary key of the entity. But it represents a globally unique identification number given by proper Pet authorities - therefore it is modeled uniquely within the application.</p>
-</div>
-<div class="paragraph">
-<p>If the task is to load a Pet by its primary key (<code>id</code>) the query is easier to create as the query part is not needed: <code>dataManager.load(Pet.class).id(id).one();</code></p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="multiple_items_by_query"><a class="anchor" href="#multiple_items_by_query"></a><a class="link" href="#multiple_items_by_query">Multiple Items by Query</a></h3>
-<div class="paragraph">
-<p>The next very common option is to load multiple items defined by a query.</p>
-</div>
-<div class="paragraph">
-<p>The Petclinic application has the capability to let the user send out Disease Warning Mailings. The user has to define the location of a known disease as well as the type of Pet that is endangered by this disease. The system will find all endangered Pets and send out a Mailing to the owners.</p>
-</div>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-disease-warning-mailing.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-disease-warning-mailing.png"/></a>
-<div class="paragraph">
-<p>The part that finds the endangered Pets looks like this with the use of the DataManager API:</p>
-</div>
-<div class="listingblock">
-<div class="title">DiseaseWarningMailingServiceBean.java</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Inject</span>
-DataManager dataManager;
-
-<span class="directive">private</span> <span class="predefined-type">List</span>&lt;Pet&gt; findEndangeredPets(PetType petType, <span class="predefined-type">String</span> city) {
-    <span class="keyword">return</span> dataManager.load(Pet.class)
-                .query(<span class="string"><span class="delimiter">&quot;</span><span class="content">select e from petclinic$Pet e where e.owner.city = :ownerCity and e.type.id = :petType</span><span class="delimiter">&quot;</span></span>)
-                .parameter(<span class="string"><span class="delimiter">&quot;</span><span class="content">ownerCity</span><span class="delimiter">&quot;</span></span>, city)
-                .parameter(<span class="string"><span class="delimiter">&quot;</span><span class="content">petType</span><span class="delimiter">&quot;</span></span>, petType)
-                .view(<span class="string"><span class="delimiter">&quot;</span><span class="content">pet-with-owner-and-type</span><span class="delimiter">&quot;</span></span>)
-                .list();
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The query part is a little more complicated compared to above, but the same pattern applies. The differences in this example are the usage of the <code>list()</code> method as we expect multiple Pets from the database query. Also, a specific view has been used, because not only the Pet data but also the Owner data has to be loaded in order to send out the Mailings.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="write_data_with_datamanager"><a class="anchor" href="#write_data_with_datamanager"></a><a class="link" href="#write_data_with_datamanager">Write Data with DataManager</a></h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>DataManager is also responsible for writing data into the database. There are also different ways to achieve it based on the case at hand.</p>
-</div>
-<div class="sect2">
-<h3 id="single_item_2"><a class="anchor" href="#single_item_2"></a><a class="link" href="#single_item_2">Single Item</a></h3>
-<div class="paragraph">
-<p>The first most commonly used case is to update or create a single item in the database. There are no major differences between creating and updating an entity from the usage perspective.</p>
-</div>
-<div class="paragraph">
-<p>When revisiting the example from above, where a new Visit for a given Pet ID is created, we only looked at the part which loads the Pet by its Pet ID. In this case, we are more interested in the creation part of the Visit entity. The source code to create and save a Visit looks like this:</p>
-</div>
-<div class="listingblock">
-<div class="title">VisitServiceBean.java</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Inject</span>
-DataManager dataManager;
-
-<span class="directive">private</span> Visit createVisitForPet(Pet pet) {
-
-    Visit visit = dataManager.create(Visit.class); <i class="conum" data-value="1"></i><b>(1)</b>
-
-    visit.setPet(pet);
-    visit.setVisitDate(timeSource.currentTimestamp());
-
-    <span class="keyword">return</span> dataManager.commit(visit); <i class="conum" data-value="2"></i><b>(2)</b>
-
-}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>an entity instance is created with all initializations in memory</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>the entity instance is stored in the DB</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>The creation of an instance through DataManager does the initialization of the instance as well. It is important not to create an instance via <code>new Visit()</code> but rather through this Factory method, so that CUBA can do all the required initialization (like <code>@PostConstruct</code> annotated methods e.g.).</p>
-</div>
-<div class="paragraph">
-<p>Once the entity instance was created, the data of that entity has to be set through its corresponding setter methods. In this case, the database instance of the Pet is set as well as the current date as the visit date.</p>
-</div>
-<div class="paragraph">
-<p>The process of storing an entity instance contains a few steps like security checks, execution of Entity Listeners and so on. The return value of the commit method is the stored instance with all the properties set that have been added during the storage phase.</p>
+<p>In this guide different variants of using the Composition relationship will be shown. Compositions can be <code>ONE-TO-MANY</code> as well as <code>ONE-TO-ONE</code>. Also it is possible to have multiple levels of nested composition in the application.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -382,88 +243,175 @@ DataManager dataManager;
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-There is a couple of other convenience API methods for storing entites. For more information about those variants see the <a href="http://files.cuba-platform.com/javadoc/cuba/7.0/com/haulmont/cuba/core/global/DataManager.html">DataManager API reference</a>.
+With the release of CUBA 7, there is no limit of how many layers of nesting are defined anymore. Still, having too many levels of nesting is oftentimes source of confusion for the user when interacting with the user interface. Therefore it is suggested to not use the nested compositions with too many levels.
 </td>
 </tr>
 </table>
 </div>
-</div>
 <div class="sect2">
-<h3 id="transactions_commit_context"><a class="anchor" href="#transactions_commit_context"></a><a class="link" href="#transactions_commit_context">Transactions &amp; Commit Context</a></h3>
+<h3 id="one_to_many_one_level_of_nesting"><a class="anchor" href="#one_to_many_one_level_of_nesting"></a><a class="link" href="#one_to_many_one_level_of_nesting">One-to-Many: One Level of Nesting</a></h3>
 <div class="paragraph">
-<p>The example from above shows how to store a single item in the database. Although this is oftentimes sufficient, a lot of cases require to store multiple items in a single transaction. The default example for this is the bank transfer from one account to another. In this case, it is crucial that the update of both accounts happens together or not at all, but never only one of them.</p>
+<p>A one-to-many composition using the <code>Owner</code> and the <code>Address</code> entities as an example:</p>
 </div>
-<div class="paragraph">
-<p>The DataManager API always encapsulates the database operation in a transaction. This means that by default the <code>commit(visit)</code> call is executed in one transaction. Another call to <code>commit</code> would create another transaction.</p>
-</div>
-<div class="paragraph">
-<p>To execute updates on multiple entity instances there is the concept of a <code>CommitContext</code>. The commit context defines all entity instances that should get created / updated and removed. The DataManager accepts a <code>CommitContext</code> object as an alternative to an entity instance. In this case, all entity instances that are held by the commit context will get transferred to the database within one transaction.</p>
-</div>
-<div class="paragraph">
-<p>The <code>CommitContext</code> has two main methods: <a href="http://files.cuba-platform.com/javadoc/cuba/7.0/com/haulmont/cuba/core/global/CommitContext.html#addInstanceToCommit-com.haulmont.cuba.core.entity.Entity-">addInstanceToCommit</a> as well as <a href="http://files.cuba-platform.com/javadoc/cuba/7.0/com/haulmont/cuba/core/global/CommitContext.html#addInstanceToRemove-com.haulmont.cuba.core.entity.Entity-">addInstancesToRemove</a> which allow defining which items should be added / updated as well as removed within one transaction.</p>
-</div>
-<div class="paragraph">
-<p>In case multiple visits should be updated within one transaction, the usage of <code>CommitContext</code> looks like this:</p>
-</div>
-<div class="listingblock">
+<div class="imageblock text-center">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Inject</span>
-DataManager dataManager;
-
-<span class="directive">private</span> <span class="type">void</span> createVisitForPet(Pet pet) {
-
-    Visit todaysVisit = createVisitInstance(pet);
-    todaysVisit.setVisitDate(today());
-
-    Visit followUpCheckVisit = createVisitInstance(pet);
-    followUpCheckVisit.setVisitDate(nextWeek());
-
-    CommitContext commitContext = <span class="keyword">new</span> CommitContext();
-
-    commitContext.addInstanceToCommit(todaysVisit); <i class="conum" data-value="1"></i><b>(1)</b>
-    commitContext.addInstanceToCommit(followUpCheckVisit);
-
-    dataManager.commit(commitContext); <i class="conum" data-value="2"></i><b>(2)</b>
-}</code></pre>
+<img src="/guides/images/data-model-composition/composition_domain_model_one_level.png" alt="composition domain model one level">
 </div>
 </div>
-<div class="colist arabic">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/owner/Address.java">Address.java</a> - the <code>Address</code> entity contains a mandatory link to the <code>Owner</code>.</p>
+<div class="admonitionblock note">
 <table>
 <tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td><code>addInstanceToCommit</code> allows adding entity instances to the commit context</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td><code>commit</code> can take a <code>CommitContext</code> instance for storing multiple entity instances in one transaction</td>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In the Studio entity designer, set the following settings for the <code>owner</code> attribute: <strong>Attribute type</strong> - <code>ASSOCIATION</code>, <strong>Cardinality</strong> - <code>MANY_TO_ONE</code>, <strong>Mandatory</strong> - <code>on</code>.
+</td>
 </tr>
 </table>
 </div>
-<div class="paragraph">
-<p>Sometimes the fact that DataManager API always creates a new transaction is not the desired behavior. Instead, an already running transaction should be re-used. In this case, a very similar API called <code>TransactionalDataManager</code> can be used. It behaves basically the same as the regular <code>DataManager</code> with the difference that it allows to join an existing transaction as well as enabling programmatic transaction handling.</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/owner/Owner.java">Owner.java</a> - the <code>Owner</code> entity contains a one-to-many collection of <code>addresses</code>. The corresponding field is annotated with <code>@Composition</code> in order to implement composition, and `@OnDelete for cascaded soft delete.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In the Studio entity designer, set the following settings for the <code>addresses</code> attribute: <strong>Attribute type</strong> - <code>COMPOSITION</code>, <strong>Cardinality</strong> - <code>ONE_TO_MANY</code>, <strong>On delete</strong> - <code>CASCADE</code>.
+</td>
+</tr>
+</table>
 </div>
+</li>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/views.xml">views.xml</a> - the <code>owner-with-pets-and-addresses</code> view of the <code>Owner</code> editing screen contains the <code>addresses</code> collection attribute. <code>addresses</code> itself are loaded with <code>_local</code> view, because the <code>owner</code> attribute of the <code>Address</code> entity is set only at the creation of a new <code>Address</code> instance and never changes after that, so there is no need to load it.</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/owner/owner/owner-edit.xml">owner-edit.xml</a> - the XML descriptor of the <code>Owner</code> editor screen defines a data container for the <code>Owner</code> instance and a nested collection data container for its <code>addresses</code>. It also contains a table for managing the <code>Address</code> instances.</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/owner/address/address-edit.xml">address-edit.xml</a> - a standard editor for the <code>Address</code> entity.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>As a result, editing of an <code>Owner</code> instance works as follows:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/data-model-composition/one-level-owner-editor-address-composition.png"><img src="/guides/images/data-model-composition/one-level-owner-editor-address-composition.png" alt="one level owner editor address composition"></a>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>Owner</code> edit screen shows a list of <code>addresses</code>.</p>
+</li>
+<li>
+<p>A user can pick a <code>address</code> and open its editor. When <strong>OK</strong> is clicked in the <code>Address</code> editor, the updated instance of the <code>Address</code> is not yet saved to the database, but to the <code>addressesDc</code> data container of the <code>Owner</code> editor.</p>
+</li>
+<li>
+<p>The user can create new <code>Address</code> instances and delete existing ones. All changes will be saved to the <code>terminalsDc</code> data container.</p>
+</li>
+<li>
+<p>When a user clicks <strong>OK</strong> in the <code>Owner</code> edit screen, the updated <code>Owner</code> instance together with all the updated <code>Address</code> instances is submitted to the <code>dataManager.commit()</code> method on the middleware and saved to the database within a single transaction.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="one_to_many_two_levels_of_nesting"><a class="anchor" href="#one_to_many_two_levels_of_nesting"></a><a class="link" href="#one_to_many_two_levels_of_nesting">One-to-Many: Two Levels of Nesting</a></h3>
+<div class="paragraph">
+<p>Composition can also be multiple levels. The next example shows a Composition of two levels. In the Petclinic there is need to store health records of the pets. The <code>Pet</code> &#8594; <code>HealthRecord</code> relationship is another composition. However, also the health record has another composition, since there can be multiple Attachments created for a given health record.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/data-model-composition/composition_domain_model_two_levels.png" alt="composition domain model two levels">
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>Pet</code> entity contains the <code>healthRecords</code> attribute – a collection of the <code>HealthRecord</code> instances. In order for all three entities to become a single composition and be edited together, the following should be done in addition to the steps described above:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/pet/HealthRecord.java">HealthRecord.java</a> - the <code>attachments</code> attribute of the <code>HealthRecord</code> class is marked as <code>@Composition</code> and <code>@OnDelete</code> similarly to the <code>healthRecords</code> attribute of the <code>Pet</code> class.</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/views.xml">views.xml</a> - the <code>health-record-with-attachments</code> view of the <code>HealthRecord</code> class contains the <code>attachments</code> collection attribute. This view is used in the <code>pet-with-owner-and-type-and-health-records</code> view of the <code>Pet</code> entity.</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/pet/pet/pet-edit.xml">pet-edit.xml</a> - the XML descriptor of the <code>Pet</code> editor screen defines a data container for the <code>Pet</code> instance and a nested collection data container for its <code>healthRecords</code>. It also contains a table for managing the <code>HealthRecord</code> instances.</p>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>CUBA 7+ removed the previous need to define datasources for the second level of nested compositions in the editor of the top level entity with the release of data containers. In CUBA 7+ this definition is <strong>not</strong> required anymore.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/pet/healthrecord/healthrecord/health-record-edit.xml">health-record-edit.xml</a> - the XML descriptor of the <code>HealthRecord</code> editor screen defines a data container for the <code>HealthRecord</code> instance and a nested collection data container for its <code>attachments</code>. It also contains a table for managing the <code>HealthRecordAttachment</code> instances.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>As a result, the updated instances of the <code>HealthRecordAttachment</code>, as well as the <code>HealthRecord</code> instances, will be saved to the database only with the <code>Pet</code> instance in the same transaction.</p>
+</div>
+<div class="sect3">
+<h4 id="health_record_composition_within_the_pet_editor"><a class="anchor" href="#health_record_composition_within_the_pet_editor"></a><a class="link" href="#health_record_composition_within_the_pet_editor">Health Record Composition within the Pet Editor</a></h4>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/data-model-composition/two-levels-pet-editor-health-records-composition.png"><img src="/guides/images/data-model-composition/two-levels-pet-editor-health-records-composition.png" alt="two levels pet editor health records composition"></a>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="health_record_attachment_composition_within_the_health_record_editor"><a class="anchor" href="#health_record_attachment_composition_within_the_health_record_editor"></a><a class="link" href="#health_record_attachment_composition_within_the_health_record_editor">Health Record Attachment Composition within the Health Record Editor</a></h4>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/data-model-composition/two-levels-healthRecord-editor-health-record-attachments-composition.png"><img src="/guides/images/data-model-composition/two-levels-healthRecord-editor-health-record-attachments-composition.png" alt="two levels healthRecord editor health record attachments composition"></a>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="more_levels_of_nesting"><a class="anchor" href="#more_levels_of_nesting"></a><a class="link" href="#more_levels_of_nesting">More Levels of Nesting</a></h3>
+<div class="paragraph">
+<p>As stated above, CUBA 7+ does not have the restriction of maximal two levels of nesting for composition anymore. This means that three (or more) levels of nesting are possible. The example for two levels of nesting can be extended towards: <code>Owner</code> &#8594; <code>Pet</code> &#8594; <code>Health Record</code> &#8594; <code>Health Record Attachment</code> and in fact has been done within the demo application.</p>
+</div>
+<div class="paragraph">
+<p>Having too many levels of composition has to be treated with caution, though. It requires an additional burden on the user, to understand at which point which data is stored.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="one_to_one_composition"><a class="anchor" href="#one_to_one_composition"></a><a class="link" href="#one_to_one_composition">One-to-One Composition</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Besides the above explained Composition of type <code>ONE-TO-MANY</code>, there is also the possibility to define Composition of type <code>ONE-TO-ONE</code>. This type of Composition is useful when it is only possible to have one item of the child entity. An example in the petclinic would be</p>
 </div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>The Data Manager API is a CUBA abstraction that allows an application developer to fulfill common use-cases for working with databases. It has multiple operations to allow for regular create, read, update and delete operations (CRUD). Entity instances can be stored directly or within a Commit Context. Every operation will be encapsulated in a new transaction.</p>
-</div>
-<div class="sect2">
-<h3 id="further_information"><a class="anchor" href="#further_information"></a><a class="link" href="#further_information">Further Information</a></h3>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="https://doc.cuba-platform.com/manual-7.0/dataManager.html">DataManager reference documentation</a></p>
-</li>
-<li>
-<p><a href="https://www.cuba-platform.com/webinars/working-data">Working with Data (Webinar)</a></p>
-</li>
-</ul>
-</div>
-</div>
+
 </div>
 </div>
                                     </div>
@@ -483,11 +431,11 @@ DataManager dataManager;
                         <div class="guide-panel">
                             <h4>Table of contents</h4>
                             <ul class="sectlevel1">
-<li><a href="#what_will_be_build">What Will Be Build</a></li>
+<li><a href="#what_will_be_build">What Will be Build</a></li>
 <li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
-<li><a href="#programmatic_data_access_interactions">Programmatic Data Access Interactions</a></li>
-<li><a href="#load_data_with_datamanager">Load Data with Datamanager</a></li>
-<li><a href="#write_data_with_datamanager">Write Data with DataManager</a></li>
+<li><a href="#composition_vs_association">Composition vs. Association</a></li>
+<li><a href="#one_to_many_composition">One-to-Many Composition</a></li>
+<li><a href="#one_to_one_composition">One-to-One Composition</a></li>
 <li><a href="#summary">Summary</a></li>
 </ul>
                         </div>
@@ -495,8 +443,8 @@ DataManager dataManager;
 
                         <div class="guide-panel download">
                             <h4>Example code</h4>
-                            <a class="button expanded"  href="https://github.com/cuba-guides/cuba-petclinic-intro-to-datamanager/archive/master.zip" target="_blank">Download</a>
-                            <a href="https://github.com/cuba-guides/cuba-petclinic-intro-to-datamanager" class="github-link" target="_blank">Github</a>
+                            <a class="button expanded"  href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/archive/master.zip" target="_blank">Download</a>
+                            <a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition" class="github-link" target="_blank">Github</a>
                         </div>
                         <div class="guide-panel cuba-version">
                             <h4>Supported Versions</h4>
