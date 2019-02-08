@@ -18,16 +18,11 @@ permalink: data-modelling-composition
 
 == What Will be Build
 
-This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show the mechanism to define entity inheritance. In particular, the following use cases will be covered:
+This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show various example of a composition relationship between entities. In particular, the following use cases will be covered:
 
-* `Pet` entity becomes a the superclass for all Pet types
-* `Cat`, `Bird` and `Rat` will be created as concrete Pet type entities
-* The user has the choice between different Pet types at creation time of the Pet. The system will show the corresponding editor accordingly so that the user can also enter the type specific information.
-
-
-* One level: Owner <>--> Address
-* Two levels: Pet <>--> Health Record <>--> Health Record Attachment
-* Three levels: Owner <>--> Pet <>--> Health Record <>--> Health Record Attachment
+* `Owner` entity gets an relationship to an `Address`
+* `Pet` can contain multiple `HealthRecord` instances, which itself can contain multiple `HealthRecordAttachment` instances
+* The `Owner` entity `Pet` can contain multiple `HealthRecord` instances, which itself can contain multiple `HealthRecordAttachment` instances
 
 === Final Application
 
@@ -49,7 +44,7 @@ In the Petclinic example a case of an `Owner` and its `Addresses` may be conside
 
 Typically, the entities belonging to a composition are edited together since it is more natural. A user opens the `Owner` editing screen and sees the list of `addresses`, so the user can create and edit them, but all changes both for the `Owner` and the `Address` are saved to the database together in one transaction, and only after the user confirms saving of the master entity (the `Owner`).
 
-== Composition examples
+== One-to-Many Composition
 
 In this guide different variants of using the Composition relationship will be shown. Compositions can be `ONE-TO-MANY` as well as `ONE-TO-ONE`. Also it is possible to have multiple levels of nested composition in the application.
 
@@ -126,5 +121,9 @@ As stated above, CUBA 7+ does not have the restriction of maximal two levels of 
 
 Having too many levels of composition has to be treated with caution, though. It requires an additional burden on the user, to understand at which point which data is stored.
 
+
+== One-to-One Composition
+
+Besides the above explained Composition of type `ONE-TO-MANY`, there is also the possibility to define Composition of type `ONE-TO-ONE`. This type of Composition is useful when it is only possible to have one item of the child entity. An example in the petclinic would be
 
 == Summary
