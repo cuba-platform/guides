@@ -404,7 +404,127 @@ In the Studio entity designer, set the following settings for the <code>addresse
 <h2 id="one_to_one_composition"><a class="anchor" href="#one_to_one_composition"></a><a class="link" href="#one_to_one_composition">One-to-One Composition</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Besides the above explained Composition of type <code>ONE-TO-MANY</code>, there is also the possibility to define Composition of type <code>ONE-TO-ONE</code>. This type of Composition is useful when it is only possible to have one item of the child entity. An example in the petclinic would be</p>
+<p>Besides the above explained Composition of type <code>ONE-TO-MANY</code>, there is also the possibility to define Composition of type <code>ONE-TO-ONE</code>. This type of Composition is useful when it is only possible to have one item of the child entity. An example in the petclinic is the following scenario:</p>
+</div>
+<div class="paragraph">
+<p>The employees of the pet clinic have to be managed (like Vets, Nurses etc.). Therefore a <code>Employee</code> entity is defined. For each <code>Employee</code> instance there is an associated <code>EmployeeRecord</code> entity, which stores information about the work related information of this employee.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/data-model-composition/composition-one-to-one.png" alt="composition one to one">
+</div>
+</div>
+<div class="sect2">
+<h3 id="one_to_one_with_a_details_screen"><a class="anchor" href="#one_to_one_with_a_details_screen"></a><a class="link" href="#one_to_one_with_a_details_screen">One-to-One with a Details Screen</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/employee/Employee.java">Employee.java</a> - the <code>Employee</code> entity contains an optional link to <code>EmployeeRecord</code> annotated with <code>@Composition</code>.</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/employee/EmployeeRecord.java">EmployeeRecord.java</a> - the <code>EmployeeRecord</code> entity.</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/employee/employee/employee-edit.xml">employee-edit.xml</a> - the employee edit screen descriptor. It contains a nested data container for the <code>EmployeeRecord</code> instance. In order to load the nested instance, the root data container uses the <code>employee-with-employee-record-view</code> view of the <code>Employee</code> entity that includes the <code>employeeRecord</code> attribute.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>TODO: The form in the employee edit screen just declares a field for the <code>employeeRecord</code> attribute.</p>
+</div>
+<div class="paragraph">
+<p>As a result, employee editing works as follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The employee edit screen contains the PickerField component with two actions: <code>OpenAction</code> and <code>ClearAction</code>:</p>
+</li>
+</ul>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/cookbook/composition_recipe_oto_1.png" alt="composition recipe oto 1">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>When the open action is invoked, a new instance of <code>EmployeeRecord</code> is created and its edit screen is shown. When <strong>OK</strong> is clicked in the employee record editor, the employee record instance is not saved to the database, but to the <code>employeeRecordDc</code> data container of the employee edit screen.</p>
+</li>
+<li>
+<p>The picker field displays the instance name of the <code>EmployeeRecord</code> entity:</p>
+</li>
+</ul>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/cookbook/composition_recipe_oto_2.png" alt="composition recipe oto 2">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>When a user clicks <strong>OK</strong> in the employee edit screen, the updated <code>Employee</code> instance together with the <code>EmployeeRecord</code> instance is submitted to the <code>DataManager.commit()</code> method on the Middleware and saved to the database within a single transaction.</p>
+</li>
+<li>
+<p>If the user invokes the clear action of the picker field, the <code>EmployeeRecord</code> instance is deleted and the reference to it is cleared in the same transaction after the user commits the employee editor.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="one_to_one_composition_with_a_single_editor"><a class="anchor" href="#one_to_one_composition_with_a_single_editor"></a><a class="link" href="#one_to_one_composition_with_a_single_editor">One-to-One Composition with a Single Editor</a></h3>
+<div class="paragraph">
+<p>It is often convenient to edit the One-to-One composition in a single editor. Therefore the above mentioned example will be implemented so that the <code>EmployeeRecord</code> can be edited within the <code>Employee</code> editor screen.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/employee/employee/employee-single-editor-edit.xml">employee-single-editor-edit.xml</a> descriptor contains the main <code>employeeDc</code> and the nested <code>employeeRecordDc</code> data containers:</p>
+<div class="openblock">
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml">Unresolved directive in 2019-01-22-data-modelling-composition.adoc - include::{sourcesdir}/cookbook/oto_single_editor.xml[]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Fields for editing both entities are grouped into one <code>form</code>, where some fields are bound to the nested data container:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml">Unresolved directive in 2019-01-22-data-modelling-composition.adoc - include::{sourcesdir}/cookbook/oto_single_editor_2.xml[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>In the <a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/employee/employee/EmployeeSingleEditorEdit.java">EmployeeSingleEditorEdit.java</a> controller we override the <code>initNewItem()</code> method. It will create a <code>EmployeeRecord</code> instance and link it to the new <code>Employee</code> instance when the latter is just created:</p>
+<div class="openblock">
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">Unresolved directive in <span class="integer">2019</span>-<span class="octal">01</span>-<span class="integer">22</span>-data-modelling-composition.adoc - include::{sourcesdir}/cookbook/oto_single_editor_3.java<span class="type">[]</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Finally, let&#8217;s handle the situation when a user clicks <strong>Create</strong> and then wants to close the editor without changing anything. This user will be asked for saving changes, as the <code>employeeRecordDc</code> data container already contains an empty instance and <code>isModified()</code> method of the <code>StandardEditor</code> will always return <code>true</code>. To prevent the appearance of confirmation dialog, we should make <code>isModified()</code> consider changes only in the master data container:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">Unresolved directive in <span class="integer">2019</span>-<span class="octal">01</span>-<span class="integer">22</span>-data-modelling-composition.adoc - include::{sourcesdir}/cookbook/oto_single_editor_4.java<span class="type">[]</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Now, both linked entities can be created and edited in one editor screen.</p>
+</div>
 </div>
 </div>
 </div>
