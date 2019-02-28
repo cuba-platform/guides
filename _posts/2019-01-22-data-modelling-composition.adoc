@@ -38,7 +38,7 @@ include::includes/petclinic_introduction.adoc[]
 
 == Composition vs. Association
 
-CUBA platform supports two types of relationship between entities: association and composition. They are called ASSOCIATION and COMPOSITION respectively in the CUBA Studio interface. Association is a relationship between the objects that can exist separately from each other. Composition, on the other hand, is used for "master-detail" relations, when the detail instances can exist only as part of the master.
+CUBA platform supports two types of relationship between entities: association and composition. They are called `ASSOCIATION` and `COMPOSITION` respectively in the CUBA Studio interface. Association is a relationship between the objects that can exist separately from each other. Composition, on the other hand, is used for "master-detail" relations, when the detail instances can exist only as part of the master.
 
 In the Petclinic example a case of an `Owner` and its `Addresses` may be considered an example of composition: an `Address` that does not belong to any `Owner` does not make sense.
 
@@ -194,10 +194,12 @@ Finally, let's handle the situation when a user clicks *Create* and then wants t
 ----
 include::{sourcesdir}/cookbook/oto_single_editor_4.java[]
 ----
---
+
 
 Now, both linked entities can be created and edited in one editor screen.
 
-
-
 == Summary
+
+In this data modelling guide the composition relationship was described. Compositions are valuable if a master-detail relationship between two entiities should be modelled, where the detail entities can only exists if the corresponding master entity exists.
+
+Composition structures can exists in 1:1 and 1:N form. Furthermore composition can be created across multiple levels. The corresponding UI screens treat Composition relationships in a special way. Detail entities are only stored during the creation process of the master entity at the point in time when the master entity is stored.
