@@ -223,7 +223,7 @@
 <h2 id="composition_vs_association"><a class="anchor" href="#composition_vs_association"></a><a class="link" href="#composition_vs_association">Composition vs. Association</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>CUBA platform supports two types of relationship between entities: association and composition. They are called ASSOCIATION and COMPOSITION respectively in the CUBA Studio interface. Association is a relationship between the objects that can exist separately from each other. Composition, on the other hand, is used for "master-detail" relations, when the detail instances can exist only as part of the master.</p>
+<p>CUBA platform supports two types of relationship between entities: association and composition. They are called <code>ASSOCIATION</code> and <code>COMPOSITION</code> respectively in the CUBA Studio interface. Association is a relationship between the objects that can exist separately from each other. Composition, on the other hand, is used for "master-detail" relations, when the detail instances can exist only as part of the master.</p>
 </div>
 <div class="paragraph">
 <p>In the Petclinic example a case of an <code>Owner</code> and its <code>Addresses</code> may be considered an example of composition: an <code>Address</code> that does not belong to any <code>Owner</code> does not make sense.</p>
@@ -522,16 +522,20 @@ In the Studio entity designer, set the following settings for the <code>addresse
 <pre class="CodeRay highlight"><code data-lang="java">Unresolved directive in <span class="integer">2019</span>-<span class="octal">01</span>-<span class="integer">22</span>-data-modelling-composition.adoc - include::{sourcesdir}/cookbook/oto_single_editor_4.java<span class="type">[]</span></code></pre>
 </div>
 </div>
-<div class="openblock">
-<div class="content">
 <div class="paragraph">
 <p>Now, both linked entities can be created and edited in one editor screen.</p>
 </div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>== Summary</p>
+<p>In this data modelling guide the composition relationship was described. Compositions are valuable if a master-detail relationship between two entiities should be modelled, where the detail entities can only exists if the corresponding master entity exists.</p>
 </div>
-</div>
-</div>
+<div class="paragraph">
+<p>Composition structures can exists in 1:1 and 1:N form. Furthermore composition can be created across multiple levels. The corresponding UI screens treat Composition relationships in a special way. Detail entities are only stored during the creation process of the master entity at the point in time when the master entity is stored.</p>
 </div>
 </div>
 </div>
@@ -557,6 +561,7 @@ In the Studio entity designer, set the following settings for the <code>addresse
 <li><a href="#composition_vs_association">Composition vs. Association</a></li>
 <li><a href="#one_to_many_composition">One-to-Many Composition</a></li>
 <li><a href="#one_to_one_composition">One-to-One Composition</a></li>
+<li><a href="#summary">Summary</a></li>
 </ul>
                         </div>
 
