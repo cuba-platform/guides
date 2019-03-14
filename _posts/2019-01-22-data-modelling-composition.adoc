@@ -169,26 +169,55 @@ It is often convenient to edit the One-to-One composition in a single editor. Th
 --
 [source, xml]
 ----
-include::{sourcesdir}/cookbook/oto_single_editor.xml[]
+<data>
+    <instance id="employeeDc"
+              class="com.haulmont.sample.petclinic.entity.employee.Employee"
+              view="employee-with-employee-record-view">
+        <loader/>
+        <instance id="employeeRecordDc" property="employeeRecord"/>
+    </instance>
+</data>
 ----
 
 Fields for editing both entities are grouped into one `form`, where some fields are bound to the nested data container:
 
 [source, xml]
 ----
-include::{sourcesdir}/cookbook/oto_single_editor_2.xml[]
+<form id="form" dataContainer="employeeDc">
+    <column width="250px">
+        <textField id="firstNameField" property="firstName"/>
+        <textField id="lastNameField" property="lastName"/>
+        <dateField id="birthdateField" property="birthdate"/>
+    </column>
+</form>
+<form id="employeeRecordForm" dataContainer="employeeRecordDc">
+    <column width="250px">
+        <textField id="personellNumberField" property="personellNumber" datatype="int"/>
+        <textField id="amountSickDaysFild" property="amountSickDays" datatype="int"/>
+    </column>
+</form>
 ----
 --
 
-* In the https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/employee/employee/EmployeeSingleEditorEdit.java[EmployeeSingleEditorEdit.java] controller we override the `initNewItem()` method. It will create a `EmployeeRecord` instance and link it to the new `Employee` instance when the latter is just created:
+* In the https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/employee/employee/EmployeeSingleEditorEdit.java[EmployeeSingleEditorEdit.java] controller  a `EmployeeRecord` instance will be created and linked to the new `Employee` instance when the latter is just created:
 +
 .EmployeeSingleEditorEdit.java
 [source, java]
 ----
-...
+@Subscribe
+protected void onInitEntity(InitEntityEvent<Employee> event) {
+    Employee employee = event.getEntity();
+
+    EmployeeRecord employeeRecord = metadata.create(EmployeeRecord.class);
+    employee.setEmployeeRecord(employeeRecord);
+
+    employeeRecordDc.setItem(employeeRecord);
+}
 ----
 
-Finally, let's handle the situation when a user clicks *Create* and then wants to close the editor without changing anything. This user will be asked for saving changes, as the `employeeRecordDc` data container already contains an empty instance and `isModified()` method of the `StandardEditor` will always return `true`. To prevent the appearance of confirmation dialog, we should make `isModified()` consider changes only in the master data container:
+Finally, the situation needs to be handled when a user clicks *Create* and then wants to close the editor without changing anything. This user will be asked for saving changes, as the `employeeRecordDc` data container already contains an empty instance. To prevent the appearance of confirmation dialog, `isModified()` consider changes only in the master data container:
+
+TODO: what is the CUBA 7 way of doing isModified() - just isEntityModified()?
 
 [source, java]
 ----
@@ -200,6 +229,6 @@ Now, both linked entities can be created and edited in one editor screen.
 
 == Summary
 
-In this data modelling guide the composition relationship was described. Compositions are valuable if a master-detail relationship between two entiities should be modelled, where the detail entities can only exists if the corresponding master entity exists.
+In this data modelling guide the composition relationship was described. Compositions are valuable if a master-detail relationship between two entities should be modelled, where the detail entities can only exists if the corresponding master entity exists.
 
 Composition structures can exists in 1:1 and 1:N form. Furthermore composition can be created across multiple levels. The corresponding UI screens treat Composition relationships in a special way. Detail entities are only stored during the creation process of the master entity at the point in time when the master entity is stored.
