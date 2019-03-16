@@ -143,6 +143,13 @@
                                 <div class="field-items">
                                     <div class="field-item even" property="content: encoded">
                                         <h1>Data Modelling: Composition</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this guide the Composition relationship between entities will be covered. It will be shown where are the differences between Associations and Compositions. The two different kinds of Compositions: One-to-Many Compositions as well as One-to-One Compositions will be explored with different examples.</p>
+</div>
+</div>
+</div>
 <div class="sect1">
 <h2 id="what_will_be_build"><a class="anchor" href="#what_will_be_build"></a><a class="link" href="#what_will_be_build">What Will be Build</a></h2>
 <div class="sectionbody">
@@ -435,8 +442,6 @@ In the Studio entity designer, set the following settings for the <code>addresse
 <div class="paragraph">
 <p>The definition of the <code>employeeRecord</code> property in the <code>employee-edit.xml</code> is defined as a <code>pickerField</code> component which contains the following actions:</p>
 </div>
-<div class="openblock">
-<div class="content">
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;pickerField</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">employeeRecordField</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">property</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">employeeRecord</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
@@ -470,25 +475,19 @@ In the Studio entity designer, set the following settings for the <code>addresse
 </div>
 </div>
 <div class="paragraph">
-<p>When a user clicks <strong>OK</strong> in the employee edit screen, the updated <code>Employee</code> instance together with the <code>EmployeeRecord</code> instance is submitted to the <code>DataManager.commit()</code> method on the Middleware and saved to the database within a single transaction.</p>
+<p>When a user clicks <strong>OK</strong> in the employee edit screen, the updated <code>Employee</code> instance together with the <code>EmployeeRecord</code> instance is submitted to the <code>DataManager.commit()</code> method and saved to the database within a single transaction.</p>
 </div>
 <div class="paragraph">
 <p>If the user invokes the clear action of the picker field, the <code>EmployeeRecord</code> instance is deleted and the reference to it is cleared in the same transaction after the user commits the employee editor.</p>
 </div>
-<div class="paragraph">
-<p>=== One-to-One Composition with a Single Editor</p>
 </div>
+<div class="sect2">
+<h3 id="one_to_one_composition_with_a_single_editor"><a class="anchor" href="#one_to_one_composition_with_a_single_editor"></a><a class="link" href="#one_to_one_composition_with_a_single_editor">One-to-One Composition with a Single Editor</a></h3>
 <div class="paragraph">
 <p>It is often convenient to edit the One-to-One composition in a single editor. Therefore the above mentioned example will be implemented so that the <code>EmployeeRecord</code> can be edited within the <code>Employee</code> editor screen.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
+<div class="paragraph">
 <p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/employee/employee/employee-single-editor-edit.xml">employee-single-editor-edit.xml</a> descriptor contains the main <code>employeeDc</code> and the nested <code>employeeRecordDc</code> data containers:</p>
-</li>
-</ul>
-</div>
-</div>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -522,37 +521,38 @@ In the Studio entity designer, set the following settings for the <code>addresse
 <span class="tag">&lt;/form&gt;</span></code></pre>
 </div>
 </div>
-<div class="ulist">
-<ul>
-<li>
+<div class="paragraph">
 <p>In the <a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/employee/employee/EmployeeSingleEditorEdit.java">EmployeeSingleEditorEdit.java</a> controller  a <code>EmployeeRecord</code> instance will be created and linked to the new <code>Employee</code> instance when the latter is just created:</p>
+</div>
 <div class="listingblock">
 <div class="title">EmployeeSingleEditorEdit.java</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Subscribe</span>
-<span class="directive">protected</span> <span class="type">void</span> onInitEntity(InitEntityEvent&lt;Employee&gt; event) {
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Inject</span>
+<span class="directive">protected</span> DataContext dataContext;
+
+<span class="annotation">@Subscribe</span>
+<span class="directive">protected</span> <span class="type">void</span> onInitEntity(InitEntityEvent&lt;Employee&gt; event) { <i class="conum" data-value="1"></i><b>(1)</b>
     Employee employee = event.getEntity();
-
-    EmployeeRecord employeeRecord = metadata.create(EmployeeRecord.class);
+    EmployeeRecord employeeRecord = createEmployeeRecord();
     employee.setEmployeeRecord(employeeRecord);
+}
 
-    employeeRecordDc.setItem(employeeRecord);
+<span class="directive">private</span> EmployeeRecord createEmployeeRecord() {
+    <span class="keyword">return</span> dataContext.merge(metadata.create(EmployeeRecord.class)); <i class="conum" data-value="2"></i><b>(2)</b>
 }</code></pre>
 </div>
 </div>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Finally, the situation needs to be handled when a user clicks <strong>Create</strong> and then wants to close the editor without changing anything. This user will be asked for saving changes, as the <code>employeeRecordDc</code> data container already contains an empty instance. To prevent the appearance of confirmation dialog, <code>isModified()</code> consider changes only in the master data container:</p>
-</div>
-<div class="paragraph">
-<p>TODO: what is the CUBA 7 way of doing isModified() - just isEntityModified()?</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">Unresolved directive in <span class="integer">2019</span>-<span class="octal">01</span>-<span class="integer">22</span>-data-modelling-composition.adoc - include::{sourcesdir}/cookbook/oto_single_editor_4.java<span class="type">[]</span></code></pre>
-</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the initialization of the <code>EmployeeRecord</code> can be defined when the <code>InitEntityEvent</code> is fired</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>an instance of <code>EmployeeRecord</code> is created and merged in the current <code>dataContext</code></td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>Now, both linked entities can be created and edited in one editor screen.</p>
