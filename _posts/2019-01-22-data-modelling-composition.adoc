@@ -232,6 +232,10 @@ private EmployeeRecord createEmployeeRecord() {
 
 Now, both linked entities can be created and edited in one editor screen.
 
+
+image::data-model-composition/composition-one-to-one-single-editor.png[align="center"]
+
+
 == Summary
 
 In this data modelling guide the composition relationship was described. Compositions are valuable if a master-detail relationship between two entities should be modelled, where the detail entities can only exists if the corresponding master entity exists.
