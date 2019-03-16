@@ -140,24 +140,35 @@ image::data-model-composition/composition-one-to-one.png[align="center"]
 
 * https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/employee/employee/employee-edit.xml[employee-edit.xml] - the employee edit screen descriptor. It contains a nested data container for the `EmployeeRecord` instance. In order to load the nested instance, the root data container uses the `employee-with-employee-record-view` view of the `Employee` entity that includes the `employeeRecord` attribute.
 
+The definition of the `employeeRecord` property in the `employee-edit.xml` is defined as a `pickerField` component which contains the following actions:
 
-TODO: The form in the employee edit screen just declares a field for the `employeeRecord` attribute.
+--
+[source, xml]
+----
+<pickerField id="employeeRecordField" property="employeeRecord">
+    <actions>
+        <action id="open" type="picker_open_composition"/>
+        <action id="clear" type="picker_clear"/>
+    </actions>
+</pickerField>
+----
 
 As a result, employee editing works as follows:
 
-* The employee edit screen contains the PickerField component with two actions: `OpenAction` and `ClearAction`:
+The employee edit screen contains the PickerField component with two actions: `OpenAction` and `ClearAction`:
 
 image::data-model-composition/composition-one-to-one-editor-open-action.png[align="center",width="600"]
 
-* When the open action is invoked, a new instance of `EmployeeRecord` is created and its edit screen is shown. When *OK* is clicked in the employee record editor, the employee record instance is not saved to the database, but to the `employeeRecordDc` data container of the employee edit screen.
+When the open action is invoked, a new instance of `EmployeeRecord` is created and its edit screen is shown. When *OK* is clicked in the employee record editor, the employee record instance is not saved to the database, but to the `employeeRecordDc` data container of the employee edit screen.
 
-* The picker field displays the instance name of the `EmployeeRecord` entity:
+The picker field displays the instance name of the `EmployeeRecord` entity:
 
 image::data-model-composition/composition-one-to-one-editor-open-action-instance-name.png[align="center",width="600"]
 
-* When a user clicks *OK* in the employee edit screen, the updated `Employee` instance together with the `EmployeeRecord` instance is submitted to the `DataManager.commit()` method on the Middleware and saved to the database within a single transaction.
+When a user clicks *OK* in the employee edit screen, the updated `Employee` instance together with the `EmployeeRecord` instance is submitted to the `DataManager.commit()` method on the Middleware and saved to the database within a single transaction.
 
-* If the user invokes the clear action of the picker field, the `EmployeeRecord` instance is deleted and the reference to it is cleared in the same transaction after the user commits the employee editor.
+If the user invokes the clear action of the picker field, the `EmployeeRecord` instance is deleted and the reference to it is cleared in the same transaction after the user commits the employee editor.
+
 
 === One-to-One Composition with a Single Editor
 
@@ -197,7 +208,6 @@ Fields for editing both entities are grouped into one `form`, where some fields 
     </column>
 </form>
 ----
---
 
 * In the https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/employee/employee/EmployeeSingleEditorEdit.java[EmployeeSingleEditorEdit.java] controller  a `EmployeeRecord` instance will be created and linked to the new `Employee` instance when the latter is just created:
 +
