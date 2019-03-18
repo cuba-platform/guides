@@ -1,7 +1,7 @@
 ---
 compatible_cuba_versions: 7.0+
 compatible_java_versions: 8+
-project_id: cuba-petclinic-guide-business-logic
+project_id: cuba-petclinic-business-logic
 permalink: create-business-logic-in-cuba
 ---
 = Create Business Logic in CUBA
@@ -11,7 +11,7 @@ permalink: create-business-logic-in-cuba
 :page-navtitle: Create business logic in CUBA
 :page-excerpt: Guide on what options are available for putting business logic into a CUBA application
 :page-root: ../../../
-:project_id: cuba-petclinic-guide-business-logic
+:project_id: cuba-petclinic-business-logic
 :java_version: 1.8
 :cuba_version: 7.0
 
