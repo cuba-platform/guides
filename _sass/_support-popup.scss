@@ -1,0 +1,59 @@
+.support-popup {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: stretch;
+  width: 700px;
+  min-height: 370px;
+  background: $color-accent;
+
+  @include media-breakpoint-down(md) {
+    flex-wrap: wrap;
+    width: 100%;
+    max-height: calc(100vh - #{$height-header});
+    overflow-y: auto;
+  }
+}
+
+.support-popup_services {
+  width: 54%;
+  padding: 16px 22px;
+
+  @include media-breakpoint-down(md) {
+    width: 100%;
+  }
+}
+
+.support-popup_haulmont {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-between;
+  width: 46%;
+  padding: 16px 22px;
+  color: #fff;
+  background: #30336b;
+
+  @include media-breakpoint-down(md) {
+    width: 100%;
+  }
+}
+
+.support-popup_services_title {
+  margin: 0 0 15px;
+}
+
+.support-popup_haulmont_title {
+  margin: 4px 0 2px;
+  font-size: 24px;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.support-popup_haulmont_subtitle {
+  font-size: 13px;
+}
+
+.support-popup_haulmont_button {
+  display: block;
+  margin: 30px 0 13px;
+  text-transform: none;
+}

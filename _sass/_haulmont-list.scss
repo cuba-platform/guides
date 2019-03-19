@@ -1,0 +1,17 @@
+.haulmont-list {
+  margin: 0;
+  padding: 20px 0;
+}
+
+.haulmont-list_item {
+  margin: 0 0 3px;
+  padding: 0 0 0 20px;
+  font-weight: bold;
+  font-size: 14px;
+  list-style: none;
+  background: url('https://cuba-nuxt.demo.haulmont.com/assets/icons/tick-yellow.svg') no-repeat 0 0.3em;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}

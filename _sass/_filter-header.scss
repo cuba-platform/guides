@@ -1,0 +1,40 @@
+.filter-header {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  align-items: center;
+  margin: -7px -12px;
+}
+
+.filter-header_col {
+  flex: 0 0 auto;
+  padding: 7px 12px;
+
+  &.-right {
+    flex-grow: 1;
+    text-align: right;
+
+    @include media-breakpoint-down(sm) {
+      margin-top: 15px;
+      text-align: center;
+    }
+  }
+
+  @include media-breakpoint-down(sm) {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+.filter-header_toggles {
+  @include media-breakpoint-down(sm) {
+    display: flex;
+    flex-flow: row nowrap;
+  }
+}
+
+.filter-header_toggle {
+  @include media-breakpoint-down(sm) {
+    flex: 1 1 100%;
+  }
+}

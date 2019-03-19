@@ -1,0 +1,78 @@
+.button-outline {
+  @include reset-button-style;
+  display: inline-block;
+  flex-shrink: 0;
+  margin: 0;
+  padding: 10px 20px;
+  overflow: hidden;
+  color: $color-button-outline;
+  font-weight: bold;
+  font-size: 17px;
+  line-height: $line-height-base;
+  white-space: nowrap;
+  text-align: center;
+  text-transform: uppercase;
+  text-decoration: none;
+  vertical-align: middle;
+  background-color: transparent;
+  border: solid 2px $color-button-outline;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all $transition;
+  user-select: none;
+  touch-action: manipulation;
+
+  &:hover,
+  &:focus {
+    color: #fff;
+    text-decoration: none;
+    background: $color-button-outline;
+    outline: none;
+  }
+
+  &:disabled,
+  &:disabled:hover,
+  &:disabled:focus,
+  &:disabled:active {
+    color: $color-disabled !important;
+    background: transparent !important;
+    border-color: $color-disabled !important;
+    box-shadow: none;
+    transform: translate3d(0, 0, 0);
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  &.-accent {
+    color: $color-accent;
+    border-color: $color-accent;
+
+    &:hover,
+    &:focus {
+      color: $color-text;
+      background: $color-accent;
+    }
+  }
+
+  &.-align-left {
+    text-align: left;
+
+    @include media-breakpoint-down(sm) {
+      text-align: center;
+    }
+  }
+
+  &.-align-right {
+    text-align: right;
+
+    @include media-breakpoint-down(sm) {
+      text-align: center;
+    }
+  }
+}
+
+.button-outline_icon {
+  + .button-outline_text {
+    padding-left: 10px;
+  }
+}

@@ -1,0 +1,131 @@
+.header {
+  padding-top: $height-header;
+}
+
+.header_nav {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 2;
+  flex: none;
+  background: #fff;
+  box-shadow: 0 2px 5px -3px rgba(0, 0, 0, 0.25);
+}
+
+.header_checkbox {
+  display: none;
+}
+
+.header_container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: $height-header;
+}
+
+.header_logo {
+  flex: 0 0 auto;
+  margin-right: 50px;
+
+  &.nuxt-link-exact-active {
+    cursor: default;
+    pointer-events: none;
+  }
+
+  @include media-breakpoint-down(md) {
+    margin: 0 auto;
+  }
+}
+
+.header_logo_src {
+  width: 204px;
+  height: 36px;
+  color: #605d5c;
+  vertical-align: top;
+}
+
+.header_menu {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+
+  @include media-breakpoint-down(md) {
+    flex-flow: column;
+    padding: 22px 0;
+    @include dropdown-hide;
+  }
+
+  @include mobile-menu-opened {
+    position: fixed;
+    top: $height-header;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    background: url('/guides/images/background-stripped.png') #fff 50% 0 repeat;
+    box-shadow: inset 0 2px 5px -2px rgba(0, 0, 0, 0.18);
+    @include dropdown-show;
+  }
+}
+
+.header_menu_item {
+  font-weight: bold;
+  font-size: 13px;
+  text-transform: uppercase;
+  list-style: none;
+  
+  & + & {
+    margin-left: 30px;
+
+    @include media-breakpoint-down(md) {
+      margin-left: auto;
+    }
+  }
+
+  @include media-breakpoint-down(md) {
+    margin: 17px auto;
+    font-size: 24px;
+    transform: translateY(-3px);
+    opacity: 0;
+  }
+
+  @include mobile-menu-opened {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@for $i from 0 through 6 {
+  .header_menu_item:nth-child(#{$i + 1}) {
+    @include mobile-menu-opened {
+      transition: opacity $transition-long #{$i * 0.1 + 0.2}s, transform $transition-long #{$i * 0.1 + 0.2}s;
+    }
+  }
+}
+
+.header_menu_link {
+  color: $color-link-header;
+
+  &:hover,
+  &:focus {
+    color: $color-primary;
+    text-decoration: none;
+  }
+
+  &.nuxt-link-active,
+  &.nuxt-link-exact-active {
+    color: $color-text;
+  }
+
+  @include media-breakpoint-down(md) {
+    color: $color-text;
+
+    &.nuxt-link-active,
+    &.nuxt-link-exact-active {
+      color: $color-primary;
+    }
+  }
+}
