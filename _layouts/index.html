@@ -17,9 +17,11 @@
     <link rel="stylesheet" href="https://www.cuba-platform.com/sites/all/themes/cuba_adaptive/css/animate.css">
     <link rel="stylesheet" href="{{ '/css/extra.css' | prepend: site.baseurl }}">
     <link rel="stylesheet" href="{{ '/css/extra2.css' | prepend: site.baseurl }}">
+    <link rel="stylesheet" href="{{ '/css/cuba-new.css' | prepend: site.baseurl }}">
     <link rel="stylesheet" href="{{ '/css/guides.css' | prepend: site.baseurl }}">
     <script src="{{ '/js/vendor/modernizr.js' | prepend: site.baseurl }}"></script>
     <script src="{{ '/js/jquery_v2.1.min.js' | prepend: site.baseurl }}"></script>
+    <link rel="stylesheet" href="{{ '/css/main.css' | relative_url }}" />
 </head>
 <body class="cuba-website-styles html not-front not-logged-in no-sidebars page-webinars service-booking i18n-en">
 
@@ -63,7 +65,7 @@
                                                             {{ post.excerpt }}
                                                         </div>
                                                         <div class="btn-wrapper">
-                                                            <a href="{{ post.url | prepend: site.baseurl }}" class="button join-webinar">Read now</a>
+                                                            <a href="{{ post.url | prepend: site.baseurl }}" class="guide-item_button button-outline">Read now</a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -86,12 +88,12 @@
     {% include footer.html %}
 </section>
 
-
 <script src="{{ '/js/toc.js' | prepend: site.baseurl }}"></script>
 <script src="{{'/js/foundation.min.js' | prepend: site.baseurl }}"></script>
 <script src="{{ '/js/navigation.js' | prepend: site.baseurl }}"></script>
 <script src="{{ '/js/extra.js' | prepend: site.baseurl }}"></script>
 <script src="{{ '/js/extra2.js' | prepend: site.baseurl }}"></script>
+<script src="{{ '/js/cuba-new.js' | prepend: site.baseurl }}"></script>
 <script>
 $(document).foundation();
 var doc = document.documentElement;
