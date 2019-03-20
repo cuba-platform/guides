@@ -165,13 +165,13 @@ image::data-model-entity-inheritance/pet-browse-screen-inheritance.png[Pet brows
 public class PetBrowse extends StandardLookup<Pet> {
 
     @Inject
-    protected ScreenBuilders screenBuilders;
+    private ScreenBuilders screenBuilders;
 
     @Inject
-    protected GroupTable<Pet> petsTable;
+    private GroupTable<Pet> petsTable;
 
     @Inject
-    protected Metadata metadata;
+    private Metadata metadata;
 
     @Subscribe("createBtn.createCat")
     protected void onCreateBtnCreateCat(Action.ActionPerformedEvent event) {
