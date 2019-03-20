@@ -2,7 +2,7 @@
   // Fixed right navbar
   var sidebar = $(".blog .region-sidebar > section");
   var wrapper = $(".blog .region-content");
-  var topBorder = 180; // 180
+  var topBorder = 180;
   var bottomBorder = topBorder + wrapper.height() - sidebar.height() - 100;
   var images_loading = true;
   var sidebar_width = sidebar.width();
@@ -13,7 +13,7 @@
     if (st > topBorder && st < bottomBorder) {
       sidebar
         .css('position', 'fixed')
-        .css('margin-top', 80);
+        .css('margin-top', 0);
     } else if(st >= bottomBorder) {
       sidebar
         .css('position', 'inherit')

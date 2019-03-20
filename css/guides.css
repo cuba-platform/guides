@@ -291,7 +291,7 @@ pre.CodeRay {
     padding: 0.5em 18px 1.5em;
 }
 
-/*.blog .guide-panel.download .button {
+.blog .guide-panel.download .button {
     background: #006bac;
     border: 1px solid #006bac;
     border-radius: 3px;
@@ -305,7 +305,7 @@ pre.CodeRay {
     letter-spacing: 0.5px;
     font-weight: 600;
     height: 40px;
-}*/
+}
 
 .blog .guide-panel.download .button:hover {
     text-decoration: none;
