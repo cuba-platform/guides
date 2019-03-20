@@ -41,7 +41,8 @@
                                 <ul class="dropdown-menu">
                                     <li class="first leaf"><a href="/framework">The Framework</a></li>
                                     <li class="leaf"><a href="/development-tools">Development Tools</a></li>
-                                    <li class="last leaf"><a href="/marketplace">Marketplace</a></li>
+                                    <li class="leaf"><a href="/marketplace">Marketplace</a></li>
+                                    <li class="last leaf"><a href="/license-pricing">License &amp; Pricing</a></li>
                                 </ul>
                             </li>
                             <li class="leaf"><a href="/download">Download</a></li>
@@ -50,9 +51,10 @@
                                 <ul class="dropdown-menu">
                                     <li class="first leaf"><a href="/online-demo">Online Demo</a></li>
                                     <li class="leaf"><a href="/quickstart">Quick Start</a></li>
-                                    <li class="leaf"><a href="/documentation">Documentation</a></li>
-                                    <li class="leaf"><a href="/guides">Guides</a></li>
+                                    <li class="leaf"><a href="/tutorials">Tutorials</a></li>
+                                    <li class="leaf"><a href="/sample-projects">Sample Projects</a></li>
                                     <li class="leaf"><a href="/webinars">Webinars</a></li>
+                                    <li class="leaf"><a href="/documentation">Documentation</a></li>
                                     <li class="last leaf"><a href="/faq">FAQ</a></li>
                                 </ul>
                             </li>
@@ -99,9 +101,10 @@
                             <ul class="menu nav">
                                 <li class="first leaf menu-mlid-1329"><a href="/online-demo">Online Demo</a></li>
                                 <li class="leaf menu-mlid-1327"><a href="/quickstart">Quick Start</a></li>
-                                <li class="leaf menu-mlid-1328"><a href="/documentation">Documentation</a></li>
+                                <li class="leaf menu-mlid-1328"><a href="/tutorials">Tutorials</a></li>
                                 <li class="leaf menu-mlid-3012 active-trail active active"><a href="/guides/" class="active-trail active-trail active">Guides</a></li>
                                 <li class="leaf"><a href="/webinars">Webinars</a></li>
+                                <li class="leaf menu-mlid-1326"><a href="/documentation">Documentation</a></li>
                                 <li class="last leaf menu-mlid-1591"><a href="/faq">FAQ</a></li>
                             </ul>
                         </div>
@@ -128,7 +131,6 @@
     }
 </style>
 
-
     <!-- Main Page Content and Sidebar -->
     <div class="content-wrapper">
         <div class="cuba-container text-node blog">
@@ -153,6 +155,10 @@
 <div class="sectionbody">
 <div class="paragraph">
 <p>This guides enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show how logging can be integrated, configured and viewed as part of the application itself or with the help of external tools.</p>
+</div>
+<div class="sect2">
+<h3 id="final_application"><a class="anchor" href="#final_application"></a><a class="link" href="#final_application">Final Application</a></h3>
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/login-screen.png"/></a>
 </div>
 <div class="sect2">
 <h3 id="requirements"><a class="anchor" href="#requirements"></a><a class="link" href="#requirements">Requirements</a></h3>
@@ -221,12 +227,13 @@
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="directive">private</span> Pet savePet(Pet pet) {
     <span class="keyword">try</span> {
-        Pet savedPet = dataManager.commit(pet);
-        log.info(<span class="string"><span class="delimiter">&quot;</span><span class="content">Pet </span><span class="delimiter">&quot;</span></span> + pet + <span class="string"><span class="delimiter">&quot;</span><span class="content"> was saved correctly</span><span class="delimiter">&quot;</span></span>);
-        <span class="keyword">return</span> savedPet;
-    } <span class="keyword">catch</span> (<span class="exception">Exception</span> e) {
-        log.error(<span class="string"><span class="delimiter">&quot;</span><span class="content">Pet </span><span class="delimiter">&quot;</span></span> + pet + <span class="string"><span class="delimiter">&quot;</span><span class="content"> could not be saved</span><span class="delimiter">&quot;</span></span>, e);
-        <span class="keyword">return</span> <span class="predefined-constant">null</span>;
+      Pet savedPet = dataManager.commit(pet);
+      log.info(<span class="string"><span class="delimiter">&quot;</span><span class="content">Pet </span><span class="delimiter">&quot;</span></span> + pet + <span class="string"><span class="delimiter">&quot;</span><span class="content"> was saved correctly</span><span class="delimiter">&quot;</span></span>);
+      <span class="keyword">return</span> savedPet;
+    }
+    <span class="keyword">catch</span>(<span class="exception">Exception</span> e) {
+      log.error(<span class="string"><span class="delimiter">&quot;</span><span class="content">Pet </span><span class="delimiter">&quot;</span></span> + pet + <span class="string"><span class="delimiter">&quot;</span><span class="content"> could not be saved</span><span class="delimiter">&quot;</span></span>, e);
+      <span class="keyword">return</span> <span class="predefined-constant">null</span>;
     }
 }</code></pre>
 </div>
@@ -290,29 +297,29 @@
 <pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Service</span>(DiseaseWarningMailingService.NAME)
 <span class="directive">public</span> <span class="type">class</span> <span class="class">DiseaseWarningMailingServiceBean</span> <span class="directive">implements</span> DiseaseWarningMailingService {
 
-    <span class="directive">private</span> <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">Logger</span> log = LoggerFactory.getLogger(DiseaseWarningMailingServiceBean.class); <i class="conum" data-value="1"></i><b>(1)</b>
+  <span class="directive">private</span> <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">Logger</span> log = LoggerFactory.getLogger(DiseaseWarningMailingServiceBean.class); <i class="conum" data-value="1"></i><b>(1)</b>
 
-    <span class="comment">// ...</span>
+  <span class="comment">// ...</span>
 
-    <span class="annotation">@Override</span>
-    <span class="directive">public</span> <span class="type">int</span> warnAboutDisease(PetType petType, <span class="predefined-type">String</span> disease, <span class="predefined-type">String</span> city) {
+  <span class="annotation">@Override</span>
+  <span class="directive">public</span> <span class="type">int</span> warnAboutDisease(PetType petType, <span class="predefined-type">String</span> disease, <span class="predefined-type">String</span> city) {
 
-        log.debug(<span class="string"><span class="delimiter">&quot;</span><span class="content">Disease warnings should be send out for Pet type: {}, Disease: {} in the area of {}</span><span class="delimiter">&quot;</span></span>, petType, disease, city); <i class="conum" data-value="2"></i><b>(2)</b>
+    log.debug(<span class="string"><span class="delimiter">&quot;</span><span class="content">Disease warnings should be send out for Pet type: {}, Disease: {} in the area of {}</span><span class="delimiter">&quot;</span></span>, petType, disease, city); <i class="conum" data-value="2"></i><b>(2)</b>
 
-        <span class="predefined-type">List</span>&lt;Pet&gt; petsInDiseaseCity = findPetsInDiseaseCity(petType, city);
-        <span class="predefined-type">List</span>&lt;Pet&gt; petsWithEmail = filterPetsWithValidOwnersEmail(petsInDiseaseCity);
+    <span class="predefined-type">List</span>&lt;Pet&gt; petsInDiseaseCity = findPetsInDiseaseCity(petType, city);
+    <span class="predefined-type">List</span>&lt;Pet&gt; petsWithEmail = filterPetsWithValidOwnersEmail(petsInDiseaseCity);
 
-        log.debug(<span class="string"><span class="delimiter">&quot;</span><span class="content">possible pets in danger: {}</span><span class="delimiter">&quot;</span></span>, petsWithEmail);
+    log.debug(<span class="string"><span class="delimiter">&quot;</span><span class="content">possible pets in danger: {}</span><span class="delimiter">&quot;</span></span>, petsWithEmail);
 
-        petsWithEmail.forEach(pet -&gt; sendEmailToPetsOwner(pet, disease, city));
-        <span class="type">int</span> amountOfInformedPets = petsWithEmail.size();
+    petsWithEmail.forEach(pet -&gt; sendEmailToPetsOwner(pet, disease, city));
+    <span class="type">int</span> amountOfInformedPets = petsWithEmail.size();
 
-        log.info(<span class="string"><span class="delimiter">&quot;</span><span class="content">Summary: Disease warning send out to {} Pet(s) in {}</span><span class="delimiter">&quot;</span></span>, amountOfInformedPets, city); <i class="conum" data-value="3"></i><b>(3)</b>
+    log.info(<span class="string"><span class="delimiter">&quot;</span><span class="content">Summary: Disease warning send out to {} Pet(s) in {}</span><span class="delimiter">&quot;</span></span>, amountOfInformedPets, city); <i class="conum" data-value="3"></i><b>(3)</b>
 
-        <span class="keyword">return</span> amountOfInformedPets;
-    }
+    <span class="keyword">return</span> amountOfInformedPets;
+  }
 
-    <span class="comment">// ...</span>
+  <span class="comment">// ...</span>
 }</code></pre>
 </div>
 </div>
@@ -514,24 +521,25 @@
         log.debug(<span class="string"><span class="delimiter">&quot;</span><span class="content">Searching Contact for Pet</span><span class="delimiter">&quot;</span></span>); <i class="conum" data-value="2"></i><b>(2)</b>
 
         <span class="keyword">try</span> {
-            Optional&lt;<span class="predefined-type">Owner</span>&gt; petOwner = loadOwnerFor(pet);
+          Optional&lt;<span class="predefined-type">Owner</span>&gt; petOwner = loadOwnerFor(pet);
 
-            <span class="keyword">if</span> (petOwner.isPresent()) {
-                log.debug(<span class="string"><span class="delimiter">&quot;</span><span class="content">Found Owner: {}</span><span class="delimiter">&quot;</span></span>, petOwner);
+          <span class="keyword">if</span> (petOwner.isPresent()) {
+              log.debug(<span class="string"><span class="delimiter">&quot;</span><span class="content">Found Owner: {}</span><span class="delimiter">&quot;</span></span>, petOwner);
 
-                <span class="comment">// ...</span>
+              <span class="comment">// ...</span>
 
-                <span class="keyword">if</span> (isAvailable(telephone)) {
-                    <span class="keyword">return</span> createContact(telephone, ContactType.TELEPHONE);
-                }
+              <span class="keyword">if</span> (isAvailable(telephone)) {
+                  <span class="keyword">return</span> createContact(telephone, ContactType.TELEPHONE);
+              }
 
-                <span class="comment">// ...</span>
+              <span class="comment">// ...</span>
 
-            } <span class="keyword">else</span> {
-                <span class="keyword">return</span> Optional.empty();
-            }
-        } <span class="keyword">finally</span> {
-            MDC.remove(<span class="string"><span class="delimiter">&quot;</span><span class="content">petId</span><span class="delimiter">&quot;</span></span>); <i class="conum" data-value="4"></i><b>(4)</b>
+          } <span class="keyword">else</span> {
+              <span class="keyword">return</span> Optional.empty();
+          }
+        }
+        <span class="keyword">finally</span> {
+          MDC.remove(<span class="string"><span class="delimiter">&quot;</span><span class="content">petId</span><span class="delimiter">&quot;</span></span>); <i class="conum" data-value="4"></i><b>(4)</b>
         }
     }
 
@@ -825,7 +833,8 @@
                                     <ul class="footer_links_menu-footer-sitemap total-items-4 parent-items-0 single-items-0">
                                         <li class="menu-2770 depth-2 fs-no-children  first"><a href="/framework">The Framework</a></li>
                                         <li class="menu-1473 depth-2 fs-no-children"><a href="/development-tools">Development Tools</a></li>
-                                        <li class="menu-2838 depth-2 fs-no-children last"><a href="/marketplace">Marketplace</a></li>
+                                        <li class="menu-2838 depth-2 fs-no-children"><a href="/marketplace">Marketplace</a></li>
+                                        <li class="menu-2771 depth-2 fs-no-children  last"><a href="/license-pricing">License &amp; Pricing</a></li>
                                     </ul>
                                 </li>
                                 <li class="menu-1469 depth-1 total-children-7 parent-children-0 single-children-7">
@@ -833,9 +842,10 @@
                                     <ul class="footer_links_menu-footer-sitemap total-items-7 parent-items-0 single-items-0">
                                         <li class="menu-1479 depth-2 fs-no-children first"><a href="/online-demo">Online demo</a></li>
                                         <li class="menu-1477 depth-2 fs-no-children"><a href="/quickstart">Quick start</a></li>
-                                        <li class="menu-1478 depth-2 fs-no-children"><a href="/documentation">Documentation</a></li>
-                                        <li class="menu-1731 depth-2 fs-no-children"><a href="/guides">Guides</a></li>
+                                        <li class="menu-1478 depth-2 fs-no-children"><a href="/tutorials">Tutorials</a></li>
+                                        <li class="menu-1731 depth-2 fs-no-children"><a href="/sample-projects">Sample Projects</a></li>
                                         <li class="menu-1773 depth-2 fs-no-children"><a href="/webinars">Webinars</a></li>
+                                        <li class="menu-1476 depth-2 fs-no-children"><a href="/documentation">Documentation</a></li>
                                         <li class="menu-1602 depth-2 fs-no-children last"><a href="/faq">FAQ</a></li>
                                     </ul>
                                 </li>
@@ -897,7 +907,6 @@
 </footer>
 <!-- END FOOTER -->
 <div class="scrollTop"></div>
-
 </section>
 
 <script src="/guides/js/foundation.min.js"></script>

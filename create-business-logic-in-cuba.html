@@ -41,7 +41,8 @@
                                 <ul class="dropdown-menu">
                                     <li class="first leaf"><a href="/framework">The Framework</a></li>
                                     <li class="leaf"><a href="/development-tools">Development Tools</a></li>
-                                    <li class="last leaf"><a href="/marketplace">Marketplace</a></li>
+                                    <li class="leaf"><a href="/marketplace">Marketplace</a></li>
+                                    <li class="last leaf"><a href="/license-pricing">License &amp; Pricing</a></li>
                                 </ul>
                             </li>
                             <li class="leaf"><a href="/download">Download</a></li>
@@ -50,9 +51,10 @@
                                 <ul class="dropdown-menu">
                                     <li class="first leaf"><a href="/online-demo">Online Demo</a></li>
                                     <li class="leaf"><a href="/quickstart">Quick Start</a></li>
-                                    <li class="leaf"><a href="/documentation">Documentation</a></li>
-                                    <li class="leaf"><a href="/guides">Guides</a></li>
+                                    <li class="leaf"><a href="/tutorials">Tutorials</a></li>
+                                    <li class="leaf"><a href="/sample-projects">Sample Projects</a></li>
                                     <li class="leaf"><a href="/webinars">Webinars</a></li>
+                                    <li class="leaf"><a href="/documentation">Documentation</a></li>
                                     <li class="last leaf"><a href="/faq">FAQ</a></li>
                                 </ul>
                             </li>
@@ -99,9 +101,10 @@
                             <ul class="menu nav">
                                 <li class="first leaf menu-mlid-1329"><a href="/online-demo">Online Demo</a></li>
                                 <li class="leaf menu-mlid-1327"><a href="/quickstart">Quick Start</a></li>
-                                <li class="leaf menu-mlid-1328"><a href="/documentation">Documentation</a></li>
+                                <li class="leaf menu-mlid-1328"><a href="/tutorials">Tutorials</a></li>
                                 <li class="leaf menu-mlid-3012 active-trail active active"><a href="/guides/" class="active-trail active-trail active">Guides</a></li>
                                 <li class="leaf"><a href="/webinars">Webinars</a></li>
+                                <li class="leaf menu-mlid-1326"><a href="/documentation">Documentation</a></li>
                                 <li class="last leaf menu-mlid-1591"><a href="/faq">FAQ</a></li>
                             </ul>
                         </div>
@@ -127,7 +130,6 @@
         padding-right: 0;
     }
 </style>
-
 
     <!-- Main Page Content and Sidebar -->
     <div class="content-wrapper">
@@ -180,10 +182,10 @@
 </ul>
 </div>
 <div class="paragraph">
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-guide-business-logic/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
 </div>
 <div class="paragraph">
-<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-business-logic.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-business-logic.git</a></code></p>
+<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-guide-business-logic.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-guide-business-logic.git</a></code></p>
 </div>
 </div>
 </div>
@@ -227,14 +229,11 @@
 <span class="annotation">@LoadDataBeforeShow</span>
 <span class="directive">public</span> <span class="type">class</span> <span class="class">PetBrowse</span> <span class="directive">extends</span> StandardLookup&lt;Pet&gt; {
 
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> Notifications notifications;
+    <span class="annotation">@Inject</span> <span class="directive">protected</span> Notifications notifications;
 
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> Metadata metadata;
+    <span class="annotation">@Inject</span> <span class="directive">protected</span> Metadata metadata;
 
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> GroupTable&lt;Pet&gt; petsTable;
+    <span class="annotation">@Inject</span> <span class="directive">protected</span> GroupTable&lt;Pet&gt; petsTable;
 
     <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petsTable.calculateDiscount</span><span class="delimiter">&quot;</span></span>)
     <span class="directive">public</span> <span class="type">void</span> calculateDiscount(<span class="predefined-type">Action</span>.ActionPerformedEvent actionPerformedEvent) {
@@ -265,9 +264,9 @@
         <span class="predefined-type">String</span> discountMessage = <span class="string"><span class="delimiter">&quot;</span><span class="content">Discount for </span><span class="delimiter">&quot;</span></span> + petName + <span class="string"><span class="delimiter">&quot;</span><span class="content">: </span><span class="delimiter">&quot;</span></span> + discount + <span class="string"><span class="delimiter">&quot;</span><span class="content">%</span><span class="delimiter">&quot;</span></span>;
 
         notifications.create()
-                .setCaption(discountMessage)
-                .setType(Notifications.NotificationType.TRAY)
-                .show();
+            .setCaption(discountMessage)
+            .setType(Notifications.NotificationType.TRAY)
+            .show();
     }
 }</code></pre>
 </div>
@@ -327,10 +326,10 @@ This approach is acceptable if the logic is invoked from a single point and it i
 <span class="directive">public</span> <span class="type">class</span> <span class="class">PetContactFetcherBean</span> <span class="directive">implements</span> PetContactFetcher {
 
     <span class="annotation">@Inject</span>
-    <span class="directive">private</span> DataManager dataManager;
+    DataManager dataManager;
 
     <span class="annotation">@Inject</span>
-    <span class="directive">private</span> Messages messages;
+    Messages messages;
 
     <span class="annotation">@Override</span>
     <span class="directive">public</span> Optional&lt;Contact&gt; findContact(Pet pet) {
@@ -376,10 +375,10 @@ This approach is acceptable if the logic is invoked from a single point and it i
 <span class="directive">public</span> <span class="type">class</span> <span class="class">PetEdit</span> <span class="directive">extends</span> StandardEditor&lt;Pet&gt; {
 
     <span class="annotation">@Inject</span>
-    <span class="directive">private</span> PetContactFetcher petContactFetcher;
+    PetContactFetcher petContactFetcher;
 
     <span class="annotation">@Inject</span>
-    <span class="directive">private</span> PetContactDisplay petContactDisplay;
+    PetContactDisplay petContactDisplay;
 
     <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">fetchContact</span><span class="delimiter">&quot;</span></span>)
     <span class="directive">public</span> <span class="type">void</span> fetchContact() {
@@ -446,13 +445,13 @@ This approach is acceptable if the logic is invoked from a single point and it i
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/global/src/com/cubaplatform/petclinic/service/DiseaseWarningMailingService.java">DiseaseWarningMailingService</a> - service interface</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-guide-business-logic/blob/master/modules/global/src/com/cubaplatform/petclinic/service/DiseaseWarningMailingService.java">DiseaseWarningMailingService</a> - service interface</p>
 </li>
 <li>
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/global/src/com/cubaplatform/petclinic/service/DiseaseWarningMailingServiceBean.java">DiseaseWarningMailingServiceBean</a> - service implementation</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-guide-business-logic/blob/master/modules/global/src/com/cubaplatform/petclinic/service/DiseaseWarningMailingServiceBean.java">DiseaseWarningMailingServiceBean</a> - service implementation</p>
 </li>
 <li>
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/CreateDiseaseWarningMailing.java">CreateDiseaseWarningMailing</a> - screen controller that uses the service</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-guide-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/CreateDiseaseWarningMailing.java">CreateDiseaseWarningMailing</a> - screen controller that uses the service</p>
 </li>
 </ul>
 </div>
@@ -465,25 +464,25 @@ This approach is acceptable if the logic is invoked from a single point and it i
 <pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Service</span>(DiseaseWarningMailingService.NAME) <i class="conum" data-value="1"></i><b>(1)</b>
 <span class="directive">public</span> <span class="type">class</span> <span class="class">DiseaseWarningMailingServiceBean</span> <span class="directive">implements</span> DiseaseWarningMailingService {
 
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> DataManager dataManager;
+  <span class="annotation">@Inject</span>
+  <span class="directive">protected</span> DataManager dataManager;
 
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> EmailerAPI emailerAPI;
+  <span class="annotation">@Inject</span>
+  <span class="directive">protected</span> EmailerAPI emailerAPI;
 
-    <span class="annotation">@Override</span>
-    <span class="directive">public</span> <span class="type">int</span> warnAboutDisease(PetType petType, <span class="predefined-type">String</span> disease, <span class="predefined-type">String</span> city) { <i class="conum" data-value="2"></i><b>(2)</b>
+  <span class="annotation">@Override</span>
+  <span class="directive">public</span> <span class="type">int</span> warnAboutDisease(PetType petType, <span class="predefined-type">String</span> disease, <span class="predefined-type">String</span> city) { <i class="conum" data-value="2"></i><b>(2)</b>
 
-        <span class="predefined-type">List</span>&lt;Pet&gt; petsInDiseaseCity = findPetsInDiseaseCity(petType, city);
+    <span class="predefined-type">List</span>&lt;Pet&gt; petsInDiseaseCity = findPetsInDiseaseCity(petType, city);
 
-        <span class="predefined-type">List</span>&lt;Pet&gt; petsWithEmail = filterPetsWithValidOwnersEmail(petsInDiseaseCity);
+    <span class="predefined-type">List</span>&lt;Pet&gt; petsWithEmail = filterPetsWithValidOwnersEmail(petsInDiseaseCity);
 
-        petsWithEmail.forEach(pet -&gt; sendEmailToPetsOwner(pet, disease, city));
+    petsWithEmail.forEach(pet -&gt; sendEmailToPetsOwner(pet, disease, city));
 
-        <span class="keyword">return</span> petsWithEmail.size();
-    }
+    <span class="keyword">return</span> petsWithEmail.size();
+  }
 
-    <span class="comment">// ...</span>
+  <span class="comment">// ...</span>
 
 }</code></pre>
 </div>
@@ -510,26 +509,23 @@ This approach is acceptable if the logic is invoked from a single point and it i
 <span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">create-disease-warning-mailing.xml</span><span class="delimiter">&quot;</span></span>)
 <span class="directive">public</span> <span class="type">class</span> <span class="class">CreateDiseaseWarningMailing</span> <span class="directive">extends</span> Screen {
 
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> DiseaseWarningMailingService diseaseWarningMailingService; <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="annotation">@Inject</span> <span class="directive">protected</span> DiseaseWarningMailingService diseaseWarningMailingService; <i class="conum" data-value="1"></i><b>(1)</b>
 
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> Notifications notifications;
+    <span class="annotation">@Inject</span> <span class="directive">protected</span> Notifications notifications;
 
     <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">createDiseaseWarningMailing</span><span class="delimiter">&quot;</span></span>)
     <span class="directive">protected</span> <span class="type">void</span> createDiseaseWarningMailing(<span class="predefined-type">Action</span>.ActionPerformedEvent event) {
 
         <span class="type">int</span> endangeredPets = diseaseWarningMailingService.warnAboutDisease(petType.getValue(),
-                disease.getValue(), city.getValue()); <i class="conum" data-value="2"></i><b>(2)</b>
+            disease.getValue(), city.getValue()); <i class="conum" data-value="2"></i><b>(2)</b>
 
         closeWithCommit().then(() -&gt;
-                notifications.create()
-                        .setCaption(endangeredPets + <span class="string"><span class="delimiter">&quot;</span><span class="content"> Owner(s) of endangered Pets have been notified</span><span class="delimiter">&quot;</span></span>)
-                        .setType(Notifications.NotificationType.TRAY)
-                        .show()
+            notifications.create()
+                .setCaption(endangeredPets + <span class="string"><span class="delimiter">&quot;</span><span class="content"> Owner(s) of endangered Pets have been notified</span><span class="delimiter">&quot;</span></span>)
+                .setType(Notifications.NotificationType.TRAY)
+                .show()
         );
-    }
-}</code></pre>
+    }</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -590,8 +586,8 @@ it is not tied to the web tier anymore. Furthermore, it is possible to trigger i
 
                         <div class="guide-panel download">
                             <h4>Example code</h4>
-                            <a class="button expanded"  href="https://github.com/cuba-guides/cuba-petclinic-business-logic/archive/master.zip" target="_blank">Download</a>
-                            <a href="https://github.com/cuba-guides/cuba-petclinic-business-logic" class="github-link" target="_blank">Github</a>
+                            <a class="button expanded"  href="https://github.com/cuba-guides/cuba-petclinic-guide-business-logic/archive/master.zip" target="_blank">Download</a>
+                            <a href="https://github.com/cuba-guides/cuba-petclinic-guide-business-logic" class="github-link" target="_blank">Github</a>
                         </div>
                         <div class="guide-panel cuba-version">
                             <h4>Supported Versions</h4>
@@ -622,7 +618,8 @@ it is not tied to the web tier anymore. Furthermore, it is possible to trigger i
                                     <ul class="footer_links_menu-footer-sitemap total-items-4 parent-items-0 single-items-0">
                                         <li class="menu-2770 depth-2 fs-no-children  first"><a href="/framework">The Framework</a></li>
                                         <li class="menu-1473 depth-2 fs-no-children"><a href="/development-tools">Development Tools</a></li>
-                                        <li class="menu-2838 depth-2 fs-no-children last"><a href="/marketplace">Marketplace</a></li>
+                                        <li class="menu-2838 depth-2 fs-no-children"><a href="/marketplace">Marketplace</a></li>
+                                        <li class="menu-2771 depth-2 fs-no-children  last"><a href="/license-pricing">License &amp; Pricing</a></li>
                                     </ul>
                                 </li>
                                 <li class="menu-1469 depth-1 total-children-7 parent-children-0 single-children-7">
@@ -630,9 +627,10 @@ it is not tied to the web tier anymore. Furthermore, it is possible to trigger i
                                     <ul class="footer_links_menu-footer-sitemap total-items-7 parent-items-0 single-items-0">
                                         <li class="menu-1479 depth-2 fs-no-children first"><a href="/online-demo">Online demo</a></li>
                                         <li class="menu-1477 depth-2 fs-no-children"><a href="/quickstart">Quick start</a></li>
-                                        <li class="menu-1478 depth-2 fs-no-children"><a href="/documentation">Documentation</a></li>
-                                        <li class="menu-1731 depth-2 fs-no-children"><a href="/guides">Guides</a></li>
+                                        <li class="menu-1478 depth-2 fs-no-children"><a href="/tutorials">Tutorials</a></li>
+                                        <li class="menu-1731 depth-2 fs-no-children"><a href="/sample-projects">Sample Projects</a></li>
                                         <li class="menu-1773 depth-2 fs-no-children"><a href="/webinars">Webinars</a></li>
+                                        <li class="menu-1476 depth-2 fs-no-children"><a href="/documentation">Documentation</a></li>
                                         <li class="menu-1602 depth-2 fs-no-children last"><a href="/faq">FAQ</a></li>
                                     </ul>
                                 </li>
@@ -694,7 +692,6 @@ it is not tied to the web tier anymore. Furthermore, it is possible to trigger i
 </footer>
 <!-- END FOOTER -->
 <div class="scrollTop"></div>
-
 </section>
 
 <script src="/guides/js/foundation.min.js"></script>
