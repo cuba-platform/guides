@@ -258,11 +258,10 @@ a lot of cases where data has to be loaded from the database or stored in the da
 <div class="title">VisitServiceBean.java</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Inject</span>
-<span class="directive">private</span> DataManager dataManager;
+DataManager dataManager;
 
 <span class="comment">/**
  * loads a Pet by its Identification Number
- *
  * @param identificationNumber the Identification Number to load
  * @return the Pet for the given Identification Number
  */</span>
@@ -303,15 +302,15 @@ a lot of cases where data has to be loaded from the database or stored in the da
 <div class="title">DiseaseWarningMailingServiceBean.java</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Inject</span>
-<span class="directive">private</span> DataManager dataManager;
+DataManager dataManager;
 
 <span class="directive">private</span> <span class="predefined-type">List</span>&lt;Pet&gt; findEndangeredPets(PetType petType, <span class="predefined-type">String</span> city) {
     <span class="keyword">return</span> dataManager.load(Pet.class)
-            .query(<span class="string"><span class="delimiter">&quot;</span><span class="content">select e from petclinic$Pet e where e.owner.city = :ownerCity and e.type.id = :petType</span><span class="delimiter">&quot;</span></span>)
-            .parameter(<span class="string"><span class="delimiter">&quot;</span><span class="content">ownerCity</span><span class="delimiter">&quot;</span></span>, city)
-            .parameter(<span class="string"><span class="delimiter">&quot;</span><span class="content">petType</span><span class="delimiter">&quot;</span></span>, petType)
-            .view(<span class="string"><span class="delimiter">&quot;</span><span class="content">pet-with-owner-and-type</span><span class="delimiter">&quot;</span></span>)
-            .list();
+                .query(<span class="string"><span class="delimiter">&quot;</span><span class="content">select e from petclinic$Pet e where e.owner.city = :ownerCity and e.type.id = :petType</span><span class="delimiter">&quot;</span></span>)
+                .parameter(<span class="string"><span class="delimiter">&quot;</span><span class="content">ownerCity</span><span class="delimiter">&quot;</span></span>, city)
+                .parameter(<span class="string"><span class="delimiter">&quot;</span><span class="content">petType</span><span class="delimiter">&quot;</span></span>, petType)
+                .view(<span class="string"><span class="delimiter">&quot;</span><span class="content">pet-with-owner-and-type</span><span class="delimiter">&quot;</span></span>)
+                .list();
 }</code></pre>
 </div>
 </div>
@@ -339,7 +338,7 @@ a lot of cases where data has to be loaded from the database or stored in the da
 <div class="title">VisitServiceBean.java</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Inject</span>
-<span class="directive">private</span> DataManager dataManager;
+DataManager dataManager;
 
 <span class="directive">private</span> Visit createVisitForPet(Pet pet) {
 
@@ -407,7 +406,7 @@ There is a couple of other convenience API methods for storing entites. For more
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Inject</span>
-<span class="directive">private</span> DataManager dataManager;
+DataManager dataManager;
 
 <span class="directive">private</span> <span class="type">void</span> createVisitForPet(Pet pet) {
 

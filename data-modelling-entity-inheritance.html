@@ -409,13 +409,13 @@ into the <code>PETCLINIC_PET</code> table and the <code>Cat</code> related attri
 <pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">PetBrowse</span> <span class="directive">extends</span> StandardLookup&lt;Pet&gt; {
 
     <span class="annotation">@Inject</span>
-    <span class="directive">private</span> ScreenBuilders screenBuilders;
+    <span class="directive">protected</span> ScreenBuilders screenBuilders;
 
     <span class="annotation">@Inject</span>
-    <span class="directive">private</span> GroupTable&lt;Pet&gt; petsTable;
+    <span class="directive">protected</span> GroupTable&lt;Pet&gt; petsTable;
 
     <span class="annotation">@Inject</span>
-    <span class="directive">private</span> Metadata metadata;
+    <span class="directive">protected</span> Metadata metadata;
 
     <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">createBtn.createCat</span><span class="delimiter">&quot;</span></span>)
     <span class="directive">protected</span> <span class="type">void</span> onCreateBtnCreateCat(<span class="predefined-type">Action</span>.ActionPerformedEvent event) {
