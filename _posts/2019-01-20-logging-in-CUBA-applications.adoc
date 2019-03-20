@@ -23,11 +23,6 @@ In order to get insights into a running CUBA application, Logging is one crucial
 This guides enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show how logging can be integrated, configured and viewed as part of the application itself or with the help of external tools.
 
 
-=== Final Application
-
-++++
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/login-screen.png"/></a>
-++++
 
 include::includes/guide_requirements.adoc[]
 
