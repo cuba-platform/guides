@@ -1,0 +1,118 @@
+---
+compatible_cuba_versions: 7.0+
+compatible_java_versions: 8+
+project_id: cuba-petclinic-initial-entity-values
+permalink: initial-entity-values
+---
+= Initial Entity Values
+:showtitle:
+:sectlinks:
+:sectanchors:
+:page-navtitle: Initial Values for Entity Instances
+:page-excerpt: Data modeling guide: How entity inheritance can be used in a CUBA application
+:page-root: ../../../
+:project_id: cuba-petclinic-initial-entity-values
+:java_version: 1.8
+:cuba_version: 7.0
+
+This guide demonstrates different options on how initial values can be set for an entity.
+
+In the petclinic example different types of Pets are groomed during their stay in the clinic - cats, birds and rats. All these types of pets have some common attributes. The application should store common attributes within one table and use separate linked tables to store specific attributes for the different pet types.
+
+
+== What Will be Build
+
+This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show the mechanism to define entity inheritance. In particular, the following use cases will be covered:
+
+* `Pet` entity becomes a superclass for all Pet types
+* `Cat`, `Bird` and `Rat` will be created as concrete Pet type entities
+* A user has a choice between different Pet types at creation time of a Pet. The system will show the corresponding editor accordingly so that the user will be also able to enter the type specific information.
+
+
+=== Final Application
+
+++++
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-data-model-entity-inheritance/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-data-model-entity-inheritance/master/img/login-screen.png"/></a>
+++++
+
+include::includes/guide_requirements.adoc[]
+
+
+include::includes/petclinic_introduction.adoc[]
+
+
+== Entity Fields Initialization
+
+Simple attributes (`Boolean`, `Integer` etc.) and enumerations can be initialized in the declaration of the corresponding field of an entity class. In the Petclinic example, the Visit entity has an attribute `paid` which is a boolean flag to indicate, if a visit has been payed already. This value should by default be `FALSE`. The default value can be set directly at the field definition.
+
+.Visit.java
+[source, java]
+----
+public class Visit extends StandardEntity {
+
+    // ...
+
+    @Column(name = "PAID")
+    protected Boolean paid = Boolean.FALSE;
+
+}
+----
+
+Additionally, a specific initialization method with a `@PostConstruct` annotation can be created in the entity class. In this case, any global infrastructure interfaces as well as managed beans can be invoked during initialization. One example of this post-construct initialization can be seen in the `Visit` entity:
+
+.Visit.java
+[source, java]
+----
+public class Visit extends StandardEntity {
+
+    @Temporal(TemporalType.DATE)
+    @NotNull
+    @Column(name = "VISIT_DATE", nullable = false)
+    protected Date visitDate;
+
+    // ...
+
+    @PostConstruct // <1>
+    private void initVisitDate() {
+        if (visitDate == null) { // <2>
+            setVisitDate(today());
+        }
+    }
+
+    private Date today() {
+        TimeSource timeSource = AppBeans.get(TimeSource.class); // <3>
+        return timeSource.currentTimestamp();
+    }
+}
+----
+<1> `@PostConstruct` triggers this method after creation of an instance of this class. It is called when manually creating an instance via `metadata.create(Visit.class)` as well as instance creation by the framework (e.g. when a instance is created during the data loading process from the database
+<2> When the instance is created from a database record, a `visitDate` might have been initialized with the correct value. Therefore it is required to check if the attribute is null
+<3> Managed beans can be referenced via `AppBeans.get()`
+
+== Initialization Using CreateAction
+
+If the initial value of an attribute depends on the data of the invoking screen, you can use `setInitialValues()` or `setInitialValuesSupplier()` methods of the <<createAction,CreateAction>> class.
+
+See an example of handling `Customer` and `CustomerAddress` entities in the demo application:
+
+image::cookbook/init_values_1.png[align="center"]
+
+* {proj_model}/blob/master/modules/web/src/com/company/sample/web/customer/customer-address-browse.xml[customer-address-browse.xml] - a screen descriptor with two linked tables, one for customers and another for their addresses.
+
+* {proj_model}/blob/master/modules/web/src/com/company/sample/web/customer/CustomerAddressBrowse.java[CustomerAddressBrowse.java] - the screen controller. In its `init()` method, the `setInitialValuesSupplier()` is used to provide initial value for `customer` attribute of a created address. It will be the currently selected in the first table customer.
+
+
+== Using initNewItem Method
+
+Initial values can also be defined in the <<initNewItem,initNewItem()>> method of the screen controller of the created entity.
+
+Consider the following entities:
+
+image::cookbook/composition_recipe_3.png[align="center"]
+
+In the demo application, `CustomerDetails` attribute (`info`) is edited on the same screen as `Customer` itself. It requires creating of a `CustomerDetails` instance together with the owning `Customer`.
+
+* {proj_model}/blob/master/modules/web/src/com/company/sample/web/customers_1/customer-edit.xml[customer-edit.xml] - a customer edit screen descriptor. It contains a nested datasource for a linked `CustomerDetails` instance. The `infoField` text area component is connected to this datasource.
+
+* {proj_model}/blob/master/modules/web/src/com/company/sample/web/customers_1/CustomerEdit.java[CustomerEdit.java] - the screen controller. It defines the `initNewItem()` method that creates a new `CustomerDetails` instance and sets it to a new `Customer`. The created instance will be available through the nested datasource and later saved to the database when the screen is committed.
+
