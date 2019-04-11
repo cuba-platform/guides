@@ -20,6 +20,12 @@
   outline: none;
   cursor: pointer;
 
+  &:hover,
+  &:focus {
+    background-color: $color-accent;
+    color: #30336b;
+  }
+
   @include media-breakpoint-down(md) {
     position: relative;
     width: 40px;
@@ -81,6 +87,10 @@
   top: 100%;
   right: 20px;
   @include dropdown-hide;
+
+  p {
+    padding-bottom: 0;
+  }
 
   .header-support.-open & {
     @include dropdown-show;

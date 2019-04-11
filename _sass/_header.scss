@@ -76,8 +76,8 @@
   font-size: 13px;
   text-transform: uppercase;
   list-style: none;
-  
-  & + & {
+
+  & + .header_menu_item {
     margin-left: 30px;
 
     @include media-breakpoint-down(md) {
@@ -128,4 +128,20 @@
       color: $color-primary;
     }
   }
+}
+
+.header_profile {
+  flex: 0 0 auto;
+  margin-left: 25px;
+
+  @include media-breakpoint-down(md) {
+    margin-left: 12px;
+  }
+}
+
+.header_profile_src {
+  width: 20px;
+  height: 20px;
+  color: #605d5c;
+  vertical-align: top;
 }
