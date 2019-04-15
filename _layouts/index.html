@@ -53,13 +53,12 @@
                                             {% for post in site.posts reversed %}
                                             <div class="item">
                                                 <a name="tr1"></a>
-                                                <div class="item-head collapsed" data-toggle="collapse" data-target="#{{ post.permalink }}" href="#{{ post.permalink }}" aria-expanded="false">
-                                                    <a>
+                                                <div class="item-head collapsed" data-target="#{{ post.permalink }}"  aria-expanded="true">
+                                                    <a href="{{ post.url | prepend: site.baseurl }}">
                                                         <span>{{ post.navtitle }}</span>
-                                                        <i></i>
                                                     </a>
                                                 </div>
-                                                <div class="item-body collapse" id="{{ post.permalink }}" aria-expanded="false" style="height: 0px;">
+                                                <div class="item-body " id="{{ post.permalink }}" aria-expanded="false">
                                                     <div class="descr">
                                                         <div class="main">
                                                             {{ post.excerpt }}
