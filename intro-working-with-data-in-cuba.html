@@ -49,8 +49,7 @@
                 </li>
                 <li class="header_menu_item"><a href="/documentation/" class="header_menu_link">Documentation</a>
                 </li>
-                <li class="header_menu_item"><a href="https://www.cuba-platform.com/discuss" target="_blank"
-                                                class="header_menu_link">Community</a></li>
+                <li class="header_menu_item"><a href="/discuss/" class="header_menu_link">Community</a></li>
             </ul>
             <div class="header-support">
                 <button class="header-support_toggle">
@@ -283,11 +282,10 @@ a lot of cases where data has to be loaded from the database or stored in the da
 <div class="title">VisitServiceBean.java</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Inject</span>
-<span class="directive">private</span> DataManager dataManager;
+DataManager dataManager;
 
 <span class="comment">/**
  * loads a Pet by its Identification Number
- *
  * @param identificationNumber the Identification Number to load
  * @return the Pet for the given Identification Number
  */</span>
@@ -328,15 +326,15 @@ a lot of cases where data has to be loaded from the database or stored in the da
 <div class="title">DiseaseWarningMailingServiceBean.java</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Inject</span>
-<span class="directive">private</span> DataManager dataManager;
+DataManager dataManager;
 
 <span class="directive">private</span> <span class="predefined-type">List</span>&lt;Pet&gt; findEndangeredPets(PetType petType, <span class="predefined-type">String</span> city) {
     <span class="keyword">return</span> dataManager.load(Pet.class)
-            .query(<span class="string"><span class="delimiter">&quot;</span><span class="content">select e from petclinic$Pet e where e.owner.city = :ownerCity and e.type.id = :petType</span><span class="delimiter">&quot;</span></span>)
-            .parameter(<span class="string"><span class="delimiter">&quot;</span><span class="content">ownerCity</span><span class="delimiter">&quot;</span></span>, city)
-            .parameter(<span class="string"><span class="delimiter">&quot;</span><span class="content">petType</span><span class="delimiter">&quot;</span></span>, petType)
-            .view(<span class="string"><span class="delimiter">&quot;</span><span class="content">pet-with-owner-and-type</span><span class="delimiter">&quot;</span></span>)
-            .list();
+                .query(<span class="string"><span class="delimiter">&quot;</span><span class="content">select e from petclinic$Pet e where e.owner.city = :ownerCity and e.type.id = :petType</span><span class="delimiter">&quot;</span></span>)
+                .parameter(<span class="string"><span class="delimiter">&quot;</span><span class="content">ownerCity</span><span class="delimiter">&quot;</span></span>, city)
+                .parameter(<span class="string"><span class="delimiter">&quot;</span><span class="content">petType</span><span class="delimiter">&quot;</span></span>, petType)
+                .view(<span class="string"><span class="delimiter">&quot;</span><span class="content">pet-with-owner-and-type</span><span class="delimiter">&quot;</span></span>)
+                .list();
 }</code></pre>
 </div>
 </div>
@@ -364,7 +362,7 @@ a lot of cases where data has to be loaded from the database or stored in the da
 <div class="title">VisitServiceBean.java</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Inject</span>
-<span class="directive">private</span> DataManager dataManager;
+DataManager dataManager;
 
 <span class="directive">private</span> Visit createVisitForPet(Pet pet) {
 
@@ -432,7 +430,7 @@ There is a couple of other convenience API methods for storing entites. For more
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Inject</span>
-<span class="directive">private</span> DataManager dataManager;
+DataManager dataManager;
 
 <span class="directive">private</span> <span class="type">void</span> createVisitForPet(Pet pet) {
 
@@ -555,7 +553,7 @@ There is a couple of other convenience API methods for storing entites. For more
                         <li><a href="/learn/quickstart/">Quick Start</a></li>
                         <li><a href="/learn/live-demo/">Live Demo</a></li>
                         <li><a href="/learn/videos/" class="nuxt-link-exact-active nuxt-link-active">Videos</a></li>
-                        <li><a href="/guides/" target="_blank">Guides</a></li>
+                        <li><a href="/guides/">Guides</a></li>
                     </ul>
                 </div>
             </div>
@@ -570,7 +568,7 @@ There is a couple of other convenience API methods for storing entites. For more
             <div class="footer_column">
                 <div class="footer-menu"><h4 class="footer-menu_label">Community</h4>
                     <ul class="footer-menu_nav">
-                        <li><a href="https://www.cuba-platform.com/discuss" target="_blank">Forum</a></li>
+                        <li><a href="/discuss/">Forum</a></li>
                         <li><a href="/blog/">Blog</a></li>
                     </ul>
                 </div>

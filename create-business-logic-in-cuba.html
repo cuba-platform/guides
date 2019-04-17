@@ -49,8 +49,7 @@
                 </li>
                 <li class="header_menu_item"><a href="/documentation/" class="header_menu_link">Documentation</a>
                 </li>
-                <li class="header_menu_item"><a href="https://www.cuba-platform.com/discuss" target="_blank"
-                                                class="header_menu_link">Community</a></li>
+                <li class="header_menu_item"><a href="/discuss/" class="header_menu_link">Community</a></li>
             </ul>
             <div class="header-support">
                 <button class="header-support_toggle">
@@ -252,14 +251,11 @@
 <span class="annotation">@LoadDataBeforeShow</span>
 <span class="directive">public</span> <span class="type">class</span> <span class="class">PetBrowse</span> <span class="directive">extends</span> StandardLookup&lt;Pet&gt; {
 
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> Notifications notifications;
+    <span class="annotation">@Inject</span> <span class="directive">protected</span> Notifications notifications;
 
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> Metadata metadata;
+    <span class="annotation">@Inject</span> <span class="directive">protected</span> Metadata metadata;
 
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> GroupTable&lt;Pet&gt; petsTable;
+    <span class="annotation">@Inject</span> <span class="directive">protected</span> GroupTable&lt;Pet&gt; petsTable;
 
     <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petsTable.calculateDiscount</span><span class="delimiter">&quot;</span></span>)
     <span class="directive">public</span> <span class="type">void</span> calculateDiscount(<span class="predefined-type">Action</span>.ActionPerformedEvent actionPerformedEvent) {
@@ -290,9 +286,9 @@
         <span class="predefined-type">String</span> discountMessage = <span class="string"><span class="delimiter">&quot;</span><span class="content">Discount for </span><span class="delimiter">&quot;</span></span> + petName + <span class="string"><span class="delimiter">&quot;</span><span class="content">: </span><span class="delimiter">&quot;</span></span> + discount + <span class="string"><span class="delimiter">&quot;</span><span class="content">%</span><span class="delimiter">&quot;</span></span>;
 
         notifications.create()
-                .setCaption(discountMessage)
-                .setType(Notifications.NotificationType.TRAY)
-                .show();
+            .setCaption(discountMessage)
+            .setType(Notifications.NotificationType.TRAY)
+            .show();
     }
 }</code></pre>
 </div>
@@ -352,10 +348,10 @@ This approach is acceptable if the logic is invoked from a single point and it i
 <span class="directive">public</span> <span class="type">class</span> <span class="class">PetContactFetcherBean</span> <span class="directive">implements</span> PetContactFetcher {
 
     <span class="annotation">@Inject</span>
-    <span class="directive">private</span> DataManager dataManager;
+    DataManager dataManager;
 
     <span class="annotation">@Inject</span>
-    <span class="directive">private</span> Messages messages;
+    Messages messages;
 
     <span class="annotation">@Override</span>
     <span class="directive">public</span> Optional&lt;Contact&gt; findContact(Pet pet) {
@@ -401,10 +397,10 @@ This approach is acceptable if the logic is invoked from a single point and it i
 <span class="directive">public</span> <span class="type">class</span> <span class="class">PetEdit</span> <span class="directive">extends</span> StandardEditor&lt;Pet&gt; {
 
     <span class="annotation">@Inject</span>
-    <span class="directive">private</span> PetContactFetcher petContactFetcher;
+    PetContactFetcher petContactFetcher;
 
     <span class="annotation">@Inject</span>
-    <span class="directive">private</span> PetContactDisplay petContactDisplay;
+    PetContactDisplay petContactDisplay;
 
     <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">fetchContact</span><span class="delimiter">&quot;</span></span>)
     <span class="directive">public</span> <span class="type">void</span> fetchContact() {
@@ -490,25 +486,25 @@ This approach is acceptable if the logic is invoked from a single point and it i
 <pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Service</span>(DiseaseWarningMailingService.NAME) <i class="conum" data-value="1"></i><b>(1)</b>
 <span class="directive">public</span> <span class="type">class</span> <span class="class">DiseaseWarningMailingServiceBean</span> <span class="directive">implements</span> DiseaseWarningMailingService {
 
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> DataManager dataManager;
+  <span class="annotation">@Inject</span>
+  <span class="directive">protected</span> DataManager dataManager;
 
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> EmailerAPI emailerAPI;
+  <span class="annotation">@Inject</span>
+  <span class="directive">protected</span> EmailerAPI emailerAPI;
 
-    <span class="annotation">@Override</span>
-    <span class="directive">public</span> <span class="type">int</span> warnAboutDisease(PetType petType, <span class="predefined-type">String</span> disease, <span class="predefined-type">String</span> city) { <i class="conum" data-value="2"></i><b>(2)</b>
+  <span class="annotation">@Override</span>
+  <span class="directive">public</span> <span class="type">int</span> warnAboutDisease(PetType petType, <span class="predefined-type">String</span> disease, <span class="predefined-type">String</span> city) { <i class="conum" data-value="2"></i><b>(2)</b>
 
-        <span class="predefined-type">List</span>&lt;Pet&gt; petsInDiseaseCity = findPetsInDiseaseCity(petType, city);
+    <span class="predefined-type">List</span>&lt;Pet&gt; petsInDiseaseCity = findPetsInDiseaseCity(petType, city);
 
-        <span class="predefined-type">List</span>&lt;Pet&gt; petsWithEmail = filterPetsWithValidOwnersEmail(petsInDiseaseCity);
+    <span class="predefined-type">List</span>&lt;Pet&gt; petsWithEmail = filterPetsWithValidOwnersEmail(petsInDiseaseCity);
 
-        petsWithEmail.forEach(pet -&gt; sendEmailToPetsOwner(pet, disease, city));
+    petsWithEmail.forEach(pet -&gt; sendEmailToPetsOwner(pet, disease, city));
 
-        <span class="keyword">return</span> petsWithEmail.size();
-    }
+    <span class="keyword">return</span> petsWithEmail.size();
+  }
 
-    <span class="comment">// ...</span>
+  <span class="comment">// ...</span>
 
 }</code></pre>
 </div>
@@ -535,26 +531,23 @@ This approach is acceptable if the logic is invoked from a single point and it i
 <span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">create-disease-warning-mailing.xml</span><span class="delimiter">&quot;</span></span>)
 <span class="directive">public</span> <span class="type">class</span> <span class="class">CreateDiseaseWarningMailing</span> <span class="directive">extends</span> Screen {
 
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> DiseaseWarningMailingService diseaseWarningMailingService; <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="annotation">@Inject</span> <span class="directive">protected</span> DiseaseWarningMailingService diseaseWarningMailingService; <i class="conum" data-value="1"></i><b>(1)</b>
 
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> Notifications notifications;
+    <span class="annotation">@Inject</span> <span class="directive">protected</span> Notifications notifications;
 
     <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">createDiseaseWarningMailing</span><span class="delimiter">&quot;</span></span>)
     <span class="directive">protected</span> <span class="type">void</span> createDiseaseWarningMailing(<span class="predefined-type">Action</span>.ActionPerformedEvent event) {
 
         <span class="type">int</span> endangeredPets = diseaseWarningMailingService.warnAboutDisease(petType.getValue(),
-                disease.getValue(), city.getValue()); <i class="conum" data-value="2"></i><b>(2)</b>
+            disease.getValue(), city.getValue()); <i class="conum" data-value="2"></i><b>(2)</b>
 
         closeWithCommit().then(() -&gt;
-                notifications.create()
-                        .setCaption(endangeredPets + <span class="string"><span class="delimiter">&quot;</span><span class="content"> Owner(s) of endangered Pets have been notified</span><span class="delimiter">&quot;</span></span>)
-                        .setType(Notifications.NotificationType.TRAY)
-                        .show()
+            notifications.create()
+                .setCaption(endangeredPets + <span class="string"><span class="delimiter">&quot;</span><span class="content"> Owner(s) of endangered Pets have been notified</span><span class="delimiter">&quot;</span></span>)
+                .setType(Notifications.NotificationType.TRAY)
+                .show()
         );
-    }
-}</code></pre>
+    }</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -651,7 +644,7 @@ it is not tied to the web tier anymore. Furthermore, it is possible to trigger i
                         <li><a href="/learn/quickstart/">Quick Start</a></li>
                         <li><a href="/learn/live-demo/">Live Demo</a></li>
                         <li><a href="/learn/videos/" class="nuxt-link-exact-active nuxt-link-active">Videos</a></li>
-                        <li><a href="/guides/" target="_blank">Guides</a></li>
+                        <li><a href="/guides/">Guides</a></li>
                     </ul>
                 </div>
             </div>
@@ -666,7 +659,7 @@ it is not tied to the web tier anymore. Furthermore, it is possible to trigger i
             <div class="footer_column">
                 <div class="footer-menu"><h4 class="footer-menu_label">Community</h4>
                     <ul class="footer-menu_nav">
-                        <li><a href="https://www.cuba-platform.com/discuss" target="_blank">Forum</a></li>
+                        <li><a href="/discuss/">Forum</a></li>
                         <li><a href="/blog/">Blog</a></li>
                     </ul>
                 </div>

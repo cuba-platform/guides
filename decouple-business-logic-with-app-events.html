@@ -49,8 +49,7 @@
                 </li>
                 <li class="header_menu_item"><a href="/documentation/" class="header_menu_link">Documentation</a>
                 </li>
-                <li class="header_menu_item"><a href="https://www.cuba-platform.com/discuss" target="_blank"
-                                                class="header_menu_link">Community</a></li>
+                <li class="header_menu_item"><a href="/discuss/" class="header_menu_link">Community</a></li>
             </ul>
             <div class="header-support">
                 <button class="header-support_toggle">
@@ -415,7 +414,7 @@ There are two different kinds of annotations to register for as an event listene
     <span class="directive">private</span> DataManager dataManager;
 
     <span class="annotation">@Inject</span>
-    <span class="directive">private</span> RoomSystemGateway roomSystemGateway;
+    RoomSystemGateway roomSystemGateway;
 
     <span class="annotation">@TransactionalEventListener</span>
     <span class="directive">public</span> <span class="type">void</span> notifyRoomSystem(EntityChangedEvent&lt;Visit, <span class="predefined-type">UUID</span>&gt; event) {
@@ -857,7 +856,7 @@ There are two ways to listen to events. Above <code>@TransactionalEventListener<
                         <li><a href="/learn/quickstart/">Quick Start</a></li>
                         <li><a href="/learn/live-demo/">Live Demo</a></li>
                         <li><a href="/learn/videos/" class="nuxt-link-exact-active nuxt-link-active">Videos</a></li>
-                        <li><a href="/guides/" target="_blank">Guides</a></li>
+                        <li><a href="/guides/">Guides</a></li>
                     </ul>
                 </div>
             </div>
@@ -872,7 +871,7 @@ There are two ways to listen to events. Above <code>@TransactionalEventListener<
             <div class="footer_column">
                 <div class="footer-menu"><h4 class="footer-menu_label">Community</h4>
                     <ul class="footer-menu_nav">
-                        <li><a href="https://www.cuba-platform.com/discuss" target="_blank">Forum</a></li>
+                        <li><a href="/discuss/">Forum</a></li>
                         <li><a href="/blog/">Blog</a></li>
                     </ul>
                 </div>
