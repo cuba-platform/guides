@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Modeling: Entity Inheritance</title>
+    <title>Data Modelling: Entity Inheritance</title>
     <meta name="description" content="The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.">
     <meta name="author" content="Haulmont">
     <link rel="shortcut icon" href="/guides/images/favicon.png" type="image/png" />
@@ -165,7 +165,7 @@
                             <div class="field field-name-body field-type-text-with-summary field-label-hidden">
                                 <div class="field-items">
                                     <div class="field-item even" property="content: encoded">
-                                        <h1>Data Modeling: Entity Inheritance</h1>
+                                        <h1>Data Modelling: Entity Inheritance</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
@@ -434,13 +434,13 @@ into the <code>PETCLINIC_PET</code> table and the <code>Cat</code> related attri
 <pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">PetBrowse</span> <span class="directive">extends</span> StandardLookup&lt;Pet&gt; {
 
     <span class="annotation">@Inject</span>
-    <span class="directive">protected</span> ScreenBuilders screenBuilders;
+    <span class="directive">private</span> ScreenBuilders screenBuilders;
 
     <span class="annotation">@Inject</span>
-    <span class="directive">protected</span> GroupTable&lt;Pet&gt; petsTable;
+    <span class="directive">private</span> GroupTable&lt;Pet&gt; petsTable;
 
     <span class="annotation">@Inject</span>
-    <span class="directive">protected</span> Metadata metadata;
+    <span class="directive">private</span> Metadata metadata;
 
     <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">createBtn.createCat</span><span class="delimiter">&quot;</span></span>)
     <span class="directive">protected</span> <span class="type">void</span> onCreateBtnCreateCat(<span class="predefined-type">Action</span>.ActionPerformedEvent event) {
@@ -664,7 +664,7 @@ CUBA itself offers mapped superclasses for defining standard attributes across a
 <h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this data modeling guide, entity inheritance was introduced. Inheritance is a common way in object-oriented programming to share data and behavior through a class hierarchy. On the database level, the concept of inheritance is not directly available. But still, JPA as the OR-Mapper allows expressing inheritance with different patterns to bridge the gap between the two worlds.</p>
+<p>In this data modelling guide, entity inheritance was introduced. Inheritance is a common way in object-oriented programming to share data and behavior through a class hierarchy. On the database level, the concept of inheritance is not directly available. But still, JPA as the OR-Mapper allows expressing inheritance with different patterns to bridge the gap between the two worlds.</p>
 </div>
 <div class="paragraph">
 <p>Entity inheritance is possible in different ways.  <code>MappedSuperclass</code> allows only sharing attributes without using a shared table at all. When inheritance also should be represented, JPA <code>@Inheritance</code> annotation can be used. In this case it is possible that other entities can create associations that reference the entity inheritance structure (like <code>Visit</code> &#8594; <code>Pet</code> where <code>Pet</code> is an entity inheritance).</p>

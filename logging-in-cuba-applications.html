@@ -180,10 +180,6 @@
 <p>This guides enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show how logging can be integrated, configured and viewed as part of the application itself or with the help of external tools.</p>
 </div>
 <div class="sect2">
-<h3 id="final_application"><a class="anchor" href="#final_application"></a><a class="link" href="#final_application">Final Application</a></h3>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/login-screen.png"/></a>
-</div>
-<div class="sect2">
 <h3 id="requirements"><a class="anchor" href="#requirements"></a><a class="link" href="#requirements">Requirements</a></h3>
 <div class="paragraph">
 <p>Your development environment requires to contain the following:</p>
@@ -250,13 +246,12 @@
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="directive">private</span> Pet savePet(Pet pet) {
     <span class="keyword">try</span> {
-      Pet savedPet = dataManager.commit(pet);
-      log.info(<span class="string"><span class="delimiter">&quot;</span><span class="content">Pet </span><span class="delimiter">&quot;</span></span> + pet + <span class="string"><span class="delimiter">&quot;</span><span class="content"> was saved correctly</span><span class="delimiter">&quot;</span></span>);
-      <span class="keyword">return</span> savedPet;
-    }
-    <span class="keyword">catch</span>(<span class="exception">Exception</span> e) {
-      log.error(<span class="string"><span class="delimiter">&quot;</span><span class="content">Pet </span><span class="delimiter">&quot;</span></span> + pet + <span class="string"><span class="delimiter">&quot;</span><span class="content"> could not be saved</span><span class="delimiter">&quot;</span></span>, e);
-      <span class="keyword">return</span> <span class="predefined-constant">null</span>;
+        Pet savedPet = dataManager.commit(pet);
+        log.info(<span class="string"><span class="delimiter">&quot;</span><span class="content">Pet </span><span class="delimiter">&quot;</span></span> + pet + <span class="string"><span class="delimiter">&quot;</span><span class="content"> was saved correctly</span><span class="delimiter">&quot;</span></span>);
+        <span class="keyword">return</span> savedPet;
+    } <span class="keyword">catch</span> (<span class="exception">Exception</span> e) {
+        log.error(<span class="string"><span class="delimiter">&quot;</span><span class="content">Pet </span><span class="delimiter">&quot;</span></span> + pet + <span class="string"><span class="delimiter">&quot;</span><span class="content"> could not be saved</span><span class="delimiter">&quot;</span></span>, e);
+        <span class="keyword">return</span> <span class="predefined-constant">null</span>;
     }
 }</code></pre>
 </div>
@@ -320,29 +315,29 @@
 <pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Service</span>(DiseaseWarningMailingService.NAME)
 <span class="directive">public</span> <span class="type">class</span> <span class="class">DiseaseWarningMailingServiceBean</span> <span class="directive">implements</span> DiseaseWarningMailingService {
 
-  <span class="directive">private</span> <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">Logger</span> log = LoggerFactory.getLogger(DiseaseWarningMailingServiceBean.class); <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="directive">private</span> <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">Logger</span> log = LoggerFactory.getLogger(DiseaseWarningMailingServiceBean.class); <i class="conum" data-value="1"></i><b>(1)</b>
 
-  <span class="comment">// ...</span>
+    <span class="comment">// ...</span>
 
-  <span class="annotation">@Override</span>
-  <span class="directive">public</span> <span class="type">int</span> warnAboutDisease(PetType petType, <span class="predefined-type">String</span> disease, <span class="predefined-type">String</span> city) {
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">int</span> warnAboutDisease(PetType petType, <span class="predefined-type">String</span> disease, <span class="predefined-type">String</span> city) {
 
-    log.debug(<span class="string"><span class="delimiter">&quot;</span><span class="content">Disease warnings should be send out for Pet type: {}, Disease: {} in the area of {}</span><span class="delimiter">&quot;</span></span>, petType, disease, city); <i class="conum" data-value="2"></i><b>(2)</b>
+        log.debug(<span class="string"><span class="delimiter">&quot;</span><span class="content">Disease warnings should be send out for Pet type: {}, Disease: {} in the area of {}</span><span class="delimiter">&quot;</span></span>, petType, disease, city); <i class="conum" data-value="2"></i><b>(2)</b>
 
-    <span class="predefined-type">List</span>&lt;Pet&gt; petsInDiseaseCity = findPetsInDiseaseCity(petType, city);
-    <span class="predefined-type">List</span>&lt;Pet&gt; petsWithEmail = filterPetsWithValidOwnersEmail(petsInDiseaseCity);
+        <span class="predefined-type">List</span>&lt;Pet&gt; petsInDiseaseCity = findPetsInDiseaseCity(petType, city);
+        <span class="predefined-type">List</span>&lt;Pet&gt; petsWithEmail = filterPetsWithValidOwnersEmail(petsInDiseaseCity);
 
-    log.debug(<span class="string"><span class="delimiter">&quot;</span><span class="content">possible pets in danger: {}</span><span class="delimiter">&quot;</span></span>, petsWithEmail);
+        log.debug(<span class="string"><span class="delimiter">&quot;</span><span class="content">possible pets in danger: {}</span><span class="delimiter">&quot;</span></span>, petsWithEmail);
 
-    petsWithEmail.forEach(pet -&gt; sendEmailToPetsOwner(pet, disease, city));
-    <span class="type">int</span> amountOfInformedPets = petsWithEmail.size();
+        petsWithEmail.forEach(pet -&gt; sendEmailToPetsOwner(pet, disease, city));
+        <span class="type">int</span> amountOfInformedPets = petsWithEmail.size();
 
-    log.info(<span class="string"><span class="delimiter">&quot;</span><span class="content">Summary: Disease warning send out to {} Pet(s) in {}</span><span class="delimiter">&quot;</span></span>, amountOfInformedPets, city); <i class="conum" data-value="3"></i><b>(3)</b>
+        log.info(<span class="string"><span class="delimiter">&quot;</span><span class="content">Summary: Disease warning send out to {} Pet(s) in {}</span><span class="delimiter">&quot;</span></span>, amountOfInformedPets, city); <i class="conum" data-value="3"></i><b>(3)</b>
 
-    <span class="keyword">return</span> amountOfInformedPets;
-  }
+        <span class="keyword">return</span> amountOfInformedPets;
+    }
 
-  <span class="comment">// ...</span>
+    <span class="comment">// ...</span>
 }</code></pre>
 </div>
 </div>
@@ -544,25 +539,24 @@
         log.debug(<span class="string"><span class="delimiter">&quot;</span><span class="content">Searching Contact for Pet</span><span class="delimiter">&quot;</span></span>); <i class="conum" data-value="2"></i><b>(2)</b>
 
         <span class="keyword">try</span> {
-          Optional&lt;<span class="predefined-type">Owner</span>&gt; petOwner = loadOwnerFor(pet);
+            Optional&lt;<span class="predefined-type">Owner</span>&gt; petOwner = loadOwnerFor(pet);
 
-          <span class="keyword">if</span> (petOwner.isPresent()) {
-              log.debug(<span class="string"><span class="delimiter">&quot;</span><span class="content">Found Owner: {}</span><span class="delimiter">&quot;</span></span>, petOwner);
+            <span class="keyword">if</span> (petOwner.isPresent()) {
+                log.debug(<span class="string"><span class="delimiter">&quot;</span><span class="content">Found Owner: {}</span><span class="delimiter">&quot;</span></span>, petOwner);
 
-              <span class="comment">// ...</span>
+                <span class="comment">// ...</span>
 
-              <span class="keyword">if</span> (isAvailable(telephone)) {
-                  <span class="keyword">return</span> createContact(telephone, ContactType.TELEPHONE);
-              }
+                <span class="keyword">if</span> (isAvailable(telephone)) {
+                    <span class="keyword">return</span> createContact(telephone, ContactType.TELEPHONE);
+                }
 
-              <span class="comment">// ...</span>
+                <span class="comment">// ...</span>
 
-          } <span class="keyword">else</span> {
-              <span class="keyword">return</span> Optional.empty();
-          }
-        }
-        <span class="keyword">finally</span> {
-          MDC.remove(<span class="string"><span class="delimiter">&quot;</span><span class="content">petId</span><span class="delimiter">&quot;</span></span>); <i class="conum" data-value="4"></i><b>(4)</b>
+            } <span class="keyword">else</span> {
+                <span class="keyword">return</span> Optional.empty();
+            }
+        } <span class="keyword">finally</span> {
+            MDC.remove(<span class="string"><span class="delimiter">&quot;</span><span class="content">petId</span><span class="delimiter">&quot;</span></span>); <i class="conum" data-value="4"></i><b>(4)</b>
         }
     }
 

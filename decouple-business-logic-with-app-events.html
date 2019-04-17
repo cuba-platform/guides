@@ -415,7 +415,7 @@ There are two different kinds of annotations to register for as an event listene
     <span class="directive">private</span> DataManager dataManager;
 
     <span class="annotation">@Inject</span>
-    RoomSystemGateway roomSystemGateway;
+    <span class="directive">private</span> RoomSystemGateway roomSystemGateway;
 
     <span class="annotation">@TransactionalEventListener</span>
     <span class="directive">public</span> <span class="type">void</span> notifyRoomSystem(EntityChangedEvent&lt;Visit, <span class="predefined-type">UUID</span>&gt; event) {
