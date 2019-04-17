@@ -1,0 +1,95 @@
+.icon {
+  display: inline-block;
+  vertical-align: top;
+
+  &.-quick-start {
+    width: 72px;
+    height: 75px;
+  }
+
+  &.-live-demo {
+    width: 76px;
+    height: 76px;
+  }
+
+  &.-community {
+    width: 76px;
+    height: 78px;
+  }
+
+  &.-videos {
+    width: 97px;
+    height: 63px;
+  }
+
+  &.-guides {
+    width: 74px;
+    height: 72px;
+  }
+
+  &.-git {
+    width: 68px;
+    height: 68px;
+  }
+
+  &.-documentation {
+    width: 76px;
+    height: 76px;
+  }
+
+  &.-github,
+  &.-linkedin,
+  &.-facebook,
+  &.-twitter,
+  &.-rss {
+    width: 21px;
+    height: 21px;
+  }
+
+  &.-youtube {
+    width: 28px;
+    height: 21px;;
+  }
+
+  &.-support {
+    width: 21px;
+    height: 21px;;
+  }
+
+  &.-stats-star {
+    width: 12px;
+    height: 11px;;
+  }
+
+  &.-stats-download {
+    width: 11px;
+    height: 11px;;
+  }
+
+  &.-icon-discussion {
+    width: 82px; //65px;
+    height: 76px; //60px;
+  }
+
+  &.-icon-bug {
+    width: 76px; //65px;
+    height: 76px; //65px;
+  }
+
+  &.-icon-review {
+    width: 76px; //65px;
+    height: 76px; //65px;
+  }
+
+  &.-arrow-down,
+  &.-arrow-up {
+    width: 14px;
+    height: 14px;;
+  }
+
+  &.-arrow-triangle-down,
+  &.-arrow-triangle-up {
+    width: 12px;
+    height: 6px;;
+  }
+}
