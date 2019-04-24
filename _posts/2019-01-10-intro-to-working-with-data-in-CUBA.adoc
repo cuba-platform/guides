@@ -70,10 +70,11 @@ The source code that loads the Pet instance by its Identification Number is loca
 [source,java]
 ----
 @Inject
-DataManager dataManager;
+private DataManager dataManager;
 
 /**
  * loads a Pet by its Identification Number
+ *
  * @param identificationNumber the Identification Number to load
  * @return the Pet for the given Identification Number
  */
@@ -110,15 +111,15 @@ The part that finds the endangered Pets looks like this with the use of the Data
 [source,java]
 ----
 @Inject
-DataManager dataManager;
+private DataManager dataManager;
 
 private List<Pet> findEndangeredPets(PetType petType, String city) {
     return dataManager.load(Pet.class)
-                .query("select e from petclinic$Pet e where e.owner.city = :ownerCity and e.type.id = :petType")
-                .parameter("ownerCity", city)
-                .parameter("petType", petType)
-                .view("pet-with-owner-and-type")
-                .list();
+            .query("select e from petclinic$Pet e where e.owner.city = :ownerCity and e.type.id = :petType")
+            .parameter("ownerCity", city)
+            .parameter("petType", petType)
+            .view("pet-with-owner-and-type")
+            .list();
 }
 ----
 
@@ -139,7 +140,7 @@ When revisiting the example from above, where a new Visit for a given Pet ID is 
 [source,java]
 ----
 @Inject
-DataManager dataManager;
+private DataManager dataManager;
 
 private Visit createVisitForPet(Pet pet) {
 
@@ -180,7 +181,7 @@ In case multiple visits should be updated within one transaction, the usage of `
 [source,java]
 ----
 @Inject
-DataManager dataManager;
+private DataManager dataManager;
 
 private void createVisitForPet(Pet pet) {
 

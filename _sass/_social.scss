@@ -1,0 +1,26 @@
+.social {
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+.social_item {
+  list-style: none;
+
+  & + & {
+    padding-left: 15px;
+  }
+}
+
+.social_link {
+  color: #969696;
+
+  &:hover,
+  &:focus {
+    color: $color-text;
+  }
+}
+
+.social_icon {
+  vertical-align: top;
+}

@@ -44,13 +44,12 @@ In the following petclinic example two possible log messages are written. In cas
 ----
 private Pet savePet(Pet pet) {
     try {
-      Pet savedPet = dataManager.commit(pet);
-      log.info("Pet " + pet + " was saved correctly");
-      return savedPet;
-    }
-    catch(Exception e) {
-      log.error("Pet " + pet + " could not be saved", e);
-      return null;
+        Pet savedPet = dataManager.commit(pet);
+        log.info("Pet " + pet + " was saved correctly");
+        return savedPet;
+    } catch (Exception e) {
+        log.error("Pet " + pet + " could not be saved", e);
+        return null;
     }
 }
 ----
@@ -90,29 +89,29 @@ In order to log information within a class, an instance of a Logger has to be cr
 @Service(DiseaseWarningMailingService.NAME)
 public class DiseaseWarningMailingServiceBean implements DiseaseWarningMailingService {
 
-  private static final Logger log = LoggerFactory.getLogger(DiseaseWarningMailingServiceBean.class); // <1>
+    private static final Logger log = LoggerFactory.getLogger(DiseaseWarningMailingServiceBean.class); // <1>
 
-  // ...
+    // ...
 
-  @Override
-  public int warnAboutDisease(PetType petType, String disease, String city) {
+    @Override
+    public int warnAboutDisease(PetType petType, String disease, String city) {
 
-    log.debug("Disease warnings should be send out for Pet type: {}, Disease: {} in the area of {}", petType, disease, city); // <2>
+        log.debug("Disease warnings should be send out for Pet type: {}, Disease: {} in the area of {}", petType, disease, city); // <2>
 
-    List<Pet> petsInDiseaseCity = findPetsInDiseaseCity(petType, city);
-    List<Pet> petsWithEmail = filterPetsWithValidOwnersEmail(petsInDiseaseCity);
+        List<Pet> petsInDiseaseCity = findPetsInDiseaseCity(petType, city);
+        List<Pet> petsWithEmail = filterPetsWithValidOwnersEmail(petsInDiseaseCity);
 
-    log.debug("possible pets in danger: {}", petsWithEmail);
+        log.debug("possible pets in danger: {}", petsWithEmail);
 
-    petsWithEmail.forEach(pet -> sendEmailToPetsOwner(pet, disease, city));
-    int amountOfInformedPets = petsWithEmail.size();
+        petsWithEmail.forEach(pet -> sendEmailToPetsOwner(pet, disease, city));
+        int amountOfInformedPets = petsWithEmail.size();
 
-    log.info("Summary: Disease warning send out to {} Pet(s) in {}", amountOfInformedPets, city); // <3>
+        log.info("Summary: Disease warning send out to {} Pet(s) in {}", amountOfInformedPets, city); // <3>
 
-    return amountOfInformedPets;
-  }
+        return amountOfInformedPets;
+    }
 
-  // ...
+    // ...
 }
 ----
 <1> Logger configured for this class is defined through Slf4J
@@ -250,25 +249,24 @@ public class PetContactFetcherBean implements PetContactFetcher {
         log.debug("Searching Contact for Pet"); // <2>
 
         try {
-          Optional<Owner> petOwner = loadOwnerFor(pet);
+            Optional<Owner> petOwner = loadOwnerFor(pet);
 
-          if (petOwner.isPresent()) {
-              log.debug("Found Owner: {}", petOwner);
+            if (petOwner.isPresent()) {
+                log.debug("Found Owner: {}", petOwner);
 
-              // ...
+                // ...
 
-              if (isAvailable(telephone)) {
-                  return createContact(telephone, ContactType.TELEPHONE);
-              }
+                if (isAvailable(telephone)) {
+                    return createContact(telephone, ContactType.TELEPHONE);
+                }
 
-              // ...
+                // ...
 
-          } else {
-              return Optional.empty();
-          }
-        }
-        finally {
-          MDC.remove("petId"); // <4>
+            } else {
+                return Optional.empty();
+            }
+        } finally {
+            MDC.remove("petId"); // <4>
         }
     }
 
@@ -285,7 +283,6 @@ public class PetContactFetcherBean implements PetContactFetcher {
 
     // ...
 }
-
 ----
 <1> The Pet's identification number is registered in the context under the key `petId`
 <2> The following logging messages do not need to include the Pet ID within the log message itself

@@ -1,0 +1,60 @@
+button:-moz-focusring {
+  outline: none;
+}
+
+.button {
+  @include reset-button-style;
+  display: inline-block;
+  flex-shrink: 0;
+  margin: 0;
+  padding: 12px 26px;
+  overflow: hidden;
+  color: $color-body;
+  font-weight: bold;
+  font-size: 17px;
+  line-height: $line-height-base;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  background-color: $color-success;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: box-shadow $transition;
+  user-select: none;
+  touch-action: manipulation;
+
+  &:hover,
+  &:focus {
+    color: $color-body;
+    text-decoration: none;
+    outline: none;
+    box-shadow: 0 5px 20px 0 rgba(121, 191, 50, 0.8);
+  }
+
+  &:disabled,
+  &:disabled:hover,
+  &:disabled:focus,
+  &:disabled:active {
+    color: $color-body !important;
+    background: $color-disabled !important;
+    border-color: $color-disabled !important;
+    box-shadow: none;
+    transform: translate3d(0, 0, 0);
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  &.-download {
+    min-width: 190px;
+  }
+
+  &.-uppercase {
+    text-transform: uppercase;
+  }
+
+  &.-wide {
+    display: block;
+    width: 100%;
+  }
+}

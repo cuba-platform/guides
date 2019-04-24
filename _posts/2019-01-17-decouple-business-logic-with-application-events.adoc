@@ -141,7 +141,7 @@ public class RoomSystemNotifier {
     private DataManager dataManager;
 
     @Inject
-    RoomSystemGateway roomSystemGateway;
+    private RoomSystemGateway roomSystemGateway;
 
     @TransactionalEventListener
     public void notifyRoomSystem(EntityChangedEvent<Visit, UUID> event) {
