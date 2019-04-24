@@ -17,7 +17,7 @@ permalink: initial-entity-values
 
 This guide demonstrates different options on how initial values can be set for an entity.
 
-In the petclinic example different types of Pets are groomed during their stay in the clinic - cats, birds and rats. All these types of pets have some common attributes. The application should store common attributes within one table and use separate linked tables to store specific attributes for the different pet types.
+In the petclinic example there are several screens that can
 
 
 == What Will be Build
@@ -89,17 +89,58 @@ public class Visit extends StandardEntity {
 <2> When the instance is created from a database record, a `visitDate` might have been initialized with the correct value. Therefore it is required to check if the attribute is null
 <3> Managed beans can be referenced via `AppBeans.get()`
 
-== Initialization Using CreateAction
+== UI Layer Initialization via Screen Builders
 
-If the initial value of an attribute depends on the data of the invoking screen, you can use `setInitialValues()` or `setInitialValuesSupplier()` methods of the <<createAction,CreateAction>> class.
+On the frontend layer with CUBA 7 the `ScreenBuilders` API was introduced. It allows to programmatically create and open screens with various options to configure.
 
-See an example of handling `Customer` and `CustomerAddress` entities in the demo application:
+One of this options is the possibility to define an initializer method, that gets executed before opening the screen, where it is possible for an Editor screen to change attributes of the entity that will be displayed.
 
-image::cookbook/init_values_1.png[align="center"]
+In the Petclinic example there is a screen that creates a particular visit instance. This visit is a "regular checkup". As this checkup is always the same in the sense that it requires some checklist kind of description. Furthermore it always paid upfront. Since it is a burden for the users to create those special kinds of visits over and over again, a screen was implemented that comes with sensible defaults for this kind of use-case.
 
-* {proj_model}/blob/master/modules/web/src/com/company/sample/web/customer/customer-address-browse.xml[customer-address-browse.xml] - a screen descriptor with two linked tables, one for customers and another for their addresses.
+.VisitBrowse.java
+[source,java]
+----
 
-* {proj_model}/blob/master/modules/web/src/com/company/sample/web/customer/CustomerAddressBrowse.java[CustomerAddressBrowse.java] - the screen controller. In its `init()` method, the `setInitialValuesSupplier()` is used to provide initial value for `customer` attribute of a created address. It will be the currently selected in the first table customer.
+@Inject
+private ScreenBuilders screenBuilders;
+
+@Inject
+private MessageBundle messageBundle;
+
+@Inject
+private GroupTable<Visit> visitsTable;
+
+// ...
+
+private void createVisitForPet(Pet pet) {
+    screenBuilders.editor(visitsTable) // <1>
+        .newEntity() // <2>
+        .withInitializer(visit -> { // <3>
+            visit.setPaid(true);
+            visit.setDescription(
+                    messageBundle.formatMessage("regularCheckupContent",
+                            pet.getName(),
+                            pet.getIdentificationNumber()
+                    )
+            );
+            visit.setPet(pet);
+        })
+        .withScreenClass(RegularCheckup.class)
+        .withLaunchMode(OpenMode.DIALOG)
+        .build()
+        .show();
+}
+----
+<1> A `EditorBuilder` will be created using the `screenBuilders` bean
+<2> the mode of the `EditorBuilder` is set to create mode
+<3> The `withInitializer` method takes a `Consumer<Visit>` that gets a new visit instance as a parameter, which then can be adjusted accordingly
+
+The corresponding UI screens look like this:
+
+
+image::initial-entity-values/regular-checkup-1-select-pet.png[Step 1: Pet selection, link="initial-entity-values/regular-checkup-1-select-pet.png"]
+
+image::initial-entity-values/regular-checkup-2-prefilled-visit.png[Step 2: Prefilled visit screen, link="initial-entity-values/regular-checkup-2-prefilled-visit.png"]
 
 
 == Using initNewItem Method
@@ -116,3 +157,7 @@ In the demo application, `CustomerDetails` attribute (`info`) is edited on the s
 
 * {proj_model}/blob/master/modules/web/src/com/company/sample/web/customers_1/CustomerEdit.java[CustomerEdit.java] - the screen controller. It defines the `initNewItem()` method that creates a new `CustomerDetails` instance and sets it to a new `Customer`. The created instance will be available through the nested datasource and later saved to the database when the screen is committed.
 
+
+=== Further Information
+
+* https://doc.cuba-platform.com/manual-{cuba_version}/opening_screens.html#screenBuilders[Screen Builders reference documentation]
