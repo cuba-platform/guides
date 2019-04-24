@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CUBA Platform Guides</title>
+    <title>Initial Entity Values</title>
     <meta name="description" content="The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.">
     <meta name="author" content="Haulmont">
     <link rel="shortcut icon" href="/guides/images/favicon.png" type="image/png" />
@@ -18,12 +18,12 @@
     <link rel="stylesheet" href="/guides/css/extra.css">
     <link rel="stylesheet" href="/guides/css/extra2.css">
     <link rel="stylesheet" href="/guides/css/cuba-new.css">
+    <link rel="stylesheet" href="/guides/css/font-awesome.min.css">
     <link rel="stylesheet" href="/guides/css/guides.css">
-    <script src="/guides/js/vendor/modernizr.js"></script>
     <script src="/guides/js/jquery_v2.1.min.js"></script>
     <link rel="stylesheet" href="/guides/css/main.css" />
 </head>
-<body class="cuba-website-styles html not-front not-logged-in no-sidebars page-webinars service-booking i18n-en">
+<body class="html not-front not-logged-in no-sidebars page-node page-node- page-node-962 node-type-blog-post i18n-en">
 
 <section id="wrapper">
     
@@ -155,172 +155,324 @@
 
     <!-- Main Page Content and Sidebar -->
     <div class="content-wrapper">
-        <div class="text-node">
+        <div class="cuba-container text-node blog">
+            <!-- Main content (left column) -->
             <div class="region region-content">
                 <section id="block-system-main" class="block block-system clearfix">
-                    <div class="panel-display panel-1col clearfix" id="webinars-page">
-                        <div class="panel-panel panel-col">
-                            <div>
-                                <!-- Title -->
-                                <div class="panel-pane pane-custom pane-1">
-                                    <div class="pane-content">
-                                        <div class="sb-block sb-head">
-                                            <h2>Guides</h2>
-                                            <span>Comprehensive articles about CUBA Platform specifics (version 7.0+)</span>
-                                        </div>
-                                    </div>
-                                </div>
+                    <div id="node-962" class="article node node-blog-post node-promoted clearfix">
+                        <div class="content">
+                            <div class="field field-name-body field-type-text-with-summary field-label-hidden">
+                                <div class="field-items">
+                                    <div class="field-item even" property="content: encoded">
+                                        <h1>Initial Entity Values</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>This guide demonstrates different options on how initial values can be set for an entity.</p>
+</div>
+<div class="paragraph">
+<p>In the petclinic example there are several screens that can</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="what_will_be_build"><a class="anchor" href="#what_will_be_build"></a><a class="link" href="#what_will_be_build">What Will be Build</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show the mechanism to define entity inheritance. In particular, the following use cases will be covered:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Pet</code> entity becomes a superclass for all Pet types</p>
+</li>
+<li>
+<p><code>Cat</code>, <code>Bird</code> and <code>Rat</code> will be created as concrete Pet type entities</p>
+</li>
+<li>
+<p>A user has a choice between different Pet types at creation time of a Pet. The system will show the corresponding editor accordingly so that the user will be also able to enter the type specific information.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="final_application"><a class="anchor" href="#final_application"></a><a class="link" href="#final_application">Final Application</a></h3>
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-data-model-entity-inheritance/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-data-model-entity-inheritance/master/img/login-screen.png"/></a>
+</div>
+<div class="sect2">
+<h3 id="requirements"><a class="anchor" href="#requirements"></a><a class="link" href="#requirements">Requirements</a></h3>
+<div class="paragraph">
+<p>Your development environment requires to contain the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.oracle.com/technetwork/java/javase/downloads/index.html">JDK 1.8</a></p>
+</li>
+<li>
+<p>a text editor or IDE (<a href="https://www.jetbrains.com/idea/download/">IntelliJ IDEA</a> preferred)</p>
+</li>
+<li>
+<p><a href="https://www.cuba-platform.com/download">CUBA Studio</a> as standalone IDE or as an IDEA plugin (optional)</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-platform/cuba-cli/wiki/Installation">CUBA CLI</a> (optional)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-initial-entity-values/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
+</div>
+<div class="paragraph">
+<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-initial-entity-values.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-initial-entity-values.git</a></code></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="example_cuba_petclinic"><a class="anchor" href="#example_cuba_petclinic"></a><a class="link" href="#example_cuba_petclinic">Example: CUBA petclinic</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The project that is the basis for this example is <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a>. It is based on the commonly known <a href="https://github.com/spring-projects/spring-petclinic">Spring Petclinic</a>. The CUBA Petclinic application deals with the domain of a Pet clinic and the associated business workflows to manage a pet clinic.</p>
+</div>
+<div class="paragraph">
+<p>The underlying domain model for the application looks like this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/guides/images/domain-model.png" alt="Domain model">
+</div>
+</div>
+<div class="paragraph">
+<p>The main entities are <strong>Pet</strong> and <strong>Visit</strong>. A Pet is visiting the petclinic and during this Visit a Vet is taking care of it. A Pet belongs to an Owner, which can hold multiple pets. The visit describes the act of a pet visiting the clinic with the help of its owner.</p>
+</div>
+<a href="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/login-screen.png"/></a>
+</div>
+</div>
+<div class="sect1">
+<h2 id="entity_fields_initialization"><a class="anchor" href="#entity_fields_initialization"></a><a class="link" href="#entity_fields_initialization">Entity Fields Initialization</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Simple attributes (<code>Boolean</code>, <code>Integer</code> etc.) and enumerations can be initialized in the declaration of the corresponding field of an entity class. In the Petclinic example, the Visit entity has an attribute <code>paid</code> which is a boolean flag to indicate, if a visit has been payed already. This value should by default be <code>FALSE</code>. The default value can be set directly at the field definition.</p>
+</div>
+<div class="listingblock">
+<div class="title">Visit.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">Visit</span> <span class="directive">extends</span> StandardEntity {
 
-                                <!-- Accordion -->
-                                <div class="panel-pane pane-custom pane-2 cuba-container">
-                                    <div class="pane-content">
-                                        <div class="accordion-webinars">
-                                            
-                                            <div class="item">
-                                                <a name="tr1"></a>
-                                                <div class="item-head collapsed" data-target="#intro-working-with-data-in-cuba"  aria-expanded="true">
-                                                    <a href="/guides/intro-working-with-data-in-cuba">
-                                                        <span>Introduction to working with Data in CUBA</span>
-                                                    </a>
-                                                </div>
-                                                <div class="item-body " id="intro-working-with-data-in-cuba" aria-expanded="false">
-                                                    <div class="descr">
-                                                        <div class="main">
-                                                            Overview on how to read and write data in a CUBA application
-                                                        </div>
-                                                        <div class="btn-wrapper">
-                                                            <a href="/guides/intro-working-with-data-in-cuba" class="guide-item_button button-outline">Read now</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="item">
-                                                <a name="tr1"></a>
-                                                <div class="item-head collapsed" data-target="#create-business-logic-in-cuba"  aria-expanded="true">
-                                                    <a href="/guides/create-business-logic-in-cuba">
-                                                        <span>Create business logic in CUBA</span>
-                                                    </a>
-                                                </div>
-                                                <div class="item-body " id="create-business-logic-in-cuba" aria-expanded="false">
-                                                    <div class="descr">
-                                                        <div class="main">
-                                                            Guide on what options are available for putting business logic into a CUBA application
-                                                        </div>
-                                                        <div class="btn-wrapper">
-                                                            <a href="/guides/create-business-logic-in-cuba" class="guide-item_button button-outline">Read now</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="item">
-                                                <a name="tr1"></a>
-                                                <div class="item-head collapsed" data-target="#decouple-business-logic-with-app-events"  aria-expanded="true">
-                                                    <a href="/guides/decouple-business-logic-with-app-events">
-                                                        <span>Decouple business logic with application events</span>
-                                                    </a>
-                                                </div>
-                                                <div class="item-body " id="decouple-business-logic-with-app-events" aria-expanded="false">
-                                                    <div class="descr">
-                                                        <div class="main">
-                                                            Overview on how application events can be used in a CUBA application to decouple business logic
-                                                        </div>
-                                                        <div class="btn-wrapper">
-                                                            <a href="/guides/decouple-business-logic-with-app-events" class="guide-item_button button-outline">Read now</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="item">
-                                                <a name="tr1"></a>
-                                                <div class="item-head collapsed" data-target="#logging-in-cuba-applications"  aria-expanded="true">
-                                                    <a href="/guides/logging-in-cuba-applications">
-                                                        <span>Logging in CUBA applications</span>
-                                                    </a>
-                                                </div>
-                                                <div class="item-body " id="logging-in-cuba-applications" aria-expanded="false">
-                                                    <div class="descr">
-                                                        <div class="main">
-                                                            Guide on why and how to use logging in a CUBA application in order to get insights
-                                                        </div>
-                                                        <div class="btn-wrapper">
-                                                            <a href="/guides/logging-in-cuba-applications" class="guide-item_button button-outline">Read now</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="item">
-                                                <a name="tr1"></a>
-                                                <div class="item-head collapsed" data-target="#data-modelling-many-to-many-association"  aria-expanded="true">
-                                                    <a href="/guides/data-modelling-many-to-many-association">
-                                                        <span>Data Modelling: Many-to-Many Association</span>
-                                                    </a>
-                                                </div>
-                                                <div class="item-body " id="data-modelling-many-to-many-association" aria-expanded="false">
-                                                    <div class="descr">
-                                                        <div class="main">
-                                                            Data modelling guide: what are Many-to-Many associations and when to use them
-                                                        </div>
-                                                        <div class="btn-wrapper">
-                                                            <a href="/guides/data-modelling-many-to-many-association" class="guide-item_button button-outline">Read now</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="item">
-                                                <a name="tr1"></a>
-                                                <div class="item-head collapsed" data-target="#data-modelling-entity-inheritance"  aria-expanded="true">
-                                                    <a href="/guides/data-modelling-entity-inheritance">
-                                                        <span>Data Modelling: Entity Inheritance</span>
-                                                    </a>
-                                                </div>
-                                                <div class="item-body " id="data-modelling-entity-inheritance" aria-expanded="false">
-                                                    <div class="descr">
-                                                        <div class="main">
-                                                            Data Modelling guide: How entity inheritance can be used in a CUBA application
-                                                        </div>
-                                                        <div class="btn-wrapper">
-                                                            <a href="/guides/data-modelling-entity-inheritance" class="guide-item_button button-outline">Read now</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="item">
-                                                <a name="tr1"></a>
-                                                <div class="item-head collapsed" data-target="#initial-entity-values"  aria-expanded="true">
-                                                    <a href="/guides/initial-entity-values">
-                                                        <span>Initial Values for Entity Instances</span>
-                                                    </a>
-                                                </div>
-                                                <div class="item-body " id="initial-entity-values" aria-expanded="false">
-                                                    <div class="descr">
-                                                        <div class="main">
-                                                            Data modeling guide: How entity inheritance can be used in a CUBA application
-                                                        </div>
-                                                        <div class="btn-wrapper">
-                                                            <a href="/guides/initial-entity-values" class="guide-item_button button-outline">Read now</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            
-                                        </div>
+    <span class="comment">// ...</span>
+
+    <span class="annotation">@Column</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">PAID</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">protected</span> <span class="predefined-type">Boolean</span> paid = <span class="predefined-type">Boolean</span>.FALSE;
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Additionally, a specific initialization method with a <code>@PostConstruct</code> annotation can be created in the entity class. In this case, any global infrastructure interfaces as well as managed beans can be invoked during initialization. One example of this post-construct initialization can be seen in the <code>Visit</code> entity:</p>
+</div>
+<div class="listingblock">
+<div class="title">Visit.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">Visit</span> <span class="directive">extends</span> StandardEntity {
+
+    <span class="annotation">@Temporal</span>(TemporalType.DATE)
+    <span class="annotation">@NotNull</span>
+    <span class="annotation">@Column</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">VISIT_DATE</span><span class="delimiter">&quot;</span></span>, nullable = <span class="predefined-constant">false</span>)
+    <span class="directive">protected</span> <span class="predefined-type">Date</span> visitDate;
+
+    <span class="comment">// ...</span>
+
+    <span class="annotation">@PostConstruct</span> <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="directive">private</span> <span class="type">void</span> initVisitDate() {
+        <span class="keyword">if</span> (visitDate == <span class="predefined-constant">null</span>) { <i class="conum" data-value="2"></i><b>(2)</b>
+            setVisitDate(today());
+        }
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">Date</span> today() {
+        TimeSource timeSource = AppBeans.get(TimeSource.class); <i class="conum" data-value="3"></i><b>(3)</b>
+        <span class="keyword">return</span> timeSource.currentTimestamp();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>@PostConstruct</code> triggers this method after creation of an instance of this class. It is called when manually creating an instance via <code>metadata.create(Visit.class)</code> as well as instance creation by the framework (e.g. when a instance is created during the data loading process from the database</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>When the instance is created from a database record, a <code>visitDate</code> might have been initialized with the correct value. Therefore it is required to check if the attribute is null</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Managed beans can be referenced via <code>AppBeans.get()</code></td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="ui_layer_initialization_via_screen_builders"><a class="anchor" href="#ui_layer_initialization_via_screen_builders"></a><a class="link" href="#ui_layer_initialization_via_screen_builders">UI Layer Initialization via Screen Builders</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>On the frontend layer with CUBA 7 the <code>ScreenBuilders</code> API was introduced. It allows to programmatically create and open screens with various options to configure.</p>
+</div>
+<div class="paragraph">
+<p>One of this options is the possibility to define an initializer method, that gets executed before opening the screen, where it is possible for an Editor screen to change attributes of the entity that will be displayed.</p>
+</div>
+<div class="paragraph">
+<p>In the Petclinic example there is a screen that creates a particular visit instance. This visit is a "regular checkup". As this checkup is always the same in the sense that it requires some checklist kind of description. Furthermore it always paid upfront. Since it is a burden for the users to create those special kinds of visits over and over again, a screen was implemented that comes with sensible defaults for this kind of use-case.</p>
+</div>
+<div class="listingblock">
+<div class="title">VisitBrowse.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Inject</span>
+<span class="directive">private</span> ScreenBuilders screenBuilders;
+
+<span class="annotation">@Inject</span>
+<span class="directive">private</span> MessageBundle messageBundle;
+
+<span class="annotation">@Inject</span>
+<span class="directive">private</span> GroupTable&lt;Visit&gt; visitsTable;
+
+<span class="comment">// ...</span>
+
+<span class="directive">private</span> <span class="type">void</span> createVisitForPet(Pet pet) {
+    screenBuilders.editor(visitsTable) <i class="conum" data-value="1"></i><b>(1)</b>
+        .newEntity() <i class="conum" data-value="2"></i><b>(2)</b>
+        .withInitializer(visit -&gt; { <i class="conum" data-value="3"></i><b>(3)</b>
+            visit.setPaid(<span class="predefined-constant">true</span>);
+            visit.setDescription(
+                    messageBundle.formatMessage(<span class="string"><span class="delimiter">&quot;</span><span class="content">regularCheckupContent</span><span class="delimiter">&quot;</span></span>,
+                            pet.getName(),
+                            pet.getIdentificationNumber()
+                    )
+            );
+            visit.setPet(pet);
+        })
+        .withScreenClass(RegularCheckup.class)
+        .withLaunchMode(OpenMode.DIALOG)
+        .build()
+        .show();
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>A <code>EditorBuilder</code> will be created using the <code>screenBuilders</code> bean</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the mode of the <code>EditorBuilder</code> is set to create mode</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The <code>withInitializer</code> method takes a <code>Consumer&lt;Visit&gt;</code> that gets a new visit instance as a parameter, which then can be adjusted accordingly</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The corresponding UI screens look like this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="initial-entity-values/regular-checkup-1-select-pet.png"><img src="/guides/images/initial-entity-values/regular-checkup-1-select-pet.png" alt="Step 1: Pet selection"></a>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="initial-entity-values/regular-checkup-2-prefilled-visit.png"><img src="/guides/images/initial-entity-values/regular-checkup-2-prefilled-visit.png" alt="Step 2: Prefilled visit screen"></a>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="using_initnewitem_method"><a class="anchor" href="#using_initnewitem_method"></a><a class="link" href="#using_initnewitem_method">Using initNewItem Method</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Initial values can also be defined in the <a href="#initNewItem">initNewItem()</a> method of the screen controller of the created entity.</p>
+</div>
+<div class="paragraph">
+<p>Consider the following entities:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/cookbook/composition_recipe_3.png" alt="composition recipe 3">
+</div>
+</div>
+<div class="paragraph">
+<p>In the demo application, <code>CustomerDetails</code> attribute (<code>info</code>) is edited on the same screen as <code>Customer</code> itself. It requires creating of a <code>CustomerDetails</code> instance together with the owning <code>Customer</code>.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>{proj_model}/blob/master/modules/web/src/com/company/sample/web/customers_1/customer-edit.xml[customer-edit.xml] - a customer edit screen descriptor. It contains a nested datasource for a linked <code>CustomerDetails</code> instance. The <code>infoField</code> text area component is connected to this datasource.</p>
+</li>
+<li>
+<p>{proj_model}/blob/master/modules/web/src/com/company/sample/web/customers_1/CustomerEdit.java[CustomerEdit.java] - the screen controller. It defines the <code>initNewItem()</code> method that creates a new <code>CustomerDetails</code> instance and sets it to a new <code>Customer</code>. The created instance will be available through the nested datasource and later saved to the database when the screen is committed.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="further_information"><a class="anchor" href="#further_information"></a><a class="link" href="#further_information">Further Information</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://doc.cuba-platform.com/manual-7.0/opening_screens.html#screenBuilders">Screen Builders reference documentation</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
                                     </div>
-                                    <!-- End of accordion -->
                                 </div>
                             </div>
                         </div>
                     </div>
                 </section>
             </div>
+
+            <!-- Sidebar (right column) -->
+            <div id="blog-sidebar">
+                <div class="region region-sidebar">
+                    <section id="block-block-29" class="block block-block clearfix">
+
+                        <div class="guide-panel">
+                            <h3>Table of contents</h3>
+                            <ul class="sectlevel1">
+<li><a href="#what_will_be_build">What Will be Build</a></li>
+<li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
+<li><a href="#entity_fields_initialization">Entity Fields Initialization</a></li>
+<li><a href="#ui_layer_initialization_via_screen_builders">UI Layer Initialization via Screen Builders</a></li>
+<li><a href="#using_initnewitem_method">Using initNewItem Method</a></li>
+</ul>
+                        </div>
+
+                        <div class="guide-panel download">
+                            <h3>Example code</h3>
+                            <a class=" guide-item_button button-outline"  href="https://github.com/cuba-guides/cuba-petclinic-initial-entity-values/archive/master.zip" target="_blank">Download</a>
+                            <a href="https://github.com/cuba-guides/cuba-petclinic-initial-entity-values" class="github-link" target="_blank">Github</a>
+                        </div>
+
+                        <div class="guide-panel cuba-version">
+                            <h3>Supported Versions</h3>
+                            <ul>
+                                <li>CUBA: 7.0+</li>
+                                <li>Java: 8+</li>
+                            </ul>
+                        </div>
+
+                    </section>
+                </div>
+            </div>
         </div>
     </div>
-    <!-- End Main Content and Sidebar -->
 
     <!-- Footer -->
     <footer fragment="14269c1b298" class="footer">
@@ -508,17 +660,28 @@
 
 </section>
 
-<script src="/guides/js/toc.js"></script>
 <script src="/guides/js/foundation.min.js"></script>
+<script src="https://unpkg.com/isotope-layout@3.0/dist/isotope.pkgd.js"></script>
+<script src="/guides/js/vendor/modernizr.js"></script>
+<script src="/guides/js/toc.js"></script>
 <script src="/guides/js/navigation.js"></script>
+<script src="/guides/js/navbar.js"></script>
 <script src="/guides/js/extra.js"></script>
 <script src="/guides/js/extra2.js"></script>
 <script src="/guides/js/cuba-new.js"></script>
 <script>
-$(document).foundation();
-var doc = document.documentElement;
-doc.setAttribute('data-useragent', navigator.userAgent);
+(function ($) {
+  $(document).foundation();
+  var doc = document.documentElement;
+  doc.setAttribute('data-useragent', navigator.userAgent)
 
+  /* Issue #24 */
+  $(".blog .content img").each(function() {
+    var imgMarkup = $(this)[0].outerHTML;
+    console.log(imgMarkup);
+    $(this).replaceWith('<div class="img-center">' + imgMarkup + '</div>');
+  });
+})(jQuery); 
 </script>
 </body>
 </html>
