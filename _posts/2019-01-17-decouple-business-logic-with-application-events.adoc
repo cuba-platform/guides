@@ -77,7 +77,7 @@ CUBA fires such an Event for entities, that have an annotation `@PublishEntityCh
 
 To register an Event listener for this event, a new Spring bean in the core module of the application has to be defined. In order to register to a specific kind of event, the method that should be called once an `EntityChangedEvent` has been sent has to be annotated with `@TransactionalEventListener`.
 
-TIP: There are two different kinds of annotations to register for as an event listener: `@TransactionalEventListener` and `@EventListener`. They differ regarding the transaction behavior. In this guide `@TransactionalEventListener` is used. More details can be found in the https://doc.cuba-platform.com/manual-7.0/events.html[CUBA documentation]
+TIP: There are two different kinds of annotations to register for as an event listener: `@TransactionalEventListener` and `@EventListener`. They differ regarding the transaction behavior. In this guide `@TransactionalEventListener` is used. More details can be found in the https://doc.cuba-platform.com/manual-7.0/entityChangedEvent.html[CUBA documentation]
 
 
 .RoomKeycodeToOwnerSender.java
