@@ -89,7 +89,36 @@ public class Visit extends StandardEntity {
 <2> When the instance is created from a database record, a `visitDate` might have been initialized with the correct value. Therefore it is required to check if the attribute is null
 <3> Managed beans can be referenced via `AppBeans.get()`
 
-== UI Layer Initialization via Screen Builders
+== UI Layer Initialization
+
+On the UI layer there are two main ways to initialize an entity during screen creation. The first one is internal within the screen controller, that should show the newly created entity. The second one is external, where the entity and its attributes are defined by the screen controller creating the destination screen.
+
+=== Internal Initialization via InitEntityEvent
+
+The alternative to the external entity initialization is to do the entity initialization within the destination screen controller itself. In this case the CUBA platform UI events can be leveraged. In particular for `StandardEditor` screens there is a particular UI event that is desinged exactly for this purpose: the `InitEntityEvent`.
+
+In the petclinic example this internal initialization is used to set the paid status of the regular checkup visit instance to paid.
+
+.RegularCheckup.java
+[source,java]
+----
+public class RegularCheckup extends StandardEditor<Visit> {
+
+    @Subscribe
+    protected void initRegularCheckupVisit(InitEntityEvent<Visit> event) { // <1>
+        Visit visit = event.getEntity();
+
+        visit.setPaid(false); // <2>
+    }
+
+}
+----
+<1> the `initRegularCheckupVisit` method subscribes to the `InitEntityEvent` of the newly created `Visit` instance
+<2> `event.getEntity()` returns the Visit instance that can be changed during screen initialization
+
+The upside of this kind of initialization is that is very easy to achieve and does require very little overall code changes. The downside is that since it is scoped within the destination screen it is not so easy to react to external parameters that get passed into the screen. Therefore it is a very good fit when particular attributes should be initialized that are not dynamic.
+
+=== External Initialization via Screen Builders
 
 On the frontend layer with CUBA 7 the `ScreenBuilders` API was introduced. It allows to programmatically create and open screens with various options to configure.
 
@@ -112,17 +141,24 @@ private GroupTable<Visit> visitsTable;
 
 // ...
 
+
+@Subscribe("visitsTable.createRegularCheckup")
+public void createForPet(Action.ActionPerformedEvent event) {
+    screenBuilders.lookup(Pet.class, this)
+            .withSelectHandler(pets -> {
+                createVisitForPet(pets.iterator().next());
+            })
+            .withLaunchMode(OpenMode.DIALOG)
+            .build()
+            .show();
+}
+
 private void createVisitForPet(Pet pet) {
     screenBuilders.editor(visitsTable) // <1>
         .newEntity() // <2>
         .withInitializer(visit -> { // <3>
             visit.setPaid(true);
-            visit.setDescription(
-                    messageBundle.formatMessage("regularCheckupContent",
-                            pet.getName(),
-                            pet.getIdentificationNumber()
-                    )
-            );
+            visit.setDescription(regularCheckupDescriptionContent(pet));
             visit.setPet(pet);
         })
         .withScreenClass(RegularCheckup.class)
@@ -135,29 +171,33 @@ private void createVisitForPet(Pet pet) {
 <2> the mode of the `EditorBuilder` is set to create mode
 <3> The `withInitializer` method takes a `Consumer<Visit>` that gets a new visit instance as a parameter, which then can be adjusted accordingly
 
-The corresponding UI screens look like this:
+With the ScreenBuilder API and the external initialization it is possible to create default values much more dynamically. As it is shown in the above example, in the first step the pet is selected. Based on this selection a description gets generated and put into the to be created visit entity.
 
+The downside of this approach is that it is a little less invasive in terms of source code. It is also not possible to reuse the default actions (create / edit) as is without further modifications.
+
+As it is shown in this example, it is also possible to combine the two approaches and use them in the different use-cases. The pet and the description of the visit are initialized externally, but the paid status is internally set.
+
+The corresponding UI screens look like this:
 
 image::initial-entity-values/regular-checkup-1-select-pet.png[Step 1: Pet selection, link="initial-entity-values/regular-checkup-1-select-pet.png"]
 
 image::initial-entity-values/regular-checkup-2-prefilled-visit.png[Step 2: Prefilled visit screen, link="initial-entity-values/regular-checkup-2-prefilled-visit.png"]
 
 
-== Using initNewItem Method
+== Pre-Persist Field initialization
 
-Initial values can also be defined in the <<initNewItem,initNewItem()>> method of the screen controller of the created entity.
+TIP: In this section there should be the case discussed where an attribute is set directly before persisting and it is calculated based on other fields that have been chosen by the user during creation phase. This is another form of initialization, and I would argue that it makes sense to talk about that. Perhaps it is also possible to differentiate between the cases where we have more calculated fields that should be visible to the user at creation time and others that should only be set while persisting and only seing them after the fact.
 
-Consider the following entities:
+== Summary
 
-image::cookbook/composition_recipe_3.png[align="center"]
+In this guide different options on how to set initial values for entity instances were shown. It is possible to define certain initial values directly within the Entity class via direct attribute allocation or the `@PostConstruct` annotation.
 
-In the demo application, `CustomerDetails` attribute (`info`) is edited on the same screen as `Customer` itself. It requires creating of a `CustomerDetails` instance together with the owning `Customer`.
+This kind of initialization will be executed in all scenarios and is therefore oftentimes the preferred way of doing attribute initialization. But sometimes it is required to have more information on the context of the execution, e.g. prior selections of the user on the UI.
 
-* {proj_model}/blob/master/modules/web/src/com/company/sample/web/customers_1/customer-edit.xml[customer-edit.xml] - a customer edit screen descriptor. It contains a nested datasource for a linked `CustomerDetails` instance. The `infoField` text area component is connected to this datasource.
+Therefore it is also possible to initialize attributes on the UI layer. There are multiple ways to do it as shown above. It allows the developer to react more flexible on the UI selection etc.
 
-* {proj_model}/blob/master/modules/web/src/com/company/sample/web/customers_1/CustomerEdit.java[CustomerEdit.java] - the screen controller. It defines the `initNewItem()` method that creates a new `CustomerDetails` instance and sets it to a new `Customer`. The created instance will be available through the nested datasource and later saved to the database when the screen is committed.
+The main difference is, that these kinds of initializations are only applied when the user uses this particular UI to interact with the system. Oftentimes there are other use-cases, like the REST API, Bulk Editor functionality, data import scenarios etc. If it is required to initialize an attribute for all those use-cases the Entity Field initialization should be preferred.
 
-
-=== Further Information
+== Further Information
 
 * https://doc.cuba-platform.com/manual-{cuba_version}/opening_screens.html#screenBuilders[Screen Builders reference documentation]
