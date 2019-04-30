@@ -184,9 +184,60 @@ image::initial-entity-values/regular-checkup-1-select-pet.png[Step 1: Pet select
 image::initial-entity-values/regular-checkup-2-prefilled-visit.png[Step 2: Prefilled visit screen, link="initial-entity-values/regular-checkup-2-prefilled-visit.png"]
 
 
-== Pre-Persist Field initialization
+== Dependent Attribute Field Initialization
 
-TIP: In this section there should be the case discussed where an attribute is set directly before persisting and it is calculated based on other fields that have been chosen by the user during creation phase. This is another form of initialization, and I would argue that it makes sense to talk about that. Perhaps it is also possible to differentiate between the cases where we have more calculated fields that should be visible to the user at creation time and others that should only be set while persisting and only seing them after the fact.
+Another related type of initialization is when an attribute gets set / initialized based on data entered by user for another field. In this case it is either possible to initialize the attribute during the process of storing the entity.
+
+=== Dependent Attribute Initialization
+
+In the first case an attribute that is dependent on another attribute of an entity should be calculated / initialized when a change in the original attribute occurs. The change of the derived attribute should be immediately visible in the UI.
+
+In the petclinic example, the Visit has an attribute `VisitType`. This type categorizes the visit to `VISIT`, `REGULAR_CHECKUP` or `SURGERY`. The type of the visit also indicates if the visit has to be payed upfront or if it is payed via invoice. But it is more like a proposal. It is still possible to being changed by the user for a particular visit.
+
+In order to achieve this kind of behavior, it is possible to register a hook method, that subscribes to the `ItemPropertyChangeEvent` of the instance container within the editor.
+
+.VisitEdit.java
+[source,java]
+----
+
+public class VisitEdit extends StandardEditor<Visit> {
+
+    @Subscribe(id = "visitDc", target = Target.DATA_CONTAINER)
+    protected void onVisitDcItemPropertyChange(InstanceContainer.ItemPropertyChangeEvent<Visit> event) { // <1>
+
+        if (visitTypeChanged(event)) {
+            updateHasToBePayedUpfrontValue(event);
+        }
+    }
+
+    private boolean visitTypeChanged(InstanceContainer.ItemPropertyChangeEvent<Visit> event) {
+        return event.getProperty().equals("type");
+    }
+
+    private void updateHasToBePayedUpfrontValue(InstanceContainer.ItemPropertyChangeEvent<Visit> event) {
+        VisitType selectedVisitType = (VisitType) event.getValue(); // <2>
+
+        if (selectedVisitType != null) {
+            event.getItem().setPaid(selectedVisitType.isToBePayedUpfront()); // <3>
+        }
+    }
+
+}
+----
+<1> Subscription to the `ItemPropertyChangeEvent` of the instance container
+<2> `event.getValue()` returns the selected value of type `VisitType`
+<3> the paid flag can be adjusted depending on the `selectedVisitType`
+
+
+=== Pre Persist Attribute Initialization
+
+The second case is that during the save operation, an attribute of the entity needs to be computed - but it does not need to be visible while the user sees the UI screen.
+
+In the petclinic example there is a attribute called `visitNumber` for the Visit entity, which represents a unique number of the visit shall be generated out of information that is specified by the user. The Visit Number should  be constructed out of the year of the visit, the name of the visit type and a 6-digit number.
+
+This number only needs to be generated when the visit is saved.
+
+
 
 == Summary
 
