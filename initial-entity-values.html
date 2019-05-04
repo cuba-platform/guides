@@ -171,7 +171,7 @@
 <p>This guide demonstrates different options on how initial values can be set for an entity.</p>
 </div>
 <div class="paragraph">
-<p>In the petclinic example there are several screens that can</p>
+<p>In the petclinic example there are use cases, where certain default values for entities should be set either globally or on a per use-case basis.</p>
 </div>
 </div>
 </div>
@@ -179,18 +179,18 @@
 <h2 id="what_will_be_built"><a class="anchor" href="#what_will_be_built"></a><a class="link" href="#what_will_be_built">What Will be Built</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show the mechanism to define entity inheritance. In particular, the following use cases will be covered:</p>
+<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show the different ways to set initial values for entity instances. In particular, the following use cases will be covered:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><code>Pet</code> entity becomes a superclass for all Pet types</p>
+<p>Global default values for the <code>paid</code> attribute of the <code>Visit</code> entity</p>
 </li>
 <li>
-<p><code>Cat</code>, <code>Bird</code> and <code>Rat</code> will be created as concrete Pet type entities</p>
+<p>A regular checkup, a special type of Visit should be initialized with a particular description</p>
 </li>
 <li>
-<p>A user has a choice between different Pet types at creation time of a Pet. The system will show the corresponding editor accordingly so that the user will be also able to enter the type specific information.</p>
+<p>Auto generated visit number that is derived from attributes of the <code>Visit</code> instance</p>
 </li>
 </ul>
 </div>
