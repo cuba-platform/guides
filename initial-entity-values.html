@@ -176,7 +176,7 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="what_will_be_build"><a class="anchor" href="#what_will_be_build"></a><a class="link" href="#what_will_be_build">What Will be Build</a></h2>
+<h2 id="what_will_be_built"><a class="anchor" href="#what_will_be_built"></a><a class="link" href="#what_will_be_built">What Will be Built</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show the mechanism to define entity inheritance. In particular, the following use cases will be covered:</p>
@@ -262,7 +262,7 @@
     <span class="comment">// ...</span>
 
     <span class="annotation">@Column</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">PAID</span><span class="delimiter">&quot;</span></span>)
-    <span class="directive">protected</span> <span class="predefined-type">Boolean</span> paid = <span class="predefined-type">Boolean</span>.FALSE;
+    <span class="directive">protected</span> <span class="predefined-type">Boolean</span> paid = <span class="predefined-constant">false</span>;
 
 }</code></pre>
 </div>
@@ -284,13 +284,13 @@
 
     <span class="annotation">@PostConstruct</span> <i class="conum" data-value="1"></i><b>(1)</b>
     <span class="directive">private</span> <span class="type">void</span> initVisitDate() {
-        <span class="keyword">if</span> (visitDate == <span class="predefined-constant">null</span>) { <i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="keyword">if</span> (visitDate == <span class="predefined-constant">null</span>) {
             setVisitDate(today());
         }
     }
 
     <span class="directive">private</span> <span class="predefined-type">Date</span> today() {
-        TimeSource timeSource = AppBeans.get(TimeSource.class); <i class="conum" data-value="3"></i><b>(3)</b>
+        TimeSource timeSource = AppBeans.get(TimeSource.class); <i class="conum" data-value="2"></i><b>(2)</b>
         <span class="keyword">return</span> timeSource.currentTimestamp();
     }
 }</code></pre>
@@ -300,14 +300,10 @@
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td><code>@PostConstruct</code> triggers this method after creation of an instance of this class. It is called when manually creating an instance via <code>metadata.create(Visit.class)</code> as well as instance creation by the framework (e.g. when a instance is created during the data loading process from the database</td>
+<td><code>@PostConstruct</code> triggers this method after creation of an instance of this class. It is called when manually creating an instance via <code>metadata.create(Visit.class)</code> as well as when the instance is created in UI by the framework</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>When the instance is created from a database record, a <code>visitDate</code> might have been initialized with the correct value. Therefore it is required to check if the attribute is null</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
 <td>Managed beans can be referenced via <code>AppBeans.get()</code></td>
 </tr>
 </table>
@@ -318,12 +314,12 @@
 <h2 id="ui_layer_initialization"><a class="anchor" href="#ui_layer_initialization"></a><a class="link" href="#ui_layer_initialization">UI Layer Initialization</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>On the UI layer there are two main ways to initialize an entity during screen creation. The first one is internal within the screen controller, that should show the newly created entity. The second one is external, where the entity and its attributes are defined by the screen controller creating the destination screen.</p>
+<p>On the UI layer there are two main ways to initialize an entity during screen creation. The first one is internal within the screen controller, that should show the newly created entity. The second one is external, where the entity is defined by the code calling the destination screen.</p>
 </div>
 <div class="sect2">
 <h3 id="internal_initialization_via_initentityevent"><a class="anchor" href="#internal_initialization_via_initentityevent"></a><a class="link" href="#internal_initialization_via_initentityevent">Internal Initialization via InitEntityEvent</a></h3>
 <div class="paragraph">
-<p>The alternative to the external entity initialization is to do the entity initialization within the destination screen controller itself. In this case the CUBA platform UI events can be leveraged. In particular for <code>StandardEditor</code> screens there is a particular UI event that is desinged exactly for this purpose: the <code>InitEntityEvent</code>.</p>
+<p>The first option is that the entity initialization happens within the destination screen controller itself. In this case the CUBA platform UI events can be leveraged. In particular for <code>StandardEditor</code> screens there is a particular UI event that is designed exactly for this purpose: the <code>InitEntityEvent</code>.</p>
 </div>
 <div class="paragraph">
 <p>In the petclinic example this internal initialization is used to set the paid status of the regular checkup visit instance to paid.</p>
@@ -362,7 +358,7 @@
 <div class="sect2">
 <h3 id="external_initialization_via_screen_builders"><a class="anchor" href="#external_initialization_via_screen_builders"></a><a class="link" href="#external_initialization_via_screen_builders">External Initialization via Screen Builders</a></h3>
 <div class="paragraph">
-<p>On the frontend layer with CUBA 7 the <code>ScreenBuilders</code> API was introduced. It allows to programmatically create and open screens with various options to configure.</p>
+<p>On the frontend layer with CUBA 7 the <code>ScreenBuilders</code> API was introduced. It allows programmatic creation and and screen opening via a Builder pattern, which exposes various options for further configuration.</p>
 </div>
 <div class="paragraph">
 <p>One of this options is the possibility to define an initializer method, that gets executed before opening the screen, where it is possible for an Editor screen to change attributes of the entity that will be displayed.</p>
@@ -453,19 +449,78 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="pre_persist_field_initialization"><a class="anchor" href="#pre_persist_field_initialization"></a><a class="link" href="#pre_persist_field_initialization">Pre-Persist Field initialization</a></h2>
+<h2 id="dependent_attribute_field_initialization"><a class="anchor" href="#dependent_attribute_field_initialization"></a><a class="link" href="#dependent_attribute_field_initialization">Dependent Attribute Field Initialization</a></h2>
 <div class="sectionbody">
-<div class="admonitionblock tip">
+<div class="paragraph">
+<p>Another related type of initialization is when an attribute gets set / initialized based on data entered by user for another field. In this case it is either possible to initialize the attribute during the process of storing the entity.</p>
+</div>
+<div class="sect2">
+<h3 id="dependent_attribute_initialization"><a class="anchor" href="#dependent_attribute_initialization"></a><a class="link" href="#dependent_attribute_initialization">Dependent Attribute Initialization</a></h3>
+<div class="paragraph">
+<p>In the first case an attribute that is dependent on another attribute of an entity should be calculated / initialized when a change in the original attribute occurs. The change of the derived attribute should be immediately visible in the UI.</p>
+</div>
+<div class="paragraph">
+<p>In the petclinic example, the Visit has an attribute <code>VisitType</code>. This type categorizes the visit to <code>VISIT</code>, <code>REGULAR_CHECKUP</code> or <code>SURGERY</code>. The type of the visit also indicates if the visit has to be payed upfront or if it is payed via invoice. But it is more like a proposal. It is still possible to being changed by the user for a particular visit.</p>
+</div>
+<div class="paragraph">
+<p>In order to achieve this kind of behavior, it is possible to register a hook method, that subscribes to the <code>ItemPropertyChangeEvent</code> of the instance container within the editor.</p>
+</div>
+<div class="listingblock">
+<div class="title">VisitEdit.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VisitEdit</span> <span class="directive">extends</span> StandardEditor&lt;Visit&gt; {
+
+    <span class="annotation">@Subscribe</span>(id = <span class="string"><span class="delimiter">&quot;</span><span class="content">visitDc</span><span class="delimiter">&quot;</span></span>, target = <span class="predefined-type">Target</span>.DATA_CONTAINER)
+    <span class="directive">protected</span> <span class="type">void</span> onVisitDcItemPropertyChange(InstanceContainer.ItemPropertyChangeEvent&lt;Visit&gt; event) { <i class="conum" data-value="1"></i><b>(1)</b>
+
+        <span class="keyword">if</span> (visitTypeChanged(event)) {
+            updateHasToBePayedUpfrontValue(event);
+        }
+    }
+
+    <span class="directive">private</span> <span class="type">boolean</span> visitTypeChanged(InstanceContainer.ItemPropertyChangeEvent&lt;Visit&gt; event) {
+        <span class="keyword">return</span> event.getProperty().equals(<span class="string"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>);
+    }
+
+    <span class="directive">private</span> <span class="type">void</span> updateHasToBePayedUpfrontValue(InstanceContainer.ItemPropertyChangeEvent&lt;Visit&gt; event) {
+        VisitType selectedVisitType = (VisitType) event.getValue(); <i class="conum" data-value="2"></i><b>(2)</b>
+
+        <span class="keyword">if</span> (selectedVisitType != <span class="predefined-constant">null</span>) {
+            event.getItem().setPaid(selectedVisitType.isToBePayedUpfront()); <i class="conum" data-value="3"></i><b>(3)</b>
+        }
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
 <table>
 <tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-In this section there should be the case discussed where an attribute is set directly before persisting and it is calculated based on other fields that have been chosen by the user during creation phase. This is another form of initialization, and I would argue that it makes sense to talk about that. Perhaps it is also possible to differentiate between the cases where we have more calculated fields that should be visible to the user at creation time and others that should only be set while persisting and only seing them after the fact.
-</td>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Subscription to the <code>ItemPropertyChangeEvent</code> of the instance container</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>event.getValue()</code> returns the selected value of type <code>VisitType</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>the paid flag can be adjusted depending on the <code>selectedVisitType</code></td>
 </tr>
 </table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="pre_persist_attribute_initialization"><a class="anchor" href="#pre_persist_attribute_initialization"></a><a class="link" href="#pre_persist_attribute_initialization">Pre Persist Attribute Initialization</a></h3>
+<div class="paragraph">
+<p>The second case is that during the save operation, an attribute of the entity needs to be computed - but it does not need to be visible while the user sees the UI screen.</p>
+</div>
+<div class="paragraph">
+<p>In the petclinic example there is a attribute called <code>visitNumber</code> for the Visit entity, which represents a unique number of the visit shall be generated out of information that is specified by the user. The Visit Number should  be constructed out of the year of the visit, the name of the visit type and a 6-digit number.</p>
+</div>
+<div class="paragraph">
+<p>This number only needs to be generated when the visit is saved.</p>
+</div>
 </div>
 </div>
 </div>
@@ -514,11 +569,11 @@ In this section there should be the case discussed where an attribute is set dir
                         <div class="guide-panel">
                             <h3>Table of contents</h3>
                             <ul class="sectlevel1">
-<li><a href="#what_will_be_build">What Will be Build</a></li>
+<li><a href="#what_will_be_built">What Will be Built</a></li>
 <li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
 <li><a href="#entity_fields_initialization">Entity Fields Initialization</a></li>
 <li><a href="#ui_layer_initialization">UI Layer Initialization</a></li>
-<li><a href="#pre_persist_field_initialization">Pre-Persist Field initialization</a></li>
+<li><a href="#dependent_attribute_field_initialization">Dependent Attribute Field Initialization</a></li>
 <li><a href="#summary">Summary</a></li>
 <li><a href="#further_information">Further Information</a></li>
 </ul>
