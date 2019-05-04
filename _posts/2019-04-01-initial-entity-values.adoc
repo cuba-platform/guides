@@ -26,6 +26,7 @@ This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA pet
 
 * Global default values for the `paid` attribute of the `Visit` entity
 * A regular checkup, a special type of Visit should be initialized with a particular description
+* The `paid` attribute of the Visit is automatically pre-filled by the selection of the dependent `type` attribute
 * Auto generated visit number that is derived from attributes of the `Visit` instance
 
 === Final Application
@@ -233,8 +234,59 @@ The second case is that during the save operation, an attribute of the entity ne
 
 In the petclinic example there is a attribute called `visitNumber` for the Visit entity, which represents a unique number of the visit shall be generated out of information that is specified by the user. The Visit Number should  be constructed out of the year of the visit, the name of the visit type and a 6-digit number.
 
-This number only needs to be generated when the visit is saved.
+This number only needs to be generated when the visit is saved. Therefore it is possible to use the available mechanisms at the persistence layer. There are several options in this space. In CUBA 7 a common way of interacting with the persistence lifecycle is the `EntityChangedEvent`.
 
+For the petclinic example, the use case as described above is to generate a `visitNumber` directly before the visit entity is stored. The `VisitNumberGenerator` bean acts
+
+
+.VisitNumberGenerator.java
+[source,java]
+----
+@Component(VisitNumberGenerator.NAME)
+public class VisitNumberGenerator {
+    static final String NAME = "petclinic_VisitNumberGenerator";
+
+    @Inject
+    protected UniqueNumbersAPI uniqueNumbersAPI;
+
+    @Inject
+    private TransactionalDataManager transactionalDataManager;
+
+    @EventListener
+    private void beforeCommit(EntityChangedEvent<Visit, UUID> event) {
+
+        if (visitNumberNeedsToBeCalculated(event)) {
+
+            Visit visit = transactionalDataManager.load(event.getEntityId()).one(); // <1>
+
+            visit.setVisitNumber(generateVisitNumber(visit));
+
+            transactionalDataManager.save(visit); // <4>
+        }
+    }
+
+    private boolean visitNumberNeedsToBeCalculated(EntityChangedEvent<Visit, UUID> event) {
+        return event.getType().equals(EntityChangedEvent.Type.CREATED);
+    }
+
+    private String generateVisitNumber(Visit entity) { // <2>
+        int visitType = entity.getType().getCode();
+        int visitYear = localDate(entity.getVisitDate()).getYear();
+        long nextVisitNumber = uniqueNumbersAPI.getNextNumber(String.format("VISIT_%d_%d", visitYear, visitType)); // <3>
+
+        return String.format("%4d%02d%06d", visitYear, visitType, nextVisitNumber);
+    }
+
+    // ...
+
+}
+----
+<1> the visit instance will be loaded via the `transactionalDataManager`
+<2> the `generateVisitNumber` generates the next number based on the `uniqueNumbersAPI`
+<3> a unique number will be generated for each `visitYear` and `visitType` attribute of the visit
+
+
+More details on this event can be found in the reference documentation on https://doc.cuba-platform.com/manual-{cuba_version}/entityChangedEvent.html[EntityChangedEvent].
 
 
 == Summary
@@ -250,3 +302,4 @@ The main difference is, that these kinds of initializations are only applied whe
 == Further Information
 
 * https://doc.cuba-platform.com/manual-{cuba_version}/opening_screens.html#screenBuilders[Screen Builders reference documentation]
+* https://www.cuba-platform.com/guides/decouple-business-logic-with-app-events[Guide: Decouple Business Logic with Application Events]
