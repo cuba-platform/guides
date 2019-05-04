@@ -17,17 +17,16 @@ permalink: initial-entity-values
 
 This guide demonstrates different options on how initial values can be set for an entity.
 
-In the petclinic example there are several screens that can
+In the petclinic example there are use cases, where certain default values for entities should be set either globally or on a per use-case basis.
 
 
 == What Will be Built
 
-This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show the mechanism to define entity inheritance. In particular, the following use cases will be covered:
+This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show the different ways to set initial values for entity instances. In particular, the following use cases will be covered:
 
-* `Pet` entity becomes a superclass for all Pet types
-* `Cat`, `Bird` and `Rat` will be created as concrete Pet type entities
-* A user has a choice between different Pet types at creation time of a Pet. The system will show the corresponding editor accordingly so that the user will be also able to enter the type specific information.
-
+* Global default values for the `paid` attribute of the `Visit` entity
+* A regular checkup, a special type of Visit should be initialized with a particular description
+* Auto generated visit number that is derived from attributes of the `Visit` instance
 
 === Final Application
 
