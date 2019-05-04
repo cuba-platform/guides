@@ -190,6 +190,9 @@
 <p>A regular checkup, a special type of Visit should be initialized with a particular description</p>
 </li>
 <li>
+<p>The <code>paid</code> attribute of the Visit is automatically pre-filled by the selection of the dependent <code>type</code> attribute</p>
+</li>
+<li>
 <p>Auto generated visit number that is derived from attributes of the <code>Visit</code> instance</p>
 </li>
 </ul>
@@ -519,7 +522,72 @@
 <p>In the petclinic example there is a attribute called <code>visitNumber</code> for the Visit entity, which represents a unique number of the visit shall be generated out of information that is specified by the user. The Visit Number should  be constructed out of the year of the visit, the name of the visit type and a 6-digit number.</p>
 </div>
 <div class="paragraph">
-<p>This number only needs to be generated when the visit is saved.</p>
+<p>This number only needs to be generated when the visit is saved. Therefore it is possible to use the available mechanisms at the persistence layer. There are several options in this space. In CUBA 7 a common way of interacting with the persistence lifecycle is the <code>EntityChangedEvent</code>.</p>
+</div>
+<div class="paragraph">
+<p>For the petclinic example, the use case as described above is to generate a <code>visitNumber</code> directly before the visit entity is stored. The <code>VisitNumberGenerator</code> bean acts</p>
+</div>
+<div class="listingblock">
+<div class="title">VisitNumberGenerator.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Component</span>(VisitNumberGenerator.NAME)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">VisitNumberGenerator</span> {
+    <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">String</span> NAME = <span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_VisitNumberGenerator</span><span class="delimiter">&quot;</span></span>;
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> UniqueNumbersAPI uniqueNumbersAPI;
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">private</span> TransactionalDataManager transactionalDataManager;
+
+    <span class="annotation">@EventListener</span>
+    <span class="directive">private</span> <span class="type">void</span> beforeCommit(EntityChangedEvent&lt;Visit, <span class="predefined-type">UUID</span>&gt; event) {
+
+        <span class="keyword">if</span> (visitNumberNeedsToBeCalculated(event)) {
+
+            Visit visit = transactionalDataManager.load(event.getEntityId()).one(); <i class="conum" data-value="1"></i><b>(1)</b>
+
+            visit.setVisitNumber(generateVisitNumber(visit));
+
+            transactionalDataManager.save(visit); <i class="conum" data-value="4"></i><b>(4)</b>
+        }
+    }
+
+    <span class="directive">private</span> <span class="type">boolean</span> visitNumberNeedsToBeCalculated(EntityChangedEvent&lt;Visit, <span class="predefined-type">UUID</span>&gt; event) {
+        <span class="keyword">return</span> event.getType().equals(EntityChangedEvent.Type.CREATED);
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">String</span> generateVisitNumber(Visit entity) { <i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="type">int</span> visitType = entity.getType().getCode();
+        <span class="type">int</span> visitYear = localDate(entity.getVisitDate()).getYear();
+        <span class="type">long</span> nextVisitNumber = uniqueNumbersAPI.getNextNumber(<span class="predefined-type">String</span>.format(<span class="string"><span class="delimiter">&quot;</span><span class="content">VISIT_%d_%d</span><span class="delimiter">&quot;</span></span>, visitYear, visitType)); <i class="conum" data-value="3"></i><b>(3)</b>
+
+        <span class="keyword">return</span> <span class="predefined-type">String</span>.format(<span class="string"><span class="delimiter">&quot;</span><span class="content">%4d%02d%06d</span><span class="delimiter">&quot;</span></span>, visitYear, visitType, nextVisitNumber);
+    }
+
+    <span class="comment">// ...</span>
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the visit instance will be loaded via the <code>transactionalDataManager</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the <code>generateVisitNumber</code> generates the next number based on the <code>uniqueNumbersAPI</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>a unique number will be generated for each <code>visitYear</code> and <code>visitType</code> attribute of the visit</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>More details on this event can be found in the reference documentation on <a href="https://doc.cuba-platform.com/manual-7.0/entityChangedEvent.html">EntityChangedEvent</a>.</p>
 </div>
 </div>
 </div>
@@ -548,6 +616,9 @@
 <ul>
 <li>
 <p><a href="https://doc.cuba-platform.com/manual-7.0/opening_screens.html#screenBuilders">Screen Builders reference documentation</a></p>
+</li>
+<li>
+<p><a href="https://www.cuba-platform.com/guides/decouple-business-logic-with-app-events">Guide: Decouple Business Logic with Application Events</a></p>
 </li>
 </ul>
 </div>
