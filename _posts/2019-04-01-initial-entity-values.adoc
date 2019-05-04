@@ -20,7 +20,7 @@ This guide demonstrates different options on how initial values can be set for a
 In the petclinic example there are several screens that can
 
 
-== What Will be Build
+== What Will be Built
 
 This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show the mechanism to define entity inheritance. In particular, the following use cases will be covered:
 
@@ -53,7 +53,7 @@ public class Visit extends StandardEntity {
     // ...
 
     @Column(name = "PAID")
-    protected Boolean paid = Boolean.FALSE;
+    protected Boolean paid = false;
 
 }
 ----
@@ -74,28 +74,27 @@ public class Visit extends StandardEntity {
 
     @PostConstruct // <1>
     private void initVisitDate() {
-        if (visitDate == null) { // <2>
+        if (visitDate == null) {
             setVisitDate(today());
         }
     }
 
     private Date today() {
-        TimeSource timeSource = AppBeans.get(TimeSource.class); // <3>
+        TimeSource timeSource = AppBeans.get(TimeSource.class); // <2>
         return timeSource.currentTimestamp();
     }
 }
 ----
-<1> `@PostConstruct` triggers this method after creation of an instance of this class. It is called when manually creating an instance via `metadata.create(Visit.class)` as well as instance creation by the framework (e.g. when a instance is created during the data loading process from the database
-<2> When the instance is created from a database record, a `visitDate` might have been initialized with the correct value. Therefore it is required to check if the attribute is null
-<3> Managed beans can be referenced via `AppBeans.get()`
+<1> `@PostConstruct` triggers this method after creation of an instance of this class. It is called when manually creating an instance via `metadata.create(Visit.class)` as well as when the instance is created in UI by the framework
+<2> Managed beans can be referenced via `AppBeans.get()`
 
 == UI Layer Initialization
 
-On the UI layer there are two main ways to initialize an entity during screen creation. The first one is internal within the screen controller, that should show the newly created entity. The second one is external, where the entity and its attributes are defined by the screen controller creating the destination screen.
+On the UI layer there are two main ways to initialize an entity during screen creation. The first one is internal within the screen controller, that should show the newly created entity. The second one is external, where the entity is defined by the code calling the destination screen.
 
 === Internal Initialization via InitEntityEvent
 
-The alternative to the external entity initialization is to do the entity initialization within the destination screen controller itself. In this case the CUBA platform UI events can be leveraged. In particular for `StandardEditor` screens there is a particular UI event that is desinged exactly for this purpose: the `InitEntityEvent`.
+The first option is that the entity initialization happens within the destination screen controller itself. In this case the CUBA platform UI events can be leveraged. In particular for `StandardEditor` screens there is a particular UI event that is designed exactly for this purpose: the `InitEntityEvent`.
 
 In the petclinic example this internal initialization is used to set the paid status of the regular checkup visit instance to paid.
 
@@ -120,7 +119,7 @@ The upside of this kind of initialization is that is very easy to achieve and do
 
 === External Initialization via Screen Builders
 
-On the frontend layer with CUBA 7 the `ScreenBuilders` API was introduced. It allows to programmatically create and open screens with various options to configure.
+On the frontend layer with CUBA 7 the `ScreenBuilders` API was introduced. It allows programmatic creation and and screen opening via a Builder pattern, which exposes various options for further configuration.
 
 One of this options is the possibility to define an initializer method, that gets executed before opening the screen, where it is possible for an Editor screen to change attributes of the entity that will be displayed.
 
