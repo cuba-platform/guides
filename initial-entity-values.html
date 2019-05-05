@@ -199,7 +199,7 @@
 </div>
 <div class="sect2">
 <h3 id="final_application"><a class="anchor" href="#final_application"></a><a class="link" href="#final_application">Final Application</a></h3>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-data-model-entity-inheritance/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-data-model-entity-inheritance/master/img/login-screen.png"/></a>
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-initial-entity-values/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-initial-entity-values/master/img/login-screen.png"/></a>
 </div>
 <div class="sect2">
 <h3 id="requirements"><a class="anchor" href="#requirements"></a><a class="link" href="#requirements">Requirements</a></h3>
@@ -524,8 +524,20 @@
 <div class="paragraph">
 <p>This number only needs to be generated when the visit is saved. Therefore it is possible to use the available mechanisms at the persistence layer. There are several options in this space. In CUBA 7 a common way of interacting with the persistence lifecycle is the <code>EntityChangedEvent</code>.</p>
 </div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+In order to execute business logic via the <code>EntityChangedEvent</code> for a given entity, the Annotation <code>@PublishEntityChangedEvents</code> has to be added to the Entity of choice. In this example the <code>Visit</code> entity needs this annotation so that CUBA will send out the events.
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
-<p>For the petclinic example, the use case as described above is to generate a <code>visitNumber</code> directly before the visit entity is stored. The <code>VisitNumberGenerator</code> bean acts</p>
+<p>For the petclinic example, the use case as described above is to generate a <code>visitNumber</code> directly before the visit entity is stored. The <code>VisitNumberGenerator</code> bean acts as the logic, that will generate the visit number creation.</p>
 </div>
 <div class="listingblock">
 <div class="title">VisitNumberGenerator.java</div>
@@ -607,17 +619,8 @@
 <div class="paragraph">
 <p>The main difference is, that these kinds of initializations are only applied when the user uses this particular UI to interact with the system. Oftentimes there are other use-cases, like the REST API, Bulk Editor functionality, data import scenarios etc. If it is required to initialize an attribute for all those use-cases the Entity Field initialization should be preferred.</p>
 </div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-complete summary with mentioning pre-persist examples
-</td>
-</tr>
-</table>
+<div class="paragraph">
+<p>Furthermore two different dependent attribute initializations were shown, as there use-case is oftentimes quite similar to the normal attribute initialization. It is possible to either initialize a dependent attribute directly in the UI or before storing the entity with the help of the <code>EntityChangedEvent</code>.</p>
 </div>
 </div>
 </div>
