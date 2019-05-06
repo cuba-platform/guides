@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Decouple Business Logic with Application Events</title>
+    <title>Data Modelling: Composition</title>
     <meta name="description" content="The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.">
     <meta name="author" content="Haulmont">
     <link rel="shortcut icon" href="/guides/images/favicon.png" type="image/png" />
@@ -164,39 +164,39 @@
                             <div class="field field-name-body field-type-text-with-summary field-label-hidden">
                                 <div class="field-items">
                                     <div class="field-item even" property="content: encoded">
-                                        <h1>Decouple Business Logic with Application Events</h1>
+                                        <h1>Data Modelling: Composition</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>In CUBA 7 events are the predominant mechanism to react to different kinds of changes of the application. Furthermore, events are a common pattern within an application to decouple one part of the business logic from another. This guide gives an overview on how events can be used in a CUBA application and what the benefits are.</p>
+<p>In this guide the Composition relationship between entities will be covered. It will be shown where are the differences between Associations and Compositions. The two different kinds of Compositions: One-to-Many Compositions as well as One-to-One Compositions will be explored with different examples.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="what_will_be_build"><a class="anchor" href="#what_will_be_build"></a><a class="link" href="#what_will_be_build">What Will Be Build</a></h2>
+<h2 id="what_will_be_built"><a class="anchor" href="#what_will_be_built"></a><a class="link" href="#what_will_be_built">What Will be Built</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show different use cases of application events. In particular, the following use cases will be covered:</p>
+<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show various examples of a composition relationship between entities. In particular, the following use cases will be covered:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>generate a room keycode when a visit is going to be created</p>
+<p>The <code>Owner</code> entity gets a relationship to an <code>Address</code></p>
 </li>
 <li>
-<p>sending out room keycode for booked visits</p>
+<p>A <code>Pet</code> can contain multiple <code>HealthRecord</code> instances, each of them can contain multiple <code>HealthRecordAttachment</code> instances</p>
 </li>
 <li>
-<p>kicking off payment process once a pet visit is marked as completed</p>
+<p>The <code>Owner</code> entity <code>Pet</code> can contain multiple <code>HealthRecord</code> instances, each of them can contain multiple <code>HealthRecordAttachment</code> instances</p>
 </li>
 <li>
-<p>refresh the visits list once a visit is marked as completed</p>
+<p>The <code>Employee</code> entity has a detail entity for storing the employee record: <code>EmployeeRecord</code> which will be entered during the creation process of the <code>Employee</code></p>
 </li>
 </ul>
 </div>
 <div class="sect2">
 <h3 id="final_application"><a class="anchor" href="#final_application"></a><a class="link" href="#final_application">Final Application</a></h3>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-application-events/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-application-events/master/img/login-screen.png"/></a>
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-data-model-entity-inheritance/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-data-model-entity-inheritance/master/img/login-screen.png"/></a>
 </div>
 <div class="sect2">
 <h3 id="requirements"><a class="anchor" href="#requirements"></a><a class="link" href="#requirements">Requirements</a></h3>
@@ -220,10 +220,10 @@
 </ul>
 </div>
 <div class="paragraph">
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-intro-to-application-events/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
 </div>
 <div class="paragraph">
-<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-intro-to-application-events.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-intro-to-application-events.git</a></code></p>
+<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-data-model-composition.git</a></code></p>
 </div>
 </div>
 </div>
@@ -249,84 +249,134 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="benefits_of_an_event_based_business_logic"><a class="anchor" href="#benefits_of_an_event_based_business_logic"></a><a class="link" href="#benefits_of_an_event_based_business_logic">Benefits of an Event Based Business Logic</a></h2>
+<h2 id="composition_vs_association"><a class="anchor" href="#composition_vs_association"></a><a class="link" href="#composition_vs_association">Composition vs. Association</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The most common approach of communicating across application logic is to do method invocation. In CUBA and Spring this is done via Java objects, Spring components &amp; CUBA services that interact with each other. There are good reasons to use this communication pattern, but it is not the only one. Method invocation is oftentimes overused which can lead to bad maintainability of the overall system due to highly coupled application parts.</p>
+<p>CUBA platform supports two types of relationship between entities:  <code>ASSOCIATION</code> and <code>COMPOSITION</code>. Association is a relationship between the objects that can exist separately from each other. Composition, on the other hand, is used for "master-detail" relations, when the detail instances can exist only as part of the master entity.</p>
 </div>
 <div class="paragraph">
-<p>Event-based business logic is an alternative communication pattern for application logic, that has particular strengths in its low coupling of the communication partcipants. It is not suitable for all kinds of communication styles, but for a big number of cases it is a viable alternative. Generally event based communication can be used in the following scenarios:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>notification style communication</p>
-</li>
-<li>
-<p>communication that doesn&#8217;t necessarily need a back-channel</p>
-</li>
-<li>
-<p>triggering between technical independent parts of application logic</p>
-</li>
-<li>
-<p>situations where the user doesn&#8217;t need an immediate response</p>
-</li>
-</ul>
+<p>In the Petclinic example the relationship between an <code>Owner</code> and its <code>Addresses</code> may be considered as an example of composition: an <code>Address</code> that does not belong to any <code>Owner</code> does not make sense (in the domain of this application).</p>
 </div>
 <div class="paragraph">
-<p>As a result of using event based communication the parts of the application that are leveraging it will gain the following properties:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>low coupling from the event sender to the receiver</p>
-</li>
-<li>
-<p>easy isolated testability of the sender and receiver</p>
-</li>
-<li>
-<p>increased resiliency of the sender</p>
-</li>
-</ul>
+<p>Typically, the entities belonging to a composition are edited together since it is most natural to do so. A user opens the <code>Owner</code> editing screen and sees the list of <code>addresses</code>, so the user can create and edit them, but all changes both for the <code>Owner</code> and the <code>Address</code> are saved to the database together in one transaction, and only after the user confirms saving of the master entity (the <code>Owner</code>).</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="available_types_of_events_in_a_cuba_application"><a class="anchor" href="#available_types_of_events_in_a_cuba_application"></a><a class="link" href="#available_types_of_events_in_a_cuba_application">Available Types of Events in a CUBA Application</a></h2>
+<h2 id="one_to_many_composition"><a class="anchor" href="#one_to_many_composition"></a><a class="link" href="#one_to_many_composition">One-to-Many Composition</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>There are different kinds of application events within a CUBA application. The main categories are:</p>
+<p>In this guide different variants of using the Composition relationship will be shown. Compositions can be <code>ONE-TO-MANY</code> as well as <code>ONE-TO-ONE</code>. Also it is possible to have multiple levels of a nested composition in the application.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+With the release of CUBA 7, there is no limit of how many layers of nesting are defined anymore. Still, having too many levels of nesting is oftentimes the source of confusion for the user when interacting with the user interface. Therefore, it is suggested to not use the nested compositions with too many levels.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="one_to_many_one_level_of_nesting"><a class="anchor" href="#one_to_many_one_level_of_nesting"></a><a class="link" href="#one_to_many_one_level_of_nesting">One-to-Many: One Level of Nesting</a></h3>
+<div class="paragraph">
+<p>A one-to-many composition using the <code>Owner</code> and the <code>Address</code> entities as an example:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/data-model-composition/composition_domain_model_one_level.png" alt="composition domain model one level">
+</div>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>CUBA entity lifecycle events</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/owner/Address.java">Address.java</a> - the <code>Address</code> entity contains a mandatory link to the <code>Owner</code>.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In the Studio entity designer, set the following settings for the <code>owner</code> attribute: <strong>Attribute type</strong> - <code>ASSOCIATION</code>, <strong>Cardinality</strong> - <code>MANY_TO_ONE</code>, <strong>Mandatory</strong> - <code>on</code>.
+</td>
+</tr>
+</table>
+</div>
 </li>
 <li>
-<p>CUBA application lifecycle events</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/owner/Owner.java">Owner.java</a> - the <code>Owner</code> entity contains a one-to-many collection of <code>addresses</code>. The corresponding field is annotated with <code>@Composition</code> in order to implement composition, and <code>@OnDelete</code> for cascaded soft delete.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In the Studio entity designer, set the following settings for the <code>addresses</code> attribute: <strong>Attribute type</strong> - <code>COMPOSITION</code>, <strong>Cardinality</strong> - <code>ONE_TO_MANY</code>, <strong>On delete</strong> - <code>CASCADE</code>.
+</td>
+</tr>
+</table>
+</div>
 </li>
 <li>
-<p>CUBA UI events</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/views.xml">views.xml</a> - the <code>owner-with-pets-and-addresses</code> view of the <code>Owner</code> editing screen contains the <code>addresses</code> collection attribute. <code>Addresses</code> itself are loaded with <code>_local</code> view, because the <code>owner</code> attribute of the <code>Address</code> entity is set only at the creation of a new <code>Address</code> instance and never changes after that, so there is no need to load it.</p>
 </li>
 <li>
-<p>custom application events</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/owner/owner/owner-edit.xml">owner-edit.xml</a> - the XML descriptor of the <code>Owner</code> editor screen defines a data container for the <code>Owner</code> instance and a nested collection container for its <code>addresses</code>. It also contains a table for managing the <code>Address</code> instances.</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/owner/address/address-edit.xml">address-edit.xml</a> - a standard editor for the <code>Address</code> entity.</p>
 </li>
 </ul>
 </div>
+<div class="paragraph">
+<p>As a result, editing of an <code>Owner</code> instance works as follows:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/data-model-composition/one-level-owner-editor-address-composition.png"><img src="/guides/images/data-model-composition/one-level-owner-editor-address-composition.png" alt="one level owner editor address composition"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>Owner</code> edit screen shows a list of <code>addresses</code>.</p>
+</div>
+<div class="paragraph">
+<p>A user can create an <code>address</code> and open its editor. When <strong>OK</strong> is clicked in the <code>Address</code> editor, the updated instance of the <code>Address</code> is not yet saved to the database, but only to the <code>addressesDc</code> data container of the <code>Owner</code> editor.</p>
+</div>
+<div class="paragraph">
+<p>The user can create new <code>Address</code> instances and delete existing ones. All changes will be saved to the <code>terminalsDc</code> data container.</p>
+</div>
+<div class="paragraph">
+<p>When a user clicks <strong>OK</strong> in the Owner edit screen, the updated <code>Owner</code> instance together with all the updated <code>Address</code> instances is submitted to the <code>dataManager.commit()</code> method and saved to the database within a single transaction.</p>
+</div>
+</div>
 <div class="sect2">
-<h3 id="entity_changes_through_entitychangedevent"><a class="anchor" href="#entity_changes_through_entitychangedevent"></a><a class="link" href="#entity_changes_through_entitychangedevent">Entity Changes Through EntityChangedEvent</a></h3>
+<h3 id="one_to_many_two_levels_of_nesting"><a class="anchor" href="#one_to_many_two_levels_of_nesting"></a><a class="link" href="#one_to_many_two_levels_of_nesting">One-to-Many: Two Levels of Nesting</a></h3>
 <div class="paragraph">
-<p>In the petclinic example the following logic will be implemented: The petclinic has rooms for the stay of the pets during their time in the clinic. The rooms have no traditional keys or keycards, but instead have a 6 digit keycode to enter at the entrance door. This keycode has to be given to the pet&#8217;s owner once a new visit is booked. The transportation of the keycode should happen via SMS notification from the application.</p>
+<p>Composition can also be multiple-level. The next example shows a Composition of two levels. In the Petclinic there is a need to store health records of the pets. The <code>Pet</code> &#8594; <code>HealthRecord</code> relationship is another composition. However, the <code>HealthRecord</code> also has another composition since there can be multiple <code>Attachment</code> instances created for a given health record.</p>
 </div>
-<div class="paragraph">
-<p>This example is in the category of <em>Entity lifecycle events</em> because we want to execute logic, once a visit is booked (created). The <code>EntityChangedEvent</code> is sent out by the CUBA storage mechanism, once an Entity has been changed in the database.</p>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/data-model-composition/composition_domain_model_two_levels.png" alt="composition domain model two levels">
 </div>
-<div class="paragraph">
-<p>CUBA fires such an Event for entities, that have an annotation <code>@PublishEntityChangedEvents</code> on the class definition. A <code>EntityChangedEvent</code> contains information about the type of change (create, update or delete) as well as the attributes which have been changed.</p>
 </div>
-<div class="paragraph">
-<p>To register an Event listener for this event, a new Spring bean in the core module of the application has to be defined. In order to register to a specific kind of event, the method that should be called once an <code>EntityChangedEvent</code> has been sent has to be annotated with <code>@TransactionalEventListener</code>.</p>
-</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/pet/Pet.java">Pet.java</a> - the <code>healthRecord</code> attribute of the <code>Pet</code> class is marked as <code>@Composition</code> and <code>@OnDelete</code>.</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/pet/HealthRecord.java">HealthRecord.java</a> - the <code>attachments</code> attribute of the <code>HealthRecord</code> class is marked as <code>@Composition</code> and <code>@OnDelete</code> similarly to the <code>healthRecords</code> attribute of the <code>Pet</code> class.</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/views.xml">views.xml</a> - the <code>health-record-with-attachments</code> view of the <code>HealthRecord</code> class contains the <code>attachments</code> collection attribute. This view is used in the <code>pet-with-owner-and-type-and-health-records</code> view of the <code>Pet</code> entity which acts as the root view of the edit screen.</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/pet/pet/pet-edit.xml">pet-edit.xml</a> - the XML descriptor of the <code>Pet</code> editor screen defines a data container for the <code>Pet</code> instance and a nested collection data container for its <code>healthRecords</code>. It also contains a table for managing the <code>HealthRecord</code> instances. The screen uses the <code>pet-with-owner-and-type-and-health-records</code> view as a root view for this edit screen.</p>
 <div class="admonitionblock tip">
 <table>
 <tr>
@@ -334,319 +384,179 @@
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-There are two different kinds of annotations to register for as an event listener: <code>@TransactionalEventListener</code> and <code>@EventListener</code>. They differ regarding the transaction behavior. In this guide <code>@TransactionalEventListener</code> is used. More details can be found in the <a href="https://doc.cuba-platform.com/manual-7.0/entityChangedEvent.html">CUBA documentation</a>
+<div class="paragraph">
+<p>CUBA 7+ removed the previous need to define datasources for the second level of nested compositions in the editor of the top level entity with the release of data containers. In CUBA 7+ this definition is <strong>not</strong> required anymore.</p>
+</div>
 </td>
 </tr>
 </table>
 </div>
-<div class="listingblock">
-<div class="title">RoomKeycodeToOwnerSender.java</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Component</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_roomKeycodeToOwnerSender</span><span class="delimiter">&quot;</span></span>)
-<span class="directive">public</span> <span class="type">class</span> <span class="class">RoomKeycodeToOwnerSender</span> {
-
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> DataManager dataManager;
-
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> MobilePhoneNotificationGateway mobilePhoneNotificationGateway;
-
-    <span class="annotation">@TransactionalEventListener</span> <i class="conum" data-value="1"></i><b>(1)</b>
-    <span class="directive">public</span> <span class="type">void</span> sendRoomKeycode(EntityChangedEvent&lt;Visit, <span class="predefined-type">UUID</span>&gt; event) { <i class="conum" data-value="2"></i><b>(2)</b>
-
-        <span class="keyword">if</span> (event.getType().equals(EntityChangedEvent.Type.CREATED)) {
-            Visit visit = loadVisit(event.getEntityId()); <i class="conum" data-value="3"></i><b>(3)</b>
-            tryToSendRoomKeycodeToPetsOwner(visit);
-        }
-    }
-
-    <span class="directive">private</span> <span class="type">void</span> tryToSendRoomKeycodeToPetsOwner(Visit visit) {
-
-        <span class="keyword">if</span> (visit.getPet().getOwner() != <span class="predefined-constant">null</span>) {
-
-            <span class="predefined-type">String</span> phoneNumber = visit.getPet().getOwner().getTelephone();
-
-            <span class="keyword">if</span> (phoneNumber != <span class="predefined-constant">null</span>) {
-                <span class="predefined-type">String</span> notificationText = createNotificationText(visit);
-
-                mobilePhoneNotificationGateway.sendNotification(phoneNumber, notificationText);
-            }
-        }
-    }
-
-    <span class="comment">// ...</span>
-
-}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>registration of <code>sendRoomKeycode</code> as an event listener</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>scoping <code>EntityChangedEvent</code> only to Events which changed <code>Visit</code> entities</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>access to <code>Visit</code> identifier of the created instance</td>
-</tr>
-</table>
+</li>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/pet/healthrecord/healthrecord/health-record-edit.xml">health-record-edit.xml</a> - the XML descriptor of the <code>HealthRecord</code> editor screen defines a data container for the <code>HealthRecord</code> instance and a nested collection data container for its <code>attachments</code>. It also contains a table for managing the <code>HealthRecordAttachment</code> instances.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>With this definition of the Event listener the application will send out room keycodes to the owners of pets that have just registered in the petclinic.</p>
-</div>
-<div class="paragraph">
-<p>There can be multiple event listeners defined for a given event. In this example it is also required not only to notify the Owner of the pet about the keycode, but also the system that is responsible for controlling the door hardware. It also needs additional information about the visit with the associated pet, to automatically adjust the height of the bed, display a welcome message on the room&#8217;s TV etc.</p>
-</div>
-<div class="paragraph">
-<p>The following event listener will take over the responsibility to notify the room system.</p>
-</div>
-<div class="listingblock">
-<div class="title">RoomSystemNotifier.java</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Component</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_roomSystemNotifier</span><span class="delimiter">&quot;</span></span>)
-<span class="directive">public</span> <span class="type">class</span> <span class="class">RoomSystemNotifier</span> {
-
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> DataManager dataManager;
-
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> RoomSystemGateway roomSystemGateway;
-
-    <span class="annotation">@TransactionalEventListener</span>
-    <span class="directive">public</span> <span class="type">void</span> notifyRoomSystem(EntityChangedEvent&lt;Visit, <span class="predefined-type">UUID</span>&gt; event) {
-
-        <span class="keyword">if</span> (event.getType().equals(EntityChangedEvent.Type.CREATED)) {
-            Visit visit = loadVisit(event.getEntityId());
-            tryToNotifyRoomSystemAboutVisit(visit);
-        }
-    }
-
-    <span class="directive">private</span> <span class="type">void</span> tryToNotifyRoomSystemAboutVisit(Visit visit) {
-        roomSystemGateway.informAboutVisit(visit);
-    }
-
-    <span class="comment">// ...</span>
-}</code></pre>
-</div>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-When having multiple event listeners the invocation order oftentimes does not matter. In case it is necessary to execute one event listener before another Spring has the ability to define the order via the <code>@Order</code> annotation. See the <a href="https://doc.cuba-platform.com/manual-7.0/events.html">CUBA documentation</a> for further information on this topic.
-</td>
-</tr>
-</table>
+<p>As a result, the updated instances of the <code>HealthRecordAttachment</code>, as well as the <code>HealthRecord</code> instances, will be saved to the database only with the <code>Pet</code> instance in the same transaction.</p>
 </div>
 <div class="sect3">
-<h4 id="naming_conventions_of_events"><a class="anchor" href="#naming_conventions_of_events"></a><a class="link" href="#naming_conventions_of_events">Naming Conventions of Events</a></h4>
-<div class="paragraph">
-<p>Events are normally named in simple past: "Entity <strong>Changed</strong> Event". This is a common pattern, because it stresses that an event is an immutable fact that happened in the past and is not changeable anymore. Event listeners on the other hand should be named in present tense.</p>
+<h4 id="health_record_composition_within_the_pet_editor"><a class="anchor" href="#health_record_composition_within_the_pet_editor"></a><a class="link" href="#health_record_composition_within_the_pet_editor">Health Record Composition within the Pet Editor</a></h4>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/data-model-composition/two-levels-pet-editor-health-records-composition.png"><img src="/guides/images/data-model-composition/two-levels-pet-editor-health-records-composition.png" alt="two levels pet editor health records composition"></a>
 </div>
-<div class="paragraph">
-<p>Furthermore Event listeners are normally named regarding the one specific action that they should fulfill. Instead of creating a general <code>PetCreatedListener</code> that deals with all things that should happen once a pet is created in the system, Event listeners should be named regarding one specific action that should be performed: <code>RoomKeycodeToOwnerSender</code> &#8594; sends a room keycode to the pets owner.</p>
 </div>
-<div class="paragraph">
-<p>This is an example of an application of the <a href="https://en.wikipedia.org/wiki/Open%E2%80%93closed_principle">open-closed principle</a>, which normally leads to more loosely coupled application parts and due to that to more maintainable software.</p>
+</div>
+<div class="sect3">
+<h4 id="health_record_attachment_composition_within_the_health_record_editor"><a class="anchor" href="#health_record_attachment_composition_within_the_health_record_editor"></a><a class="link" href="#health_record_attachment_composition_within_the_health_record_editor">Health Record Attachment Composition within the Health Record Editor</a></h4>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/data-model-composition/two-levels-healthRecord-editor-health-record-attachments-composition.png"><img src="/guides/images/data-model-composition/two-levels-healthRecord-editor-health-record-attachments-composition.png" alt="two levels healthRecord editor health record attachments composition"></a>
+</div>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="custom_application_logic_events"><a class="anchor" href="#custom_application_logic_events"></a><a class="link" href="#custom_application_logic_events">Custom Application Logic Events</a></h3>
+<h3 id="more_levels_of_nesting"><a class="anchor" href="#more_levels_of_nesting"></a><a class="link" href="#more_levels_of_nesting">More Levels of Nesting</a></h3>
 <div class="paragraph">
-<p>The next example is using custom application events to send messages between different parts of the application in a loosely coupled manner. When the pet is recovered and checked out the visit is marked as complete. When this event happens, certain downstream process can be kicked off as well. One of them, which this example deals with is that the invoicing process starts.</p>
+<p>As stated above, CUBA 7+ does not have the restriction of maximal two levels of nesting for composition anymore. This means that three (or more) levels of nesting are possible. The example for two levels of nesting can be extended towards: <code>Owner</code> &#8594; <code>Pet</code> &#8594; <code>Health Record</code> &#8594; <code>Health Record Attachment</code> and in fact it has been done within the demo application. It is also possible to combine the usage of One-to-Many and One-to-One compositions within a Composition chain.</p>
 </div>
 <div class="paragraph">
-<p>The first step towards custom application event is to define an event as a class <code>VisitCompletedEvent</code> in the <code>core</code> module:</p>
+<p>Having too many levels of composition has to be treated with caution, though. It requires an additional burden on the user, to understand at which point which data is stored.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="one_to_one_composition"><a class="anchor" href="#one_to_one_composition"></a><a class="link" href="#one_to_one_composition">One-to-One Composition</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Besides the above explained Composition of type <code>ONE-TO-MANY</code>, there is also the possibility to define Composition of type <code>ONE-TO-ONE</code>. This type of Composition is useful when it is only possible to have one item of the child entity. An example in the petclinic is the following scenario:</p>
+</div>
+<div class="paragraph">
+<p>The employees of the Petclinic have to be managed (like Vets, Nurses etc.). Therefore an <code>Employee</code> entity is defined. For each <code>Employee</code> instance there is an associated <code>EmployeeRecord</code> entity which stores information about the work related information of this employee.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/data-model-composition/composition-one-to-one.png" alt="composition one to one">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/employee/Employee.java">Employee.java</a> - the <code>Employee</code> entity contains an optional link to <code>EmployeeRecord</code> annotated with <code>@Composition</code>.</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/employee/EmployeeRecord.java">EmployeeRecord.java</a> - the <code>EmployeeRecord</code> entity.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>On a UI level it is possible to deal with One-to-One composition in two different ways. Normally, One-to-One compositions are displayed as a single entry in the form of the master entity. The details of the child entity are entered in a dedicated edit screen for this entity. But it is also possible to enter values for both entites in the same edit screen. Below both options will be shown.</p>
+</div>
+<div class="sect2">
+<h3 id="one_to_one_with_a_details_screen"><a class="anchor" href="#one_to_one_with_a_details_screen"></a><a class="link" href="#one_to_one_with_a_details_screen">One-to-One with a Details Screen</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/employee/employee/employee-edit.xml">employee-edit.xml</a> - the employee edit screen descriptor. It contains a nested data container for the <code>EmployeeRecord</code> instance. In order to load the nested instance, the root data container uses the <code>employee-with-employee-record-view</code> view of the <code>Employee</code> entity that includes the <code>employeeRecord</code> attribute.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The definition of the <code>employeeRecord</code> property in the <code>employee-edit.xml</code> is defined as a <code>pickerField</code> component which contains the actions <code>OpenAction</code> (with special type <code>picker_open_composition</code>) and <code>ClearAction</code>:</p>
 </div>
 <div class="listingblock">
-<div class="title">VisitCompletedEvent.java</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.haulmont.sample.petclinic.core.visit</span>;
-
-<span class="directive">public</span> <span class="type">class</span> <span class="class">VisitCompletedEvent</span> <span class="directive">extends</span> ApplicationEvent { <i class="conum" data-value="1"></i><b>(1)</b>
-
-    <span class="directive">private</span> <span class="directive">final</span> Visit visit;
-
-    <span class="directive">public</span> VisitCompletedEvent(<span class="predefined-type">Object</span> source, Visit visit) {
-
-        <span class="local-variable">super</span>(source);
-        <span class="local-variable">this</span>.visit = visit;
-    }
-
-    <span class="directive">public</span> Visit getVisit() {
-        <span class="keyword">return</span> visit;
-    }
-}</code></pre>
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;pickerField</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">employeeRecordField</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">property</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">employeeRecord</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;actions&gt;</span>
+        <span class="tag">&lt;action</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">open</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">picker_open_composition</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+        <span class="tag">&lt;action</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">clear</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">picker_clear</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;/actions&gt;</span>
+<span class="tag">&lt;/pickerField&gt;</span></code></pre>
 </div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Custom events have to extend <code>ApplicationEvent</code> in order to being passed through the event system of Spring</td>
-</tr>
-</table>
 </div>
 <div class="paragraph">
-<p>The next part is to send the event using the <code>Events</code> infrastructure of CUBA.</p>
+<p>As a result, employee editing works as follows:</p>
 </div>
-<div class="listingblock">
-<div class="title">VisitStatusServiceBean.java</div>
+<div class="imageblock text-center">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.haulmont.sample.petclinic.service</span>;
-
-<span class="keyword">import</span> <span class="include">com.haulmont.cuba.core.global.Events</span>;
-
-<span class="comment">// ...</span>
-
-<span class="annotation">@Service</span>(VisitStatusService.NAME)
-<span class="directive">public</span> <span class="type">class</span> <span class="class">VisitStatusServiceBean</span> <span class="directive">implements</span> VisitStatusService {
-
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> Events events; <i class="conum" data-value="1"></i><b>(1)</b>
-
-    <span class="comment">// ...</span>
-
-    <span class="annotation">@Override</span>
-    <span class="directive">public</span> <span class="type">boolean</span> completeVisit(Visit visit) {
-
-        <span class="keyword">if</span> (visit.getStatus().equals(VisitStatus.ACTIVE)) {
-            markVisitAsComplete(visit);
-
-            notifyAboutVisitCompletion(visit);
-
-            <span class="keyword">return</span> <span class="predefined-constant">true</span>;
-        }
-        <span class="comment">// ...</span>
-    }
-
-    <span class="directive">private</span> <span class="type">void</span> notifyAboutVisitCompletion(Visit visit) {
-        events.publish(<span class="keyword">new</span> VisitCompletedEvent(<span class="local-variable">this</span>, visit)); <i class="conum" data-value="2"></i><b>(2)</b>
-    }
-
-    <span class="directive">private</span> <span class="type">void</span> markVisitAsComplete(Visit visit) {
-        visit.setStatus(VisitStatus.COMPLETED);
-        dataManager.commit(visit);
-        log.info(<span class="string"><span class="delimiter">&quot;</span><span class="content">Visit {} marked as complete</span><span class="delimiter">&quot;</span></span>, visit);
-    }
-}</code></pre>
+<img src="/guides/images/data-model-composition/composition-one-to-one-editor-open-action.png" alt="composition one to one editor open action" width="600">
 </div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Injecting CUBAs <code>Events</code> Spring bean</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Publishing a new <code>VisitCompletedEvent</code> once the visit&#8217;s status is updated</td>
-</tr>
-</table>
 </div>
 <div class="paragraph">
-<p>The last remaining part does not differ compared to other events that are published by CUBA itself since the technical mechanisms are exactly the same.</p>
+<p>When the open action is invoked, a new instance of <code>EmployeeRecord</code> is created and its edit screen is shown. When <strong>OK</strong> is clicked in the employee record editor, the employee record instance is not saved to the database, but only to the <code>employeeRecordDc</code> data container of the employee edit screen.</p>
 </div>
 <div class="paragraph">
-<p>The Event listener <code>InvoicingProcessInitializer</code> receives events of type <code>VisitCompletedEvent</code> and create an invoice for the received visit.</p>
+<p>The picker field displays the instance name of the <code>EmployeeRecord</code> entity:</p>
 </div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-There are two ways to listen to events. Above <code>@TransactionalEventListener</code> annotation is used. There is also a possibility to implement the Interface <code>ApplicationListener&lt;T&gt;</code> which is used for the Event listener <code>InvoicingProcessInitializer</code>.
-</td>
-</tr>
-</table>
-</div>
-<div class="listingblock">
-<div class="title">InvoicingProcessInitializer.java</div>
+<div class="imageblock text-center">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.haulmont.sample.petclinic.core.payment</span>;
-
-<span class="annotation">@Component</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_invoicingProcessInitializer</span><span class="delimiter">&quot;</span></span>)
-<span class="directive">public</span> <span class="type">class</span> <span class="class">InvoicingProcessInitializer</span> <span class="directive">implements</span> ApplicationListener&lt;VisitCompletedEvent&gt; {
-
-    <span class="comment">// ...</span>
-
-    <span class="annotation">@Override</span>
-    <span class="directive">public</span> <span class="type">void</span> onApplicationEvent(VisitCompletedEvent event) {
-        log.info(<span class="string"><span class="delimiter">&quot;</span><span class="content">Payment process initialized: {}</span><span class="delimiter">&quot;</span></span>, event.getVisit());
-
-        CommitContext commitContext = <span class="keyword">new</span> CommitContext();
-        createInvoiceFor(event.getVisit(), commitContext);
-
-        dataManager.commit(commitContext);
-    }
-
-    <span class="directive">private</span> <span class="type">void</span> createInvoiceFor(Visit visit, CommitContext commitContext) {
-        Invoice invoice = dataManager.create(Invoice.class);
-
-        invoice.setVisit(visit);
-        invoice.setInvoiceDate(visit.getVisitDate());
-        invoice.setInvoiceNumber(createInvoiceNumber());
-
-        <span class="predefined-type">List</span>&lt;InvoiceItem&gt; invoiceItems = createInvoiceItemsFor(invoice);
-        invoice.setItems(invoiceItems);
-
-        invoiceItems.forEach(commitContext::addInstanceToCommit);
-        commitContext.addInstanceToCommit(invoice);
-
-    }
-
-    <span class="comment">//...</span>
-}</code></pre>
+<img src="/guides/images/data-model-composition/composition-one-to-one-editor-open-action-instance-name.png" alt="composition one to one editor open action instance name" width="600">
 </div>
+</div>
+<div class="paragraph">
+<p>When a user clicks <strong>OK</strong> in the employee edit screen, the updated <code>Employee</code> instance together with the <code>EmployeeRecord</code> instance is submitted to the <code>DataManager.commit()</code> method and saved to the database within a single transaction.</p>
+</div>
+<div class="paragraph">
+<p>If the user invokes the clear action of the picker field, the <code>EmployeeRecord</code> instance is deleted and the reference to it is cleared in the same transaction after the user commits the employee editor.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="cuba_ui_events"><a class="anchor" href="#cuba_ui_events"></a><a class="link" href="#cuba_ui_events">CUBA UI Events</a></h3>
+<h3 id="one_to_one_composition_with_a_single_editor"><a class="anchor" href="#one_to_one_composition_with_a_single_editor"></a><a class="link" href="#one_to_one_composition_with_a_single_editor">One-to-One Composition with a Single Editor</a></h3>
 <div class="paragraph">
-<p>On the UI layer there are two main use cases for events. The first is that the framework itself sends events for certain interactions that happen within the user interface of the application. Additionally, it is also possible just like in the middleware layer to send custom application UI events. Both kinds of events have in common that instead of the middleware events the UI events are always scoped to one instance of the UI. Furthermore, the events are scoped towards a single browser tab.</p>
-</div>
-<div class="sect3">
-<h4 id="framework_ui_events"><a class="anchor" href="#framework_ui_events"></a><a class="link" href="#framework_ui_events">Framework UI Events</a></h4>
-<div class="paragraph">
-<p>With CUBA 7 the API of the UI components changed from programmatically defined event listener and template method pattern towards declarative event subscriptions via annotations. It is possible to register event listeners in the controller using the <code>@Subscribe</code> annotation.</p>
+<p>It is often convenient to edit the One-to-One composition in a single editor. The following example shows how the <code>EmployeeRecord</code> can be edited within the <code>Employee</code> editor screen.</p>
 </div>
 <div class="paragraph">
-<p>There are several Events to subscribe that deal with the lifecycle of a controller like <code>InitEvent</code>, <code>BeforeCloseEvent</code>, <code>PreCommitEvent</code> and so on. The data part of the controllers also offer a list of Events like <code>ItemChangeEvent</code>, <code>CollectionChangeEvent</code>. Furthermore, the UI components themselves send events for changes of their states like <code>EnterPressEvent</code>, <code>TextChangeEvent</code> and so on.</p>
-</div>
-<div class="paragraph">
-<p>CUBA studio has the ability to get an overview of the available events for a controller. It looks like this:</p>
-</div>
-<img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-application-events/master/img/studio-subscribe-to-events.png"/>
-<div class="paragraph">
-<p>For the petclinic, the VisitEdit controller leverages the <code>InitEntityEvent</code> for generating a Room keycode when a new entity is going to be created:</p>
+<p>The <a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/employee/employee/employee-single-editor-edit.xml">employee-single-editor-edit.xml</a> descriptor contains the main <code>employeeDc</code> and the nested <code>employeeRecordDc</code> data containers:</p>
 </div>
 <div class="listingblock">
-<div class="title">VisitEdit.java</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@UiController</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_Visit.edit</span><span class="delimiter">&quot;</span></span>)
-<span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">visit-edit.xml</span><span class="delimiter">&quot;</span></span>)
-<span class="annotation">@EditedEntityContainer</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">visitCt</span><span class="delimiter">&quot;</span></span>)
-<span class="directive">public</span> <span class="type">class</span> <span class="class">VisitEdit</span> <span class="directive">extends</span> StandardEditor&lt;Visit&gt; {
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;data&gt;</span>
+    <span class="tag">&lt;instance</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">employeeDc</span><span class="delimiter">&quot;</span></span>
+              <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.haulmont.sample.petclinic.entity.employee.Employee</span><span class="delimiter">&quot;</span></span>
+              <span class="attribute-name">view</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">employee-with-employee-record-view</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;loader</span><span class="tag">/&gt;</span>
+        <span class="tag">&lt;instance</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">employeeRecordDc</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">property</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">employeeRecord</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;/instance&gt;</span>
+<span class="tag">&lt;/data&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Fields for editing both entities are defined in the same editor either a single form or multiple forms:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;form</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">form</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">dataContainer</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">employeeDc</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;textField</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">firstNameField</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">property</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">firstName</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;textField</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">lastNameField</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">property</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">lastName</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;dateField</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">birthdateField</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">property</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">birthdate</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+<span class="tag">&lt;/form&gt;</span>
+<span class="tag">&lt;form</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">employeeRecordForm</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">dataContainer</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">employeeRecordDc</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;textField</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">personellNumberField</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">property</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">personellNumber</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">datatype</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">int</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;textField</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">amountSickDaysFild</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">property</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">amountSickDays</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">datatype</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">int</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+<span class="tag">&lt;/form&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the <a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/employee/employee/EmployeeSingleEditorEdit.java">EmployeeSingleEditorEdit.java</a> controller an <code>EmployeeRecord</code> instance will be created and linked to the new <code>Employee</code> instance when the latter is just created:</p>
+</div>
+<div class="listingblock">
+<div class="title">EmployeeSingleEditorEdit.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Inject</span>
+<span class="directive">protected</span> DataContext dataContext;
 
-    <span class="annotation">@Subscribe</span> <i class="conum" data-value="1"></i><b>(1)</b>
-    <span class="directive">protected</span> <span class="type">void</span> onInitEntity(InitEntityEvent&lt;Visit&gt; event) {
-        event.getEntity().setRoomKeycode(generateRoomKeycode()); <i class="conum" data-value="2"></i><b>(2)</b>
-    }
+<span class="annotation">@Subscribe</span>
+<span class="directive">protected</span> <span class="type">void</span> onInitEntity(InitEntityEvent&lt;Employee&gt; event) { <i class="conum" data-value="1"></i><b>(1)</b>
+    Employee employee = event.getEntity();
+    EmployeeRecord employeeRecord = createEmployeeRecord();
+    employee.setEmployeeRecord(employeeRecord);
+}
 
-    <span class="directive">private</span> <span class="predefined-type">String</span> generateRoomKeycode() {
-        <span class="type">int</span> rookKeycode = <span class="keyword">new</span> <span class="predefined-type">Random</span>().nextInt(<span class="integer">999999</span>);
-        <span class="keyword">return</span> <span class="predefined-type">String</span>.format(<span class="string"><span class="delimiter">&quot;</span><span class="content">%04d</span><span class="delimiter">&quot;</span></span>, rookKeycode);
-    }
+<span class="directive">private</span> EmployeeRecord createEmployeeRecord() {
+    <span class="keyword">return</span> dataContext.merge(metadata.create(EmployeeRecord.class)); <i class="conum" data-value="2"></i><b>(2)</b>
 }</code></pre>
 </div>
 </div>
@@ -654,113 +564,21 @@ There are two ways to listen to events. Above <code>@TransactionalEventListener<
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Registering <code>onInitEntity</code> as an event listener for the <code>InitEntityEvent&lt;Visit&gt;</code></td>
+<td>the initialization of the <code>EmployeeRecord</code> can be defined when the <code>InitEntityEvent</code> is fired</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Setting the room keycode of the newly created visit entity</td>
+<td>an instance of <code>EmployeeRecord</code> is created and merged in the current <code>dataContext</code></td>
 </tr>
 </table>
 </div>
-</div>
-<div class="sect3">
-<h4 id="custom_ui_events"><a class="anchor" href="#custom_ui_events"></a><a class="link" href="#custom_ui_events">Custom UI Events</a></h4>
 <div class="paragraph">
-<p>Just like for custom application events, custom UI events allow sending notifications about business / UI related facts as objects. The same UI instance is able to register for those events and execute further decoupled logic. In the petclinic, the following use case is modeled as a custom UI event. Once the visit is marked as complete through the UI button, the table of the screen should be updated.</p>
+<p>Now, both linked entities can be created and edited in one editor screen.</p>
 </div>
-<div class="paragraph">
-<p>The first step is once again to define a</p>
-</div>
-<div class="listingblock">
-<div class="title">VisitCompletedUiEvent.java</div>
+<div class="imageblock text-center">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VisitCompletedClickedEvent</span> <span class="directive">extends</span> ApplicationEvent <span class="directive">implements</span> UiEvent { <i class="conum" data-value="1"></i><b>(1)</b>
-
-    <span class="directive">public</span> VisitCompletedClickedEvent(<span class="predefined-type">Object</span> source) {
-        <span class="local-variable">super</span>(source);
-    }
-}</code></pre>
+<img src="/guides/images/data-model-composition/composition-one-to-one-single-editor.png" alt="composition one to one single editor">
 </div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Marks the application event as a UI event by implementing the interface <code>UiEvent</code></td>
-</tr>
-</table>
-</div>
-<div class="listingblock">
-<div class="title">VisitEdit.java</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VisitBrowse</span> <span class="directive">extends</span> StandardLookup&lt;Visit&gt; {
-
-    <span class="comment">// ...</span>
-
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> Events events; <i class="conum" data-value="1"></i><b>(1)</b>
-
-    <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">visitsTable.completeVisit</span><span class="delimiter">&quot;</span></span>)
-    <span class="directive">protected</span> <span class="type">void</span> completeVisit(<span class="predefined-type">Action</span>.ActionPerformedEvent event) {
-        Visit visit = visitsTable.getSingleSelected();
-        <span class="type">boolean</span> visitWasCompleted = visitStatusService.completeVisit(visit);
-
-        <span class="keyword">if</span> (visitWasCompleted) {
-            events.publish(<span class="keyword">new</span> VisitCompletedClickedEvent(visit)); <i class="conum" data-value="2"></i><b>(2)</b>
-        }
-        <span class="comment">// ...</span>
-    }
-
-    <span class="annotation">@EventListener</span> <i class="conum" data-value="3"></i><b>(3)</b>
-    <span class="directive">protected</span> <span class="type">void</span> updateDataOnVisitCompleted(VisitCompletedClickedEvent event) {
-        loadData(); <i class="conum" data-value="4"></i><b>(4)</b>
-
-        notifications.create()
-                .setCaption(messages.formatMessage(<span class="local-variable">this</span>.getClass(), <span class="string"><span class="delimiter">&quot;</span><span class="content">visitCompleteSuccessful</span><span class="delimiter">&quot;</span></span>))
-                .setType(Notifications.NotificationType.TRAY)
-                .show();
-    }
-}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Using CUBAs <code>Events</code> mechanism</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Sending a <code>VisitCompletedUiEvent</code></td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Registering <code>updateDataOnVisitCompleted</code> as an event listener for <code>VisitCompletedUiEvent</code> events</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Reload the data</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>In this example the sender and the receiver are the same class, but this does not necessarily be the case. It is also possible to send a UI event in one controller and receive the event in another controller.</p>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="sending_events_between_layers"><a class="anchor" href="#sending_events_between_layers"></a><a class="link" href="#sending_events_between_layers">Sending Events Between Layers</a></h3>
-<div class="paragraph">
-<p>Technically there is one main constraint to think about when interacting with events in a CUBA application. This is that as CUBA is a multi-module application that can be deployed as two main parts: frontend (web module) and middleware (core module) sending events between the two layers is not directly possible.</p>
-</div>
-<div class="paragraph">
-<p>The underlying framework for the events mechanism is Spring which has the facility to send application events within one application, more precisely within one JVM process. Since frontend and middleware can be two different JVM processes on different servers, Spring by default has no capabilities to interact across JVM processes.</p>
-</div>
-<div class="paragraph">
-<p>There are two ways to solve this problem. The first one is to leverage an external message broker like RabbitMQ to interact between applications (or layers of applications in this case). An internal application event can be send internally. An event listener (e.g. <code>RabbitMqForwarder</code>) then takes this message and forwards it to the external message broker. On the receiver side another Event listener for external RabbitMQ messages converts the messages back to an internal CUBA / Spring messages. With that the application can transparently communicate between JVM boundaries.</p>
-</div>
-<div class="paragraph">
-<p>The other way is to use an existing application component called <code>global-events</code>. Global events is an application component from Haulmont that especially addresses the problem of communicating between CUBA middleware and frontend parts.</p>
 </div>
 </div>
 </div>
@@ -769,26 +587,10 @@ There are two ways to listen to events. Above <code>@TransactionalEventListener<
 <h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Application events in CUBA allow defining loosely coupled business logic within the application. Parts independent from a business functionality point of view can also be reflected as independent components within the application. This low coupling has certain advantages like easier testability and higher resiliency of the parts of the application.</p>
+<p>In this data modelling guide the Composition relationship was described. Compositions are valuable if a master-detail relationship between two entities should be modelled, where the detail entities can only exist if the corresponding master entity exists.</p>
 </div>
 <div class="paragraph">
-<p>But there are also downsides to this approach. Communicating via events can sometimes be a challenge to get a developer&#8217;s head around. Method invocation allow a back-channel as a response. This is normally not the case for events. Also identifying that certain parts can be executed independent of each other is sometimes not obvious at first sight.</p>
-</div>
-<div class="paragraph">
-<p>One could argue that in the example from above the room keycode to the pet&#8217;s owner should only be sent if the room system also knows about it and has configured everything properly. This natural wish for consistency is oftentimes very hard to achieve in a distributed system (as the petclinic management and room system are). Messaging in this regard increases the resiliency of the overall system and its parts on the costs of some potential consistency.</p>
-</div>
-<div class="paragraph">
-<p>Ultimately, modelling and using application events right prevents application logic from ending up in a big ball of mud with invocations between business logic from any parts of the system to any other parts of the system. Sending messages across application parts is a more maintainable way of arranging application logic and oftentimes represents the workflows of the problem domain in a more accurate way as they exist in the real world.</p>
-</div>
-<div class="sect2">
-<h3 id="further_information"><a class="anchor" href="#further_information"></a><a class="link" href="#further_information">Further Information</a></h3>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="https://doc.cuba-platform.com/manual-7.0/events.html">Events reference documentation</a></p>
-</li>
-</ul>
-</div>
+<p>Composition structures can exist in 1:1 and 1:N form. Furthermore, nested composition can be created with multiple levels. The corresponding UI screens treat Composition relationships in a special way. Detail entities are only stored during the creation process of the master entity at the point in time when the master entity is stored.</p>
 </div>
 </div>
 </div>
@@ -808,18 +610,19 @@ There are two ways to listen to events. Above <code>@TransactionalEventListener<
                         <div class="guide-panel">
                             <h3>Table of contents</h3>
                             <ul class="sectlevel1">
-<li><a href="#what_will_be_build">What Will Be Build</a></li>
+<li><a href="#what_will_be_built">What Will be Built</a></li>
 <li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
-<li><a href="#benefits_of_an_event_based_business_logic">Benefits of an Event Based Business Logic</a></li>
-<li><a href="#available_types_of_events_in_a_cuba_application">Available Types of Events in a CUBA Application</a></li>
+<li><a href="#composition_vs_association">Composition vs. Association</a></li>
+<li><a href="#one_to_many_composition">One-to-Many Composition</a></li>
+<li><a href="#one_to_one_composition">One-to-One Composition</a></li>
 <li><a href="#summary">Summary</a></li>
 </ul>
                         </div>
 
                         <div class="guide-panel download">
                             <h3>Example code</h3>
-                            <a class=" guide-item_button button-outline"  href="https://github.com/cuba-guides/cuba-petclinic-intro-to-application-events/archive/master.zip" target="_blank">Download</a>
-                            <a href="https://github.com/cuba-guides/cuba-petclinic-intro-to-application-events" class="github-link" target="_blank">Github</a>
+                            <a class=" guide-item_button button-outline"  href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/archive/master.zip" target="_blank">Download</a>
+                            <a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition" class="github-link" target="_blank">Github</a>
                         </div>
 
                         <div class="guide-panel cuba-version">
