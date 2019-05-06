@@ -1,0 +1,41 @@
+$font-family-base: 'Lato', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+$font-size-base: 16px;
+$line-height-base: 1.428571429;
+
+$transition: 0.15s;
+$transition-long: 0.3s;
+$grid-breakpoints: (xs: 0, sm: 576px, md: 768px, lg: 992px, xl: 1200px);
+
+$color-body: #fff;
+$color-primary: #0784e3;
+$color-text: #2c3436;
+$color-secondary: #6b7172;
+$color-border: #d9dfe4;
+$color-link-header: #9b9b9b;
+$color-apple: #83c93c;
+$color-disabled: #ccc;
+$color-success: #83c93c;
+$color-active: #6c5ce7;
+$color-code: #e84118;
+$color-button-outline: #69a3e7;
+$color-accent: #fdcb6e;
+$color-danger: #e84118;
+
+$color-input-border: #9b9b9b;
+$color-input-border-disabled: #d3d6d9;
+$color-input-bg: #fff;
+$color-input-bg-disabled: #e5e9ec;
+
+$color-toggle-default-bg: #fde6c0;
+$color-toggle-default-text: #7f683d;
+$color-toggle-default-active-bg: #e2b96f;
+$color-toggle-default-active-text: #fff;
+$color-toggle-secondary-bg: #91e9e6;
+$color-toggle-secondary-text: #366d6c;
+$color-toggle-secondary-active-bg: #29bab7;
+$color-toggle-secondary-active-text: #fff;
+
+$padding-lg: 60px;
+$height-header: 72px;
+
+$width-container: 1190px;

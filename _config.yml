@@ -16,3 +16,5 @@ asciidoctor:
     - idseparator=_
     - source-highlighter=coderay
     - icons=font
+sass:
+  style: compact # possible values: nested expanded compact compressed

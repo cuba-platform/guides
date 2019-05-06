@@ -4,12 +4,12 @@ compatible_java_versions: 8+
 project_id: cuba-petclinic-data-model-entity-inheritance
 permalink: data-modelling-entity-inheritance
 ---
-= Data Modeling: Entity Inheritance
+= Data Modelling: Entity Inheritance
 :showtitle:
 :sectlinks:
 :sectanchors:
-:page-navtitle: Data Modeling: Entity Inheritance
-:page-excerpt: Data modeling guide: How entity inheritance can be used in a CUBA application
+:page-navtitle: Data Modelling: Entity Inheritance
+:page-excerpt: Data Modelling guide: How entity inheritance can be used in a CUBA application
 :page-root: ../../../
 :project_id: cuba-petclinic-data-model-entity-inheritance
 :java_version: 1.8
@@ -165,13 +165,13 @@ image::data-model-entity-inheritance/pet-browse-screen-inheritance.png[Pet brows
 public class PetBrowse extends StandardLookup<Pet> {
 
     @Inject
-    protected ScreenBuilders screenBuilders;
+    private ScreenBuilders screenBuilders;
 
     @Inject
-    protected GroupTable<Pet> petsTable;
+    private GroupTable<Pet> petsTable;
 
     @Inject
-    protected Metadata metadata;
+    private Metadata metadata;
 
     @Subscribe("createBtn.createCat")
     protected void onCreateBtnCreateCat(Action.ActionPerformedEvent event) {
@@ -326,7 +326,7 @@ TIP: CUBA itself offers mapped superclasses for defining standard attributes acr
 
 == Summary
 
-In this data modeling guide, entity inheritance was introduced. Inheritance is a common way in object-oriented programming to share data and behavior through a class hierarchy. On the database level, the concept of inheritance is not directly available. But still, JPA as the OR-Mapper allows expressing inheritance with different patterns to bridge the gap between the two worlds.
+In this data modelling guide, entity inheritance was introduced. Inheritance is a common way in object-oriented programming to share data and behavior through a class hierarchy. On the database level, the concept of inheritance is not directly available. But still, JPA as the OR-Mapper allows expressing inheritance with different patterns to bridge the gap between the two worlds.
 
 Entity inheritance is possible in different ways.  `MappedSuperclass` allows only sharing attributes without using a shared table at all. When inheritance also should be represented, JPA `@Inheritance` annotation can be used. In this case it is possible that other entities can create associations that reference the entity inheritance structure (like `Visit` -> `Pet` where `Pet` is an entity inheritance).
 
