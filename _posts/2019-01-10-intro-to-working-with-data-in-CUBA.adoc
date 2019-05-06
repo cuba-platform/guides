@@ -4,11 +4,11 @@ compatible_java_versions: 8+
 project_id: cuba-petclinic-intro-to-datamanager
 permalink: intro-working-with-data-in-cuba
 ---
-= Introduction to Working with Data in Cuba
+= Introduction to Working with Data in CUBA
 :showtitle:
 :sectlinks:
 :sectanchors:
-:page-navtitle: Introduction to working with Data in CUBA
+:page-navtitle: Introduction to Working with Data in CUBA
 :page-excerpt: Overview on how to read and write data in a CUBA application
 :page-root: ../../../
 :project_id: cuba-petclinic-intro-to-datamanager
@@ -18,7 +18,7 @@ permalink: intro-working-with-data-in-cuba
 This guide walks you through the CUBA APIs for programmatically interacting with the database through the DataManager API.
 
 
-== What Will Be Build
+== What Will Be Built
 
 This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show different use cases regarding programmatic data access with the DataManager API. In particular, the following use cases will be covered:
 
