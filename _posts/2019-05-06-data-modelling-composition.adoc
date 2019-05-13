@@ -1,0 +1,242 @@
+---
+compatible_cuba_versions: 7.0+
+compatible_java_versions: 8+
+project_id: cuba-petclinic-data-model-composition
+permalink: data-modelling-composition
+---
+= Data Modelling: Composition
+:showtitle:
+:sectlinks:
+:sectanchors:
+:page-navtitle: Data Modelling: Composition
+:page-excerpt: Data modelling guide: What are Compositions and when to use them over Associations
+:page-root: ../../../
+:project_id: cuba-petclinic-data-model-composition
+:java_version: 1.8
+:cuba_version: 7.0
+
+In this guide the Composition relationship between entities will be covered. It will be shown where are the differences between Associations and Compositions. The two different kinds of Compositions: One-to-Many Compositions as well as One-to-One Compositions will be explored with different examples.
+
+== What Will be Built
+
+This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show various examples of a composition relationship between entities. In particular, the following use cases will be covered:
+
+* The `Owner` entity gets a relationship to an `Address`
+* A `Pet` can contain multiple `HealthRecord` instances, each of them can contain multiple `HealthRecordAttachment` instances
+* The `Owner` entity `Pet` can contain multiple `HealthRecord` instances, each of them can contain multiple `HealthRecordAttachment` instances
+* The `Employee` entity has a detail entity for storing the employee record: `EmployeeRecord` which will be entered during the creation process of the `Employee`
+
+=== Final Application
+
+++++
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-data-model-composition/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-data-model-composition/master/img/login-screen.png"/></a>
+++++
+
+include::includes/guide_requirements.adoc[]
+
+
+include::includes/petclinic_introduction.adoc[]
+
+== Composition vs. Association
+
+CUBA platform supports two types of relationship between entities:  `ASSOCIATION` and `COMPOSITION`. Association is a relationship between the objects that can exist separately from each other. Composition, on the other hand, is used for "master-detail" relations, when the detail instances can exist only as part of the master entity.
+
+In the Petclinic example the relationship between an `Owner` and its `Addresses` may be considered as an example of composition: an `Address` that does not belong to any `Owner` does not make sense (in the domain of this application).
+
+
+Typically, the entities belonging to a composition are edited together since it is most natural to do so. A user opens the `Owner` editing screen and sees the list of `addresses`, so the user can create and edit them, but all changes both for the `Owner` and the `Address` are saved to the database together in one transaction, and only after the user confirms saving of the master entity (the `Owner`).
+
+== One-to-Many Composition
+
+In this guide different variants of using the Composition relationship will be shown. Compositions can be `ONE-TO-MANY` as well as `ONE-TO-ONE`. Also it is possible to have multiple levels of a nested composition in the application.
+
+TIP: With the release of CUBA 7, there is no limit of how many layers of nesting are defined anymore. Still, having too many levels of nesting is oftentimes the source of confusion for the user when interacting with the user interface. Therefore, it is suggested to not use the nested compositions with too many levels.
+
+=== One-to-Many: One Level of Nesting
+
+A one-to-many composition using the `Owner` and the `Address` entities as an example:
+
+image::data-model-composition/composition_domain_model_one_level.png[align="center"]
+
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/owner/Address.java[Address.java] - the `Address` entity contains a mandatory link to the `Owner`.
++
+NOTE: In the Studio entity designer, set the following settings for the `owner` attribute: *Attribute type* - `ASSOCIATION`, *Cardinality* - `MANY_TO_ONE`, *Mandatory* - `on`.
+
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/owner/Owner.java[Owner.java] - the `Owner` entity contains a one-to-many collection of `addresses`. The corresponding field is annotated with `@Composition` in order to implement composition, and `@OnDelete` for cascaded soft delete.
++
+NOTE: In the Studio entity designer, set the following settings for the `addresses` attribute: *Attribute type* - `COMPOSITION`, *Cardinality* - `ONE_TO_MANY`, *On delete* - `CASCADE`.
+
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/views.xml[views.xml] - the `owner-with-pets-and-addresses` view of the `Owner` editing screen contains the `addresses` collection attribute. `Addresses` itself are loaded with `_local` view, because the `owner` attribute of the `Address` entity is set only at the creation of a new `Address` instance and never changes after that, so there is no need to load it.
+
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/owner/owner/owner-edit.xml[owner-edit.xml] - the XML descriptor of the `Owner` editor screen defines a data container for the `Owner` instance and a nested collection container for its `addresses`. It also contains a table for managing the `Address` instances.
+
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/owner/address/address-edit.xml[address-edit.xml] - a standard editor for the `Address` entity.
+
+As a result, editing of an `Owner` instance works as follows:
+
+image::data-model-composition/one-level-owner-editor-address-composition.png[align="center",link="images/data-model-composition/one-level-owner-editor-address-composition.png"]
+
+
+The `Owner` edit screen shows a list of `addresses`.
+
+A user can create an `address` and open its editor. When *OK* is clicked in the `Address` editor, the updated instance of the `Address` is not yet saved to the database, but only to the `addressesDc` data container of the `Owner` editor.
+
+The user can create new `Address` instances and delete existing ones. All changes will be saved to the `terminalsDc` data container.
+
+When a user clicks *OK* in the Owner edit screen, the updated `Owner` instance together with all the updated `Address` instances is submitted to the `dataManager.commit()` method and saved to the database within a single transaction.
+
+=== One-to-Many: Two Levels of Nesting
+
+Composition can also be multiple-level. The next example shows a Composition of two levels. In the Petclinic there is a need to store health records of the pets. The `Pet` -> `HealthRecord` relationship is another composition. However, the `HealthRecord` also has another composition since there can be multiple `Attachment` instances created for a given health record.
+
+image::data-model-composition/composition_domain_model_two_levels.png[align="center"]
+
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/pet/Pet.java[Pet.java] - the `healthRecord` attribute of the `Pet` class is marked as `@Composition` and `@OnDelete`.
+
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/pet/HealthRecord.java[HealthRecord.java] - the `attachments` attribute of the `HealthRecord` class is marked as `@Composition` and `@OnDelete` similarly to the `healthRecords` attribute of the `Pet` class.
+
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/views.xml[views.xml] - the `health-record-with-attachments` view of the `HealthRecord` class contains the `attachments` collection attribute. This view is used in the `pet-with-owner-and-type-and-health-records` view of the `Pet` entity which acts as the root view of the edit screen.
+
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/pet/pet/pet-edit.xml[pet-edit.xml] - the XML descriptor of the `Pet` editor screen defines a data container for the `Pet` instance and a nested collection data container for its `healthRecords`. It also contains a table for managing the `HealthRecord` instances. The screen uses the `pet-with-owner-and-type-and-health-records` view as a root view for this edit screen.
+
++
+[TIP]
+====
+CUBA 7+ removed the previous need to define datasources for the second level of nested compositions in the editor of the top level entity with the release of data containers. In CUBA 7+ this definition is *not* required anymore.
+====
+
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/pet/healthrecord/healthrecord/health-record-edit.xml[health-record-edit.xml] - the XML descriptor of the `HealthRecord` editor screen defines a data container for the `HealthRecord` instance and a nested collection data container for its `attachments`. It also contains a table for managing the `HealthRecordAttachment` instances.
+
+
+As a result, the updated instances of the `HealthRecordAttachment`, as well as the `HealthRecord` instances, will be saved to the database only with the `Pet` instance in the same transaction.
+
+==== Health Record Composition within the Pet Editor
+image::data-model-composition/two-levels-pet-editor-health-records-composition.png[align="center",link="images/data-model-composition/two-levels-pet-editor-health-records-composition.png"]
+
+==== Health Record Attachment Composition within the Health Record Editor
+image::data-model-composition/two-levels-healthRecord-editor-health-record-attachments-composition.png[align="center",link="images/data-model-composition/two-levels-healthRecord-editor-health-record-attachments-composition.png"]
+
+
+=== More Levels of Nesting
+
+As stated above, CUBA 7+ does not have the restriction of maximal two levels of nesting for composition anymore. This means that three (or more) levels of nesting are possible. The example for two levels of nesting can be extended towards: `Owner` -> `Pet` -> `Health Record` -> `Health Record Attachment` and in fact it has been done within the demo application. It is also possible to combine the usage of One-to-Many and One-to-One compositions within a Composition chain.
+
+Having too many levels of composition has to be treated with caution, though. It requires an additional burden on the user, to understand at which point which data is stored.
+
+
+== One-to-One Composition
+
+Besides the above explained Composition of type `ONE-TO-MANY`, there is also the possibility to define Composition of type `ONE-TO-ONE`. This type of Composition is useful when it is only possible to have one item of the child entity. An example in the petclinic is the following scenario:
+
+The employees of the Petclinic have to be managed (like Vets, Nurses etc.). Therefore an `Employee` entity is defined. For each `Employee` instance there is an associated `EmployeeRecord` entity which stores information about the work related information of this employee.
+
+
+image::data-model-composition/composition-one-to-one.png[align="center"]
+
+
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/employee/Employee.java[Employee.java] - the `Employee` entity contains an optional link to `EmployeeRecord` annotated with `@Composition`.
+
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/employee/EmployeeRecord.java[EmployeeRecord.java] - the `EmployeeRecord` entity.
+
+On a UI level it is possible to deal with One-to-One composition in two different ways. Normally, One-to-One compositions are displayed as a single entry in the form of the master entity. The details of the child entity are entered in a dedicated edit screen for this entity. But it is also possible to enter values for both entites in the same edit screen. Below both options will be shown.
+
+
+=== One-to-One with a Details Screen
+
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/employee/employee/employee-edit.xml[employee-edit.xml] - the employee edit screen descriptor. It contains a nested data container for the `EmployeeRecord` instance. In order to load the nested instance, the root data container uses the `employee-with-employee-record-view` view of the `Employee` entity that includes the `employeeRecord` attribute.
+
+The definition of the `employeeRecord` property in the `employee-edit.xml` is defined as a `pickerField` component which contains the actions `OpenAction` (with special type `picker_open_composition`) and `ClearAction`:
+
+[source, xml]
+----
+<pickerField id="employeeRecordField" property="employeeRecord">
+    <actions>
+        <action id="open" type="picker_open_composition"/>
+        <action id="clear" type="picker_clear"/>
+    </actions>
+</pickerField>
+----
+
+As a result, employee editing works as follows:
+
+
+image::data-model-composition/composition-one-to-one-editor-open-action.png[align="center",width="600"]
+
+When the open action is invoked, a new instance of `EmployeeRecord` is created and its edit screen is shown. When *OK* is clicked in the employee record editor, the employee record instance is not saved to the database, but only to the `employeeRecordDc` data container of the employee edit screen.
+
+The picker field displays the instance name of the `EmployeeRecord` entity:
+
+image::data-model-composition/composition-one-to-one-editor-open-action-instance-name.png[align="center",width="600"]
+
+When a user clicks *OK* in the employee edit screen, the updated `Employee` instance together with the `EmployeeRecord` instance is submitted to the `DataManager.commit()` method and saved to the database within a single transaction.
+
+If the user invokes the clear action of the picker field, the `EmployeeRecord` instance is deleted and the reference to it is cleared in the same transaction after the user commits the employee editor.
+
+
+=== One-to-One Composition with a Single Editor
+
+
+It is often convenient to edit the One-to-One composition in a single editor. The following example shows how the `EmployeeRecord` can be edited within the `Employee` editor screen.
+
+The https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/employee/employee/employee-single-editor-edit.xml[employee-single-editor-edit.xml] descriptor contains the main `employeeDc` and the nested `employeeRecordDc` data containers:
+
+[source, xml]
+----
+<data>
+    <instance id="employeeDc"
+              class="com.haulmont.sample.petclinic.entity.employee.Employee"
+              view="employee-with-employee-record-view">
+        <loader/>
+        <instance id="employeeRecordDc" property="employeeRecord"/>
+    </instance>
+</data>
+----
+
+Fields for editing both entities are defined in the same editor either a single form or multiple forms:
+
+[source, xml]
+----
+<form id="form" dataContainer="employeeDc">
+    <textField id="firstNameField" property="firstName"/>
+    <textField id="lastNameField" property="lastName"/>
+    <dateField id="birthdateField" property="birthdate"/>
+</form>
+<form id="employeeRecordForm" dataContainer="employeeRecordDc">
+    <textField id="personellNumberField" property="personellNumber" datatype="int"/>
+    <textField id="amountSickDaysFild" property="amountSickDays" datatype="int"/>
+</form>
+----
+
+In the https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/employee/employee/EmployeeSingleEditorEdit.java[EmployeeSingleEditorEdit.java] controller an `EmployeeRecord` instance will be created and linked to the new `Employee` instance when the latter is just created:
+
+.EmployeeSingleEditorEdit.java
+[source, java]
+----
+@Inject
+protected DataContext dataContext;
+
+@Subscribe
+protected void onInitEntity(InitEntityEvent<Employee> event) { // <1>
+    Employee employee = event.getEntity();
+    EmployeeRecord employeeRecord = createEmployeeRecord();
+    employee.setEmployeeRecord(employeeRecord);
+}
+
+private EmployeeRecord createEmployeeRecord() {
+    return dataContext.merge(metadata.create(EmployeeRecord.class)); // <2>
+}
+----
+<1> the initialization of the `EmployeeRecord` can be defined when the `InitEntityEvent` is fired
+<2> an instance of `EmployeeRecord` is created and merged in the current `dataContext`
+
+Now, both linked entities can be created and edited in one editor screen.
+
+
+image::data-model-composition/composition-one-to-one-single-editor.png[align="center"]
+
+
+== Summary
+
+In this data modelling guide the Composition relationship was described. Compositions are valuable if a master-detail relationship between two entities should be modelled, where the detail entities can only exist if the corresponding master entity exists.
+
+Composition structures can exist in 1:1 and 1:N form. Furthermore, nested composition can be created with multiple levels. The corresponding UI screens treat Composition relationships in a special way. Detail entities are only stored during the creation process of the master entity at the point in time when the master entity is stored.
