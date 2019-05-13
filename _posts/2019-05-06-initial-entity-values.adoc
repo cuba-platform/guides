@@ -228,7 +228,7 @@ public class VisitEdit extends StandardEditor<Visit> {
 <3> the paid flag can be adjusted depending on the `selectedVisitType`
 
 
-=== Pre Persist Attribute Initialization
+=== Attribute Initialization during Data Storage
 
 The second case is that during the save operation, an attribute of the entity needs to be computed - but it does not need to be visible while the user sees the UI screen.
 
