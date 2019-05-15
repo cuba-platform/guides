@@ -228,15 +228,13 @@ public class VisitEdit extends StandardEditor<Visit> {
 <3> the paid flag can be adjusted depending on the `selectedVisitType`
 
 
-=== Attribute Initialization during Data Storage
+=== Attribute Initialization via DataContext PreCommitEvent
 
 The second case is that during the save operation, an attribute of the entity needs to be computed - but it does not need to be visible while the user sees the UI screen.
 
 In the petclinic example there is a attribute called `visitNumber` for the Visit entity, which represents a unique number of the visit shall be generated out of information that is specified by the user. The Visit Number should  be constructed out of the year of the visit, the name of the visit type and a 6-digit number.
 
-This number only needs to be generated when the visit is saved. Therefore it is possible to use the available mechanisms at the persistence layer. There are several options in this space. In CUBA 7 a common way of interacting with the persistence lifecycle is the `EntityChangedEvent`.
-
-WARNING: In order to execute business logic via the `EntityChangedEvent` for a given entity, the Annotation `@PublishEntityChangedEvents` has to be added to the Entity of choice. In this example the `Visit` entity needs this annotation so that CUBA will send out the events.
+This number only needs to be generated when the visit is saved. Therefore it is possible to use the available mechanisms of the data context in the UI controller. There are several options in this area. In CUBA 7 the data context lifecycle events allow to intercept the storage operation in order to execute some logic that happens during storage of the edited entity.
 
 For the petclinic example, the use case as described above is to generate a `visitNumber` directly before the visit entity is stored. The `VisitNumberGenerator` bean acts as the logic, that will generate the visit number creation.
 
@@ -245,49 +243,49 @@ For the petclinic example, the use case as described above is to generate a `vis
 ----
 @Component(VisitNumberGenerator.NAME)
 public class VisitNumberGenerator {
+
     static final String NAME = "petclinic_VisitNumberGenerator";
 
     @Inject
-    protected UniqueNumbersAPI uniqueNumbersAPI;
+    UniqueNumbersService uniqueNumbersService;
 
-    @Inject
-    private TransactionalDataManager transactionalDataManager;
-
-    @EventListener
-    private void beforeCommit(EntityChangedEvent<Visit, UUID> event) {
-
-        if (visitNumberNeedsToBeCalculated(event)) {
-
-            Visit visit = transactionalDataManager.load(event.getEntityId()).one(); // <1>
-
-            visit.setVisitNumber(generateVisitNumber(visit));
-
-            transactionalDataManager.save(visit); // <4>
-        }
-    }
-
-    private boolean visitNumberNeedsToBeCalculated(EntityChangedEvent<Visit, UUID> event) {
-        return event.getType().equals(EntityChangedEvent.Type.CREATED);
-    }
-
-    private String generateVisitNumber(Visit entity) { // <2>
+    public String generateVisitNumber(Visit entity) {
         int visitType = entity.getType().getCode();
         int visitYear = localDate(entity.getVisitDate()).getYear();
-        long nextVisitNumber = uniqueNumbersAPI.getNextNumber(String.format("VISIT_%d_%d", visitYear, visitType)); // <3>
+        long nextVisitNumber = uniqueNumbersService.getNextNumber(String.format("VISIT_%d_%d", visitYear, visitType)); // <1>
 
         return String.format("%4d%02d%06d", visitYear, visitType, nextVisitNumber);
     }
 
     // ...
+}
+----
+<3> a unique number will be generated for each `visitYear` and `visitType` attribute of the visit
+
+The usage of the bean can be found in both Visit editor controller classes. The `DataContext.PreCommitEvent` is used to register the associated logic to call the `VisitNumberGenerator` in case there is no number created for this visit:
+
+.VisitEdit.java
+[source,java]
+----
+public class VisitEdit extends StandardEditor<Visit> {
+
+    @Inject
+    private VisitNumberGenerator visitNumberGenerator;
+
+    // ...
+
+    @Subscribe(target = Target.DATA_CONTEXT)
+    protected void onPreCommit(DataContext.PreCommitEvent event) { // <1>
+        Visit visit = getEditedEntity();
+        if (visit.getVisitNumber() == null) {
+            visit.setVisitNumber(visitNumberGenerator.generateVisitNumber(visit)); // <2>
+        }
+    }
 
 }
 ----
-<1> the visit instance will be loaded via the `transactionalDataManager`
-<2> the `generateVisitNumber` generates the next number based on the `uniqueNumbersAPI`
-<3> a unique number will be generated for each `visitYear` and `visitType` attribute of the visit
-
-
-More details on this event can be found in the reference documentation on https://doc.cuba-platform.com/manual-{cuba_version}/entityChangedEvent.html[EntityChangedEvent].
+<1> registering to the Data context `PreCommitEvent`
+<2> `VisitNumberGenetator` is used to generate the unique visit number
 
 
 == Summary
@@ -300,7 +298,7 @@ Therefore it is also possible to initialize attributes on the UI layer. There ar
 
 The main difference is, that these kinds of initializations are only applied when the user uses this particular UI to interact with the system. Oftentimes there are other use-cases, like the REST API, Bulk Editor functionality, data import scenarios etc. If it is required to initialize an attribute for all those use-cases the Entity Field initialization should be preferred.
 
-Furthermore two different dependent attribute initializations were shown, as there use-case is oftentimes quite similar to the normal attribute initialization. It is possible to either initialize a dependent attribute directly in the UI or before storing the entity with the help of the `EntityChangedEvent`.
+Furthermore two different dependent attribute initializations were shown, as there use-case is oftentimes quite similar to the normal attribute initialization. It is possible to either initialize a dependent attribute directly on change of a Form field or before storing the entity with the help of the data context lifecycle events.
 
 == Further Information
 
