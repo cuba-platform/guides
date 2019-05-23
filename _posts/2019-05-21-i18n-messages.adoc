@@ -1,0 +1,129 @@
+---
+compatible_cuba_versions: 7.0+
+compatible_java_versions: 8+
+project_id: cuba-petclinic-i18n-messages
+permalink: internationalization-in-cuba-applications
+---
+= Internationalization in CUBA applications
+:showtitle:
+:sectlinks:
+:sectanchors:
+:page-navtitle: Internationalization in CUBA applications
+:page-excerpt: In this guide the internationalization features of a CUBA application are explained
+:page-root: ../../../
+:project_id: cuba-petclinic-i18n-messages
+:java_version: 1.8
+:cuba_version: 7.0
+
+...
+
+== What Will be Built
+
+This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show how localized messages within the CUBA application can be defined and used:
+
+* ...
+* ...
+
+=== Final Application
+
+++++
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-i18n-messages/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-i18n-messages/master/img/login-screen.png"/></a>
+++++
+
+include::includes/guide_requirements.adoc[]
+
+
+include::includes/petclinic_introduction.adoc[]
+
+=== Localized Messages
+
+CUBA applications have build-in support for localizing messages for different languages.
+
+
+
+== Where Translations are Stored in a CUBA Application
+
+CUBA deals with translations as it is common for other Java based applications. Messages or different languages / locales are stores next to the source-code within the same package in `.properties` files.
+
+For every language and every package there exists a file containing information on how to translate a given text into the target language. The language files contain a suffix according to the locale code of the language (e.g. `_ru` for russian, `_es` for spanish).
+
+An example of this file structure looks like this:
+
+```
+com.haulmont.sample.petclinic.entity
+|
+├── owner
+│   ├── Owner.java
+│   └── messages.properties
+├── pet
+│   ├── Pet.java
+│   ├── PetType.java
+│   ├── messages.properties
+│   ├── messages_de.properties
+│   └── messages_ru.properties
+├── vet
+│   ├── Specialty.java
+│   ├── Vet.java
+│   ├── messages.properties
+│   ├── messages_de.properties
+│   └── messages_ru.properties
+└── visit
+    ├── Visit.java
+    ├── VisitType.java
+    ├── messages_de.properties
+    ├── messages_ru.properties
+    └── messages.properties
+```
+
+The properties file contains of key-value pairs, where the key is the identifier of the to be localized string and the value is the corresponding translation for the language.
+
+The key is the same for all language files, only the value differs. In the example of the petclinic, localized entity and entity attributes names look like this:
+
+.messages.properties
+[source, java]
+----
+Pet.birthDate = Birth date
+Pet = Pet
+Pet.type = Type
+Pet.owner = Owner
+Pet.identificationNumber = Identification Number
+PetType = Pet Type
+----
+
+.messages_de.properties
+[source, java]
+----
+Pet.birthDate = Geburtstag
+Pet = Haustier
+Pet.type = Typ
+Pet.owner = Tierhalter
+Pet.identificationNumber = Tier-Identifikationsnummer
+PetType = Tierart
+----
+
+
+== Referencing Localized Messages
+
+In order to display the correct localized message for the language the user selected, the messages have to be referenced in the application code in order to render the correct String.
+
+There are mainly two different ways to reference a localization: either in the XML screen definitions or programmatically from the Java code.
+
+=== Referencing Messages in XML Descriptors
+
+
+
+=== Programmatic Localization of Messages
+
+* In screen <<screen_xml,XML-descriptors>>, component attributes for displaying static text (such as <<gui_attr_caption,caption>>) can address localized messages using the rules of <<messageTools.loadString,MessageTools.loadString()>> method. For example:
+
+** `caption="msg://roleName"` – gets a message defined by the `roleName` key in the message pack of the current screen. Screen message pack is defined by the `messagesPack` attribute of the root `window` element.
+
+** `caption="msg://com.company.sample.entity/Role.name"` – gets a message defined by the `Role.name` key in the `com.company.sample.entity` message pack.
+
+* In <<screen_controller,screen controllers>>, localized strings can be retrieved in the following ways:
+
+== Summary
+
+In this data modelling guide the Composition relationship was described. Compositions are valuable if a master-detail relationship between two entities should be modelled, where the detail entities can only exist if the corresponding master entity exists.
+
+Composition structures can exist in 1:1 and 1:N form. Furthermore, nested composition can be created with multiple levels. The corresponding UI screens treat Composition relationships in a special way. Detail entities are only stored during the creation process of the master entity at the point in time when the master entity is stored.
