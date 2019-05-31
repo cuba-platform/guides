@@ -182,12 +182,11 @@ image::initial-entity-values/regular-checkup-1-select-pet.png[Step 1: Pet select
 
 image::initial-entity-values/regular-checkup-2-prefilled-visit.png[Step 2: Prefilled visit screen, link="initial-entity-values/regular-checkup-2-prefilled-visit.png"]
 
-
-== Dependent Attribute Field Initialization
+== Dependent Attribute Initialization
 
 Another related type of initialization is when an attribute gets set / initialized based on data entered by user for another field. In this case it is either possible to initialize the attribute during the process of storing the entity.
 
-=== Dependent Attribute Initialization
+=== Attribute Initialization on Change
 
 In the first case an attribute that is dependent on another attribute of an entity should be calculated / initialized when a change in the original attribute occurs. The change of the derived attribute should be immediately visible in the UI.
 
@@ -202,18 +201,22 @@ In order to achieve this kind of behavior, it is possible to register a hook met
 public class VisitEdit extends StandardEditor<Visit> {
 
     @Subscribe(id = "visitDc", target = Target.DATA_CONTAINER)
-    protected void onVisitDcItemPropertyChange(InstanceContainer.ItemPropertyChangeEvent<Visit> event) { // <1>
+    protected void onVisitDcItemPropertyChange(
+        InstanceContainer.ItemPropertyChangeEvent<Visit> event) { // <1>
 
         if (visitTypeChanged(event)) {
             updateHasToBePayedUpfrontValue(event);
         }
     }
 
-    private boolean visitTypeChanged(InstanceContainer.ItemPropertyChangeEvent<Visit> event) {
+    private boolean visitTypeChanged(
+        InstanceContainer.ItemPropertyChangeEvent<Visit> event) {
         return event.getProperty().equals("type");
     }
 
-    private void updateHasToBePayedUpfrontValue(InstanceContainer.ItemPropertyChangeEvent<Visit> event) {
+    private void updateHasToBePayedUpfrontValue(
+        InstanceContainer.ItemPropertyChangeEvent<Visit> event) {
+
         VisitType selectedVisitType = (VisitType) event.getValue(); // <2>
 
         if (selectedVisitType != null) {
@@ -252,7 +255,10 @@ public class VisitNumberGenerator {
     public String generateVisitNumber(Visit entity) {
         int visitType = entity.getType().getCode();
         int visitYear = localDate(entity.getVisitDate()).getYear();
-        long nextVisitNumber = uniqueNumbersService.getNextNumber(String.format("VISIT_%d_%d", visitYear, visitType)); // <1>
+
+        long nextVisitNumber = uniqueNumbersService.getNextNumber(
+            String.format("VISIT_%d_%d", visitYear, visitType)
+        ); // <1>
 
         return String.format("%4d%02d%06d", visitYear, visitType, nextVisitNumber);
     }
