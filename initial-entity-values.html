@@ -452,13 +452,13 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="dependent_attribute_field_initialization"><a class="anchor" href="#dependent_attribute_field_initialization"></a><a class="link" href="#dependent_attribute_field_initialization">Dependent Attribute Field Initialization</a></h2>
+<h2 id="dependent_attribute_initialization"><a class="anchor" href="#dependent_attribute_initialization"></a><a class="link" href="#dependent_attribute_initialization">Dependent Attribute Initialization</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Another related type of initialization is when an attribute gets set / initialized based on data entered by user for another field. In this case it is either possible to initialize the attribute during the process of storing the entity.</p>
 </div>
 <div class="sect2">
-<h3 id="dependent_attribute_initialization"><a class="anchor" href="#dependent_attribute_initialization"></a><a class="link" href="#dependent_attribute_initialization">Dependent Attribute Initialization</a></h3>
+<h3 id="attribute_initialization_on_change"><a class="anchor" href="#attribute_initialization_on_change"></a><a class="link" href="#attribute_initialization_on_change">Attribute Initialization on Change</a></h3>
 <div class="paragraph">
 <p>In the first case an attribute that is dependent on another attribute of an entity should be calculated / initialized when a change in the original attribute occurs. The change of the derived attribute should be immediately visible in the UI.</p>
 </div>
@@ -474,18 +474,22 @@
 <pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VisitEdit</span> <span class="directive">extends</span> StandardEditor&lt;Visit&gt; {
 
     <span class="annotation">@Subscribe</span>(id = <span class="string"><span class="delimiter">&quot;</span><span class="content">visitDc</span><span class="delimiter">&quot;</span></span>, target = <span class="predefined-type">Target</span>.DATA_CONTAINER)
-    <span class="directive">protected</span> <span class="type">void</span> onVisitDcItemPropertyChange(InstanceContainer.ItemPropertyChangeEvent&lt;Visit&gt; event) { <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="directive">protected</span> <span class="type">void</span> onVisitDcItemPropertyChange(
+        InstanceContainer.ItemPropertyChangeEvent&lt;Visit&gt; event) { <i class="conum" data-value="1"></i><b>(1)</b>
 
         <span class="keyword">if</span> (visitTypeChanged(event)) {
             updateHasToBePayedUpfrontValue(event);
         }
     }
 
-    <span class="directive">private</span> <span class="type">boolean</span> visitTypeChanged(InstanceContainer.ItemPropertyChangeEvent&lt;Visit&gt; event) {
+    <span class="directive">private</span> <span class="type">boolean</span> visitTypeChanged(
+        InstanceContainer.ItemPropertyChangeEvent&lt;Visit&gt; event) {
         <span class="keyword">return</span> event.getProperty().equals(<span class="string"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>);
     }
 
-    <span class="directive">private</span> <span class="type">void</span> updateHasToBePayedUpfrontValue(InstanceContainer.ItemPropertyChangeEvent&lt;Visit&gt; event) {
+    <span class="directive">private</span> <span class="type">void</span> updateHasToBePayedUpfrontValue(
+        InstanceContainer.ItemPropertyChangeEvent&lt;Visit&gt; event) {
+
         VisitType selectedVisitType = (VisitType) event.getValue(); <i class="conum" data-value="2"></i><b>(2)</b>
 
         <span class="keyword">if</span> (selectedVisitType != <span class="predefined-constant">null</span>) {
@@ -541,7 +545,10 @@
     <span class="directive">public</span> <span class="predefined-type">String</span> generateVisitNumber(Visit entity) {
         <span class="type">int</span> visitType = entity.getType().getCode();
         <span class="type">int</span> visitYear = localDate(entity.getVisitDate()).getYear();
-        <span class="type">long</span> nextVisitNumber = uniqueNumbersService.getNextNumber(<span class="predefined-type">String</span>.format(<span class="string"><span class="delimiter">&quot;</span><span class="content">VISIT_%d_%d</span><span class="delimiter">&quot;</span></span>, visitYear, visitType)); <i class="conum" data-value="1"></i><b>(1)</b>
+
+        <span class="type">long</span> nextVisitNumber = uniqueNumbersService.getNextNumber(
+            <span class="predefined-type">String</span>.format(<span class="string"><span class="delimiter">&quot;</span><span class="content">VISIT_%d_%d</span><span class="delimiter">&quot;</span></span>, visitYear, visitType)
+        ); <i class="conum" data-value="1"></i><b>(1)</b>
 
         <span class="keyword">return</span> <span class="predefined-type">String</span>.format(<span class="string"><span class="delimiter">&quot;</span><span class="content">%4d%02d%06d</span><span class="delimiter">&quot;</span></span>, visitYear, visitType, nextVisitNumber);
     }
@@ -652,7 +659,7 @@
 <li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
 <li><a href="#entity_fields_initialization">Entity Fields Initialization</a></li>
 <li><a href="#ui_layer_initialization">UI Layer Initialization</a></li>
-<li><a href="#dependent_attribute_field_initialization">Dependent Attribute Field Initialization</a></li>
+<li><a href="#dependent_attribute_initialization">Dependent Attribute Initialization</a></li>
 <li><a href="#summary">Summary</a></li>
 <li><a href="#further_information">Further Information</a></li>
 </ul>
