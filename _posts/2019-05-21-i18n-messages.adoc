@@ -43,7 +43,7 @@ CUBA applications have build-in support for localizing messages for different la
 
 == Where Translations are Stored in a CUBA Application
 
-CUBA deals with translations as it is common for other Java based applications. Messages or different languages / locales are stores next to the source-code within the same package in `.properties` files.
+CUBA deals with translations as it is common for other Java based applications. Messages for different languages / locales are stores next to the source-code within the same package in `.properties` files.
 
 For every language and every package there exists a file containing information on how to translate a given text into the target language. The language files contain a suffix according to the locale code of the language (e.g. `_ru` for russian, `_es` for spanish).
 
@@ -124,6 +124,10 @@ There are mainly two different ways to reference a localization: either in the X
 
 == Summary
 
-In this data modelling guide the Composition relationship was described. Compositions are valuable if a master-detail relationship between two entities should be modelled, where the detail entities can only exist if the corresponding master entity exists.
+...
 
-Composition structures can exist in 1:1 and 1:N form. Furthermore, nested composition can be created with multiple levels. The corresponding UI screens treat Composition relationships in a special way. Detail entities are only stored during the creation process of the master entity at the point in time when the master entity is stored.
+
+== Further Information
+
+* https://doc.cuba-platform.com/manual-{cuba_version}/messages.html[CUBA docs: Messages Interface]
+* https://doc.cuba-platform.com/manual-{cuba_version}/localization.html[CUBA docs: Localization]
