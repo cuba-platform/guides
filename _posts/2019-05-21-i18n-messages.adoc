@@ -2,14 +2,14 @@
 compatible_cuba_versions: 7.0+
 compatible_java_versions: 8+
 project_id: cuba-petclinic-i18n-messages
-permalink: internationalization-in-cuba-applications
+permalink: localization-in-cuba-applications
 ---
-= Internationalization in CUBA applications
+= Localization in CUBA applications
 :showtitle:
 :sectlinks:
 :sectanchors:
-:page-navtitle: Internationalization in CUBA applications
-:page-excerpt: In this guide the internationalization features of a CUBA application are explained
+:page-navtitle: Localization in CUBA applications
+:page-excerpt: In this guide the localization features of a CUBA application are explained
 :page-root: ../../../
 :project_id: cuba-petclinic-i18n-messages
 :java_version: 1.8
@@ -38,7 +38,6 @@ include::includes/petclinic_introduction.adoc[]
 === Localized Messages
 
 CUBA applications have build-in support for localizing messages for different languages.
-
 
 
 == Where Translations are Stored in a CUBA Application
