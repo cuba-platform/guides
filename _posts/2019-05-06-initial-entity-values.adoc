@@ -1,0 +1,312 @@
+---
+compatible_cuba_versions: 7.0+
+compatible_java_versions: 8+
+project_id: cuba-petclinic-initial-entity-values
+permalink: initial-entity-values
+---
+= Initial Entity Values
+:showtitle:
+:sectlinks:
+:sectanchors:
+:page-navtitle: Initial Values for Entity Instances
+:page-excerpt: Data modeling guide: How entity inheritance can be used in a CUBA application
+:page-root: ../../../
+:project_id: cuba-petclinic-initial-entity-values
+:java_version: 1.8
+:cuba_version: 7.0
+
+This guide demonstrates different options on how initial values can be set for an entity.
+
+In the petclinic example there are use cases, where certain default values for entities should be set either globally or on a per use-case basis.
+
+
+== What Will be Built
+
+This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show the different ways to set initial values for entity instances. In particular, the following use cases will be covered:
+
+* Global default values for the `paid` attribute of the `Visit` entity
+* A regular checkup, a special type of Visit should be initialized with a particular description
+* The `paid` attribute of the Visit is automatically pre-filled by the selection of the dependent `type` attribute
+* Auto-generated visit number that is derived from attributes of the `Visit` instance
+
+=== Final Application
+
+++++
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-initial-entity-values/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-initial-entity-values/master/img/login-screen.png"/></a>
+++++
+
+include::includes/guide_requirements.adoc[]
+
+
+include::includes/petclinic_introduction.adoc[]
+
+
+== Entity Fields Initialization
+
+Simple attributes (`Boolean`, `Integer` etc.) and enumerations can be initialized in the declaration of the corresponding field of an entity class. In the Petclinic example, the Visit entity has an attribute `paid` which is a boolean flag to indicate, if a visit has been paid already. This value should by default be `FALSE`. The default value can be set directly in the field definition.
+
+.Visit.java
+[source, java]
+----
+public class Visit extends StandardEntity {
+
+    // ...
+
+    @Column(name = "PAID")
+    protected Boolean paid = false;
+
+}
+----
+
+Additionally, a specific initialization method with a `@PostConstruct` annotation can be created in the entity class. In this case, any global infrastructure interfaces as well as managed beans can be invoked during initialization. One example of this post-construct initialization can be seen in the `Visit` entity:
+
+.Visit.java
+[source, java]
+----
+public class Visit extends StandardEntity {
+
+    @Temporal(TemporalType.DATE)
+    @NotNull
+    @Column(name = "VISIT_DATE", nullable = false)
+    protected Date visitDate;
+
+    // ...
+
+    @PostConstruct // <1>
+    private void initVisitDate() {
+        if (visitDate == null) {
+            setVisitDate(today());
+        }
+    }
+
+    private Date today() {
+        TimeSource timeSource = AppBeans.get(TimeSource.class); // <2>
+        return timeSource.currentTimestamp();
+    }
+}
+----
+<1> `@PostConstruct` triggers this method after creation of an instance of this class. It is called when manually creating an instance via `metadata.create(Visit.class)` as well as when the instance is created in the UI by the framework
+<2> Managed beans can be referenced via `AppBeans.get()`
+
+== UI Layer Initialization
+
+On the UI layer there are two main ways to initialize an entity during screen creation. The first one is internal within the screen controller, that should show the newly created entity. The second one is external, where the entity is defined by the code calling the destination screen.
+
+=== Internal Initialization via InitEntityEvent
+
+The first option is that the entity initialization happens within the destination screen controller itself. In this case the CUBA platform UI events can be leveraged. For instance, for `StandardEditor` screens there is a particular UI event that is designed exactly for this purpose: the `InitEntityEvent`.
+
+In the Petclinic example this internal initialization is used to set the paid status of the regular checkup visit instance to paid.
+
+.RegularCheckup.java
+[source,java]
+----
+public class RegularCheckup extends StandardEditor<Visit> {
+
+    @Subscribe
+    protected void initRegularCheckupVisit(InitEntityEvent<Visit> event) { // <1>
+        Visit visit = event.getEntity();
+
+        visit.setPaid(false); // <2>
+    }
+
+}
+----
+<1> The `initRegularCheckupVisit` method subscribes to the `InitEntityEvent` of the newly created `Visit` instance
+<2> `event.getEntity()` returns the Visit instance that can be changed during screen initialization
+
+The upside of this kind of initialization is that it is very easy to achieve and requires very little overall code changes. The downside is that since it is scoped within the destination screen it is not so easy to react to external parameters that get passed into the screen. Therefore, it is a very good fit when particular attributes, that are not dynamic, should be initialized.
+
+=== External Initialization via Screen Builders
+
+On the frontend layer with CUBA 7 the `ScreenBuilders` API was introduced. It allows programmatic creation and screen opening via a Builder pattern, which exposes various options for further configuration.
+
+One of this options is the possibility to define an initializer method that gets executed before opening the screen, where it is possible for an Editor screen to change attributes of the entity that will be displayed.
+
+In the Petclinic example there is a screen that creates a particular visit instance. This visit is a "regular checkup", as this checkup is always the same in the sense that it requires some checklist kind of description. Furthermore, it is always paid upfront. Since it is a burden for the users to create those special kinds of visits over and over again, a screen, that comes with sensible defaults for this kind of use-case, was implemented.
+
+.VisitBrowse.java
+[source,java]
+----
+
+@Inject
+private ScreenBuilders screenBuilders;
+
+@Inject
+private MessageBundle messageBundle;
+
+@Inject
+private GroupTable<Visit> visitsTable;
+
+// ...
+
+
+@Subscribe("visitsTable.createRegularCheckup")
+public void createForPet(Action.ActionPerformedEvent event) {
+    screenBuilders.lookup(Pet.class, this)
+            .withSelectHandler(pets -> {
+                createVisitForPet(pets.iterator().next());
+            })
+            .withLaunchMode(OpenMode.DIALOG)
+            .build()
+            .show();
+}
+
+private void createVisitForPet(Pet pet) {
+    screenBuilders.editor(visitsTable) // <1>
+        .newEntity() // <2>
+        .withInitializer(visit -> { // <3>
+            visit.setPaid(true);
+            visit.setDescription(regularCheckupDescriptionContent(pet));
+            visit.setPet(pet);
+        })
+        .withScreenClass(RegularCheckup.class)
+        .withLaunchMode(OpenMode.DIALOG)
+        .build()
+        .show();
+}
+----
+<1> An `EditorBuilder` will be created using the `screenBuilders` bean
+<2> The mode of the `EditorBuilder` is set to create mode
+<3> The `withInitializer` method takes a `Consumer<Visit>` that gets a new visit instance as a parameter, which then can be adjusted accordingly
+
+With the ScreenBuilder API and the external initialization it is possible to create default values much more dynamically. As it is shown in the above example, in the first step the pet is selected. Based on this selection a description gets generated and put into the to-be-created visit entity.
+
+The downside of this approach is that it is a little less invasive in terms of source code. It is also not possible to reuse the default actions (create / edit) as is without further modifications.
+
+As it is shown in this example, it is also possible to combine the two approaches and use them in the different use-cases. The pet and the description of the visit are initialized externally, but the paid status is set internally.
+
+The corresponding UI screens look like this:
+
+image::initial-entity-values/regular-checkup-1-select-pet.png[Step 1: Pet selection, link="initial-entity-values/regular-checkup-1-select-pet.png"]
+
+image::initial-entity-values/regular-checkup-2-prefilled-visit.png[Step 2: Prefilled visit screen, link="initial-entity-values/regular-checkup-2-prefilled-visit.png"]
+
+== Dependent Attribute Initialization
+
+Another related type of initialization is when an attribute gets set / initialized based on data entered by user for another field. In this case it is also possible to initialize the attribute during the process of storing the entity.
+
+=== Attribute Initialization on Change
+
+In the first case an attribute that is dependent on another attribute of an entity should be calculated / initialized when a change in the original attribute occurs. The change of the derived attribute should be immediately visible in the UI.
+
+In the petclinic example, the Visit has an attribute `VisitType`. This type categorizes the visit into `VISIT`, `REGULAR_CHECKUP` or `SURGERY`. The type of the visit also indicates if the visit has to be paid upfront or if it is paid via an invoice. But it is more like a proposal. It is still possible to be changed by the user for a particular visit.
+
+In order to achieve this kind of behavior, it is possible to register a hook method, that subscribes to the `ItemPropertyChangeEvent` of the instance container within the editor.
+
+.VisitEdit.java
+[source,java]
+----
+
+public class VisitEdit extends StandardEditor<Visit> {
+
+    @Subscribe(id = "visitDc", target = Target.DATA_CONTAINER)
+    protected void onVisitDcItemPropertyChange(
+        InstanceContainer.ItemPropertyChangeEvent<Visit> event) { // <1>
+
+        if (visitTypeChanged(event)) {
+            updateHasToBePayedUpfrontValue(event);
+        }
+    }
+
+    private boolean visitTypeChanged(
+        InstanceContainer.ItemPropertyChangeEvent<Visit> event) {
+        return event.getProperty().equals("type");
+    }
+
+    private void updateHasToBePayedUpfrontValue(
+        InstanceContainer.ItemPropertyChangeEvent<Visit> event) {
+
+        VisitType selectedVisitType = (VisitType) event.getValue(); // <2>
+
+        if (selectedVisitType != null) {
+            event.getItem().setPaid(selectedVisitType.isToBePayedUpfront()); // <3>
+        }
+    }
+
+}
+----
+<1> Subscription to the `ItemPropertyChangeEvent` of the instance container
+<2> `event.getValue()` returns the selected value of type `VisitType`
+<3> The "paid" flag can be adjusted depending on the `selectedVisitType`
+
+
+=== Attribute Initialization via DataContext PreCommitEvent
+
+The second case is that during the save operation, an attribute of the entity needs to be computed - but it does not need to be visible while the user sees the UI screen.
+
+In the petclinic example there is an attribute called `visitNumber` for the Visit entity, which represents a unique number of the visit that shall be generated out of the information specified by the user. The Visit Number should  be constructed out of the year of the visit, the name of the visit type and a 6-digit number.
+
+This number only needs to be generated when the visit is saved. Therefore it is possible to use the available mechanisms of the data context in the UI controller. There are several options in this area. In CUBA 7 the data context lifecycle events allow to intercept the storage operation in order to execute some logic that happens during the storage of the edited entity.
+
+For the petclinic example, the use case as described above is to generate a `visitNumber` directly before the visit entity is stored. The `VisitNumberGenerator` bean acts as the logic that will generate the visit number creation.
+
+.VisitNumberGenerator.java
+[source,java]
+----
+@Component(VisitNumberGenerator.NAME)
+public class VisitNumberGenerator {
+
+    static final String NAME = "petclinic_VisitNumberGenerator";
+
+    @Inject
+    UniqueNumbersService uniqueNumbersService;
+
+    public String generateVisitNumber(Visit entity) {
+        int visitType = entity.getType().getCode();
+        int visitYear = localDate(entity.getVisitDate()).getYear();
+
+        long nextVisitNumber = uniqueNumbersService.getNextNumber(
+            String.format("VISIT_%d_%d", visitYear, visitType)
+        ); // <1>
+
+        return String.format("%4d%02d%06d", visitYear, visitType, nextVisitNumber);
+    }
+
+    // ...
+}
+----
+<3> A unique number will be generated for each `visitYear` and `visitType` attribute of the visit
+
+The usage of the bean can be found in both Visit editor controller classes. The `DataContext.PreCommitEvent` is used to register the associated logic to call the `VisitNumberGenerator` in case there is no number created for this visit:
+
+.VisitEdit.java
+[source,java]
+----
+public class VisitEdit extends StandardEditor<Visit> {
+
+    @Inject
+    private VisitNumberGenerator visitNumberGenerator;
+
+    // ...
+
+    @Subscribe(target = Target.DATA_CONTEXT)
+    protected void onPreCommit(DataContext.PreCommitEvent event) { // <1>
+        Visit visit = getEditedEntity();
+        if (visit.getVisitNumber() == null) {
+            visit.setVisitNumber(visitNumberGenerator.generateVisitNumber(visit)); // <2>
+        }
+    }
+
+}
+----
+<1> Registering to the Data context `PreCommitEvent`
+<2> `VisitNumberGenetator` is used to generate the unique visit number
+
+
+== Summary
+
+In this guide different options on how to set initial values for entity instances were shown. It is possible to define certain initial values directly within the Entity class via direct attribute allocation or the `@PostConstruct` annotation.
+
+This kind of initialization will be executed in all scenarios and, therefore, is oftentimes the preferred way of doing attribute initialization. But sometimes it is required to have more information on the context of the execution, e.g. prior selections of the user on the UI.
+
+Therefore, it is also possible to initialize attributes on the UI layer. There are multiple ways to do it as shown above. It allows the developer to react more flexibly on the UI selection, etc.
+
+The main difference is that these kinds of initializations are only applied when the user uses this particular UI to interact with the system. Oftentimes there are other use cases, like the REST API, Bulk Editor functionality, data import scenarios, etc. If it is required to initialize an attribute for all those use cases, the Entity Field initialization should be preferred.
+
+Furthermore, two different dependent attribute initializations were shown, as their use case is oftentimes quite similar to the normal attribute initialization. It is possible to initialize a dependent attribute either directly on change of a Form field or before storing the entity with the help of the data context lifecycle events.
+
+== Further Information
+
+* https://doc.cuba-platform.com/manual-{cuba_version}/opening_screens.html#screenBuilders[Screen Builders reference documentation]
+* https://www.cuba-platform.com/guides/decouple-business-logic-with-app-events[Guide: Decouple Business Logic with Application Events]
