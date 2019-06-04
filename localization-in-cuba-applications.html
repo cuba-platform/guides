@@ -388,7 +388,7 @@ This happens automatically for all UI components if the corresponding translatio
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td><code>msg://createRegularCheckup</code> references the key <code>createRegularCheckup</code> through the message system <code>msg://</code></td>
+<td><code>msg://createRegularCheckup</code> references the key <code>createRegularCheckup</code> in the current package of the XML descriptor</td>
 </tr>
 </table>
 </div>
@@ -396,7 +396,7 @@ This happens automatically for all UI components if the corresponding translatio
 <div class="sect2">
 <h3 id="programmatic_localization_of_messages"><a class="anchor" href="#programmatic_localization_of_messages"></a><a class="link" href="#programmatic_localization_of_messages">Programmatic Localization of Messages</a></h3>
 <div class="paragraph">
-<p>The second way of interacting with the Localization mechanism is not through the declarative XML definitions, but imperatively through Java code. In the petclinic example, the "regular checkup" button should render the following two dynamic messages programmatically:</p>
+<p>The second way of interacting with the Localization mechanism is not through the declarative XML definitions, but imperatively through Java code. In the Petclinic example, the "regular checkup" button should render the following two dynamic messages programmatically:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -409,7 +409,7 @@ This happens automatically for all UI components if the corresponding translatio
 </ol>
 </div>
 <div class="paragraph">
-<p>The first message is received via the <code>MessageBundle</code> Interface. <code>MessageBundle</code> is a new shorthand mechanism introduced in CUBA 7.0, that fetches a particular message from the message pack of the calling Java class.</p>
+<p>Messages can be received via the <code>MessageBundle</code> Interface. <code>MessageBundle</code> is a new shorthand mechanism introduced in CUBA 7.0, that fetches a particular message from the message pack of the calling Java class.</p>
 </div>
 <div class="paragraph">
 <p>Alternatively there is the <code>Messages</code> Interface, which is a little more flexible and contains additional APIs, but requires to always define the package for every message lookup.</p>
@@ -494,6 +494,104 @@ Bestandteile: \n
 <img src="/guides/images/i18n-messages/editor-with-programmatic-created-i10n-messages.png" alt="editor with programmatic created i10n messages">
 </div>
 </div>
+<div class="paragraph">
+<p>The second message should be displayed as a notification once the "regular checkup" was successfully created. There is
+ the method <code>showRegularCheckupCreatedNotification</code> in the Visit browser, that will be called once the instance is created:</p>
+</div>
+<div class="listingblock">
+<div class="title">VisitBrowse.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VisitBrowse</span> <span class="directive">extends</span> StandardLookup&lt;Visit&gt; {
+
+    <span class="comment">// ...</span>
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">private</span> MetadataTools metadataTools;
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">private</span> MessageBundle messageBundle;
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">private</span> Notifications notifications;
+
+
+    <span class="directive">private</span> <span class="type">void</span> showRegularCheckupCreatedNotification(Pet pet) {
+
+        <span class="predefined-type">String</span> petName = metadataTools.getInstanceName(pet); <i class="conum" data-value="1"></i><b>(1)</b>
+
+        <span class="predefined-type">String</span> regularCheckupCreatedMessage = messageBundle.formatMessage(<span class="string"><span class="delimiter">&quot;</span><span class="content">regularCheckupCreated</span><span class="delimiter">&quot;</span></span>, petName); <i class="conum" data-value="2"></i><b>(2)</b>
+
+        notifications.create(Notifications.NotificationType.TRAY)
+                .withCaption(regularCheckupCreatedMessage) <i class="conum" data-value="3"></i><b>(3)</b>
+                .show();
+    }</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>metadataTools</code> are used in CUBA 7.0+ to fetch the instance name from an entity</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>messageBundle</code> is used once again to get a particular message with a parameter</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>the localized Message String is passed to the <code>notifications</code> bean to render a TRAY notification</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="translation_of_existing_ui_screens_functionality"><a class="anchor" href="#translation_of_existing_ui_screens_functionality"></a><a class="link" href="#translation_of_existing_ui_screens_functionality">Translation of Existing UI Screens / Functionality</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Since CUBA comes with certain UI components and with multiple UI screens that are available out of the box, this existing
+functionality needs also to be localized in order to have a fully translated application.</p>
+</div>
+<div class="paragraph">
+<p>For this problem, there are two main solutions:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Languages Packs</p>
+</li>
+<li>
+<p>Manual providing Translations</p>
+</li>
+</ol>
+</div>
+<div class="sect2">
+<h3 id="existing_language_packs"><a class="anchor" href="#existing_language_packs"></a><a class="link" href="#existing_language_packs">Existing Language Packs</a></h3>
+<div class="paragraph">
+<p>The first and most easy solution is to use existing Language packs that are created by the community. There are currently
+twelve Translations available including Spanisch, Russian, French, Chinese, German and a lot of more. The translation cover around half of the worlds population.
+It is worth mentioning though, that since the Translations are provided by the community, the accuracy and the catch up
+with the latest changes in the platform differ and are provided as best effort.</p>
+</div>
+<div class="paragraph">
+<p>In order to get those translations into the Application they can be fetched manually from the <a href="https://github.com/cuba-platform/translations">CUBA Translations Github repository</a>. Some Translations are also directly available via an application component through the <a href="https://www.cuba-platform.com/marketplace/">CUBA marketplace</a>,
+which makes the installation as easy as installing any other application component.</p>
+</div>
+<div class="paragraph">
+<p>Afterwards, the new language has to be added to the application property <code>cuba.availableLocales</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="manual_providing_translations"><a class="anchor" href="#manual_providing_translations"></a><a class="link" href="#manual_providing_translations">Manual Providing Translations</a></h3>
+<div class="paragraph">
+<p>In case the target language is not available through the community or some Translations are missing / not accurate, it is also
+possible to provide those translations directly within the application.</p>
+</div>
+<div class="paragraph">
+<p>CUBA itself provides translations for the screens directly in the source code of the platform as regular <code>*.properties</code> files.
+E.g. the User browse screen contains the <a href="https://github.com/cuba-platform/cuba/blob/master/modules/gui/src/com/haulmont/cuba/gui/app/security/user/browse/messages.properties">messages.properties</a> file in the package <code>com.haulmont.cuba.gui.app.security.user.browse</code>.</p>
+</div>
 </div>
 </div>
 </div>
@@ -542,6 +640,7 @@ Bestandteile: \n
 <li><a href="#where_translations_are_stored_in_a_cuba_application">Where Translations are Stored in a CUBA Application</a></li>
 <li><a href="#register_available_languages_in_the_application">Register Available Languages in the Application</a></li>
 <li><a href="#referencing_localized_messages">Referencing Localized Messages</a></li>
+<li><a href="#translation_of_existing_ui_screens_functionality">Translation of Existing UI Screens / Functionality</a></li>
 <li><a href="#summary">Summary</a></li>
 <li><a href="#further_information">Further Information</a></li>
 </ul>
