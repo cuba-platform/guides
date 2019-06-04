@@ -21,8 +21,8 @@ permalink: localization-in-cuba-applications
 
 This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show how localized messages within the CUBA application can be defined and used:
 
-* ...
-* ...
+* The application is also available in German and Russian language
+* Dynamic data as automatically generated descriptions for visits are localized
 
 === Final Application
 
@@ -154,17 +154,15 @@ The first option is to reference a particular message key within XML UI descript
 
 === Programmatic Localization of Messages
 
-The second way of interacting with the Localization mechanism is not through the declarative XML definitions, but imperatively through Java code.
-
-In the petclinic example, the "regular checkup" button should render the following two dynamic messages programmatically:
+The second way of interacting with the Localization mechanism is not through the declarative XML definitions, but imperatively through Java code. In the petclinic example, the "regular checkup" button should render the following two dynamic messages programmatically:
 
 1. When a new Regular Checkup screen is opened, the description attribute for the visit entity should be pre-filled with a particular localized message
 2. Once the Regular Checkup is created, a localized notification message should be rendered, containing the name of the pet
 
 
-The first message is received via the `MessageBundle` CUBA interface. `MessageBundle` is a new shorthand mechanism of fetching a particular message from the message pack of the calling Java class.
+The first message is received via the `MessageBundle` Interface. `MessageBundle` is a new shorthand mechanism introduced in CUBA 7.0, that fetches a particular message from the message pack of the calling Java class.
 
-The `Messages` interface is the alternative, that is a little more flexible and contains additional APIs, but requires to always define the package.
+Alternatively there is the `Messages` Interface, which is a little more flexible and contains additional APIs, but requires to always define the package for every message lookup.
 
 
 .VisitBrowse.java
