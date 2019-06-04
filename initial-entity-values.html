@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Localization in CUBA applications</title>
+    <title>Initial Entity Values</title>
     <meta name="description" content="The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.">
     <meta name="author" content="Haulmont">
     <link rel="shortcut icon" href="/guides/images/favicon.png" type="image/png" />
@@ -164,11 +164,14 @@
                             <div class="field field-name-body field-type-text-with-summary field-label-hidden">
                                 <div class="field-items">
                                     <div class="field-item even" property="content: encoded">
-                                        <h1>Localization in CUBA applications</h1>
+                                        <h1>Initial Entity Values</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>&#8230;&#8203;</p>
+<p>This guide demonstrates different options on how initial values can be set for an entity.</p>
+</div>
+<div class="paragraph">
+<p>In the petclinic example there are use cases, where certain default values for entities should be set either globally or on a per use-case basis.</p>
 </div>
 </div>
 </div>
@@ -176,21 +179,27 @@
 <h2 id="what_will_be_built"><a class="anchor" href="#what_will_be_built"></a><a class="link" href="#what_will_be_built">What Will be Built</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show how localized messages within the CUBA application can be defined and used:</p>
+<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show the different ways to set initial values for entity instances. In particular, the following use cases will be covered:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>&#8230;&#8203;</p>
+<p>Global default values for the <code>paid</code> attribute of the <code>Visit</code> entity</p>
 </li>
 <li>
-<p>&#8230;&#8203;</p>
+<p>A regular checkup, a special type of Visit should be initialized with a particular description</p>
+</li>
+<li>
+<p>The <code>paid</code> attribute of the Visit is automatically pre-filled by the selection of the dependent <code>type</code> attribute</p>
+</li>
+<li>
+<p>Auto-generated visit number that is derived from attributes of the <code>Visit</code> instance</p>
 </li>
 </ul>
 </div>
 <div class="sect2">
 <h3 id="final_application"><a class="anchor" href="#final_application"></a><a class="link" href="#final_application">Final Application</a></h3>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-i18n-messages/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-i18n-messages/master/img/login-screen.png"/></a>
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-initial-entity-values/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-initial-entity-values/master/img/login-screen.png"/></a>
 </div>
 <div class="sect2">
 <h3 id="requirements"><a class="anchor" href="#requirements"></a><a class="link" href="#requirements">Requirements</a></h3>
@@ -214,10 +223,10 @@
 </ul>
 </div>
 <div class="paragraph">
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-i18n-messages/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-initial-entity-values/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
 </div>
 <div class="paragraph">
-<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-i18n-messages.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-i18n-messages.git</a></code></p>
+<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-initial-entity-values.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-initial-entity-values.git</a></code></p>
 </div>
 </div>
 </div>
@@ -243,259 +252,354 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="localized_messages"><a class="anchor" href="#localized_messages"></a><a class="link" href="#localized_messages">Localized Messages</a></h2>
+<h2 id="entity_fields_initialization"><a class="anchor" href="#entity_fields_initialization"></a><a class="link" href="#entity_fields_initialization">Entity Fields Initialization</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>CUBA applications have build-in support for localized messages for different languages.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="where_translations_are_stored_in_a_cuba_application"><a class="anchor" href="#where_translations_are_stored_in_a_cuba_application"></a><a class="link" href="#where_translations_are_stored_in_a_cuba_application">Where Translations are Stored in a CUBA Application</a></h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>CUBA deals with translations as it is common for other Java based applications. Messages for different languages / locales are stores next to the source-code within the same package in <code>.properties</code> files.</p>
-</div>
-<div class="paragraph">
-<p>For every language and every package there exists a file containing information on how to translate a given text into the target language. The language files contain a suffix according to the locale code of the language (e.g. <code>_ru</code> for russian, <code>_es</code> for spanish).</p>
-</div>
-<div class="paragraph">
-<p>An example of this file structure looks like this:</p>
+<p>Simple attributes (<code>Boolean</code>, <code>Integer</code> etc.) and enumerations can be initialized in the declaration of the corresponding field of an entity class. In the Petclinic example, the Visit entity has an attribute <code>paid</code> which is a boolean flag to indicate, if a visit has been paid already. This value should by default be <code>FALSE</code>. The default value can be set directly in the field definition.</p>
 </div>
 <div class="listingblock">
+<div class="title">Visit.java</div>
 <div class="content">
-<pre class="CodeRay highlight"><code>com.haulmont.sample.petclinic.entity
-|
-├── owner
-│   ├── Owner.java
-│   └── messages.properties
-├── pet
-│   ├── Pet.java
-│   ├── PetType.java
-│   ├── messages.properties
-│   ├── messages_de.properties
-│   └── messages_ru.properties
-├── vet
-│   ├── Specialty.java
-│   ├── Vet.java
-│   ├── messages.properties
-│   ├── messages_de.properties
-│   └── messages_ru.properties
-└── visit
-    ├── Visit.java
-    ├── VisitType.java
-    ├── messages_de.properties
-    ├── messages_ru.properties
-    └── messages.properties</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The properties file contains of key-value pairs, where the key is the identifier of the to be localized string and the value is the corresponding translation for the language.</p>
-</div>
-<div class="paragraph">
-<p>The key is the same for all language files, only the value differs. In the example of the petclinic, localized entity and entity attributes names look like this:</p>
-</div>
-<div class="listingblock">
-<div class="title">messages.properties</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">Pet.birthDate = Birth date
-Pet = Pet
-Pet.type = <span class="predefined-type">Type</span>
-Pet.owner = <span class="predefined-type">Owner</span>
-Pet.identificationNumber = Identification <span class="predefined-type">Number</span>
-PetType = Pet <span class="predefined-type">Type</span></code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">messages_de.properties</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">Pet.birthDate = Geburtstag
-Pet = Haustier
-Pet.type = Typ
-Pet.owner = Tierhalter
-Pet.identificationNumber = Haustier-Identifikationsnummer
-PetType = Tierart</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The example application contains translations for english, german and russian languages.</p>
-</div>
-<div class="paragraph">
-<p>More information about the general structure of how localized messages are stored can be found in the reference documentation: <a href="https://doc.cuba-platform.com/manual-7.0/localization.html">Localization</a>.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="register_available_languages_in_the_application"><a class="anchor" href="#register_available_languages_in_the_application"></a><a class="link" href="#register_available_languages_in_the_application">Register Available Languages in the Application</a></h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>In order to activate the possibility to select different languages as a user, the application needs two main configuration options in place. The first one is the activation of the language drop-down in the login screen and settings screen of the app: <code>cuba.localeSelectVisible</code>. It has to be set to <code>true</code>. The second configuration is the available languages / locales that should be available for selection: <code>cuba.availableLocales = English|en;German|de;Russian|ru</code>.</p>
-</div>
-<div class="paragraph">
-<p>Both configurations should be placed in the <code>web-app.properties</code>. With that in place the Login screen will display the language selection box:</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="/guides/images/i18n-messages/login-screen-with-activated-language-selection.png" alt="login screen with activated language selection">
-</div>
-</div>
-<div class="paragraph">
-<p>When logging in as a user with a given language, the application will display the translations of the corresponding language.
-This happens automatically for all UI components if the corresponding translation files are in place. A <code>&lt;form&gt;</code> component e.g. renders the attribute captions localized:</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="/guides/images/i18n-messages/localized-editor.png" alt="localized editor">
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="referencing_localized_messages"><a class="anchor" href="#referencing_localized_messages"></a><a class="link" href="#referencing_localized_messages">Referencing Localized Messages</a></h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>For the two cases of <code>&lt;table /&gt;</code> and <code>&lt;form /&gt;</code> the translation are automatically derived from the properties that should be displayed. For other UI components or messages throughout the application, there are two ways of interacting with the Localization mechanisms of CUBA: either in the XML screen definitions or programmatically from the Java code.</p>
-</div>
-<div class="paragraph">
-<p>In order to display the correct localized message for the language the user selected, the message keys have to be referenced in the application code in order to render the correct String.</p>
-</div>
-<div class="sect2">
-<h3 id="referencing_messages_in_xml_descriptors"><a class="anchor" href="#referencing_messages_in_xml_descriptors"></a><a class="link" href="#referencing_messages_in_xml_descriptors">Referencing Messages in XML Descriptors</a></h3>
-<div class="paragraph">
-<p>The first option is to reference a particular message key within XML UI descriptor. In the petclinic example, the button caption of the "regular checkup" button should be displayed in the selected language.</p>
-</div>
-<div class="listingblock">
-<div class="title">visit-browse.xml</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;groupTable</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">visitsTable</span><span class="delimiter">&quot;</span></span>
-            <span class="attribute-name">dataContainer</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">visitsDc</span><span class="delimiter">&quot;</span></span>
-            <span class="attribute-name">width</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">100%</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
-    <span class="tag">&lt;actions&gt;</span>
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">Visit</span> <span class="directive">extends</span> StandardEntity {
 
-        <span class="tag">&lt;action</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">createRegularCheckup</span><span class="delimiter">&quot;</span></span>
-                <span class="attribute-name">caption</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">msg://createRegularCheckup</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="1"></i><b>(1)</b>
-                <span class="attribute-name">icon</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">font-icon:BRIEFCASE</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+    <span class="comment">// ...</span>
 
-    <span class="tag">&lt;/actions&gt;</span>
-    <span class="tag">&lt;buttonsPanel</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">buttonsPanel</span><span class="delimiter">&quot;</span></span>
-                  <span class="attribute-name">alwaysVisible</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
-        <span class="tag">&lt;button</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">createForPetBtn</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">action</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">visitsTable.createRegularCheckup</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
-    <span class="tag">&lt;/buttonsPanel&gt;</span>
-<span class="tag">&lt;/groupTable&gt;</span></code></pre>
+    <span class="annotation">@Column</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">PAID</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">protected</span> <span class="predefined-type">Boolean</span> paid = <span class="predefined-constant">false</span>;
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Additionally, a specific initialization method with a <code>@PostConstruct</code> annotation can be created in the entity class. In this case, any global infrastructure interfaces as well as managed beans can be invoked during initialization. One example of this post-construct initialization can be seen in the <code>Visit</code> entity:</p>
+</div>
+<div class="listingblock">
+<div class="title">Visit.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">Visit</span> <span class="directive">extends</span> StandardEntity {
+
+    <span class="annotation">@Temporal</span>(TemporalType.DATE)
+    <span class="annotation">@NotNull</span>
+    <span class="annotation">@Column</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">VISIT_DATE</span><span class="delimiter">&quot;</span></span>, nullable = <span class="predefined-constant">false</span>)
+    <span class="directive">protected</span> <span class="predefined-type">Date</span> visitDate;
+
+    <span class="comment">// ...</span>
+
+    <span class="annotation">@PostConstruct</span> <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="directive">private</span> <span class="type">void</span> initVisitDate() {
+        <span class="keyword">if</span> (visitDate == <span class="predefined-constant">null</span>) {
+            setVisitDate(today());
+        }
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">Date</span> today() {
+        TimeSource timeSource = AppBeans.get(TimeSource.class); <i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="keyword">return</span> timeSource.currentTimestamp();
+    }
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td><code>msg://createRegularCheckup</code> references the key <code>createRegularCheckup</code> through the message system <code>msg://</code></td>
+<td><code>@PostConstruct</code> triggers this method after creation of an instance of this class. It is called when manually creating an instance via <code>metadata.create(Visit.class)</code> as well as when the instance is created in the UI by the framework</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Managed beans can be referenced via <code>AppBeans.get()</code></td>
 </tr>
 </table>
 </div>
 </div>
+</div>
+<div class="sect1">
+<h2 id="ui_layer_initialization"><a class="anchor" href="#ui_layer_initialization"></a><a class="link" href="#ui_layer_initialization">UI Layer Initialization</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>On the UI layer there are two main ways to initialize an entity during screen creation. The first one is internal within the screen controller, that should show the newly created entity. The second one is external, where the entity is defined by the code calling the destination screen.</p>
+</div>
 <div class="sect2">
-<h3 id="programmatic_localization_of_messages"><a class="anchor" href="#programmatic_localization_of_messages"></a><a class="link" href="#programmatic_localization_of_messages">Programmatic Localization of Messages</a></h3>
+<h3 id="internal_initialization_via_initentityevent"><a class="anchor" href="#internal_initialization_via_initentityevent"></a><a class="link" href="#internal_initialization_via_initentityevent">Internal Initialization via InitEntityEvent</a></h3>
 <div class="paragraph">
-<p>The second way of interacting with the Localization mechanism is not through the declarative XML definitions, but imperatively through Java code.</p>
+<p>The first option is that the entity initialization happens within the destination screen controller itself. In this case the CUBA platform UI events can be leveraged. For instance, for <code>StandardEditor</code> screens there is a particular UI event that is designed exactly for this purpose: the <code>InitEntityEvent</code>.</p>
 </div>
 <div class="paragraph">
-<p>In the petclinic example, the "regular checkup" button should render the following two dynamic messages programmatically:</p>
+<p>In the Petclinic example this internal initialization is used to set the paid status of the regular checkup visit instance to paid.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>When a new Regular Checkup screen is opened, the description attribute for the visit entity should be pre-filled with a particular localized message</p>
-</li>
-<li>
-<p>Once the Regular Checkup is created, a localized notification message should be rendered, containing the name of the pet</p>
-</li>
-</ol>
+<div class="listingblock">
+<div class="title">RegularCheckup.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">RegularCheckup</span> <span class="directive">extends</span> StandardEditor&lt;Visit&gt; {
+
+    <span class="annotation">@Subscribe</span>
+    <span class="directive">protected</span> <span class="type">void</span> initRegularCheckupVisit(InitEntityEvent&lt;Visit&gt; event) { <i class="conum" data-value="1"></i><b>(1)</b>
+        Visit visit = event.getEntity();
+
+        visit.setPaid(<span class="predefined-constant">false</span>); <i class="conum" data-value="2"></i><b>(2)</b>
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>initRegularCheckupVisit</code> method subscribes to the <code>InitEntityEvent</code> of the newly created <code>Visit</code> instance</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>event.getEntity()</code> returns the Visit instance that can be changed during screen initialization</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p>The first message is received via the <code>MessageBundle</code> CUBA interface. <code>MessageBundle</code> is a new shorthand mechanism of fetching a particular message from the message pack of the calling Java class.</p>
+<p>The upside of this kind of initialization is that it is very easy to achieve and requires very little overall code changes. The downside is that since it is scoped within the destination screen it is not so easy to react to external parameters that get passed into the screen. Therefore, it is a very good fit when particular attributes, that are not dynamic, should be initialized.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="external_initialization_via_screen_builders"><a class="anchor" href="#external_initialization_via_screen_builders"></a><a class="link" href="#external_initialization_via_screen_builders">External Initialization via Screen Builders</a></h3>
+<div class="paragraph">
+<p>On the frontend layer with CUBA 7 the <code>ScreenBuilders</code> API was introduced. It allows programmatic creation and screen opening via a Builder pattern, which exposes various options for further configuration.</p>
 </div>
 <div class="paragraph">
-<p>The <code>Messages</code> interface is the alternative, that is a little more flexible and contains additional APIs, but requires to always define the package.</p>
+<p>One of this options is the possibility to define an initializer method that gets executed before opening the screen, where it is possible for an Editor screen to change attributes of the entity that will be displayed.</p>
+</div>
+<div class="paragraph">
+<p>In the Petclinic example there is a screen that creates a particular visit instance. This visit is a "regular checkup", as this checkup is always the same in the sense that it requires some checklist kind of description. Furthermore, it is always paid upfront. Since it is a burden for the users to create those special kinds of visits over and over again, a screen, that comes with sensible defaults for this kind of use-case, was implemented.</p>
 </div>
 <div class="listingblock">
 <div class="title">VisitBrowse.java</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VisitBrowse</span> <span class="directive">extends</span> StandardLookup&lt;Visit&gt; {
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Inject</span>
+<span class="directive">private</span> ScreenBuilders screenBuilders;
 
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> Notifications notifications;
+<span class="annotation">@Inject</span>
+<span class="directive">private</span> MessageBundle messageBundle;
 
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> MessageBundle messageBundle;
+<span class="annotation">@Inject</span>
+<span class="directive">private</span> GroupTable&lt;Visit&gt; visitsTable;
 
-    <span class="comment">// ...</span>
+<span class="comment">// ...</span>
 
-    <span class="directive">private</span> <span class="type">void</span> createVisitForPet(Pet pet) {
-        screenBuilders.editor(visitsTable)
-                .newEntity()
-                .withInitializer(visit -&gt; {
-                    visit.setDescription(
-                        regularCheckupDescriptionContent(pet) <i class="conum" data-value="1"></i><b>(1)</b>
-                    );
-                    visit.setPet(pet);
-                })
-                .withScreenClass(RegularCheckup.class)
-                .withLaunchMode(OpenMode.DIALOG)
-                .withAfterCloseListener(event -&gt; showRegularCheckupCreatedNotification(pet))
-                .build()
-                .show();
-    }
 
-    <span class="directive">private</span> <span class="predefined-type">String</span> regularCheckupDescriptionContent(Pet pet) {
-        <span class="keyword">return</span> messageBundle.formatMessage( <i class="conum" data-value="2"></i><b>(2)</b>
-                <span class="string"><span class="delimiter">&quot;</span><span class="content">regularCheckupContent</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="3"></i><b>(3)</b>
-                pet.getName(), <i class="conum" data-value="4"></i><b>(4)</b>
-                pet.getIdentificationNumber()
-        );
-    }</code></pre>
+<span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">visitsTable.createRegularCheckup</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">void</span> createForPet(<span class="predefined-type">Action</span>.ActionPerformedEvent event) {
+    screenBuilders.lookup(Pet.class, <span class="local-variable">this</span>)
+            .withSelectHandler(pets -&gt; {
+                createVisitForPet(pets.iterator().next());
+            })
+            .withLaunchMode(OpenMode.DIALOG)
+            .build()
+            .show();
+}
+
+<span class="directive">private</span> <span class="type">void</span> createVisitForPet(Pet pet) {
+    screenBuilders.editor(visitsTable) <i class="conum" data-value="1"></i><b>(1)</b>
+        .newEntity() <i class="conum" data-value="2"></i><b>(2)</b>
+        .withInitializer(visit -&gt; { <i class="conum" data-value="3"></i><b>(3)</b>
+            visit.setPaid(<span class="predefined-constant">true</span>);
+            visit.setDescription(regularCheckupDescriptionContent(pet));
+            visit.setPet(pet);
+        })
+        .withScreenClass(RegularCheckup.class)
+        .withLaunchMode(OpenMode.DIALOG)
+        .build()
+        .show();
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>the description of the visit instance will be set on entity creation</td>
+<td>An <code>EditorBuilder</code> will be created using the <code>screenBuilders</code> bean</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>the <code>messageBundle</code> bean allows to reference translations of the current package of the corresponding Java class</td>
+<td>The mode of the <code>EditorBuilder</code> is set to create mode</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td><code>regularCheckupContent</code> is the key of the message to be translated</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>the next parameters <code>pet.getName()</code> and <code>pet.getIdentificationNumber()</code> are passed to the translation as parameters</td>
+<td>The <code>withInitializer</code> method takes a <code>Consumer&lt;Visit&gt;</code> that gets a new visit instance as a parameter, which then can be adjusted accordingly</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>If dynamic parts of a message should be rendered, the translation should contain placeholders like in this definition:</p>
-</div>
-<div class="listingblock">
-<div class="title">messages_de.properties</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="properties">regularCheckupContent=Kontrolluntersuchung für %s (%s)\n\n
-
-Bestandteile: \n
-- Krallen-Kontrolle\n
-- Temperatur messen\n
-- Zahn-Check</code></pre>
-</div>
+<p>With the ScreenBuilder API and the external initialization it is possible to create default values much more dynamically. As it is shown in the above example, in the first step the pet is selected. Based on this selection a description gets generated and put into the to-be-created visit entity.</p>
 </div>
 <div class="paragraph">
-<p>This code results into the following description value of the regular check:</p>
+<p>The downside of this approach is that it is a little less invasive in terms of source code. It is also not possible to reuse the default actions (create / edit) as is without further modifications.</p>
 </div>
-<div class="imageblock text-center">
+<div class="paragraph">
+<p>As it is shown in this example, it is also possible to combine the two approaches and use them in the different use-cases. The pet and the description of the visit are initialized externally, but the paid status is set internally.</p>
+</div>
+<div class="paragraph">
+<p>The corresponding UI screens look like this:</p>
+</div>
+<div class="imageblock">
 <div class="content">
-<img src="/guides/images/i18n-messages/editor-with-programmatic-created-i10n-messages.png" alt="editor with programmatic created i10n messages">
+<a class="image" href="initial-entity-values/regular-checkup-1-select-pet.png"><img src="/guides/images/initial-entity-values/regular-checkup-1-select-pet.png" alt="Step 1: Pet selection"></a>
 </div>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="initial-entity-values/regular-checkup-2-prefilled-visit.png"><img src="/guides/images/initial-entity-values/regular-checkup-2-prefilled-visit.png" alt="Step 2: Prefilled visit screen"></a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="dependent_attribute_initialization"><a class="anchor" href="#dependent_attribute_initialization"></a><a class="link" href="#dependent_attribute_initialization">Dependent Attribute Initialization</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Another related type of initialization is when an attribute gets set / initialized based on data entered by user for another field. In this case it is also possible to initialize the attribute during the process of storing the entity.</p>
+</div>
+<div class="sect2">
+<h3 id="attribute_initialization_on_change"><a class="anchor" href="#attribute_initialization_on_change"></a><a class="link" href="#attribute_initialization_on_change">Attribute Initialization on Change</a></h3>
+<div class="paragraph">
+<p>In the first case an attribute that is dependent on another attribute of an entity should be calculated / initialized when a change in the original attribute occurs. The change of the derived attribute should be immediately visible in the UI.</p>
+</div>
+<div class="paragraph">
+<p>In the petclinic example, the Visit has an attribute <code>VisitType</code>. This type categorizes the visit into <code>VISIT</code>, <code>REGULAR_CHECKUP</code> or <code>SURGERY</code>. The type of the visit also indicates if the visit has to be paid upfront or if it is paid via an invoice. But it is more like a proposal. It is still possible to be changed by the user for a particular visit.</p>
+</div>
+<div class="paragraph">
+<p>In order to achieve this kind of behavior, it is possible to register a hook method, that subscribes to the <code>ItemPropertyChangeEvent</code> of the instance container within the editor.</p>
+</div>
+<div class="listingblock">
+<div class="title">VisitEdit.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VisitEdit</span> <span class="directive">extends</span> StandardEditor&lt;Visit&gt; {
+
+    <span class="annotation">@Subscribe</span>(id = <span class="string"><span class="delimiter">&quot;</span><span class="content">visitDc</span><span class="delimiter">&quot;</span></span>, target = <span class="predefined-type">Target</span>.DATA_CONTAINER)
+    <span class="directive">protected</span> <span class="type">void</span> onVisitDcItemPropertyChange(
+        InstanceContainer.ItemPropertyChangeEvent&lt;Visit&gt; event) { <i class="conum" data-value="1"></i><b>(1)</b>
+
+        <span class="keyword">if</span> (visitTypeChanged(event)) {
+            updateHasToBePayedUpfrontValue(event);
+        }
+    }
+
+    <span class="directive">private</span> <span class="type">boolean</span> visitTypeChanged(
+        InstanceContainer.ItemPropertyChangeEvent&lt;Visit&gt; event) {
+        <span class="keyword">return</span> event.getProperty().equals(<span class="string"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>);
+    }
+
+    <span class="directive">private</span> <span class="type">void</span> updateHasToBePayedUpfrontValue(
+        InstanceContainer.ItemPropertyChangeEvent&lt;Visit&gt; event) {
+
+        VisitType selectedVisitType = (VisitType) event.getValue(); <i class="conum" data-value="2"></i><b>(2)</b>
+
+        <span class="keyword">if</span> (selectedVisitType != <span class="predefined-constant">null</span>) {
+            event.getItem().setPaid(selectedVisitType.isToBePayedUpfront()); <i class="conum" data-value="3"></i><b>(3)</b>
+        }
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Subscription to the <code>ItemPropertyChangeEvent</code> of the instance container</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>event.getValue()</code> returns the selected value of type <code>VisitType</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The "paid" flag can be adjusted depending on the <code>selectedVisitType</code></td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="attribute_initialization_via_datacontext_precommitevent"><a class="anchor" href="#attribute_initialization_via_datacontext_precommitevent"></a><a class="link" href="#attribute_initialization_via_datacontext_precommitevent">Attribute Initialization via DataContext PreCommitEvent</a></h3>
+<div class="paragraph">
+<p>The second case is that during the save operation, an attribute of the entity needs to be computed - but it does not need to be visible while the user sees the UI screen.</p>
+</div>
+<div class="paragraph">
+<p>In the petclinic example there is an attribute called <code>visitNumber</code> for the Visit entity, which represents a unique number of the visit that shall be generated out of the information specified by the user. The Visit Number should  be constructed out of the year of the visit, the name of the visit type and a 6-digit number.</p>
+</div>
+<div class="paragraph">
+<p>This number only needs to be generated when the visit is saved. Therefore it is possible to use the available mechanisms of the data context in the UI controller. There are several options in this area. In CUBA 7 the data context lifecycle events allow to intercept the storage operation in order to execute some logic that happens during the storage of the edited entity.</p>
+</div>
+<div class="paragraph">
+<p>For the petclinic example, the use case as described above is to generate a <code>visitNumber</code> directly before the visit entity is stored. The <code>VisitNumberGenerator</code> bean acts as the logic that will generate the visit number creation.</p>
+</div>
+<div class="listingblock">
+<div class="title">VisitNumberGenerator.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Component</span>(VisitNumberGenerator.NAME)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">VisitNumberGenerator</span> {
+
+    <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">String</span> NAME = <span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_VisitNumberGenerator</span><span class="delimiter">&quot;</span></span>;
+
+    <span class="annotation">@Inject</span>
+    UniqueNumbersService uniqueNumbersService;
+
+    <span class="directive">public</span> <span class="predefined-type">String</span> generateVisitNumber(Visit entity) {
+        <span class="type">int</span> visitType = entity.getType().getCode();
+        <span class="type">int</span> visitYear = localDate(entity.getVisitDate()).getYear();
+
+        <span class="type">long</span> nextVisitNumber = uniqueNumbersService.getNextNumber(
+            <span class="predefined-type">String</span>.format(<span class="string"><span class="delimiter">&quot;</span><span class="content">VISIT_%d_%d</span><span class="delimiter">&quot;</span></span>, visitYear, visitType)
+        ); <i class="conum" data-value="1"></i><b>(1)</b>
+
+        <span class="keyword">return</span> <span class="predefined-type">String</span>.format(<span class="string"><span class="delimiter">&quot;</span><span class="content">%4d%02d%06d</span><span class="delimiter">&quot;</span></span>, visitYear, visitType, nextVisitNumber);
+    }
+
+    <span class="comment">// ...</span>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>A unique number will be generated for each <code>visitYear</code> and <code>visitType</code> attribute of the visit</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The usage of the bean can be found in both Visit editor controller classes. The <code>DataContext.PreCommitEvent</code> is used to register the associated logic to call the <code>VisitNumberGenerator</code> in case there is no number created for this visit:</p>
+</div>
+<div class="listingblock">
+<div class="title">VisitEdit.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VisitEdit</span> <span class="directive">extends</span> StandardEditor&lt;Visit&gt; {
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">private</span> VisitNumberGenerator visitNumberGenerator;
+
+    <span class="comment">// ...</span>
+
+    <span class="annotation">@Subscribe</span>(target = <span class="predefined-type">Target</span>.DATA_CONTEXT)
+    <span class="directive">protected</span> <span class="type">void</span> onPreCommit(DataContext.PreCommitEvent event) { <i class="conum" data-value="1"></i><b>(1)</b>
+        Visit visit = getEditedEntity();
+        <span class="keyword">if</span> (visit.getVisitNumber() == <span class="predefined-constant">null</span>) {
+            visit.setVisitNumber(visitNumberGenerator.generateVisitNumber(visit)); <i class="conum" data-value="2"></i><b>(2)</b>
+        }
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Registering to the Data context <code>PreCommitEvent</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>VisitNumberGenetator</code> is used to generate the unique visit number</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -504,7 +608,19 @@ Bestandteile: \n
 <h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>&#8230;&#8203;</p>
+<p>In this guide different options on how to set initial values for entity instances were shown. It is possible to define certain initial values directly within the Entity class via direct attribute allocation or the <code>@PostConstruct</code> annotation.</p>
+</div>
+<div class="paragraph">
+<p>This kind of initialization will be executed in all scenarios and, therefore, is oftentimes the preferred way of doing attribute initialization. But sometimes it is required to have more information on the context of the execution, e.g. prior selections of the user on the UI.</p>
+</div>
+<div class="paragraph">
+<p>Therefore, it is also possible to initialize attributes on the UI layer. There are multiple ways to do it as shown above. It allows the developer to react more flexibly on the UI selection, etc.</p>
+</div>
+<div class="paragraph">
+<p>The main difference is that these kinds of initializations are only applied when the user uses this particular UI to interact with the system. Oftentimes there are other use cases, like the REST API, Bulk Editor functionality, data import scenarios, etc. If it is required to initialize an attribute for all those use cases, the Entity Field initialization should be preferred.</p>
+</div>
+<div class="paragraph">
+<p>Furthermore, two different dependent attribute initializations were shown, as their use case is oftentimes quite similar to the normal attribute initialization. It is possible to initialize a dependent attribute either directly on change of a Form field or before storing the entity with the help of the data context lifecycle events.</p>
 </div>
 </div>
 </div>
@@ -514,10 +630,10 @@ Bestandteile: \n
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://doc.cuba-platform.com/manual-7.0/messages.html">CUBA docs: Messages Interface</a></p>
+<p><a href="https://doc.cuba-platform.com/manual-7.0/opening_screens.html#screenBuilders">Screen Builders reference documentation</a></p>
 </li>
 <li>
-<p><a href="https://doc.cuba-platform.com/manual-7.0/localization.html">CUBA docs: Localization</a></p>
+<p><a href="https://www.cuba-platform.com/guides/decouple-business-logic-with-app-events">Guide: Decouple Business Logic with Application Events</a></p>
 </li>
 </ul>
 </div>
@@ -541,10 +657,9 @@ Bestandteile: \n
                             <ul class="sectlevel1">
 <li><a href="#what_will_be_built">What Will be Built</a></li>
 <li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
-<li><a href="#localized_messages">Localized Messages</a></li>
-<li><a href="#where_translations_are_stored_in_a_cuba_application">Where Translations are Stored in a CUBA Application</a></li>
-<li><a href="#register_available_languages_in_the_application">Register Available Languages in the Application</a></li>
-<li><a href="#referencing_localized_messages">Referencing Localized Messages</a></li>
+<li><a href="#entity_fields_initialization">Entity Fields Initialization</a></li>
+<li><a href="#ui_layer_initialization">UI Layer Initialization</a></li>
+<li><a href="#dependent_attribute_initialization">Dependent Attribute Initialization</a></li>
 <li><a href="#summary">Summary</a></li>
 <li><a href="#further_information">Further Information</a></li>
 </ul>
@@ -552,8 +667,8 @@ Bestandteile: \n
 
                         <div class="guide-panel download">
                             <h3>Example code</h3>
-                            <a class=" guide-item_button button-outline"  href="https://github.com/cuba-guides/cuba-petclinic-i18n-messages/archive/master.zip" target="_blank">Download</a>
-                            <a href="https://github.com/cuba-guides/cuba-petclinic-i18n-messages" class="github-link" target="_blank">Github</a>
+                            <a class=" guide-item_button button-outline"  href="https://github.com/cuba-guides/cuba-petclinic-initial-entity-values/archive/master.zip" target="_blank">Download</a>
+                            <a href="https://github.com/cuba-guides/cuba-petclinic-initial-entity-values" class="github-link" target="_blank">Github</a>
                         </div>
 
                         <div class="guide-panel cuba-version">
