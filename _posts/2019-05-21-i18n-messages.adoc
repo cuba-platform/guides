@@ -150,17 +150,16 @@ The first option is to reference a particular message key within XML UI descript
     </buttonsPanel>
 </groupTable>
 ----
-<1> `msg://createRegularCheckup` references the key `createRegularCheckup` through the message system `msg://`
+<1> `msg://createRegularCheckup` references the key `createRegularCheckup` in the current package of the XML descriptor
 
 === Programmatic Localization of Messages
 
-The second way of interacting with the Localization mechanism is not through the declarative XML definitions, but imperatively through Java code. In the petclinic example, the "regular checkup" button should render the following two dynamic messages programmatically:
+The second way of interacting with the Localization mechanism is not through the declarative XML definitions, but imperatively through Java code. In the Petclinic example, the "regular checkup" button should render the following two dynamic messages programmatically:
 
 1. When a new Regular Checkup screen is opened, the description attribute for the visit entity should be pre-filled with a particular localized message
 2. Once the Regular Checkup is created, a localized notification message should be rendered, containing the name of the pet
 
-
-The first message is received via the `MessageBundle` Interface. `MessageBundle` is a new shorthand mechanism introduced in CUBA 7.0, that fetches a particular message from the message pack of the calling Java class.
+Messages can be received via the `MessageBundle` Interface. `MessageBundle` is a new shorthand mechanism introduced in CUBA 7.0, that fetches a particular message from the message pack of the calling Java class.
 
 Alternatively there is the `Messages` Interface, which is a little more flexible and contains additional APIs, but requires to always define the package for every message lookup.
 
@@ -225,6 +224,74 @@ This code results into the following description value of the regular check:
 
 image::i18n-messages/editor-with-programmatic-created-i10n-messages.png[align="center"]
 
+
+The second message should be displayed as a notification once the "regular checkup" was successfully created. There is
+ the method `showRegularCheckupCreatedNotification` in the Visit browser, that will be called once the instance is created:
+
+
+.VisitBrowse.java
+[source,java]
+----
+public class VisitBrowse extends StandardLookup<Visit> {
+
+    // ...
+
+    @Inject
+    private MetadataTools metadataTools;
+
+    @Inject
+    private MessageBundle messageBundle;
+
+    @Inject
+    private Notifications notifications;
+
+
+    private void showRegularCheckupCreatedNotification(Pet pet) {
+
+        String petName = metadataTools.getInstanceName(pet); // <1>
+
+        String regularCheckupCreatedMessage = messageBundle.formatMessage("regularCheckupCreated", petName); // <2>
+
+        notifications.create(Notifications.NotificationType.TRAY)
+                .withCaption(regularCheckupCreatedMessage) // <3>
+                .show();
+    }
+----
+<1> `metadataTools` are used in CUBA 7.0+ to fetch the instance name from an entity
+<2> The `messageBundle` is used once again to get a particular message with a parameter
+<3> the localized Message String is passed to the `notifications` bean to render a TRAY notification
+
+
+== Translation of Existing UI Screens / Functionality
+
+Since CUBA comes with certain UI components and with multiple UI screens that are available out of the box, this existing
+functionality needs also to be localized in order to have a fully translated application.
+
+For this problem, there are two main solutions:
+
+1. Languages Packs
+2. Manual providing Translations
+
+
+=== Existing Language Packs
+
+The first and most easy solution is to use existing Language packs that are created by the community. There are currently
+twelve Translations available including Spanisch, Russian, French, Chinese, German and a lot of more. The translation cover around half of the worlds population.
+It is worth mentioning though, that since the Translations are provided by the community, the accuracy and the catch up
+with the latest changes in the platform differ and are provided as best effort.
+
+In order to get those translations into the Application they can be fetched manually from the https://github.com/cuba-platform/translations[CUBA Translations Github repository]. Some Translations are also directly available via an application component through the https://www.cuba-platform.com/marketplace/[CUBA marketplace],
+which makes the installation as easy as installing any other application component.
+
+Afterwards, the new language has to be added to the application property `cuba.availableLocales`.
+
+=== Manual Providing Translations
+
+In case the target language is not available through the community or some Translations are missing / not accurate, it is also
+possible to provide those translations directly within the application.
+
+CUBA itself provides translations for the screens directly in the source code of the platform as regular `*.properties` files.
+E.g. the User browse screen contains the https://github.com/cuba-platform/cuba/blob/master/modules/gui/src/com/haulmont/cuba/gui/app/security/user/browse/messages.properties[messages.properties] file in the package `com.haulmont.cuba.gui.app.security.user.browse`.
 
 == Summary
 
