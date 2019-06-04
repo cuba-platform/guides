@@ -9,7 +9,7 @@ permalink: initial-entity-values
 :sectlinks:
 :sectanchors:
 :page-navtitle: Initial Values for Entity Instances
-:page-excerpt: Data modeling guide: How entity inheritance can be used in a CUBA application
+:page-excerpt: This guide demonstrates different options on how initial values can be set for an entity
 :page-root: ../../../
 :project_id: cuba-petclinic-initial-entity-values
 :java_version: 1.8
