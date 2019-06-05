@@ -15,7 +15,10 @@ permalink: localization-in-cuba-applications
 :java_version: 1.8
 :cuba_version: 7.0
 
-...
+
+CUBA applications have build-in support for localized messages for different languages. Translations are externalized in
+properties files to have a clear separation between the application code and the translated messages.
+
 
 == What Will be Built
 
@@ -34,12 +37,6 @@ include::includes/guide_requirements.adoc[]
 
 
 include::includes/petclinic_introduction.adoc[]
-
-
-== Localized Messages
-
-CUBA applications have build-in support for localized messages for different languages. Translations are externalized in
-properties files to have a clear separation between the application code and the translated messages.
 
 
 == Where Translations are Stored in a CUBA Application
