@@ -291,7 +291,13 @@ In case the target language is not available through the community or some Trans
 possible to provide those translations directly within the application.
 
 CUBA itself provides translations for the screens directly in the source code of the platform as regular `*.properties` files.
-E.g. the User browse screen contains the https://github.com/cuba-platform/cuba/blob/master/modules/gui/src/com/haulmont/cuba/gui/app/security/user/browse/messages.properties[messages.properties] file in the package `com.haulmont.cuba.gui.app.security.user.browse`.
+The User browse screen for example contains the https://github.com/cuba-platform/cuba/blob/master/modules/gui/src/com/haulmont/cuba/gui/app/security/user/browse/messages.properties[messages.properties] file in the package `com.haulmont.cuba.gui.app.security.user.browse`,
+which contains the translations for the screen.
+
+In order to provide / override translations for this screen, the same package (and module) has to be created in the application.
+In this directory the additional / replacing message files are placed. CUBA will pick up the file and display the correct
+translations for the screen.
+
 
 == Summary
 
