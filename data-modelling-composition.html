@@ -326,10 +326,10 @@ In the Studio entity designer, set the following settings for the <code>addresse
 <p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/views.xml">views.xml</a> - the <code>owner-with-pets-and-addresses</code> view of the <code>Owner</code> editing screen contains the <code>addresses</code> collection attribute. <code>Addresses</code> itself are loaded with <code>_local</code> view, because the <code>owner</code> attribute of the <code>Address</code> entity is set only at the creation of a new <code>Address</code> instance and never changes after that, so there is no need to load it.</p>
 </li>
 <li>
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/owner/owner/owner-edit.xml">owner-edit.xml</a> - the XML descriptor of the <code>Owner</code> editor screen defines a data container for the <code>Owner</code> instance and a nested collection container for its <code>addresses</code>. It also contains a table for managing the <code>Address</code> instances.</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/owner/owner/owner-edit.xml">owner-edit.xml</a> - the XML descriptor of the <code>Owner</code> editor screen defines a data container for the <code>Owner</code> instance and a nested collection container for its <code>addresses</code>. It also contains a table for managing the <code>Address</code> instances.</p>
 </li>
 <li>
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/owner/address/address-edit.xml">address-edit.xml</a> - a standard editor for the <code>Address</code> entity.</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/owner/address/address-edit.xml">address-edit.xml</a> - a standard editor for the <code>Address</code> entity.</p>
 </li>
 </ul>
 </div>
@@ -376,7 +376,7 @@ In the Studio entity designer, set the following settings for the <code>addresse
 <p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/views.xml">views.xml</a> - the <code>health-record-with-attachments</code> view of the <code>HealthRecord</code> class contains the <code>attachments</code> collection attribute. This view is used in the <code>pet-with-owner-and-type-and-health-records</code> view of the <code>Pet</code> entity which acts as the root view of the edit screen.</p>
 </li>
 <li>
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/pet/pet/pet-edit.xml">pet-edit.xml</a> - the XML descriptor of the <code>Pet</code> editor screen defines a data container for the <code>Pet</code> instance and a nested collection data container for its <code>healthRecords</code>. It also contains a table for managing the <code>HealthRecord</code> instances. The screen uses the <code>pet-with-owner-and-type-and-health-records</code> view as a root view for this edit screen.</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/pet/pet/pet-edit.xml">pet-edit.xml</a> - the XML descriptor of the <code>Pet</code> editor screen defines a data container for the <code>Pet</code> instance and a nested collection data container for its <code>healthRecords</code>. It also contains a table for managing the <code>HealthRecord</code> instances. The screen uses the <code>pet-with-owner-and-type-and-health-records</code> view as a root view for this edit screen.</p>
 <div class="admonitionblock tip">
 <table>
 <tr>
@@ -393,7 +393,7 @@ In the Studio entity designer, set the following settings for the <code>addresse
 </div>
 </li>
 <li>
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/pet/healthrecord/healthrecord/health-record-edit.xml">health-record-edit.xml</a> - the XML descriptor of the <code>HealthRecord</code> editor screen defines a data container for the <code>HealthRecord</code> instance and a nested collection data container for its <code>attachments</code>. It also contains a table for managing the <code>HealthRecordAttachment</code> instances.</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/pet/healthrecord/healthrecord/health-record-edit.xml">health-record-edit.xml</a> - the XML descriptor of the <code>HealthRecord</code> editor screen defines a data container for the <code>HealthRecord</code> instance and a nested collection data container for its <code>attachments</code>. It also contains a table for managing the <code>HealthRecordAttachment</code> instances.</p>
 </li>
 </ul>
 </div>
@@ -460,7 +460,7 @@ In the Studio entity designer, set the following settings for the <code>addresse
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/employee/employee/employee-edit.xml">employee-edit.xml</a> - the employee edit screen descriptor. It contains a nested data container for the <code>EmployeeRecord</code> instance. In order to load the nested instance, the root data container uses the <code>employee-with-employee-record-view</code> view of the <code>Employee</code> entity that includes the <code>employeeRecord</code> attribute.</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/employee/employee/employee-edit.xml">employee-edit.xml</a> - the employee edit screen descriptor. It contains a nested data container for the <code>EmployeeRecord</code> instance. In order to load the nested instance, the root data container uses the <code>employee-with-employee-record-view</code> view of the <code>Employee</code> entity that includes the <code>employeeRecord</code> attribute.</p>
 </li>
 </ul>
 </div>
@@ -509,7 +509,7 @@ In the Studio entity designer, set the following settings for the <code>addresse
 <p>It is often convenient to edit the One-to-One composition in a single editor. The following example shows how the <code>EmployeeRecord</code> can be edited within the <code>Employee</code> editor screen.</p>
 </div>
 <div class="paragraph">
-<p>The <a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/employee/employee/employee-single-editor-edit.xml">employee-single-editor-edit.xml</a> descriptor contains the main <code>employeeDc</code> and the nested <code>employeeRecordDc</code> data containers:</p>
+<p>The <a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/employee/employee/employee-single-editor-edit.xml">employee-single-editor-edit.xml</a> descriptor contains the main <code>employeeDc</code> and the nested <code>employeeRecordDc</code> data containers:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -540,7 +540,7 @@ In the Studio entity designer, set the following settings for the <code>addresse
 </div>
 </div>
 <div class="paragraph">
-<p>In the <a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/employee/employee/EmployeeSingleEditorEdit.java">EmployeeSingleEditorEdit.java</a> controller an <code>EmployeeRecord</code> instance will be created and linked to the new <code>Employee</code> instance when the latter is just created:</p>
+<p>In the <a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/employee/employee/EmployeeSingleEditorEdit.java">EmployeeSingleEditorEdit.java</a> controller an <code>EmployeeRecord</code> instance will be created and linked to the new <code>Employee</code> instance when the latter is just created:</p>
 </div>
 <div class="listingblock">
 <div class="title">EmployeeSingleEditorEdit.java</div>
