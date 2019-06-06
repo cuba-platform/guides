@@ -68,9 +68,9 @@ NOTE: In the Studio entity designer, set the following settings for the `address
 
 * https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/views.xml[views.xml] - the `owner-with-pets-and-addresses` view of the `Owner` editing screen contains the `addresses` collection attribute. `Addresses` itself are loaded with `_local` view, because the `owner` attribute of the `Address` entity is set only at the creation of a new `Address` instance and never changes after that, so there is no need to load it.
 
-* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/owner/owner/owner-edit.xml[owner-edit.xml] - the XML descriptor of the `Owner` editor screen defines a data container for the `Owner` instance and a nested collection container for its `addresses`. It also contains a table for managing the `Address` instances.
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/owner/owner/owner-edit.xml[owner-edit.xml] - the XML descriptor of the `Owner` editor screen defines a data container for the `Owner` instance and a nested collection container for its `addresses`. It also contains a table for managing the `Address` instances.
 
-* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/owner/address/address-edit.xml[address-edit.xml] - a standard editor for the `Address` entity.
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/owner/address/address-edit.xml[address-edit.xml] - a standard editor for the `Address` entity.
 
 As a result, editing of an `Owner` instance works as follows:
 
@@ -97,7 +97,7 @@ image::data-model-composition/composition_domain_model_two_levels.png[align="cen
 
 * https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/views.xml[views.xml] - the `health-record-with-attachments` view of the `HealthRecord` class contains the `attachments` collection attribute. This view is used in the `pet-with-owner-and-type-and-health-records` view of the `Pet` entity which acts as the root view of the edit screen.
 
-* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/pet/pet/pet-edit.xml[pet-edit.xml] - the XML descriptor of the `Pet` editor screen defines a data container for the `Pet` instance and a nested collection data container for its `healthRecords`. It also contains a table for managing the `HealthRecord` instances. The screen uses the `pet-with-owner-and-type-and-health-records` view as a root view for this edit screen.
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/pet/pet/pet-edit.xml[pet-edit.xml] - the XML descriptor of the `Pet` editor screen defines a data container for the `Pet` instance and a nested collection data container for its `healthRecords`. It also contains a table for managing the `HealthRecord` instances. The screen uses the `pet-with-owner-and-type-and-health-records` view as a root view for this edit screen.
 
 +
 [TIP]
@@ -105,7 +105,7 @@ image::data-model-composition/composition_domain_model_two_levels.png[align="cen
 CUBA 7+ removed the previous need to define datasources for the second level of nested compositions in the editor of the top level entity with the release of data containers. In CUBA 7+ this definition is *not* required anymore.
 ====
 
-* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/pet/healthrecord/healthrecord/health-record-edit.xml[health-record-edit.xml] - the XML descriptor of the `HealthRecord` editor screen defines a data container for the `HealthRecord` instance and a nested collection data container for its `attachments`. It also contains a table for managing the `HealthRecordAttachment` instances.
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/pet/healthrecord/healthrecord/health-record-edit.xml[health-record-edit.xml] - the XML descriptor of the `HealthRecord` editor screen defines a data container for the `HealthRecord` instance and a nested collection data container for its `attachments`. It also contains a table for managing the `HealthRecordAttachment` instances.
 
 
 As a result, the updated instances of the `HealthRecordAttachment`, as well as the `HealthRecord` instances, will be saved to the database only with the `Pet` instance in the same transaction.
@@ -143,7 +143,7 @@ On a UI level it is possible to deal with One-to-One composition in two differen
 
 === One-to-One with a Details Screen
 
-* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/employee/employee/employee-edit.xml[employee-edit.xml] - the employee edit screen descriptor. It contains a nested data container for the `EmployeeRecord` instance. In order to load the nested instance, the root data container uses the `employee-with-employee-record-view` view of the `Employee` entity that includes the `employeeRecord` attribute.
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/employee/employee/employee-edit.xml[employee-edit.xml] - the employee edit screen descriptor. It contains a nested data container for the `EmployeeRecord` instance. In order to load the nested instance, the root data container uses the `employee-with-employee-record-view` view of the `Employee` entity that includes the `employeeRecord` attribute.
 
 The definition of the `employeeRecord` property in the `employee-edit.xml` is defined as a `pickerField` component which contains the actions `OpenAction` (with special type `picker_open_composition`) and `ClearAction`:
 
@@ -178,7 +178,7 @@ If the user invokes the clear action of the picker field, the `EmployeeRecord` i
 
 It is often convenient to edit the One-to-One composition in a single editor. The following example shows how the `EmployeeRecord` can be edited within the `Employee` editor screen.
 
-The https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/employee/employee/employee-single-editor-edit.xml[employee-single-editor-edit.xml] descriptor contains the main `employeeDc` and the nested `employeeRecordDc` data containers:
+The https://github.com/cuba-guides/{project_id}/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/employee/employee/employee-single-editor-edit.xml[employee-single-editor-edit.xml] descriptor contains the main `employeeDc` and the nested `employeeRecordDc` data containers:
 
 [source, xml]
 ----
@@ -207,7 +207,7 @@ Fields for editing both entities are defined in the same editor either a single 
 </form>
 ----
 
-In the https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/web/employee/employee/EmployeeSingleEditorEdit.java[EmployeeSingleEditorEdit.java] controller an `EmployeeRecord` instance will be created and linked to the new `Employee` instance when the latter is just created:
+In the https://github.com/cuba-guides/{project_id}/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/employee/employee/EmployeeSingleEditorEdit.java[EmployeeSingleEditorEdit.java] controller an `EmployeeRecord` instance will be created and linked to the new `Employee` instance when the latter is just created:
 
 .EmployeeSingleEditorEdit.java
 [source, java]
