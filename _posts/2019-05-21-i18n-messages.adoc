@@ -303,7 +303,7 @@ TIP: Adding the GUI module via CUBA Studio can be done via the Menu: `CUBA > Adv
 After ensuring the target module is available in the application, the package where the original translation files exist, have to be created in the application as well. In this directory the additional / replacing message files are placed. CUBA will pick up the files and display the correct translations for the screen.
 
 In the Petclinic example, the destination target package has been created for the Users browse screen:
-https://github.com/cuba-guides/{project_id}/blob/master/modules/gui/src/com/haulmont/cuba/gui/app/security/user/browse/messages.properties[messages_de.properties] to provide german translation for the screen.
+https://github.com/cuba-guides/{project_id}/blob/master/modules/gui/src/com/haulmont/cuba/gui/app/security/user/browse/messages_de.properties[messages_de.properties] to provide german translation for the screen.
 
 
 The resulting Users browse screen in german locale looks like this:
