@@ -289,10 +289,28 @@ In case the target language is not available through the community or some Trans
 CUBA itself provides translations for the screens directly in the source code of the platform as regular `*.properties` files. The User browse screen for example contains the https://github.com/cuba-platform/cuba/blob/master/modules/gui/src/com/haulmont/cuba/gui/app/security/user/browse/messages.properties[messages.properties] file in the package `com.haulmont.cuba.gui.app.security.user.browse`,
 which contains the translations for the screen.
 
-In order to provide / override translations for this screen, the same package (and module) has to be created in the application. In this directory the additional / replacing message files are placed. CUBA will pick up the file and display the correct translations for the screen.
+In order to provide / override translations for this screen, two things have to be done:
+
+==== Create GUI module if Necessary
+
+The destination module of where the translations have to be placed has to be available in the application. The majority of the platform screens are placed in the GUI module, which is not available for 7.0+ CUBA applications be default. In case the target application does not have the GUI module it has to be included into the application to place the translation files into it.
+
+TIP: Adding the GUI module via CUBA Studio can be done via the Menu: `CUBA > Advanced > Manage Modules > Create 'gui' module`.
 
 
-TODO: provide example in the Petclinic project on how some values for englisch are replaced for the User Browse screen
+==== Create Package-Mirror in the Application
+
+After ensuring the target module is available in the application, the package where the original translations files exists, have to be created in the application as well. In this directory the additional / replacing message files are placed. CUBA will pick up the file and display the correct translations for the screen.
+
+In the Petclinic example, the destination target package has been created for the Users browse screen:
+https://github.com/cuba-guides/{project_id}/blob/master/modules/gui/src/com/haulmont/cuba/gui/app/security/user/browse/messages.properties[messages_de.properties] to provide german translation for the screen.
+
+
+The resulting Users browse screen in german locale looks like this:
+
+image::i18n-messages/localized-platform-screen.png[align="center"]
+
+WARNING: Not all Buttons are translated in this example. This is due to the fact, that e.g. the filter component with its buttons and captions like `Search`, `Add search condition` etc. are not located in this package. In case all captions of the Screen should be translated, it is required to look into the sources of the platform screen to identify where a particular translation is located.
 
 == Summary
 
