@@ -24,8 +24,9 @@ properties files to have a clear separation between the application code and the
 
 This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show how localized messages within the CUBA application can be defined and used:
 
-* The application is also available in German and Russian language
-* Dynamic data as automatically generated descriptions for visits are localized
+* the application is also available in German and Russian language
+* dynamic data as automatically generated descriptions for visits are localized
+* provide german translation for User browse platform screen
 
 === Final Application
 
@@ -41,9 +42,9 @@ include::includes/petclinic_introduction.adoc[]
 
 == Where Translations are Stored in a CUBA Application
 
-CUBA deals with translations as it is common for other Java based applications. Messages for different languages / locales are stores next to the source-code within the same package in `.properties` files.
+CUBA follows a common pattern for translations in Java based applications. Messages for different languages / locales are stores next to the source-code within the same package in `.properties` files.
 
-For every language and every package there exists a file containing information on how to translate a given text into the target language. The language files contain a suffix according to the locale code of the language (e.g. `_ru` for russian, `_es` for spanish).
+For every language and every package there exists a file containing information on how to translate a given text into the target language. The language files contain a suffix according to the locale code of the language (e.g. `_ru` for russian, `_de` for german).
 
 An example of this file structure looks like this:
 
@@ -73,9 +74,7 @@ com.haulmont.sample.petclinic.entity
     └── messages.properties
 ```
 
-The properties file contains of key-value pairs, where the key is the identifier of the to be localized string and the value is the corresponding translation for the language.
-
-The key is the same for all language files, only the value differs. In the example of the petclinic, localized entity and entity attributes names look like this:
+The properties file contains of key-value pairs, where the key is the identifier of the Message that has to be localized and the value is the corresponding translation for the language. The key is the same for all language files, only the value differs. In the example of the petclinic, localized entity and entity attributes names look like this:
 
 .messages.properties
 [source, java]
@@ -99,35 +98,37 @@ Pet.identificationNumber = Haustier-Identifikationsnummer
 PetType = Tierart
 ----
 
-The example application contains translations for english, german and russian languages.
+In the Petclinic example application, the source code contains translations for english, german and russian languages.
 
 More information about the general structure of how localized messages are stored can be found in the reference documentation: https://doc.cuba-platform.com/manual-{cuba_version}/localization.html[Localization].
 
 
 == Register Available Languages in the Application
 
-In order to activate the possibility to select different languages as a user, the application needs two main configuration options in place. The first one is the activation of the language drop-down in the login screen and settings screen of the app: `cuba.localeSelectVisible`. It has to be set to `true`. The second configuration is the available languages / locales that should be available for selection: `cuba.availableLocales = English|en;German|de;Russian|ru`.
+In order to activate the possibility to have a language selection for the user, the application needs two main configuration options in place.
 
-Both configurations should be placed in the `web-app.properties`. With that in place the Login screen will display the language selection box:
+The first one is the activation of the language drop-down in the login screen: `cuba.localeSelectVisible`. It has to be set to `true`.
 
+The second configuration is the available languages / locales that should be available for selection: `cuba.availableLocales = English|en;German|de;Russian|ru`.
+
+Both configurations should be placed in the `web-app.properties`. After this configuration is in place the Login screen displays the language selection box at login:
 
 image::i18n-messages/login-screen-with-activated-language-selection.png[align="center"]
 
-When logging in as a user with a given language, the application will display the translations of the corresponding language.
-This happens automatically for all UI components if the corresponding translation files are in place. A `<form>` component e.g. renders the attribute captions localized:
+When logging in as a user with a given language, the application will display the correct translations. This happens automatically for all UI components if the corresponding translation files are in place. The `<form>` component renders the attribute captions in the correct language:
 
 image::i18n-messages/localized-editor.png[align="center"]
 
 
 == Referencing Localized Messages
 
-For the two cases of `<groupTable />` and `<form />` the translation are automatically derived from the properties that should be displayed. For other UI components or messages throughout the application, there are two ways of interacting with the Localization mechanisms of CUBA: either in the XML screen definitions or programmatically from the Java code.
+For the two cases of `<groupTable />` and `<form />` the translation are automatically derived from the entity attribute translations that should be displayed. For UI components or messages in the application that are not directly tied to a entity attribute, there are two ways of interacting with the Localization mechanisms of CUBA: either in the XML screen definitions or programmatically from the Java code.
 
-In order to display the correct localized message for the language the user selected, the message keys have to be referenced in the application code in order to render the correct String.
+In order to display the correct localized message, the message keys have to be referenced explicitly in the source code.
 
 === Referencing Messages in XML Descriptors
 
-The first option is to reference a particular message key within XML UI descriptor. In the petclinic example, the button caption of the "regular checkup" button should be displayed in the selected language.
+The first option is to reference a particular message key within XML UI descriptor. In the Petclinic example, the caption of the "regular checkup" button should be displayed localized. This happens through the prefix `msg://` followed by the translation key:
 
 .visit-browse.xml
 [source,xml]
@@ -152,12 +153,12 @@ The first option is to reference a particular message key within XML UI descript
 
 === Programmatic Localization of Messages
 
-The second way of interacting with the Localization mechanism is imperatively through Java code. In the Petclinic example, the "regular checkup" button should render the following two dynamic messages programmatically:
+The second way of interacting with the Localization mechanism is imperatively through Java code. In the Petclinic example, the "regular checkup" functionality should render the following two dynamic messages programmatically:
 
-1. When a new Regular Checkup screen is opened, the description attribute for the visit entity should be pre-filled with a particular localized message
-2. Once the Regular Checkup is created, a localized notification message should be rendered, containing the name of the pet
+1. when a new Regular Checkup screen is opened, the description attribute for the visit entity should be pre-filled with a particular localized message
+2. once the Regular Checkup is created, a localized notification message should be rendered, containing the name of the pet
 
-Messages can be received via the `Messages` Interface. It provides an API to fetch a translated String through the localization mechanism of CUBA for the locale of the current user.
+Messages can be received programmatically via the `Messages` Interface. It provides an API to fetch a translated String through the localization mechanism of CUBA for the locale of the current user.
 
 TIP: In the example code instead of using the `Messages` Interface, the `MessageBundle` Interface is used. It is a new shorthand mechanism introduced in CUBA 7.0, that fetches a particular message from the message pack of the calling Java class. This way it is not required to provide the package for every translation API request.
 
@@ -203,12 +204,11 @@ public class VisitBrowse extends StandardLookup<Visit> {
     }
 ----
 <1> the description of the visit instance will be set on entity creation
-<2> the `messageBundle` bean fetch the translated message
+<2> the `messageBundle` bean is responsible for fetching the translated message
 <3> `regularCheckupContent` is the key of the message to be translated
-<4> the Parameters `pet.getName()` and `pet.getIdentificationNumber()` are passed to the translation as parameters
+<4> the parameters `pet.getName()` and `pet.getIdentificationNumber()` are passed to the translation as dynamic parts
 
-If dynamic parts of a message should be rendered, the translation should contain placeholders like in this definition:
-
+For the dynamic parts of a message, the translation should contain the placeholder `%s` like in this definition:
 
 .messages_de.properties
 [source,properties]
@@ -226,7 +226,7 @@ This code results into the following description value of the regular check:
 image::i18n-messages/editor-with-programmatic-created-i10n-messages.png[align="center"]
 
 
-The second message should be displayed as a notification once the "regular checkup" was successfully created. There is
+The second message should be displayed as a notification once the Regular Checkup was successfully created. There is
  the method `showRegularCheckupCreatedNotification` in the Visit browser, that will be called once the instance is created:
 
 
@@ -258,14 +258,14 @@ public class VisitBrowse extends StandardLookup<Visit> {
                 .show();
     }
 ----
-<1> `metadataTools` are used in CUBA 7.0+ to fetch the instance name from an entity
+<1> `metadataTools` is used in CUBA 7.0+ to fetch the instance name from an entity
 <2> The `messageBundle` is used once again to get a particular message with a parameter
-<3> the localized Message String is passed to the `notifications` bean to render a TRAY notification
+<3> the localized Message String is passed to the `notifications` bean to render a tray notification
 
 
 == Translation of Existing UI Screens / Functionality
 
-Since CUBA comes with certain UI components and with multiple UI screens that are available out of the box, this existing functionality needs also to be localized in order to have a fully translated application. For this problem, there are two main solutions:
+Since CUBA comes with certain UI components and with multiple UI screens out of the box, this existing functionality also needs to be localized in order to have a fully translated application. For this problem, there are two main solutions:
 
 1. Community Languages Packs
 2. Manual providing Translations
@@ -273,18 +273,18 @@ Since CUBA comes with certain UI components and with multiple UI screens that ar
 
 === Community Language Packs
 
-The first and most easy solution is to use existing Language packs that are created by the community. There are currently twelve Translations available including Spanisch, Russian, French, Chinese, German and a lot more. The translation cover around half of the worlds population.
+The first and easiest solution is to use existing language packs that are created by the community. There are currently twelve Translations available including Spanisch, Russian, French, Chinese, German and a lot more.
 
 WARNING: The Community Translations Packs are provided by the community, therefore the accuracy and the catch up with the latest changes in the platform differ and are provided as best effort.
 
 In order to get those translations into the Application they can be fetched manually from the https://github.com/cuba-platform/translations[CUBA Translations Github repository]. Some Translations are also directly available via an application component through the https://www.cuba-platform.com/marketplace/[CUBA marketplace],
 which makes the installation as easy as installing any other application component.
 
-Afterwards, the new language has to be added to the application property `cuba.availableLocales`.
+Afterwards, the only thing to do is to add the new language to the application property `cuba.availableLocales`.
 
 === Manual Providing Translations
 
-In case the target language is not available through the community or some Translations are missing or are not accurate, it is also possible to provide those translations directly within the application.
+In case the target language is not available through the community or some translations are missing or are not accurate, it is also possible to provide those translations directly within the application.
 
 CUBA itself provides translations for the screens directly in the source code of the platform as regular `*.properties` files. The User browse screen for example contains the https://github.com/cuba-platform/cuba/blob/master/modules/gui/src/com/haulmont/cuba/gui/app/security/user/browse/messages.properties[messages.properties] file in the package `com.haulmont.cuba.gui.app.security.user.browse`,
 which contains the translations for the screen.
@@ -293,14 +293,14 @@ In order to provide / override translations for this screen, two things have to 
 
 ==== Create GUI module if Necessary
 
-The destination module of where the translations have to be placed has to be available in the application. The majority of the platform screens are placed in the GUI module, which is not available for 7.0+ CUBA applications be default. In case the target application does not have the GUI module it has to be included into the application to place the translation files into it.
+The destination module of where the translations have to be placed has to be available in the application. The majority of the platform screens are placed in the GUI module, which is not available for 7.0+ CUBA applications by default. In case the target application does not have the GUI module it has to be included into the application to place the translation files into it.
 
 TIP: Adding the GUI module via CUBA Studio can be done via the Menu: `CUBA > Advanced > Manage Modules > Create 'gui' module`.
 
 
 ==== Create Package-Mirror in the Application
 
-After ensuring the target module is available in the application, the package where the original translations files exists, have to be created in the application as well. In this directory the additional / replacing message files are placed. CUBA will pick up the file and display the correct translations for the screen.
+After ensuring the target module is available in the application, the package where the original translation files exist, have to be created in the application as well. In this directory the additional / replacing message files are placed. CUBA will pick up the files and display the correct translations for the screen.
 
 In the Petclinic example, the destination target package has been created for the Users browse screen:
 https://github.com/cuba-guides/{project_id}/blob/master/modules/gui/src/com/haulmont/cuba/gui/app/security/user/browse/messages.properties[messages_de.properties] to provide german translation for the screen.
@@ -310,15 +310,15 @@ The resulting Users browse screen in german locale looks like this:
 
 image::i18n-messages/localized-platform-screen.png[align="center"]
 
-WARNING: Not all Buttons are translated in this example. This is due to the fact, that e.g. the filter component with its buttons and captions like `Search`, `Add search condition` etc. are not located in this package. In case all captions of the Screen should be translated, it is required to look into the sources of the platform screen to identify where a particular translation is located.
+WARNING: Not all captions are translated in this screen. This is due to the fact, that e.g. the filter component with its buttons and captions like `Search`, `Add search condition` etc. are not located in the package of the user browse screen, but instead in the package where the filter component is defined. It is required to look into the sources of the platform screen to identify where a particular translation is located.
 
 == Summary
 
-CUBA supports Localization of Applications out of the box. It provides a subsystem that allows application builders to provide different Languages / Locales for the application. The application can be provided in different Languages on a per-user basis.
+CUBA supports localization of applications out of the box. It provides a mechanism that allows application builders to provide different languages / locales for the application. The application can be provided in different Languages on a per-user basis.
 
-A Message key is used in the application code to reference a localizable Message, which will at runtime translated into the destination language. There are several ways to interact with the Localization subsystem. In this guide the declarative XML based reference was shown as well as the programmatic reference via the `MessageBundle` Interface.
+A message key is used in the application code to reference a localizable message, which will at runtime translated into the destination language. There are several ways to interact with the localization mechanism. The declarative XML based reference as well as the programmatic reference via the `MessageBundle` Interface was shown.
 
-There are existing Translations available in the platform itself and provided by the Community, to also cover the Translations of platform features & screens like the administration screens.
+There are existing translations available in the platform itself and provided by the community, to also cover the translations of platform features and screens like the administration screens.
 
 
 == Further Information
