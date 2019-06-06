@@ -182,10 +182,13 @@ properties files to have a clear separation between the application code and the
 <div class="ulist">
 <ul>
 <li>
-<p>The application is also available in German and Russian language</p>
+<p>the application is also available in German and Russian language</p>
 </li>
 <li>
-<p>Dynamic data as automatically generated descriptions for visits are localized</p>
+<p>dynamic data as automatically generated descriptions for visits are localized</p>
+</li>
+<li>
+<p>provide german translation for User browse platform screen</p>
 </li>
 </ul>
 </div>
@@ -247,10 +250,10 @@ properties files to have a clear separation between the application code and the
 <h2 id="where_translations_are_stored_in_a_cuba_application"><a class="anchor" href="#where_translations_are_stored_in_a_cuba_application"></a><a class="link" href="#where_translations_are_stored_in_a_cuba_application">Where Translations are Stored in a CUBA Application</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>CUBA deals with translations as it is common for other Java based applications. Messages for different languages / locales are stores next to the source-code within the same package in <code>.properties</code> files.</p>
+<p>CUBA follows a common pattern for translations in Java based applications. Messages for different languages / locales are stores next to the source-code within the same package in <code>.properties</code> files.</p>
 </div>
 <div class="paragraph">
-<p>For every language and every package there exists a file containing information on how to translate a given text into the target language. The language files contain a suffix according to the locale code of the language (e.g. <code>_ru</code> for russian, <code>_es</code> for spanish).</p>
+<p>For every language and every package there exists a file containing information on how to translate a given text into the target language. The language files contain a suffix according to the locale code of the language (e.g. <code>_ru</code> for russian, <code>_de</code> for german).</p>
 </div>
 <div class="paragraph">
 <p>An example of this file structure looks like this:</p>
@@ -283,10 +286,7 @@ properties files to have a clear separation between the application code and the
 </div>
 </div>
 <div class="paragraph">
-<p>The properties file contains of key-value pairs, where the key is the identifier of the to be localized string and the value is the corresponding translation for the language.</p>
-</div>
-<div class="paragraph">
-<p>The key is the same for all language files, only the value differs. In the example of the petclinic, localized entity and entity attributes names look like this:</p>
+<p>The properties file contains of key-value pairs, where the key is the identifier of the Message that has to be localized and the value is the corresponding translation for the language. The key is the same for all language files, only the value differs. In the example of the petclinic, localized entity and entity attributes names look like this:</p>
 </div>
 <div class="listingblock">
 <div class="title">messages.properties</div>
@@ -311,7 +311,7 @@ PetType = Tierart</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The example application contains translations for english, german and russian languages.</p>
+<p>In the Petclinic example application, the source code contains translations for english, german and russian languages.</p>
 </div>
 <div class="paragraph">
 <p>More information about the general structure of how localized messages are stored can be found in the reference documentation: <a href="https://doc.cuba-platform.com/manual-7.0/localization.html">Localization</a>.</p>
@@ -322,10 +322,16 @@ PetType = Tierart</code></pre>
 <h2 id="register_available_languages_in_the_application"><a class="anchor" href="#register_available_languages_in_the_application"></a><a class="link" href="#register_available_languages_in_the_application">Register Available Languages in the Application</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In order to activate the possibility to select different languages as a user, the application needs two main configuration options in place. The first one is the activation of the language drop-down in the login screen and settings screen of the app: <code>cuba.localeSelectVisible</code>. It has to be set to <code>true</code>. The second configuration is the available languages / locales that should be available for selection: <code>cuba.availableLocales = English|en;German|de;Russian|ru</code>.</p>
+<p>In order to activate the possibility to have a language selection for the user, the application needs two main configuration options in place.</p>
 </div>
 <div class="paragraph">
-<p>Both configurations should be placed in the <code>web-app.properties</code>. With that in place the Login screen will display the language selection box:</p>
+<p>The first one is the activation of the language drop-down in the login screen: <code>cuba.localeSelectVisible</code>. It has to be set to <code>true</code>.</p>
+</div>
+<div class="paragraph">
+<p>The second configuration is the available languages / locales that should be available for selection: <code>cuba.availableLocales = English|en;German|de;Russian|ru</code>.</p>
+</div>
+<div class="paragraph">
+<p>Both configurations should be placed in the <code>web-app.properties</code>. After this configuration is in place the Login screen displays the language selection box at login:</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -333,8 +339,7 @@ PetType = Tierart</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>When logging in as a user with a given language, the application will display the translations of the corresponding language.
-This happens automatically for all UI components if the corresponding translation files are in place. A <code>&lt;form&gt;</code> component e.g. renders the attribute captions localized:</p>
+<p>When logging in as a user with a given language, the application will display the correct translations. This happens automatically for all UI components if the corresponding translation files are in place. The <code>&lt;form&gt;</code> component renders the attribute captions in the correct language:</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -347,15 +352,15 @@ This happens automatically for all UI components if the corresponding translatio
 <h2 id="referencing_localized_messages"><a class="anchor" href="#referencing_localized_messages"></a><a class="link" href="#referencing_localized_messages">Referencing Localized Messages</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>For the two cases of <code>&lt;groupTable /&gt;</code> and <code>&lt;form /&gt;</code> the translation are automatically derived from the properties that should be displayed. For other UI components or messages throughout the application, there are two ways of interacting with the Localization mechanisms of CUBA: either in the XML screen definitions or programmatically from the Java code.</p>
+<p>For the two cases of <code>&lt;groupTable /&gt;</code> and <code>&lt;form /&gt;</code> the translation are automatically derived from the entity attribute translations that should be displayed. For UI components or messages in the application that are not directly tied to a entity attribute, there are two ways of interacting with the Localization mechanisms of CUBA: either in the XML screen definitions or programmatically from the Java code.</p>
 </div>
 <div class="paragraph">
-<p>In order to display the correct localized message for the language the user selected, the message keys have to be referenced in the application code in order to render the correct String.</p>
+<p>In order to display the correct localized message, the message keys have to be referenced explicitly in the source code.</p>
 </div>
 <div class="sect2">
 <h3 id="referencing_messages_in_xml_descriptors"><a class="anchor" href="#referencing_messages_in_xml_descriptors"></a><a class="link" href="#referencing_messages_in_xml_descriptors">Referencing Messages in XML Descriptors</a></h3>
 <div class="paragraph">
-<p>The first option is to reference a particular message key within XML UI descriptor. In the petclinic example, the button caption of the "regular checkup" button should be displayed in the selected language.</p>
+<p>The first option is to reference a particular message key within XML UI descriptor. In the Petclinic example, the caption of the "regular checkup" button should be displayed localized. This happens through the prefix <code>msg://</code> followed by the translation key:</p>
 </div>
 <div class="listingblock">
 <div class="title">visit-browse.xml</div>
@@ -389,20 +394,20 @@ This happens automatically for all UI components if the corresponding translatio
 <div class="sect2">
 <h3 id="programmatic_localization_of_messages"><a class="anchor" href="#programmatic_localization_of_messages"></a><a class="link" href="#programmatic_localization_of_messages">Programmatic Localization of Messages</a></h3>
 <div class="paragraph">
-<p>The second way of interacting with the Localization mechanism is imperatively through Java code. In the Petclinic example, the "regular checkup" button should render the following two dynamic messages programmatically:</p>
+<p>The second way of interacting with the Localization mechanism is imperatively through Java code. In the Petclinic example, the "regular checkup" functionality should render the following two dynamic messages programmatically:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>When a new Regular Checkup screen is opened, the description attribute for the visit entity should be pre-filled with a particular localized message</p>
+<p>when a new Regular Checkup screen is opened, the description attribute for the visit entity should be pre-filled with a particular localized message</p>
 </li>
 <li>
-<p>Once the Regular Checkup is created, a localized notification message should be rendered, containing the name of the pet</p>
+<p>once the Regular Checkup is created, a localized notification message should be rendered, containing the name of the pet</p>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>Messages can be received via the <code>Messages</code> Interface. It provides an API to fetch a translated String through the localization mechanism of CUBA for the locale of the current user.</p>
+<p>Messages can be received programmatically via the <code>Messages</code> Interface. It provides an API to fetch a translated String through the localization mechanism of CUBA for the locale of the current user.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -465,7 +470,7 @@ In the example code instead of using the <code>Messages</code> Interface, the <c
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>the <code>messageBundle</code> bean fetch the translated message</td>
+<td>the <code>messageBundle</code> bean is responsible for fetching the translated message</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -473,12 +478,12 @@ In the example code instead of using the <code>Messages</code> Interface, the <c
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>the Parameters <code>pet.getName()</code> and <code>pet.getIdentificationNumber()</code> are passed to the translation as parameters</td>
+<td>the parameters <code>pet.getName()</code> and <code>pet.getIdentificationNumber()</code> are passed to the translation as dynamic parts</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>If dynamic parts of a message should be rendered, the translation should contain placeholders like in this definition:</p>
+<p>For the dynamic parts of a message, the translation should contain the placeholder <code>%s</code> like in this definition:</p>
 </div>
 <div class="listingblock">
 <div class="title">messages_de.properties</div>
@@ -500,7 +505,7 @@ Bestandteile: \n
 </div>
 </div>
 <div class="paragraph">
-<p>The second message should be displayed as a notification once the "regular checkup" was successfully created. There is
+<p>The second message should be displayed as a notification once the Regular Checkup was successfully created. There is
  the method <code>showRegularCheckupCreatedNotification</code> in the Visit browser, that will be called once the instance is created:</p>
 </div>
 <div class="listingblock">
@@ -536,7 +541,7 @@ Bestandteile: \n
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td><code>metadataTools</code> are used in CUBA 7.0+ to fetch the instance name from an entity</td>
+<td><code>metadataTools</code> is used in CUBA 7.0+ to fetch the instance name from an entity</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -544,7 +549,7 @@ Bestandteile: \n
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>the localized Message String is passed to the <code>notifications</code> bean to render a TRAY notification</td>
+<td>the localized Message String is passed to the <code>notifications</code> bean to render a tray notification</td>
 </tr>
 </table>
 </div>
@@ -555,7 +560,7 @@ Bestandteile: \n
 <h2 id="translation_of_existing_ui_screens_functionality"><a class="anchor" href="#translation_of_existing_ui_screens_functionality"></a><a class="link" href="#translation_of_existing_ui_screens_functionality">Translation of Existing UI Screens / Functionality</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Since CUBA comes with certain UI components and with multiple UI screens that are available out of the box, this existing functionality needs also to be localized in order to have a fully translated application. For this problem, there are two main solutions:</p>
+<p>Since CUBA comes with certain UI components and with multiple UI screens out of the box, this existing functionality also needs to be localized in order to have a fully translated application. For this problem, there are two main solutions:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -570,7 +575,7 @@ Bestandteile: \n
 <div class="sect2">
 <h3 id="community_language_packs"><a class="anchor" href="#community_language_packs"></a><a class="link" href="#community_language_packs">Community Language Packs</a></h3>
 <div class="paragraph">
-<p>The first and most easy solution is to use existing Language packs that are created by the community. There are currently twelve Translations available including Spanisch, Russian, French, Chinese, German and a lot more. The translation cover around half of the worlds population.</p>
+<p>The first and easiest solution is to use existing language packs that are created by the community. There are currently twelve Translations available including Spanisch, Russian, French, Chinese, German and a lot more.</p>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -589,23 +594,68 @@ The Community Translations Packs are provided by the community, therefore the ac
 which makes the installation as easy as installing any other application component.</p>
 </div>
 <div class="paragraph">
-<p>Afterwards, the new language has to be added to the application property <code>cuba.availableLocales</code>.</p>
+<p>Afterwards, the only thing to do is to add the new language to the application property <code>cuba.availableLocales</code>.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="manual_providing_translations"><a class="anchor" href="#manual_providing_translations"></a><a class="link" href="#manual_providing_translations">Manual Providing Translations</a></h3>
 <div class="paragraph">
-<p>In case the target language is not available through the community or some Translations are missing or are not accurate, it is also possible to provide those translations directly within the application.</p>
+<p>In case the target language is not available through the community or some translations are missing or are not accurate, it is also possible to provide those translations directly within the application.</p>
 </div>
 <div class="paragraph">
 <p>CUBA itself provides translations for the screens directly in the source code of the platform as regular <code>*.properties</code> files. The User browse screen for example contains the <a href="https://github.com/cuba-platform/cuba/blob/master/modules/gui/src/com/haulmont/cuba/gui/app/security/user/browse/messages.properties">messages.properties</a> file in the package <code>com.haulmont.cuba.gui.app.security.user.browse</code>,
 which contains the translations for the screen.</p>
 </div>
 <div class="paragraph">
-<p>In order to provide / override translations for this screen, the same package (and module) has to be created in the application. In this directory the additional / replacing message files are placed. CUBA will pick up the file and display the correct translations for the screen.</p>
+<p>In order to provide / override translations for this screen, two things have to be done:</p>
+</div>
+<div class="sect3">
+<h4 id="create_gui_module_if_necessary"><a class="anchor" href="#create_gui_module_if_necessary"></a><a class="link" href="#create_gui_module_if_necessary">Create GUI module if Necessary</a></h4>
+<div class="paragraph">
+<p>The destination module of where the translations have to be placed has to be available in the application. The majority of the platform screens are placed in the GUI module, which is not available for 7.0+ CUBA applications by default. In case the target application does not have the GUI module it has to be included into the application to place the translation files into it.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Adding the GUI module via CUBA Studio can be done via the Menu: <code>CUBA &gt; Advanced &gt; Manage Modules &gt; Create 'gui' module</code>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="create_package_mirror_in_the_application"><a class="anchor" href="#create_package_mirror_in_the_application"></a><a class="link" href="#create_package_mirror_in_the_application">Create Package-Mirror in the Application</a></h4>
+<div class="paragraph">
+<p>After ensuring the target module is available in the application, the package where the original translation files exist, have to be created in the application as well. In this directory the additional / replacing message files are placed. CUBA will pick up the files and display the correct translations for the screen.</p>
 </div>
 <div class="paragraph">
-<p>TODO: provide example in the Petclinic project on how some values for englisch are replaced for the User Browse screen</p>
+<p>In the Petclinic example, the destination target package has been created for the Users browse screen:
+<a href="https://github.com/cuba-guides/cuba-petclinic-i18n-messages/blob/master/modules/gui/src/com/haulmont/cuba/gui/app/security/user/browse/messages_de.properties">messages_de.properties</a> to provide german translation for the screen.</p>
+</div>
+<div class="paragraph">
+<p>The resulting Users browse screen in german locale looks like this:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/i18n-messages/localized-platform-screen.png" alt="localized platform screen">
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Not all captions are translated in this screen. This is due to the fact, that e.g. the filter component with its buttons and captions like <code>Search</code>, <code>Add search condition</code> etc. are not located in the package of the user browse screen, but instead in the package where the filter component is defined. It is required to look into the sources of the platform screen to identify where a particular translation is located.
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 </div>
@@ -614,13 +664,13 @@ which contains the translations for the screen.</p>
 <h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>CUBA supports Localization of Applications out of the box. It provides a subsystem that allows application builders to provide different Languages / Locales for the application. The application can be provided in different Languages on a per-user basis.</p>
+<p>CUBA supports localization of applications out of the box. It provides a mechanism that allows application builders to provide different languages / locales for the application. The application can be provided in different Languages on a per-user basis.</p>
 </div>
 <div class="paragraph">
-<p>A Message key is used in the application code to reference a localizable Message, which will at runtime translated into the destination language. There are several ways to interact with the Localization subsystem. In this guide the declarative XML based reference was shown as well as the programmatic reference via the <code>MessageBundle</code> Interface.</p>
+<p>A message key is used in the application code to reference a localizable message, which will at runtime translated into the destination language. There are several ways to interact with the localization mechanism. The declarative XML based reference as well as the programmatic reference via the <code>MessageBundle</code> Interface was shown.</p>
 </div>
 <div class="paragraph">
-<p>There are existing Translations available in the platform itself and provided by the Community, to also cover the Translations of platform features &amp; screens like the administration screens.</p>
+<p>There are existing translations available in the platform itself and provided by the community, to also cover the translations of platform features and screens like the administration screens.</p>
 </div>
 </div>
 </div>
