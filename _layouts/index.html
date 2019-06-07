@@ -46,33 +46,18 @@
                                     </div>
                                 </div>
 
-                                <!-- Accordion -->
+                                <!-- List Grid -->
                                 <div class="panel-pane pane-custom pane-2 cuba-container">
                                     <div class="pane-content">
-                                        <div class="accordion-webinars">
+                                        <div class="guides-list">
                                             {% for post in site.posts reversed %}
-                                            <div class="item">
-                                                <a name="tr1"></a>
-                                                <div class="item-head collapsed" data-target="#{{ post.permalink }}"  aria-expanded="true">
-                                                    <a href="{{ post.url | prepend: site.baseurl }}">
-                                                        <span>{{ post.navtitle }}</span>
-                                                    </a>
-                                                </div>
-                                                <div class="item-body " id="{{ post.permalink }}" aria-expanded="false">
-                                                    <div class="descr">
-                                                        <div class="main">
-                                                            {{ post.excerpt }}
-                                                        </div>
-                                                        <div class="btn-wrapper">
-                                                            <a href="{{ post.url | prepend: site.baseurl }}" class="guide-item_button button-outline">Read now</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <a href="{{ post.url | prepend: site.baseurl }}" class="guides-list_item">
+                                                <div class="guides-list_title">{{ post.navtitle }}</div>
+                                                <span class="guides-list_description">{{ post.excerpt }}</span>
+                                            </a>
                                             {% endfor %}
                                         </div>
                                     </div>
-                                    <!-- End of accordion -->
                                 </div>
                             </div>
                         </div>
