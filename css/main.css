@@ -212,7 +212,7 @@ header, nav, aside, article, main, footer, section { display: block; }
 
 .page-header { min-height: 81px; margin-bottom: 40px; text-align: center; }
 
-.page-header_title { margin: 0; font-weight: 300; font-size: 36px; }
+.page-header_title { margin: 0; font-weight: 300; font-size: 36px; line-height: 1.42857; }
 
 .page-header_description { margin: 10px 0 0; color: #6b7172; font-size: 13px; }
 
@@ -351,9 +351,9 @@ button:-moz-focusring { outline: none; }
 .guides-list_item { display: flex; flex-direction: column; width: 49%; margin-bottom: 2%; border: 1px solid #e7eaee; border-radius: 3px; padding: 20px 25px 27px; }
 .guides-list_item:hover { border: 2px solid #4990e2; text-decoration: none; padding: 19px 24px 26px; }
 
-.guides-list_title { color: #4990e2; line-height: 36px; text-decoration: none; font-size: 18px; font-weight: 700; }
+.guides-list_title { color: #4990e2; line-height: 32px; text-decoration: none; font-size: 16px; font-weight: 700; text-transform: uppercase; }
 
-.guides-list_description { color: #2c3436; font-size: 16px; }
+.guides-list_description { color: #2c3436; font-size: 14px; font-weight: 400; line-height: 20px; }
 
 @media screen and (max-width: 500px) { .guides-list_item { width: 100% !important; margin-bottom: 15px; }
   .guides-list_item .guides-list_title { line-height: 24px !important; margin-bottom: 0.5em; } }
