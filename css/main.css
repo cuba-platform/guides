@@ -128,10 +128,10 @@ header, nav, aside, article, main, footer, section { display: block; }
 
 .header_profile_src { width: 20px; height: 20px; color: #605d5c; vertical-align: top; }
 
-.header-submenu { flex: none; font-size: 14px; background: #fbfeff url("/guides/images/background-stripped.png") repeat 50% 0; }
+.header-submenu { flex: none; font-size: 16px; background: #fbfeff url("/guides/images/background-stripped.png") repeat 50% 0; }
 .header-submenu:empty { display: none; }
 
-.header-submenu_link { position: relative; display: inline-block; padding: 16px 0; }
+.header-submenu_link { position: relative; display: inline-block; padding: 16px 0; font-size: 16px; }
 .header-submenu_link:hover { color: #2c3436; text-decoration: none; }
 .header-submenu_link::after { position: absolute; right: 0; bottom: 0; left: 0; height: 2px; background: #0784e3; opacity: 0; transition: opacity 0.15s; content: ''; }
 .header-submenu_link.nuxt-link-active, .header-submenu_link.nuxt-link-exact-active { color: #2c3436; }
