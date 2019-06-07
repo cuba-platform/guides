@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Business Logic in CUBA</title>
+    <title>Initial Entity Values</title>
     <meta name="description" content="The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.">
     <meta name="author" content="Haulmont">
     <link rel="shortcut icon" href="/guides/images/favicon.png" type="image/png" />
@@ -162,23 +162,42 @@
                             <div class="field field-name-body field-type-text-with-summary field-label-hidden">
                                 <div class="field-items">
                                     <div class="field-item even" property="content: encoded">
-                                        <h1>Create Business Logic in CUBA</h1>
+                                        <h1>Initial Entity Values</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>One of the first questions when developing a CUBA application is: <em>Where should I put my business logic?</em> This guide will explain the options available and their pros and cons.</p>
+<p>This guide demonstrates different options on how initial values can be set for an entity.</p>
+</div>
+<div class="paragraph">
+<p>In the petclinic example there are use cases, where certain default values for entities should be set either globally or on a per use-case basis.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="what_will_be_built"><a class="anchor" href="#what_will_be_built"></a><a class="link" href="#what_will_be_built">What Will Be Built</a></h2>
+<h2 id="what_will_be_built"><a class="anchor" href="#what_will_be_built"></a><a class="link" href="#what_will_be_built">What Will be Built</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show where business logic can be placed in a CUBA application. Mainly discounts are calculated for Pets based on the total amount of their visits in the Petclinic.</p>
+<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show the different ways to set initial values for entity instances. In particular, the following use cases will be covered:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Global default values for the <code>paid</code> attribute of the <code>Visit</code> entity</p>
+</li>
+<li>
+<p>A regular checkup, a special type of Visit should be initialized with a particular description</p>
+</li>
+<li>
+<p>The <code>paid</code> attribute of the Visit is automatically pre-filled by the selection of the dependent <code>type</code> attribute</p>
+</li>
+<li>
+<p>Auto-generated visit number that is derived from attributes of the <code>Visit</code> instance</p>
+</li>
+</ul>
 </div>
 <div class="sect2">
 <h3 id="final_application"><a class="anchor" href="#final_application"></a><a class="link" href="#final_application">Final Application</a></h3>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/login-screen.png"/></a>
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-initial-entity-values/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-initial-entity-values/master/img/login-screen.png"/></a>
 </div>
 <div class="sect2">
 <h3 id="requirements"><a class="anchor" href="#requirements"></a><a class="link" href="#requirements">Requirements</a></h3>
@@ -202,10 +221,10 @@
 </ul>
 </div>
 <div class="paragraph">
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-initial-entity-values/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
 </div>
 <div class="paragraph">
-<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-business-logic.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-business-logic.git</a></code></p>
+<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-initial-entity-values.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-initial-entity-values.git</a></code></p>
 </div>
 </div>
 </div>
@@ -231,325 +250,49 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="business_logic_in_controllers"><a class="anchor" href="#business_logic_in_controllers"></a><a class="link" href="#business_logic_in_controllers">Business Logic in Controllers</a></h2>
+<h2 id="entity_fields_initialization"><a class="anchor" href="#entity_fields_initialization"></a><a class="link" href="#entity_fields_initialization">Entity Fields Initialization</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Assuming the discount calculation should be executed when a user clicks a button on the Pets&#8217;s browser screen, the most straightforward way to accomplish this is to put the calculation logic right in the associated controller class.</p>
-</div>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/calculate-discout-for-pet.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/calculate-discout-for-pet.png"/></a>
-<div class="paragraph">
-<p>See the <strong>Calculate discount</strong> button in the petclinic application and the screen controller implementation: <a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetBrowse.java#L15">PetBrowse</a>.</p>
+<p>Simple attributes (<code>Boolean</code>, <code>Integer</code> etc.) and enumerations can be initialized in the declaration of the corresponding field of an entity class. In the Petclinic example, the Visit entity has an attribute <code>paid</code> which is a boolean flag to indicate, if a visit has been paid already. This value should by default be <code>FALSE</code>. The default value can be set directly in the field definition.</p>
 </div>
 <div class="listingblock">
-<div class="title">PetBrowse.java</div>
+<div class="title">Visit.java</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@UiController</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_Pet.browse</span><span class="delimiter">&quot;</span></span>)
-<span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">pet-browse.xml</span><span class="delimiter">&quot;</span></span>)
-<span class="annotation">@LookupComponent</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petsTable</span><span class="delimiter">&quot;</span></span>)
-<span class="annotation">@LoadDataBeforeShow</span>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">PetBrowse</span> <span class="directive">extends</span> StandardLookup&lt;Pet&gt; {
-
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> Notifications notifications;
-
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> Metadata metadata;
-
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> GroupTable&lt;Pet&gt; petsTable;
-
-    <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petsTable.calculateDiscount</span><span class="delimiter">&quot;</span></span>)
-    <span class="directive">public</span> <span class="type">void</span> calculateDiscount(<span class="predefined-type">Action</span>.ActionPerformedEvent actionPerformedEvent) {
-
-        Pet pet = petsTable.getSingleSelected();
-
-        <span class="type">int</span> discount = calculateDiscount(pet);
-
-        showDiscountCalculatedNotification(pet, discount);
-    }
-
-    <span class="directive">private</span> <span class="type">int</span> calculateDiscount(Pet pet) {
-        <span class="type">int</span> discount = <span class="integer">0</span>;
-
-        <span class="type">int</span> visitAmount = pet.getVisits().size();
-        <span class="keyword">if</span> (visitAmount &gt; <span class="integer">10</span>) {
-            discount = <span class="integer">10</span>;
-        } <span class="keyword">else</span> <span class="keyword">if</span> (visitAmount &gt; <span class="integer">5</span>) {
-            discount = <span class="integer">5</span>;
-        }
-        <span class="keyword">return</span> discount;
-    }
-
-    <span class="directive">private</span> <span class="type">void</span> showDiscountCalculatedNotification(Pet pet, <span class="type">int</span> discount) {
-
-        <span class="predefined-type">String</span> petName = metadata.getTools().getInstanceName(pet);
-
-        <span class="predefined-type">String</span> discountMessage = <span class="string"><span class="delimiter">&quot;</span><span class="content">Discount for </span><span class="delimiter">&quot;</span></span> + petName + <span class="string"><span class="delimiter">&quot;</span><span class="content">: </span><span class="delimiter">&quot;</span></span> + discount + <span class="string"><span class="delimiter">&quot;</span><span class="content">%</span><span class="delimiter">&quot;</span></span>;
-
-        notifications.create()
-                .setCaption(discountMessage)
-                .setType(Notifications.NotificationType.TRAY)
-                .show();
-    }
-}</code></pre>
-</div>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-This approach is acceptable if the logic is invoked from a single point and it is not too complex to fit into a couple of short methods.
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="client_tier_beans"><a class="anchor" href="#client_tier_beans"></a><a class="link" href="#client_tier_beans">Client Tier Beans</a></h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The in-controller solution works as long as the logic should only be executed within one screen. Once the calculation should be executed in multiple UI screens there is a better way not to duplicate the code. The logic can be extracted to a common place available for both controllers. This option is using a Spring bean in the client tier.</p>
-</div>
-<div class="paragraph">
-<p>A managed bean is a class annotated with <code>@Component</code> annotation. It can be injected via <code>@Inject</code> into other beans and screen controllers. If a bean has a separate interface, it can be accessed through the interface instead of the class.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="/guides/images/creating-business-logic-in-cuba/using_client_beans_1.png" alt="class diagramm using client tier beans">
-</div>
-</div>
-<div class="paragraph">
-<p>Please note that in order to be accessible for screen controllers, the bean must be located in <strong>global</strong>, <strong>gui</strong> or <strong>web</strong> modules of the application. In the former case the bean will be also accessible for the middleware.</p>
-</div>
-<div class="paragraph">
-<p>The example that is implemented as (multiple) client tier beans is to display the contact information of the pet&#8217;s owner directly from the pet browser or the pet details screen.</p>
-</div>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/fetch-contact-of-pet.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/fetch-contact-of-pet.png"/></a>
-<div class="paragraph">
-<p>For this there are two Spring beans:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/global/src/com/cubaplatform/petclinic/contact/PetContactFetcherBean.java">PetContactFetcher</a> that deals with fetching of the appropriate contact data</p>
-</li>
-<li>
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetContactDisplay.java">PetContactDisplay</a> for displaying contact information as notifications</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="title">PetContactFetcherBean.java</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Component</span>(PetContactFetcher.NAME)
-<span class="directive">public</span> <span class="type">class</span> <span class="class">PetContactFetcherBean</span> <span class="directive">implements</span> PetContactFetcher {
-
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> DataManager dataManager;
-
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> Messages messages;
-
-    <span class="annotation">@Override</span>
-    <span class="directive">public</span> Optional&lt;Contact&gt; findContact(Pet pet) {
-
-        Optional&lt;<span class="predefined-type">Owner</span>&gt; petOwner = loadOwnerFor(pet);
-
-        <span class="keyword">if</span> (petOwner.isPresent()) {
-
-            <span class="predefined-type">Owner</span> owner = petOwner.get();
-            <span class="predefined-type">String</span> telephone = owner.getTelephone();
-            <span class="predefined-type">String</span> email = owner.getEmail();
-            <span class="predefined-type">String</span> address = formatOwnerAddress(owner);
-
-            <span class="keyword">if</span> (isAvailable(telephone)) {
-                <span class="keyword">return</span> createContact(telephone, ContactType.TELEPHONE);
-            } <span class="keyword">else</span> <span class="keyword">if</span> (isAvailable(email)) {
-                <span class="keyword">return</span> createContact(email, ContactType.EMAIL);
-            } <span class="keyword">else</span> <span class="keyword">if</span> (isAvailable(address)) {
-                <span class="keyword">return</span> createContact(address, ContactType.ADDRESS);
-            } <span class="keyword">else</span> {
-                <span class="keyword">return</span> Optional.empty();
-            }
-        } <span class="keyword">else</span> {
-            <span class="keyword">return</span> Optional.empty();
-        }
-    }
-
-    <span class="comment">//...</span>
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The beans are used in the <a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetBrowse.java#L24">Pet browse screen</a> and the
-<a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetEdit.java#L19">Pet details screen</a>. The usage looks like this:</p>
-</div>
-<div class="listingblock">
-<div class="title">PetEdit.java</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@UiController</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_Pet.edit</span><span class="delimiter">&quot;</span></span>)
-<span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">pet-edit.xml</span><span class="delimiter">&quot;</span></span>)
-<span class="annotation">@EditedEntityContainer</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petCt</span><span class="delimiter">&quot;</span></span>)
-<span class="annotation">@LoadDataBeforeShow</span>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">PetEdit</span> <span class="directive">extends</span> StandardEditor&lt;Pet&gt; {
-
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> PetContactFetcher petContactFetcher;
-
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> PetContactDisplay petContactDisplay;
-
-    <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">fetchContact</span><span class="delimiter">&quot;</span></span>)
-    <span class="directive">public</span> <span class="type">void</span> fetchContact() {
-
-        Pet pet = getEditedEntity();
-
-        Optional&lt;Contact&gt; contactInformation = petContactFetcher.findContact(pet);
-
-        petContactDisplay.displayContact(contactInformation, <span class="local-variable">this</span>);
-    }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The benefit compared to the first in-controller solution is that the code-reuse is higher. It is possible to use the logic in different places.</p>
-</div>
-<div class="paragraph">
-<p><code>PetContactDisplay</code> is a bean in the web module, therefore it is only available within the client tier.
-<code>PetContactFetcher</code>, on the other hand, is a bean in the global module which means that it is also possible to use the logic in the middleware as well as the client tier.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="middleware_services"><a class="anchor" href="#middleware_services"></a><a class="link" href="#middleware_services">Middleware Services</a></h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The next approach on where to put the business logic is a <a href="https://doc.cuba-platform.com/manual-7.0/services.html">middleware service</a>. The service is the most appropriate place for business logic, because it achieves the following goals:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>The business logic will be available for all types of clients including the Polymer UI.</p>
-</li>
-<li>
-<p>APIs that are available only on the middleware: <a href="https://doc.cuba-platform.com/manual-7.0/entityManager.html">EntityManager</a>, Transaction, etc. are accessible to the business logic</p>
-</li>
-</ul>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="/guides/images/creating-business-logic-in-cuba/using_services_1.png" alt="class diagramm using services">
-</div>
-</div>
-<div class="paragraph">
-<p>In order to invoke the middleware business logic from the client, a service needs to be created. CUBA Studio streamlines the creation process of a service:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Select the <strong>Middleware</strong> section in the CUBA project tree and click <strong>New &gt; Service</strong> in the context menu.</p>
-</li>
-<li>
-<p>Change the service interface name to <code>DiseaseWarningMailingService</code>. The bean class and service names will be changed accordingly. Click <strong>OK</strong>.</p>
-</li>
-<li>
-<p>Open the service interface in the editor. Create a method and implement it in the service class.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>In the Petclinic application, the following service was created: <code>DiseaseWarningMailingService</code>. It sends out disease warning mailings to the potentially endangered pets' owners.</p>
-</div>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/create-disease-warning-mailing.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/create-disease-warning-mailing.png"/></a>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/global/src/com/cubaplatform/petclinic/service/DiseaseWarningMailingService.java">DiseaseWarningMailingService</a> - service interface</p>
-</li>
-<li>
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/global/src/com/cubaplatform/petclinic/service/DiseaseWarningMailingServiceBean.java">DiseaseWarningMailingServiceBean</a> - service implementation</p>
-</li>
-<li>
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/CreateDiseaseWarningMailing.java">CreateDiseaseWarningMailing</a> - screen controller that uses the service</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>The implementation of a service looks like this in case of <code>DiseaseWarningMailingService</code>:</p>
-</div>
-<div class="listingblock">
-<div class="title">DiseaseWarningMailingServiceBean.java</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Service</span>(DiseaseWarningMailingService.NAME) <i class="conum" data-value="1"></i><b>(1)</b>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">DiseaseWarningMailingServiceBean</span> <span class="directive">implements</span> DiseaseWarningMailingService {
-
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> DataManager dataManager;
-
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> EmailerAPI emailerAPI;
-
-    <span class="annotation">@Override</span>
-    <span class="directive">public</span> <span class="type">int</span> warnAboutDisease(PetType petType, <span class="predefined-type">String</span> disease, <span class="predefined-type">String</span> city) { <i class="conum" data-value="2"></i><b>(2)</b>
-
-        <span class="predefined-type">List</span>&lt;Pet&gt; petsInDiseaseCity = findPetsInDiseaseCity(petType, city);
-
-        <span class="predefined-type">List</span>&lt;Pet&gt; petsWithEmail = filterPetsWithValidOwnersEmail(petsInDiseaseCity);
-
-        petsWithEmail.forEach(pet -&gt; sendEmailToPetsOwner(pet, disease, city));
-
-        <span class="keyword">return</span> petsWithEmail.size();
-    }
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">Visit</span> <span class="directive">extends</span> StandardEntity {
 
     <span class="comment">// ...</span>
 
+    <span class="annotation">@Column</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">PAID</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">protected</span> <span class="predefined-type">Boolean</span> paid = <span class="predefined-constant">false</span>;
+
 }</code></pre>
 </div>
 </div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Declaration of <code>DiseaseWarningMailingServiceBean</code> as the Middleware Service implementation</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Implementation of the business logic interface</td>
-</tr>
-</table>
-</div>
 <div class="paragraph">
-<p>The UI controller usage is very similar to the invocation of a client tier bean. The <code>CreateDiseaseWarningMailing</code> screen controller looks like this:</p>
+<p>Additionally, a specific initialization method with a <code>@PostConstruct</code> annotation can be created in the entity class. In this case, any global infrastructure interfaces as well as managed beans can be invoked during initialization. One example of this post-construct initialization can be seen in the <code>Visit</code> entity:</p>
 </div>
 <div class="listingblock">
-<div class="title">CreateDiseaseWarningMailing.java</div>
+<div class="title">Visit.java</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@UiController</span>
-<span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">create-disease-warning-mailing.xml</span><span class="delimiter">&quot;</span></span>)
-<span class="directive">public</span> <span class="type">class</span> <span class="class">CreateDiseaseWarningMailing</span> <span class="directive">extends</span> Screen {
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">Visit</span> <span class="directive">extends</span> StandardEntity {
 
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> DiseaseWarningMailingService diseaseWarningMailingService; <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="annotation">@Temporal</span>(TemporalType.DATE)
+    <span class="annotation">@NotNull</span>
+    <span class="annotation">@Column</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">VISIT_DATE</span><span class="delimiter">&quot;</span></span>, nullable = <span class="predefined-constant">false</span>)
+    <span class="directive">protected</span> <span class="predefined-type">Date</span> visitDate;
 
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> Notifications notifications;
+    <span class="comment">// ...</span>
 
-    <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">createDiseaseWarningMailing</span><span class="delimiter">&quot;</span></span>)
-    <span class="directive">protected</span> <span class="type">void</span> createDiseaseWarningMailing(<span class="predefined-type">Action</span>.ActionPerformedEvent event) {
+    <span class="annotation">@PostConstruct</span> <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="directive">private</span> <span class="type">void</span> initVisitDate() {
+        <span class="keyword">if</span> (visitDate == <span class="predefined-constant">null</span>) {
+            setVisitDate(today());
+        }
+    }
 
-        <span class="type">int</span> endangeredPets = diseaseWarningMailingService.warnAboutDisease(petType.getValue(),
-                disease.getValue(), city.getValue()); <i class="conum" data-value="2"></i><b>(2)</b>
-
-        closeWithCommit().then(() -&gt;
-                notifications.create()
-                        .setCaption(endangeredPets + <span class="string"><span class="delimiter">&quot;</span><span class="content"> Owner(s) of endangered Pets have been notified</span><span class="delimiter">&quot;</span></span>)
-                        .setType(Notifications.NotificationType.TRAY)
-                        .show()
-        );
+    <span class="directive">private</span> <span class="predefined-type">Date</span> today() {
+        TimeSource timeSource = AppBeans.get(TimeSource.class); <i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="keyword">return</span> timeSource.currentTimestamp();
     }
 }</code></pre>
 </div>
@@ -558,17 +301,304 @@ This approach is acceptable if the logic is invoked from a single point and it i
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Injection of the middleware service via its interface definition</td>
+<td><code>@PostConstruct</code> triggers this method after creation of an instance of this class. It is called when manually creating an instance via <code>metadata.create(Visit.class)</code> as well as when the instance is created in the UI by the framework</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Invocation of the business logic in the controller action</td>
+<td>Managed beans can be referenced via <code>AppBeans.get()</code></td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="ui_layer_initialization"><a class="anchor" href="#ui_layer_initialization"></a><a class="link" href="#ui_layer_initialization">UI Layer Initialization</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>On the UI layer there are two main ways to initialize an entity during screen creation. The first one is internal within the screen controller, that should show the newly created entity. The second one is external, where the entity is defined by the code calling the destination screen.</p>
+</div>
+<div class="sect2">
+<h3 id="internal_initialization_via_initentityevent"><a class="anchor" href="#internal_initialization_via_initentityevent"></a><a class="link" href="#internal_initialization_via_initentityevent">Internal Initialization via InitEntityEvent</a></h3>
+<div class="paragraph">
+<p>The first option is that the entity initialization happens within the destination screen controller itself. In this case the CUBA platform UI events can be leveraged. For instance, for <code>StandardEditor</code> screens there is a particular UI event that is designed exactly for this purpose: the <code>InitEntityEvent</code>.</p>
+</div>
+<div class="paragraph">
+<p>In the Petclinic example this internal initialization is used to set the paid status of the regular checkup visit instance to paid.</p>
+</div>
+<div class="listingblock">
+<div class="title">RegularCheckup.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">RegularCheckup</span> <span class="directive">extends</span> StandardEditor&lt;Visit&gt; {
+
+    <span class="annotation">@Subscribe</span>
+    <span class="directive">protected</span> <span class="type">void</span> initRegularCheckupVisit(InitEntityEvent&lt;Visit&gt; event) { <i class="conum" data-value="1"></i><b>(1)</b>
+        Visit visit = event.getEntity();
+
+        visit.setPaid(<span class="predefined-constant">false</span>); <i class="conum" data-value="2"></i><b>(2)</b>
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>initRegularCheckupVisit</code> method subscribes to the <code>InitEntityEvent</code> of the newly created <code>Visit</code> instance</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>event.getEntity()</code> returns the Visit instance that can be changed during screen initialization</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>With that middleware service in place, the logic of creating disease warning mailings can now be shared across UI screens in the web tier. Additionally any other middleware code can execute the logic, since
-it is not tied to the web tier anymore. Furthermore, it is possible to trigger it via the REST API and with that to expose it also to other UI technologies like the Polymer UI.</p>
+<p>The upside of this kind of initialization is that it is very easy to achieve and requires very little overall code changes. The downside is that since it is scoped within the destination screen it is not so easy to react to external parameters that get passed into the screen. Therefore, it is a very good fit when particular attributes, that are not dynamic, should be initialized.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="external_initialization_via_screen_builders"><a class="anchor" href="#external_initialization_via_screen_builders"></a><a class="link" href="#external_initialization_via_screen_builders">External Initialization via Screen Builders</a></h3>
+<div class="paragraph">
+<p>On the frontend layer with CUBA 7 the <code>ScreenBuilders</code> API was introduced. It allows programmatic creation and screen opening via a Builder pattern, which exposes various options for further configuration.</p>
+</div>
+<div class="paragraph">
+<p>One of this options is the possibility to define an initializer method that gets executed before opening the screen, where it is possible for an Editor screen to change attributes of the entity that will be displayed.</p>
+</div>
+<div class="paragraph">
+<p>In the Petclinic example there is a screen that creates a particular visit instance. This visit is a "regular checkup", as this checkup is always the same in the sense that it requires some checklist kind of description. Furthermore, it is always paid upfront. Since it is a burden for the users to create those special kinds of visits over and over again, a screen, that comes with sensible defaults for this kind of use-case, was implemented.</p>
+</div>
+<div class="listingblock">
+<div class="title">VisitBrowse.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Inject</span>
+<span class="directive">private</span> ScreenBuilders screenBuilders;
+
+<span class="annotation">@Inject</span>
+<span class="directive">private</span> MessageBundle messageBundle;
+
+<span class="annotation">@Inject</span>
+<span class="directive">private</span> GroupTable&lt;Visit&gt; visitsTable;
+
+<span class="comment">// ...</span>
+
+
+<span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">visitsTable.createRegularCheckup</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">void</span> createForPet(<span class="predefined-type">Action</span>.ActionPerformedEvent event) {
+    screenBuilders.lookup(Pet.class, <span class="local-variable">this</span>)
+            .withSelectHandler(pets -&gt; {
+                createVisitForPet(pets.iterator().next());
+            })
+            .withLaunchMode(OpenMode.DIALOG)
+            .build()
+            .show();
+}
+
+<span class="directive">private</span> <span class="type">void</span> createVisitForPet(Pet pet) {
+    screenBuilders.editor(visitsTable) <i class="conum" data-value="1"></i><b>(1)</b>
+        .newEntity() <i class="conum" data-value="2"></i><b>(2)</b>
+        .withInitializer(visit -&gt; { <i class="conum" data-value="3"></i><b>(3)</b>
+            visit.setPaid(<span class="predefined-constant">true</span>);
+            visit.setDescription(regularCheckupDescriptionContent(pet));
+            visit.setPet(pet);
+        })
+        .withScreenClass(RegularCheckup.class)
+        .withLaunchMode(OpenMode.DIALOG)
+        .build()
+        .show();
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>An <code>EditorBuilder</code> will be created using the <code>screenBuilders</code> bean</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The mode of the <code>EditorBuilder</code> is set to create mode</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The <code>withInitializer</code> method takes a <code>Consumer&lt;Visit&gt;</code> that gets a new visit instance as a parameter, which then can be adjusted accordingly</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>With the ScreenBuilder API and the external initialization it is possible to create default values much more dynamically. As it is shown in the above example, in the first step the pet is selected. Based on this selection a description gets generated and put into the to-be-created visit entity.</p>
+</div>
+<div class="paragraph">
+<p>The downside of this approach is that it is a little less invasive in terms of source code. It is also not possible to reuse the default actions (create / edit) as is without further modifications.</p>
+</div>
+<div class="paragraph">
+<p>As it is shown in this example, it is also possible to combine the two approaches and use them in the different use-cases. The pet and the description of the visit are initialized externally, but the paid status is set internally.</p>
+</div>
+<div class="paragraph">
+<p>The corresponding UI screens look like this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="initial-entity-values/regular-checkup-1-select-pet.png"><img src="/guides/images/initial-entity-values/regular-checkup-1-select-pet.png" alt="Step 1: Pet selection"></a>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="initial-entity-values/regular-checkup-2-prefilled-visit.png"><img src="/guides/images/initial-entity-values/regular-checkup-2-prefilled-visit.png" alt="Step 2: Prefilled visit screen"></a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="dependent_attribute_initialization"><a class="anchor" href="#dependent_attribute_initialization"></a><a class="link" href="#dependent_attribute_initialization">Dependent Attribute Initialization</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Another related type of initialization is when an attribute gets set / initialized based on data entered by user for another field. In this case it is also possible to initialize the attribute during the process of storing the entity.</p>
+</div>
+<div class="sect2">
+<h3 id="attribute_initialization_on_change"><a class="anchor" href="#attribute_initialization_on_change"></a><a class="link" href="#attribute_initialization_on_change">Attribute Initialization on Change</a></h3>
+<div class="paragraph">
+<p>In the first case an attribute that is dependent on another attribute of an entity should be calculated / initialized when a change in the original attribute occurs. The change of the derived attribute should be immediately visible in the UI.</p>
+</div>
+<div class="paragraph">
+<p>In the petclinic example, the Visit has an attribute <code>VisitType</code>. This type categorizes the visit into <code>VISIT</code>, <code>REGULAR_CHECKUP</code> or <code>SURGERY</code>. The type of the visit also indicates if the visit has to be paid upfront or if it is paid via an invoice. But it is more like a proposal. It is still possible to be changed by the user for a particular visit.</p>
+</div>
+<div class="paragraph">
+<p>In order to achieve this kind of behavior, it is possible to register a hook method, that subscribes to the <code>ItemPropertyChangeEvent</code> of the instance container within the editor.</p>
+</div>
+<div class="listingblock">
+<div class="title">VisitEdit.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VisitEdit</span> <span class="directive">extends</span> StandardEditor&lt;Visit&gt; {
+
+    <span class="annotation">@Subscribe</span>(id = <span class="string"><span class="delimiter">&quot;</span><span class="content">visitDc</span><span class="delimiter">&quot;</span></span>, target = <span class="predefined-type">Target</span>.DATA_CONTAINER)
+    <span class="directive">protected</span> <span class="type">void</span> onVisitDcItemPropertyChange(
+        InstanceContainer.ItemPropertyChangeEvent&lt;Visit&gt; event) { <i class="conum" data-value="1"></i><b>(1)</b>
+
+        <span class="keyword">if</span> (visitTypeChanged(event)) {
+            updateHasToBePayedUpfrontValue(event);
+        }
+    }
+
+    <span class="directive">private</span> <span class="type">boolean</span> visitTypeChanged(
+        InstanceContainer.ItemPropertyChangeEvent&lt;Visit&gt; event) {
+        <span class="keyword">return</span> event.getProperty().equals(<span class="string"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>);
+    }
+
+    <span class="directive">private</span> <span class="type">void</span> updateHasToBePayedUpfrontValue(
+        InstanceContainer.ItemPropertyChangeEvent&lt;Visit&gt; event) {
+
+        VisitType selectedVisitType = (VisitType) event.getValue(); <i class="conum" data-value="2"></i><b>(2)</b>
+
+        <span class="keyword">if</span> (selectedVisitType != <span class="predefined-constant">null</span>) {
+            event.getItem().setPaid(selectedVisitType.isToBePayedUpfront()); <i class="conum" data-value="3"></i><b>(3)</b>
+        }
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Subscription to the <code>ItemPropertyChangeEvent</code> of the instance container</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>event.getValue()</code> returns the selected value of type <code>VisitType</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The "paid" flag can be adjusted depending on the <code>selectedVisitType</code></td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="attribute_initialization_via_datacontext_precommitevent"><a class="anchor" href="#attribute_initialization_via_datacontext_precommitevent"></a><a class="link" href="#attribute_initialization_via_datacontext_precommitevent">Attribute Initialization via DataContext PreCommitEvent</a></h3>
+<div class="paragraph">
+<p>The second case is that during the save operation, an attribute of the entity needs to be computed - but it does not need to be visible while the user sees the UI screen.</p>
+</div>
+<div class="paragraph">
+<p>In the petclinic example there is an attribute called <code>visitNumber</code> for the Visit entity, which represents a unique number of the visit that shall be generated out of the information specified by the user. The Visit Number should  be constructed out of the year of the visit, the name of the visit type and a 6-digit number.</p>
+</div>
+<div class="paragraph">
+<p>This number only needs to be generated when the visit is saved. Therefore it is possible to use the available mechanisms of the data context in the UI controller. There are several options in this area. In CUBA 7 the data context lifecycle events allow to intercept the storage operation in order to execute some logic that happens during the storage of the edited entity.</p>
+</div>
+<div class="paragraph">
+<p>For the petclinic example, the use case as described above is to generate a <code>visitNumber</code> directly before the visit entity is stored. The <code>VisitNumberGenerator</code> bean acts as the logic that will generate the visit number creation.</p>
+</div>
+<div class="listingblock">
+<div class="title">VisitNumberGenerator.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Component</span>(VisitNumberGenerator.NAME)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">VisitNumberGenerator</span> {
+
+    <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">String</span> NAME = <span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_VisitNumberGenerator</span><span class="delimiter">&quot;</span></span>;
+
+    <span class="annotation">@Inject</span>
+    UniqueNumbersService uniqueNumbersService;
+
+    <span class="directive">public</span> <span class="predefined-type">String</span> generateVisitNumber(Visit entity) {
+        <span class="type">int</span> visitType = entity.getType().getCode();
+        <span class="type">int</span> visitYear = localDate(entity.getVisitDate()).getYear();
+
+        <span class="type">long</span> nextVisitNumber = uniqueNumbersService.getNextNumber(
+            <span class="predefined-type">String</span>.format(<span class="string"><span class="delimiter">&quot;</span><span class="content">VISIT_%d_%d</span><span class="delimiter">&quot;</span></span>, visitYear, visitType)
+        ); <i class="conum" data-value="1"></i><b>(1)</b>
+
+        <span class="keyword">return</span> <span class="predefined-type">String</span>.format(<span class="string"><span class="delimiter">&quot;</span><span class="content">%4d%02d%06d</span><span class="delimiter">&quot;</span></span>, visitYear, visitType, nextVisitNumber);
+    }
+
+    <span class="comment">// ...</span>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>A unique number will be generated for each <code>visitYear</code> and <code>visitType</code> attribute of the visit</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The usage of the bean can be found in both Visit editor controller classes. The <code>DataContext.PreCommitEvent</code> is used to register the associated logic to call the <code>VisitNumberGenerator</code> in case there is no number created for this visit:</p>
+</div>
+<div class="listingblock">
+<div class="title">VisitEdit.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VisitEdit</span> <span class="directive">extends</span> StandardEditor&lt;Visit&gt; {
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">private</span> VisitNumberGenerator visitNumberGenerator;
+
+    <span class="comment">// ...</span>
+
+    <span class="annotation">@Subscribe</span>(target = <span class="predefined-type">Target</span>.DATA_CONTEXT)
+    <span class="directive">protected</span> <span class="type">void</span> onPreCommit(DataContext.PreCommitEvent event) { <i class="conum" data-value="1"></i><b>(1)</b>
+        Visit visit = getEditedEntity();
+        <span class="keyword">if</span> (visit.getVisitNumber() == <span class="predefined-constant">null</span>) {
+            visit.setVisitNumber(visitNumberGenerator.generateVisitNumber(visit)); <i class="conum" data-value="2"></i><b>(2)</b>
+        }
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Registering to the Data context <code>PreCommitEvent</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>VisitNumberGenetator</code> is used to generate the unique visit number</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 </div>
@@ -576,10 +606,34 @@ it is not tied to the web tier anymore. Furthermore, it is possible to trigger i
 <h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>There are several options when it comes to where to put the business logic in a CUBA application. A controller can be a good and easy start, although it has some downsides when it comes to sharing the code. A client bean solves this problem to some degree. Middleware services allow for sharing business logic across different clients (e.g. Polymer Client) and is the most appropriate way of putting business logic.</p>
+<p>In this guide different options on how to set initial values for entity instances were shown. It is possible to define certain initial values directly within the Entity class via direct attribute allocation or the <code>@PostConstruct</code> annotation.</p>
 </div>
 <div class="paragraph">
-<p>Additionally, there are several advanced techniques like <a href="https://doc.cuba-platform.com/manual-6.10/jmx_beans.html">JMX Beans</a> or <a href="https://doc.cuba-platform.com/manual-6.10/entity_listeners.html">Entity Listeners</a> that also allow for certain business logic to be executed in particular scenarios. The decision where to put the business logic for a given case should be done on a case to case basis. But the mentioned main places of Controllers &amp; Spring Beans / Spring Services for placing business logic are a good starting point.</p>
+<p>This kind of initialization will be executed in all scenarios and, therefore, is oftentimes the preferred way of doing attribute initialization. But sometimes it is required to have more information on the context of the execution, e.g. prior selections of the user on the UI.</p>
+</div>
+<div class="paragraph">
+<p>Therefore, it is also possible to initialize attributes on the UI layer. There are multiple ways to do it as shown above. It allows the developer to react more flexibly on the UI selection, etc.</p>
+</div>
+<div class="paragraph">
+<p>The main difference is that these kinds of initializations are only applied when the user uses this particular UI to interact with the system. Oftentimes there are other use cases, like the REST API, Bulk Editor functionality, data import scenarios, etc. If it is required to initialize an attribute for all those use cases, the Entity Field initialization should be preferred.</p>
+</div>
+<div class="paragraph">
+<p>Furthermore, two different dependent attribute initializations were shown, as their use case is oftentimes quite similar to the normal attribute initialization. It is possible to initialize a dependent attribute either directly on change of a Form field or before storing the entity with the help of the data context lifecycle events.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="further_information"><a class="anchor" href="#further_information"></a><a class="link" href="#further_information">Further Information</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://doc.cuba-platform.com/manual-7.0/opening_screens.html#screenBuilders">Screen Builders reference documentation</a></p>
+</li>
+<li>
+<p><a href="https://www.cuba-platform.com/guides/decouple-business-logic-with-app-events">Guide: Decouple Business Logic with Application Events</a></p>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -599,19 +653,20 @@ it is not tied to the web tier anymore. Furthermore, it is possible to trigger i
                         <div class="guide-panel">
                             <h3>Table of contents</h3>
                             <ul class="sectlevel1">
-<li><a href="#what_will_be_built">What Will Be Built</a></li>
+<li><a href="#what_will_be_built">What Will be Built</a></li>
 <li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
-<li><a href="#business_logic_in_controllers">Business Logic in Controllers</a></li>
-<li><a href="#client_tier_beans">Client Tier Beans</a></li>
-<li><a href="#middleware_services">Middleware Services</a></li>
+<li><a href="#entity_fields_initialization">Entity Fields Initialization</a></li>
+<li><a href="#ui_layer_initialization">UI Layer Initialization</a></li>
+<li><a href="#dependent_attribute_initialization">Dependent Attribute Initialization</a></li>
 <li><a href="#summary">Summary</a></li>
+<li><a href="#further_information">Further Information</a></li>
 </ul>
                         </div>
 
                         <div class="guide-panel download">
                             <h3>Example code</h3>
-                            <a class=" guide-item_button button-outline"  href="https://github.com/cuba-guides/cuba-petclinic-business-logic/archive/master.zip" target="_blank">Download</a>
-                            <a href="https://github.com/cuba-guides/cuba-petclinic-business-logic" class="github-link" target="_blank">Github</a>
+                            <a class=" guide-item_button button-outline"  href="https://github.com/cuba-guides/cuba-petclinic-initial-entity-values/archive/master.zip" target="_blank">Download</a>
+                            <a href="https://github.com/cuba-guides/cuba-petclinic-initial-entity-values" class="github-link" target="_blank">Github</a>
                         </div>
 
                         <div class="guide-panel cuba-version">

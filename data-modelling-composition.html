@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Business Logic in CUBA</title>
+    <title>Data Modelling: Composition</title>
     <meta name="description" content="The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.">
     <meta name="author" content="Haulmont">
     <link rel="shortcut icon" href="/guides/images/favicon.png" type="image/png" />
@@ -162,23 +162,39 @@
                             <div class="field field-name-body field-type-text-with-summary field-label-hidden">
                                 <div class="field-items">
                                     <div class="field-item even" property="content: encoded">
-                                        <h1>Create Business Logic in CUBA</h1>
+                                        <h1>Data Modelling: Composition</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>One of the first questions when developing a CUBA application is: <em>Where should I put my business logic?</em> This guide will explain the options available and their pros and cons.</p>
+<p>In this guide the Composition relationship between entities will be covered. It will be shown where are the differences between Associations and Compositions. The two different kinds of Compositions: One-to-Many Compositions as well as One-to-One Compositions will be explored with different examples.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="what_will_be_built"><a class="anchor" href="#what_will_be_built"></a><a class="link" href="#what_will_be_built">What Will Be Built</a></h2>
+<h2 id="what_will_be_built"><a class="anchor" href="#what_will_be_built"></a><a class="link" href="#what_will_be_built">What Will be Built</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show where business logic can be placed in a CUBA application. Mainly discounts are calculated for Pets based on the total amount of their visits in the Petclinic.</p>
+<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show various examples of a composition relationship between entities. In particular, the following use cases will be covered:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>Owner</code> entity gets a relationship to an <code>Address</code></p>
+</li>
+<li>
+<p>A <code>Pet</code> can contain multiple <code>HealthRecord</code> instances, each of them can contain multiple <code>HealthRecordAttachment</code> instances</p>
+</li>
+<li>
+<p>The <code>Owner</code> entity <code>Pet</code> can contain multiple <code>HealthRecord</code> instances, each of them can contain multiple <code>HealthRecordAttachment</code> instances</p>
+</li>
+<li>
+<p>The <code>Employee</code> entity has a detail entity for storing the employee record: <code>EmployeeRecord</code> which will be entered during the creation process of the <code>Employee</code></p>
+</li>
+</ul>
 </div>
 <div class="sect2">
 <h3 id="final_application"><a class="anchor" href="#final_application"></a><a class="link" href="#final_application">Final Application</a></h3>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/login-screen.png"/></a>
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-data-model-composition/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-data-model-composition/master/img/login-screen.png"/></a>
 </div>
 <div class="sect2">
 <h3 id="requirements"><a class="anchor" href="#requirements"></a><a class="link" href="#requirements">Requirements</a></h3>
@@ -202,10 +218,10 @@
 </ul>
 </div>
 <div class="paragraph">
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
 </div>
 <div class="paragraph">
-<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-business-logic.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-business-logic.git</a></code></p>
+<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-data-model-composition.git</a></code></p>
 </div>
 </div>
 </div>
@@ -231,68 +247,24 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="business_logic_in_controllers"><a class="anchor" href="#business_logic_in_controllers"></a><a class="link" href="#business_logic_in_controllers">Business Logic in Controllers</a></h2>
+<h2 id="composition_vs_association"><a class="anchor" href="#composition_vs_association"></a><a class="link" href="#composition_vs_association">Composition vs. Association</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Assuming the discount calculation should be executed when a user clicks a button on the Pets&#8217;s browser screen, the most straightforward way to accomplish this is to put the calculation logic right in the associated controller class.</p>
+<p>CUBA platform supports two types of relationship between entities:  <code>ASSOCIATION</code> and <code>COMPOSITION</code>. Association is a relationship between the objects that can exist separately from each other. Composition, on the other hand, is used for "master-detail" relations, when the detail instances can exist only as part of the master entity.</p>
 </div>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/calculate-discout-for-pet.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/calculate-discout-for-pet.png"/></a>
 <div class="paragraph">
-<p>See the <strong>Calculate discount</strong> button in the petclinic application and the screen controller implementation: <a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetBrowse.java#L15">PetBrowse</a>.</p>
+<p>In the Petclinic example the relationship between an <code>Owner</code> and its <code>Addresses</code> may be considered as an example of composition: an <code>Address</code> that does not belong to any <code>Owner</code> does not make sense (in the domain of this application).</p>
 </div>
-<div class="listingblock">
-<div class="title">PetBrowse.java</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@UiController</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_Pet.browse</span><span class="delimiter">&quot;</span></span>)
-<span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">pet-browse.xml</span><span class="delimiter">&quot;</span></span>)
-<span class="annotation">@LookupComponent</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petsTable</span><span class="delimiter">&quot;</span></span>)
-<span class="annotation">@LoadDataBeforeShow</span>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">PetBrowse</span> <span class="directive">extends</span> StandardLookup&lt;Pet&gt; {
-
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> Notifications notifications;
-
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> Metadata metadata;
-
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> GroupTable&lt;Pet&gt; petsTable;
-
-    <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petsTable.calculateDiscount</span><span class="delimiter">&quot;</span></span>)
-    <span class="directive">public</span> <span class="type">void</span> calculateDiscount(<span class="predefined-type">Action</span>.ActionPerformedEvent actionPerformedEvent) {
-
-        Pet pet = petsTable.getSingleSelected();
-
-        <span class="type">int</span> discount = calculateDiscount(pet);
-
-        showDiscountCalculatedNotification(pet, discount);
-    }
-
-    <span class="directive">private</span> <span class="type">int</span> calculateDiscount(Pet pet) {
-        <span class="type">int</span> discount = <span class="integer">0</span>;
-
-        <span class="type">int</span> visitAmount = pet.getVisits().size();
-        <span class="keyword">if</span> (visitAmount &gt; <span class="integer">10</span>) {
-            discount = <span class="integer">10</span>;
-        } <span class="keyword">else</span> <span class="keyword">if</span> (visitAmount &gt; <span class="integer">5</span>) {
-            discount = <span class="integer">5</span>;
-        }
-        <span class="keyword">return</span> discount;
-    }
-
-    <span class="directive">private</span> <span class="type">void</span> showDiscountCalculatedNotification(Pet pet, <span class="type">int</span> discount) {
-
-        <span class="predefined-type">String</span> petName = metadata.getTools().getInstanceName(pet);
-
-        <span class="predefined-type">String</span> discountMessage = <span class="string"><span class="delimiter">&quot;</span><span class="content">Discount for </span><span class="delimiter">&quot;</span></span> + petName + <span class="string"><span class="delimiter">&quot;</span><span class="content">: </span><span class="delimiter">&quot;</span></span> + discount + <span class="string"><span class="delimiter">&quot;</span><span class="content">%</span><span class="delimiter">&quot;</span></span>;
-
-        notifications.create()
-                .setCaption(discountMessage)
-                .setType(Notifications.NotificationType.TRAY)
-                .show();
-    }
-}</code></pre>
+<div class="paragraph">
+<p>Typically, the entities belonging to a composition are edited together since it is most natural to do so. A user opens the <code>Owner</code> editing screen and sees the list of <code>addresses</code>, so the user can create and edit them, but all changes both for the <code>Owner</code> and the <code>Address</code> are saved to the database together in one transaction, and only after the user confirms saving of the master entity (the <code>Owner</code>).</p>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="one_to_many_composition"><a class="anchor" href="#one_to_many_composition"></a><a class="link" href="#one_to_many_composition">One-to-Many Composition</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this guide different variants of using the Composition relationship will be shown. Compositions can be <code>ONE-TO-MANY</code> as well as <code>ONE-TO-ONE</code>. Also it is possible to have multiple levels of a nested composition in the application.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -301,212 +273,288 @@
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-This approach is acceptable if the logic is invoked from a single point and it is not too complex to fit into a couple of short methods.
+With the release of CUBA 7, there is no limit of how many layers of nesting are defined anymore. Still, having too many levels of nesting is oftentimes the source of confusion for the user when interacting with the user interface. Therefore, it is suggested to not use the nested compositions with too many levels.
 </td>
 </tr>
 </table>
 </div>
+<div class="sect2">
+<h3 id="one_to_many_one_level_of_nesting"><a class="anchor" href="#one_to_many_one_level_of_nesting"></a><a class="link" href="#one_to_many_one_level_of_nesting">One-to-Many: One Level of Nesting</a></h3>
+<div class="paragraph">
+<p>A one-to-many composition using the <code>Owner</code> and the <code>Address</code> entities as an example:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/data-model-composition/composition_domain_model_one_level.png" alt="composition domain model one level">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/owner/Address.java">Address.java</a> - the <code>Address</code> entity contains a mandatory link to the <code>Owner</code>.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In the Studio entity designer, set the following settings for the <code>owner</code> attribute: <strong>Attribute type</strong> - <code>ASSOCIATION</code>, <strong>Cardinality</strong> - <code>MANY_TO_ONE</code>, <strong>Mandatory</strong> - <code>on</code>.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/owner/Owner.java">Owner.java</a> - the <code>Owner</code> entity contains a one-to-many collection of <code>addresses</code>. The corresponding field is annotated with <code>@Composition</code> in order to implement composition, and <code>@OnDelete</code> for cascaded soft delete.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In the Studio entity designer, set the following settings for the <code>addresses</code> attribute: <strong>Attribute type</strong> - <code>COMPOSITION</code>, <strong>Cardinality</strong> - <code>ONE_TO_MANY</code>, <strong>On delete</strong> - <code>CASCADE</code>.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/views.xml">views.xml</a> - the <code>owner-with-pets-and-addresses</code> view of the <code>Owner</code> editing screen contains the <code>addresses</code> collection attribute. <code>Addresses</code> itself are loaded with <code>_local</code> view, because the <code>owner</code> attribute of the <code>Address</code> entity is set only at the creation of a new <code>Address</code> instance and never changes after that, so there is no need to load it.</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/owner/owner/owner-edit.xml">owner-edit.xml</a> - the XML descriptor of the <code>Owner</code> editor screen defines a data container for the <code>Owner</code> instance and a nested collection container for its <code>addresses</code>. It also contains a table for managing the <code>Address</code> instances.</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/owner/address/address-edit.xml">address-edit.xml</a> - a standard editor for the <code>Address</code> entity.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>As a result, editing of an <code>Owner</code> instance works as follows:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/data-model-composition/one-level-owner-editor-address-composition.png"><img src="/guides/images/data-model-composition/one-level-owner-editor-address-composition.png" alt="one level owner editor address composition"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>Owner</code> edit screen shows a list of <code>addresses</code>.</p>
+</div>
+<div class="paragraph">
+<p>A user can create an <code>address</code> and open its editor. When <strong>OK</strong> is clicked in the <code>Address</code> editor, the updated instance of the <code>Address</code> is not yet saved to the database, but only to the <code>addressesDc</code> data container of the <code>Owner</code> editor.</p>
+</div>
+<div class="paragraph">
+<p>The user can create new <code>Address</code> instances and delete existing ones. All changes will be saved to the <code>terminalsDc</code> data container.</p>
+</div>
+<div class="paragraph">
+<p>When a user clicks <strong>OK</strong> in the Owner edit screen, the updated <code>Owner</code> instance together with all the updated <code>Address</code> instances is submitted to the <code>dataManager.commit()</code> method and saved to the database within a single transaction.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="one_to_many_two_levels_of_nesting"><a class="anchor" href="#one_to_many_two_levels_of_nesting"></a><a class="link" href="#one_to_many_two_levels_of_nesting">One-to-Many: Two Levels of Nesting</a></h3>
+<div class="paragraph">
+<p>Composition can also be multiple-level. The next example shows a Composition of two levels. In the Petclinic there is a need to store health records of the pets. The <code>Pet</code> &#8594; <code>HealthRecord</code> relationship is another composition. However, the <code>HealthRecord</code> also has another composition since there can be multiple <code>Attachment</code> instances created for a given health record.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/data-model-composition/composition_domain_model_two_levels.png" alt="composition domain model two levels">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/pet/Pet.java">Pet.java</a> - the <code>healthRecord</code> attribute of the <code>Pet</code> class is marked as <code>@Composition</code> and <code>@OnDelete</code>.</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/pet/HealthRecord.java">HealthRecord.java</a> - the <code>attachments</code> attribute of the <code>HealthRecord</code> class is marked as <code>@Composition</code> and <code>@OnDelete</code> similarly to the <code>healthRecords</code> attribute of the <code>Pet</code> class.</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/views.xml">views.xml</a> - the <code>health-record-with-attachments</code> view of the <code>HealthRecord</code> class contains the <code>attachments</code> collection attribute. This view is used in the <code>pet-with-owner-and-type-and-health-records</code> view of the <code>Pet</code> entity which acts as the root view of the edit screen.</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/pet/pet/pet-edit.xml">pet-edit.xml</a> - the XML descriptor of the <code>Pet</code> editor screen defines a data container for the <code>Pet</code> instance and a nested collection data container for its <code>healthRecords</code>. It also contains a table for managing the <code>HealthRecord</code> instances. The screen uses the <code>pet-with-owner-and-type-and-health-records</code> view as a root view for this edit screen.</p>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>CUBA 7+ removed the previous need to define datasources for the second level of nested compositions in the editor of the top level entity with the release of data containers. In CUBA 7+ this definition is <strong>not</strong> required anymore.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/pet/healthrecord/healthrecord/health-record-edit.xml">health-record-edit.xml</a> - the XML descriptor of the <code>HealthRecord</code> editor screen defines a data container for the <code>HealthRecord</code> instance and a nested collection data container for its <code>attachments</code>. It also contains a table for managing the <code>HealthRecordAttachment</code> instances.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>As a result, the updated instances of the <code>HealthRecordAttachment</code>, as well as the <code>HealthRecord</code> instances, will be saved to the database only with the <code>Pet</code> instance in the same transaction.</p>
+</div>
+<div class="sect3">
+<h4 id="health_record_composition_within_the_pet_editor"><a class="anchor" href="#health_record_composition_within_the_pet_editor"></a><a class="link" href="#health_record_composition_within_the_pet_editor">Health Record Composition within the Pet Editor</a></h4>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/data-model-composition/two-levels-pet-editor-health-records-composition.png"><img src="/guides/images/data-model-composition/two-levels-pet-editor-health-records-composition.png" alt="two levels pet editor health records composition"></a>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="health_record_attachment_composition_within_the_health_record_editor"><a class="anchor" href="#health_record_attachment_composition_within_the_health_record_editor"></a><a class="link" href="#health_record_attachment_composition_within_the_health_record_editor">Health Record Attachment Composition within the Health Record Editor</a></h4>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/data-model-composition/two-levels-healthRecord-editor-health-record-attachments-composition.png"><img src="/guides/images/data-model-composition/two-levels-healthRecord-editor-health-record-attachments-composition.png" alt="two levels healthRecord editor health record attachments composition"></a>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="more_levels_of_nesting"><a class="anchor" href="#more_levels_of_nesting"></a><a class="link" href="#more_levels_of_nesting">More Levels of Nesting</a></h3>
+<div class="paragraph">
+<p>As stated above, CUBA 7+ does not have the restriction of maximal two levels of nesting for composition anymore. This means that three (or more) levels of nesting are possible. The example for two levels of nesting can be extended towards: <code>Owner</code> &#8594; <code>Pet</code> &#8594; <code>Health Record</code> &#8594; <code>Health Record Attachment</code> and in fact it has been done within the demo application. It is also possible to combine the usage of One-to-Many and One-to-One compositions within a Composition chain.</p>
+</div>
+<div class="paragraph">
+<p>Having too many levels of composition has to be treated with caution, though. It requires an additional burden on the user, to understand at which point which data is stored.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="client_tier_beans"><a class="anchor" href="#client_tier_beans"></a><a class="link" href="#client_tier_beans">Client Tier Beans</a></h2>
+<h2 id="one_to_one_composition"><a class="anchor" href="#one_to_one_composition"></a><a class="link" href="#one_to_one_composition">One-to-One Composition</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The in-controller solution works as long as the logic should only be executed within one screen. Once the calculation should be executed in multiple UI screens there is a better way not to duplicate the code. The logic can be extracted to a common place available for both controllers. This option is using a Spring bean in the client tier.</p>
+<p>Besides the above explained Composition of type <code>ONE-TO-MANY</code>, there is also the possibility to define Composition of type <code>ONE-TO-ONE</code>. This type of Composition is useful when it is only possible to have one item of the child entity. An example in the petclinic is the following scenario:</p>
 </div>
 <div class="paragraph">
-<p>A managed bean is a class annotated with <code>@Component</code> annotation. It can be injected via <code>@Inject</code> into other beans and screen controllers. If a bean has a separate interface, it can be accessed through the interface instead of the class.</p>
+<p>The employees of the Petclinic have to be managed (like Vets, Nurses etc.). Therefore an <code>Employee</code> entity is defined. For each <code>Employee</code> instance there is an associated <code>EmployeeRecord</code> entity which stores information about the work related information of this employee.</p>
 </div>
-<div class="imageblock">
+<div class="imageblock text-center">
 <div class="content">
-<img src="/guides/images/creating-business-logic-in-cuba/using_client_beans_1.png" alt="class diagramm using client tier beans">
+<img src="/guides/images/data-model-composition/composition-one-to-one.png" alt="composition one to one">
 </div>
-</div>
-<div class="paragraph">
-<p>Please note that in order to be accessible for screen controllers, the bean must be located in <strong>global</strong>, <strong>gui</strong> or <strong>web</strong> modules of the application. In the former case the bean will be also accessible for the middleware.</p>
-</div>
-<div class="paragraph">
-<p>The example that is implemented as (multiple) client tier beans is to display the contact information of the pet&#8217;s owner directly from the pet browser or the pet details screen.</p>
-</div>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/fetch-contact-of-pet.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/fetch-contact-of-pet.png"/></a>
-<div class="paragraph">
-<p>For this there are two Spring beans:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/global/src/com/cubaplatform/petclinic/contact/PetContactFetcherBean.java">PetContactFetcher</a> that deals with fetching of the appropriate contact data</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/employee/Employee.java">Employee.java</a> - the <code>Employee</code> entity contains an optional link to <code>EmployeeRecord</code> annotated with <code>@Composition</code>.</p>
 </li>
 <li>
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetContactDisplay.java">PetContactDisplay</a> for displaying contact information as notifications</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/employee/EmployeeRecord.java">EmployeeRecord.java</a> - the <code>EmployeeRecord</code> entity.</p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p>On a UI level it is possible to deal with One-to-One composition in two different ways. Normally, One-to-One compositions are displayed as a single entry in the form of the master entity. The details of the child entity are entered in a dedicated edit screen for this entity. But it is also possible to enter values for both entites in the same edit screen. Below both options will be shown.</p>
+</div>
+<div class="sect2">
+<h3 id="one_to_one_with_a_details_screen"><a class="anchor" href="#one_to_one_with_a_details_screen"></a><a class="link" href="#one_to_one_with_a_details_screen">One-to-One with a Details Screen</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/employee/employee/employee-edit.xml">employee-edit.xml</a> - the employee edit screen descriptor. It contains a nested data container for the <code>EmployeeRecord</code> instance. In order to load the nested instance, the root data container uses the <code>employee-with-employee-record-view</code> view of the <code>Employee</code> entity that includes the <code>employeeRecord</code> attribute.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The definition of the <code>employeeRecord</code> property in the <code>employee-edit.xml</code> is defined as a <code>pickerField</code> component which contains the actions <code>OpenAction</code> (with special type <code>picker_open_composition</code>) and <code>ClearAction</code>:</p>
 </div>
 <div class="listingblock">
-<div class="title">PetContactFetcherBean.java</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Component</span>(PetContactFetcher.NAME)
-<span class="directive">public</span> <span class="type">class</span> <span class="class">PetContactFetcherBean</span> <span class="directive">implements</span> PetContactFetcher {
-
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> DataManager dataManager;
-
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> Messages messages;
-
-    <span class="annotation">@Override</span>
-    <span class="directive">public</span> Optional&lt;Contact&gt; findContact(Pet pet) {
-
-        Optional&lt;<span class="predefined-type">Owner</span>&gt; petOwner = loadOwnerFor(pet);
-
-        <span class="keyword">if</span> (petOwner.isPresent()) {
-
-            <span class="predefined-type">Owner</span> owner = petOwner.get();
-            <span class="predefined-type">String</span> telephone = owner.getTelephone();
-            <span class="predefined-type">String</span> email = owner.getEmail();
-            <span class="predefined-type">String</span> address = formatOwnerAddress(owner);
-
-            <span class="keyword">if</span> (isAvailable(telephone)) {
-                <span class="keyword">return</span> createContact(telephone, ContactType.TELEPHONE);
-            } <span class="keyword">else</span> <span class="keyword">if</span> (isAvailable(email)) {
-                <span class="keyword">return</span> createContact(email, ContactType.EMAIL);
-            } <span class="keyword">else</span> <span class="keyword">if</span> (isAvailable(address)) {
-                <span class="keyword">return</span> createContact(address, ContactType.ADDRESS);
-            } <span class="keyword">else</span> {
-                <span class="keyword">return</span> Optional.empty();
-            }
-        } <span class="keyword">else</span> {
-            <span class="keyword">return</span> Optional.empty();
-        }
-    }
-
-    <span class="comment">//...</span>
-}</code></pre>
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;pickerField</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">employeeRecordField</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">property</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">employeeRecord</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;actions&gt;</span>
+        <span class="tag">&lt;action</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">open</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">picker_open_composition</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+        <span class="tag">&lt;action</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">clear</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">picker_clear</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;/actions&gt;</span>
+<span class="tag">&lt;/pickerField&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The beans are used in the <a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetBrowse.java#L24">Pet browse screen</a> and the
-<a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetEdit.java#L19">Pet details screen</a>. The usage looks like this:</p>
+<p>As a result, employee editing works as follows:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/data-model-composition/composition-one-to-one-editor-open-action.png" alt="composition one to one editor open action" width="600">
+</div>
+</div>
+<div class="paragraph">
+<p>When the open action is invoked, a new instance of <code>EmployeeRecord</code> is created and its edit screen is shown. When <strong>OK</strong> is clicked in the employee record editor, the employee record instance is not saved to the database, but only to the <code>employeeRecordDc</code> data container of the employee edit screen.</p>
+</div>
+<div class="paragraph">
+<p>The picker field displays the instance name of the <code>EmployeeRecord</code> entity:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/data-model-composition/composition-one-to-one-editor-open-action-instance-name.png" alt="composition one to one editor open action instance name" width="600">
+</div>
+</div>
+<div class="paragraph">
+<p>When a user clicks <strong>OK</strong> in the employee edit screen, the updated <code>Employee</code> instance together with the <code>EmployeeRecord</code> instance is submitted to the <code>DataManager.commit()</code> method and saved to the database within a single transaction.</p>
+</div>
+<div class="paragraph">
+<p>If the user invokes the clear action of the picker field, the <code>EmployeeRecord</code> instance is deleted and the reference to it is cleared in the same transaction after the user commits the employee editor.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="one_to_one_composition_with_a_single_editor"><a class="anchor" href="#one_to_one_composition_with_a_single_editor"></a><a class="link" href="#one_to_one_composition_with_a_single_editor">One-to-One Composition with a Single Editor</a></h3>
+<div class="paragraph">
+<p>It is often convenient to edit the One-to-One composition in a single editor. The following example shows how the <code>EmployeeRecord</code> can be edited within the <code>Employee</code> editor screen.</p>
+</div>
+<div class="paragraph">
+<p>The <a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/employee/employee/employee-single-editor-edit.xml">employee-single-editor-edit.xml</a> descriptor contains the main <code>employeeDc</code> and the nested <code>employeeRecordDc</code> data containers:</p>
 </div>
 <div class="listingblock">
-<div class="title">PetEdit.java</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@UiController</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_Pet.edit</span><span class="delimiter">&quot;</span></span>)
-<span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">pet-edit.xml</span><span class="delimiter">&quot;</span></span>)
-<span class="annotation">@EditedEntityContainer</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petCt</span><span class="delimiter">&quot;</span></span>)
-<span class="annotation">@LoadDataBeforeShow</span>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">PetEdit</span> <span class="directive">extends</span> StandardEditor&lt;Pet&gt; {
-
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> PetContactFetcher petContactFetcher;
-
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> PetContactDisplay petContactDisplay;
-
-    <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">fetchContact</span><span class="delimiter">&quot;</span></span>)
-    <span class="directive">public</span> <span class="type">void</span> fetchContact() {
-
-        Pet pet = getEditedEntity();
-
-        Optional&lt;Contact&gt; contactInformation = petContactFetcher.findContact(pet);
-
-        petContactDisplay.displayContact(contactInformation, <span class="local-variable">this</span>);
-    }
-}</code></pre>
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;data&gt;</span>
+    <span class="tag">&lt;instance</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">employeeDc</span><span class="delimiter">&quot;</span></span>
+              <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.haulmont.sample.petclinic.entity.employee.Employee</span><span class="delimiter">&quot;</span></span>
+              <span class="attribute-name">view</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">employee-with-employee-record-view</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;loader</span><span class="tag">/&gt;</span>
+        <span class="tag">&lt;instance</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">employeeRecordDc</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">property</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">employeeRecord</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;/instance&gt;</span>
+<span class="tag">&lt;/data&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The benefit compared to the first in-controller solution is that the code-reuse is higher. It is possible to use the logic in different places.</p>
-</div>
-<div class="paragraph">
-<p><code>PetContactDisplay</code> is a bean in the web module, therefore it is only available within the client tier.
-<code>PetContactFetcher</code>, on the other hand, is a bean in the global module which means that it is also possible to use the logic in the middleware as well as the client tier.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="middleware_services"><a class="anchor" href="#middleware_services"></a><a class="link" href="#middleware_services">Middleware Services</a></h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The next approach on where to put the business logic is a <a href="https://doc.cuba-platform.com/manual-7.0/services.html">middleware service</a>. The service is the most appropriate place for business logic, because it achieves the following goals:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>The business logic will be available for all types of clients including the Polymer UI.</p>
-</li>
-<li>
-<p>APIs that are available only on the middleware: <a href="https://doc.cuba-platform.com/manual-7.0/entityManager.html">EntityManager</a>, Transaction, etc. are accessible to the business logic</p>
-</li>
-</ul>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="/guides/images/creating-business-logic-in-cuba/using_services_1.png" alt="class diagramm using services">
-</div>
-</div>
-<div class="paragraph">
-<p>In order to invoke the middleware business logic from the client, a service needs to be created. CUBA Studio streamlines the creation process of a service:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Select the <strong>Middleware</strong> section in the CUBA project tree and click <strong>New &gt; Service</strong> in the context menu.</p>
-</li>
-<li>
-<p>Change the service interface name to <code>DiseaseWarningMailingService</code>. The bean class and service names will be changed accordingly. Click <strong>OK</strong>.</p>
-</li>
-<li>
-<p>Open the service interface in the editor. Create a method and implement it in the service class.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>In the Petclinic application, the following service was created: <code>DiseaseWarningMailingService</code>. It sends out disease warning mailings to the potentially endangered pets' owners.</p>
-</div>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/create-disease-warning-mailing.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/create-disease-warning-mailing.png"/></a>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/global/src/com/cubaplatform/petclinic/service/DiseaseWarningMailingService.java">DiseaseWarningMailingService</a> - service interface</p>
-</li>
-<li>
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/global/src/com/cubaplatform/petclinic/service/DiseaseWarningMailingServiceBean.java">DiseaseWarningMailingServiceBean</a> - service implementation</p>
-</li>
-<li>
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/CreateDiseaseWarningMailing.java">CreateDiseaseWarningMailing</a> - screen controller that uses the service</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>The implementation of a service looks like this in case of <code>DiseaseWarningMailingService</code>:</p>
+<p>Fields for editing both entities are defined in the same editor either a single form or multiple forms:</p>
 </div>
 <div class="listingblock">
-<div class="title">DiseaseWarningMailingServiceBean.java</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Service</span>(DiseaseWarningMailingService.NAME) <i class="conum" data-value="1"></i><b>(1)</b>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">DiseaseWarningMailingServiceBean</span> <span class="directive">implements</span> DiseaseWarningMailingService {
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;form</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">form</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">dataContainer</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">employeeDc</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;textField</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">firstNameField</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">property</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">firstName</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;textField</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">lastNameField</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">property</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">lastName</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;dateField</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">birthdateField</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">property</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">birthdate</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+<span class="tag">&lt;/form&gt;</span>
+<span class="tag">&lt;form</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">employeeRecordForm</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">dataContainer</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">employeeRecordDc</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;textField</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">personellNumberField</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">property</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">personellNumber</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">datatype</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">int</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;textField</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">amountSickDaysFild</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">property</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">amountSickDays</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">datatype</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">int</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+<span class="tag">&lt;/form&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the <a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/employee/employee/EmployeeSingleEditorEdit.java">EmployeeSingleEditorEdit.java</a> controller an <code>EmployeeRecord</code> instance will be created and linked to the new <code>Employee</code> instance when the latter is just created:</p>
+</div>
+<div class="listingblock">
+<div class="title">EmployeeSingleEditorEdit.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Inject</span>
+<span class="directive">protected</span> DataContext dataContext;
 
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> DataManager dataManager;
+<span class="annotation">@Subscribe</span>
+<span class="directive">protected</span> <span class="type">void</span> onInitEntity(InitEntityEvent&lt;Employee&gt; event) { <i class="conum" data-value="1"></i><b>(1)</b>
+    Employee employee = event.getEntity();
+    EmployeeRecord employeeRecord = createEmployeeRecord();
+    employee.setEmployeeRecord(employeeRecord);
+}
 
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> EmailerAPI emailerAPI;
-
-    <span class="annotation">@Override</span>
-    <span class="directive">public</span> <span class="type">int</span> warnAboutDisease(PetType petType, <span class="predefined-type">String</span> disease, <span class="predefined-type">String</span> city) { <i class="conum" data-value="2"></i><b>(2)</b>
-
-        <span class="predefined-type">List</span>&lt;Pet&gt; petsInDiseaseCity = findPetsInDiseaseCity(petType, city);
-
-        <span class="predefined-type">List</span>&lt;Pet&gt; petsWithEmail = filterPetsWithValidOwnersEmail(petsInDiseaseCity);
-
-        petsWithEmail.forEach(pet -&gt; sendEmailToPetsOwner(pet, disease, city));
-
-        <span class="keyword">return</span> petsWithEmail.size();
-    }
-
-    <span class="comment">// ...</span>
-
+<span class="directive">private</span> EmployeeRecord createEmployeeRecord() {
+    <span class="keyword">return</span> dataContext.merge(metadata.create(EmployeeRecord.class)); <i class="conum" data-value="2"></i><b>(2)</b>
 }</code></pre>
 </div>
 </div>
@@ -514,61 +562,22 @@ This approach is acceptable if the logic is invoked from a single point and it i
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Declaration of <code>DiseaseWarningMailingServiceBean</code> as the Middleware Service implementation</td>
+<td>the initialization of the <code>EmployeeRecord</code> can be defined when the <code>InitEntityEvent</code> is fired</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Implementation of the business logic interface</td>
+<td>an instance of <code>EmployeeRecord</code> is created and merged in the current <code>dataContext</code></td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>The UI controller usage is very similar to the invocation of a client tier bean. The <code>CreateDiseaseWarningMailing</code> screen controller looks like this:</p>
+<p>Now, both linked entities can be created and edited in one editor screen.</p>
 </div>
-<div class="listingblock">
-<div class="title">CreateDiseaseWarningMailing.java</div>
+<div class="imageblock text-center">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@UiController</span>
-<span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">create-disease-warning-mailing.xml</span><span class="delimiter">&quot;</span></span>)
-<span class="directive">public</span> <span class="type">class</span> <span class="class">CreateDiseaseWarningMailing</span> <span class="directive">extends</span> Screen {
-
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> DiseaseWarningMailingService diseaseWarningMailingService; <i class="conum" data-value="1"></i><b>(1)</b>
-
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> Notifications notifications;
-
-    <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">createDiseaseWarningMailing</span><span class="delimiter">&quot;</span></span>)
-    <span class="directive">protected</span> <span class="type">void</span> createDiseaseWarningMailing(<span class="predefined-type">Action</span>.ActionPerformedEvent event) {
-
-        <span class="type">int</span> endangeredPets = diseaseWarningMailingService.warnAboutDisease(petType.getValue(),
-                disease.getValue(), city.getValue()); <i class="conum" data-value="2"></i><b>(2)</b>
-
-        closeWithCommit().then(() -&gt;
-                notifications.create()
-                        .setCaption(endangeredPets + <span class="string"><span class="delimiter">&quot;</span><span class="content"> Owner(s) of endangered Pets have been notified</span><span class="delimiter">&quot;</span></span>)
-                        .setType(Notifications.NotificationType.TRAY)
-                        .show()
-        );
-    }
-}</code></pre>
+<img src="/guides/images/data-model-composition/composition-one-to-one-single-editor.png" alt="composition one to one single editor">
 </div>
 </div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Injection of the middleware service via its interface definition</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Invocation of the business logic in the controller action</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>With that middleware service in place, the logic of creating disease warning mailings can now be shared across UI screens in the web tier. Additionally any other middleware code can execute the logic, since
-it is not tied to the web tier anymore. Furthermore, it is possible to trigger it via the REST API and with that to expose it also to other UI technologies like the Polymer UI.</p>
 </div>
 </div>
 </div>
@@ -576,10 +585,10 @@ it is not tied to the web tier anymore. Furthermore, it is possible to trigger i
 <h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>There are several options when it comes to where to put the business logic in a CUBA application. A controller can be a good and easy start, although it has some downsides when it comes to sharing the code. A client bean solves this problem to some degree. Middleware services allow for sharing business logic across different clients (e.g. Polymer Client) and is the most appropriate way of putting business logic.</p>
+<p>In this data modelling guide the Composition relationship was described. Compositions are valuable if a master-detail relationship between two entities should be modelled, where the detail entities can only exist if the corresponding master entity exists.</p>
 </div>
 <div class="paragraph">
-<p>Additionally, there are several advanced techniques like <a href="https://doc.cuba-platform.com/manual-6.10/jmx_beans.html">JMX Beans</a> or <a href="https://doc.cuba-platform.com/manual-6.10/entity_listeners.html">Entity Listeners</a> that also allow for certain business logic to be executed in particular scenarios. The decision where to put the business logic for a given case should be done on a case to case basis. But the mentioned main places of Controllers &amp; Spring Beans / Spring Services for placing business logic are a good starting point.</p>
+<p>Composition structures can exist in 1:1 and 1:N form. Furthermore, nested composition can be created with multiple levels. The corresponding UI screens treat Composition relationships in a special way. Detail entities are only stored during the creation process of the master entity at the point in time when the master entity is stored.</p>
 </div>
 </div>
 </div>
@@ -599,19 +608,19 @@ it is not tied to the web tier anymore. Furthermore, it is possible to trigger i
                         <div class="guide-panel">
                             <h3>Table of contents</h3>
                             <ul class="sectlevel1">
-<li><a href="#what_will_be_built">What Will Be Built</a></li>
+<li><a href="#what_will_be_built">What Will be Built</a></li>
 <li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
-<li><a href="#business_logic_in_controllers">Business Logic in Controllers</a></li>
-<li><a href="#client_tier_beans">Client Tier Beans</a></li>
-<li><a href="#middleware_services">Middleware Services</a></li>
+<li><a href="#composition_vs_association">Composition vs. Association</a></li>
+<li><a href="#one_to_many_composition">One-to-Many Composition</a></li>
+<li><a href="#one_to_one_composition">One-to-One Composition</a></li>
 <li><a href="#summary">Summary</a></li>
 </ul>
                         </div>
 
                         <div class="guide-panel download">
                             <h3>Example code</h3>
-                            <a class=" guide-item_button button-outline"  href="https://github.com/cuba-guides/cuba-petclinic-business-logic/archive/master.zip" target="_blank">Download</a>
-                            <a href="https://github.com/cuba-guides/cuba-petclinic-business-logic" class="github-link" target="_blank">Github</a>
+                            <a class=" guide-item_button button-outline"  href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/archive/master.zip" target="_blank">Download</a>
+                            <a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition" class="github-link" target="_blank">Github</a>
                         </div>
 
                         <div class="guide-panel cuba-version">
