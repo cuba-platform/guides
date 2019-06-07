@@ -141,7 +141,7 @@ header, nav, aside, article, main, footer, section { display: block; }
 .header-support { flex: 0 0 auto; margin-left: auto; }
 @media (max-width: 991.98px) { .header-support { margin-left: 0; } }
 
-.header-support_toggle { margin: 0; padding: 8px 18px; color: #30336b; font-weight: bold; font-size: 13px; text-transform: uppercase; background-color: #fdcb6e; border: 0; border-radius: 4px; outline: none; cursor: pointer; }
+.header-support_toggle { margin: 0; padding: 8px 18px; color: #30336b; font-weight: bold; font-size: 13px; text-transform: uppercase; background-color: #fdcb6e; border: 0; border-radius: 4px; outline: none; cursor: pointer; line-height: 18.5714px; }
 .header-support_toggle:hover, .header-support_toggle:focus { background-color: #fdcb6e; color: #30336b; }
 @media (max-width: 991.98px) { .header-support_toggle { position: relative; width: 40px; height: 40px; padding: 0 11px; border-radius: 40px; }
   .header-support_toggle::before, .header-support_toggle::after { position: absolute; left: 50%; width: 22px; height: 3px; margin: 0 0 0 -11px; background: currentColor; opacity: 0; transition: none; content: ''; }
