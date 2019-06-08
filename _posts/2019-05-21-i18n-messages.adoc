@@ -176,9 +176,7 @@ public class VisitBrowse extends StandardLookup<Visit> {
 
     @Inject
     private MessageBundle messageBundle;
-
     // ...
-
     private void createVisitForPet(Pet pet) {
         screenBuilders.editor(visitsTable)
                 .newEntity()
@@ -190,7 +188,9 @@ public class VisitBrowse extends StandardLookup<Visit> {
                 })
                 .withScreenClass(RegularCheckup.class)
                 .withLaunchMode(OpenMode.DIALOG)
-                .withAfterCloseListener(event -> showRegularCheckupCreatedNotification(pet))
+                .withAfterCloseListener(event ->
+                    showRegularCheckupCreatedNotification(pet)
+                )
                 .build()
                 .show();
     }
@@ -234,9 +234,7 @@ The second message should be displayed as a notification once the Regular Checku
 [source,java]
 ----
 public class VisitBrowse extends StandardLookup<Visit> {
-
     // ...
-
     @Inject
     private MetadataTools metadataTools;
 
@@ -246,12 +244,12 @@ public class VisitBrowse extends StandardLookup<Visit> {
     @Inject
     private Notifications notifications;
 
-
     private void showRegularCheckupCreatedNotification(Pet pet) {
 
         String petName = metadataTools.getInstanceName(pet); // <1>
 
-        String regularCheckupCreatedMessage = messageBundle.formatMessage("regularCheckupCreated", petName); // <2>
+        String regularCheckupCreatedMessage = messageBundle
+            .formatMessage("regularCheckupCreated", petName); // <2>
 
         notifications.create(Notifications.NotificationType.TRAY)
                 .withCaption(regularCheckupCreatedMessage) // <3>
@@ -268,7 +266,7 @@ public class VisitBrowse extends StandardLookup<Visit> {
 Since CUBA comes with certain UI components and with multiple UI screens out of the box, this existing functionality also needs to be localized in order to have a fully translated application. For this problem, there are two main solutions:
 
 1. Community Languages Packs
-2. Manual providing Translations
+2. manually provided translation
 
 
 === Community Language Packs
@@ -277,12 +275,12 @@ The first and easiest solution is to use existing language packs that are create
 
 WARNING: The Community Translations Packs are provided by the community, therefore the accuracy and the catch up with the latest changes in the platform differ and are provided as best effort.
 
-In order to get those translations into the Application they can be fetched manually from the https://github.com/cuba-platform/translations[CUBA Translations Github repository]. Some Translations are also directly available via an application component through the https://www.cuba-platform.com/marketplace/[CUBA marketplace],
+In order to get those translations into the Application they can be fetched manually from the https://github.com/cuba-platform/translations[Translations Github repository]. Some Translations are also directly available via an application component through the https://www.cuba-platform.com/marketplace/[CUBA marketplace],
 which makes the installation as easy as installing any other application component.
 
 Afterwards, the only thing to do is to add the new language to the application property `cuba.availableLocales`.
 
-=== Manual Providing Translations
+=== Manually Provided Translation
 
 In case the target language is not available through the community or some translations are missing or are not accurate, it is also possible to provide those translations directly within the application.
 
@@ -295,7 +293,12 @@ In order to provide / override translations for this screen, two things have to 
 
 The destination module of where the translations have to be placed has to be available in the application. The majority of the platform screens are placed in the GUI module, which is not available for 7.0+ CUBA applications by default. In case the target application does not have the GUI module it has to be included into the application to place the translation files into it.
 
-TIP: Adding the GUI module via CUBA Studio can be done via the Menu: `CUBA > Advanced > Manage Modules > Create 'gui' module`.
+[TIP]
+====
+Adding the GUI module via CUBA Studio can be done via the Menu:
+
+`CUBA > Advanced > Manage Modules > Create 'gui' module`.
+====
 
 
 ==== Create Package-Mirror in the Application
