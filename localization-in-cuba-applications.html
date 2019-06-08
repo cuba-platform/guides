@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CUBA Platform Guides</title>
+    <title>Localization in CUBA applications</title>
     <meta name="description" content="The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.">
     <meta name="author" content="Haulmont">
     <link rel="shortcut icon" href="/guides/images/favicon.png" type="image/png" />
@@ -18,12 +18,12 @@
     <link rel="stylesheet" href="/guides/css/extra.css">
     <link rel="stylesheet" href="/guides/css/extra2.css">
     <link rel="stylesheet" href="/guides/css/cuba-new.css">
+    <link rel="stylesheet" href="/guides/css/font-awesome.min.css">
     <link rel="stylesheet" href="/guides/css/guides.css">
-    <script src="/guides/js/vendor/modernizr.js"></script>
     <script src="/guides/js/jquery_v2.1.min.js"></script>
     <link rel="stylesheet" href="/guides/css/main.css" />
 </head>
-<body class="cuba-website-styles html not-front not-logged-in no-sidebars page-webinars service-booking i18n-en">
+<body class="html not-front not-logged-in no-sidebars page-node page-node- page-node-962 node-type-blog-post i18n-en">
 
 <section id="wrapper">
     
@@ -153,69 +153,543 @@
 
     <!-- Main Page Content and Sidebar -->
     <div class="content-wrapper">
-        <div class="text-node">
+        <div class="cuba-container text-node blog">
+            <!-- Main content (left column) -->
             <div class="region region-content">
                 <section id="block-system-main" class="block block-system clearfix">
-                    <div class="panel-display panel-1col clearfix" id="webinars-page">
-                        <div class="container layout-main_container">
-                            <div>
-                                <!-- Title -->
-                                <div class="page-header">
-                                    <h1 class="page-header_title">Guides</h1>
-                                    <p class="page-header_description">Comprehensive articles about CUBA Platform specifics (version 7.0+)</p>
-                                </div>
+                    <div id="node-962" class="article node node-blog-post node-promoted clearfix">
+                        <div class="content">
+                            <div class="field field-name-body field-type-text-with-summary field-label-hidden">
+                                <div class="field-items">
+                                    <div class="field-item even" property="content: encoded">
+                                        <h1>Localization in CUBA applications</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>CUBA applications have build-in support for localized messages for different languages. Translations are externalized in
+properties files to have a clear separation between the application code and the translated messages.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="what_will_be_built"><a class="anchor" href="#what_will_be_built"></a><a class="link" href="#what_will_be_built">What Will be Built</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show how localized messages within the CUBA application can be defined and used:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the application is also available in German and Russian language</p>
+</li>
+<li>
+<p>dynamic data as automatically generated descriptions for visits are localized</p>
+</li>
+<li>
+<p>provide german translation for User browse platform screen</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="final_application"><a class="anchor" href="#final_application"></a><a class="link" href="#final_application">Final Application</a></h3>
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-i18n-messages/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-i18n-messages/master/img/login-screen.png"/></a>
+</div>
+<div class="sect2">
+<h3 id="requirements"><a class="anchor" href="#requirements"></a><a class="link" href="#requirements">Requirements</a></h3>
+<div class="paragraph">
+<p>Your development environment requires to contain the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.oracle.com/technetwork/java/javase/downloads/index.html">JDK 1.8</a></p>
+</li>
+<li>
+<p>a text editor or IDE (<a href="https://www.jetbrains.com/idea/download/">IntelliJ IDEA</a> preferred)</p>
+</li>
+<li>
+<p><a href="https://www.cuba-platform.com/download">CUBA Studio</a> as standalone IDE or as an IDEA plugin (optional)</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-platform/cuba-cli/wiki/Installation">CUBA CLI</a> (optional)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-i18n-messages/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
+</div>
+<div class="paragraph">
+<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-i18n-messages.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-i18n-messages.git</a></code></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="example_cuba_petclinic"><a class="anchor" href="#example_cuba_petclinic"></a><a class="link" href="#example_cuba_petclinic">Example: CUBA petclinic</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The project that is the basis for this example is <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a>. It is based on the commonly known <a href="https://github.com/spring-projects/spring-petclinic">Spring Petclinic</a>. The CUBA Petclinic application deals with the domain of a Pet clinic and the associated business workflows to manage a pet clinic.</p>
+</div>
+<div class="paragraph">
+<p>The underlying domain model for the application looks like this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/guides/images/domain-model.png" alt="Domain model">
+</div>
+</div>
+<div class="paragraph">
+<p>The main entities are <strong>Pet</strong> and <strong>Visit</strong>. A Pet is visiting the petclinic and during this Visit a Vet is taking care of it. A Pet belongs to an Owner, which can hold multiple pets. The visit describes the act of a pet visiting the clinic with the help of its owner.</p>
+</div>
+<a href="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/login-screen.png"/></a>
+</div>
+</div>
+<div class="sect1">
+<h2 id="where_translations_are_stored_in_a_cuba_application"><a class="anchor" href="#where_translations_are_stored_in_a_cuba_application"></a><a class="link" href="#where_translations_are_stored_in_a_cuba_application">Where Translations are Stored in a CUBA Application</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>CUBA follows a common pattern for translations in Java based applications. Messages for different languages / locales are stores next to the source-code within the same package in <code>.properties</code> files.</p>
+</div>
+<div class="paragraph">
+<p>For every language and every package there exists a file containing information on how to translate a given text into the target language. The language files contain a suffix according to the locale code of the language (e.g. <code>_ru</code> for russian, <code>_de</code> for german).</p>
+</div>
+<div class="paragraph">
+<p>An example of this file structure looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>com.haulmont.sample.petclinic.entity
+|
+├── owner
+│   ├── Owner.java
+│   └── messages.properties
+├── pet
+│   ├── Pet.java
+│   ├── PetType.java
+│   ├── messages.properties
+│   ├── messages_de.properties
+│   └── messages_ru.properties
+├── vet
+│   ├── Specialty.java
+│   ├── Vet.java
+│   ├── messages.properties
+│   ├── messages_de.properties
+│   └── messages_ru.properties
+└── visit
+    ├── Visit.java
+    ├── VisitType.java
+    ├── messages_de.properties
+    ├── messages_ru.properties
+    └── messages.properties</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The properties file contains of key-value pairs, where the key is the identifier of the Message that has to be localized and the value is the corresponding translation for the language. The key is the same for all language files, only the value differs. In the example of the petclinic, localized entity and entity attributes names look like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">messages.properties</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">Pet.birthDate = Birth date
+Pet = Pet
+Pet.type = <span class="predefined-type">Type</span>
+Pet.owner = <span class="predefined-type">Owner</span>
+Pet.identificationNumber = Identification <span class="predefined-type">Number</span>
+PetType = Pet <span class="predefined-type">Type</span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">messages_de.properties</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">Pet.birthDate = Geburtstag
+Pet = Haustier
+Pet.type = Typ
+Pet.owner = Tierhalter
+Pet.identificationNumber = Haustier-Identifikationsnummer
+PetType = Tierart</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the Petclinic example application, the source code contains translations for english, german and russian languages.</p>
+</div>
+<div class="paragraph">
+<p>More information about the general structure of how localized messages are stored can be found in the reference documentation: <a href="https://doc.cuba-platform.com/manual-7.0/localization.html">Localization</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="register_available_languages_in_the_application"><a class="anchor" href="#register_available_languages_in_the_application"></a><a class="link" href="#register_available_languages_in_the_application">Register Available Languages in the Application</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In order to activate the possibility to have a language selection for the user, the application needs two main configuration options in place.</p>
+</div>
+<div class="paragraph">
+<p>The first one is the activation of the language drop-down in the login screen: <code>cuba.localeSelectVisible</code>. It has to be set to <code>true</code>.</p>
+</div>
+<div class="paragraph">
+<p>The second configuration is the available languages / locales that should be available for selection: <code>cuba.availableLocales = English|en;German|de;Russian|ru</code>.</p>
+</div>
+<div class="paragraph">
+<p>Both configurations should be placed in the <code>web-app.properties</code>. After this configuration is in place the Login screen displays the language selection box at login:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/i18n-messages/login-screen-with-activated-language-selection.png" alt="login screen with activated language selection">
+</div>
+</div>
+<div class="paragraph">
+<p>When logging in as a user with a given language, the application will display the correct translations. This happens automatically for all UI components if the corresponding translation files are in place. The <code>&lt;form&gt;</code> component renders the attribute captions in the correct language:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/i18n-messages/localized-editor.png" alt="localized editor">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="referencing_localized_messages"><a class="anchor" href="#referencing_localized_messages"></a><a class="link" href="#referencing_localized_messages">Referencing Localized Messages</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For the two cases of <code>&lt;groupTable /&gt;</code> and <code>&lt;form /&gt;</code> the translation are automatically derived from the entity attribute translations that should be displayed. For UI components or messages in the application that are not directly tied to a entity attribute, there are two ways of interacting with the Localization mechanisms of CUBA: either in the XML screen definitions or programmatically from the Java code.</p>
+</div>
+<div class="paragraph">
+<p>In order to display the correct localized message, the message keys have to be referenced explicitly in the source code.</p>
+</div>
+<div class="sect2">
+<h3 id="referencing_messages_in_xml_descriptors"><a class="anchor" href="#referencing_messages_in_xml_descriptors"></a><a class="link" href="#referencing_messages_in_xml_descriptors">Referencing Messages in XML Descriptors</a></h3>
+<div class="paragraph">
+<p>The first option is to reference a particular message key within XML UI descriptor. In the Petclinic example, the caption of the "regular checkup" button should be displayed localized. This happens through the prefix <code>msg://</code> followed by the translation key:</p>
+</div>
+<div class="listingblock">
+<div class="title">visit-browse.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;groupTable</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">visitsTable</span><span class="delimiter">&quot;</span></span>
+            <span class="attribute-name">dataContainer</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">visitsDc</span><span class="delimiter">&quot;</span></span>
+            <span class="attribute-name">width</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">100%</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;actions&gt;</span>
 
-                                <!-- List Grid -->
-                                <div class="">
-                                    <div class="pane-content">
-                                        <div class="guides-list">
-                                            
-                                            <a href="/guides/intro-working-with-data-in-cuba" class="guides-list_item">
-                                                <div class="guides-list_title">Introduction to Working with Data in CUBA</div>
-                                                <span class="guides-list_description">Overview on how to read and write data in a CUBA application</span>
-                                            </a>
-                                            
-                                            <a href="/guides/create-business-logic-in-cuba" class="guides-list_item">
-                                                <div class="guides-list_title">Create Business Logic in CUBA</div>
-                                                <span class="guides-list_description">Guide on what options are available for putting business logic into a CUBA application</span>
-                                            </a>
-                                            
-                                            <a href="/guides/decouple-business-logic-with-app-events" class="guides-list_item">
-                                                <div class="guides-list_title">Decouple Business Logic with Application Events</div>
-                                                <span class="guides-list_description">Overview on how application events can be used in a CUBA application to decouple business logic</span>
-                                            </a>
-                                            
-                                            <a href="/guides/logging-in-cuba-applications" class="guides-list_item">
-                                                <div class="guides-list_title">Logging in CUBA Applications</div>
-                                                <span class="guides-list_description">Guide on why and how to use logging in a CUBA application in order to get insights</span>
-                                            </a>
-                                            
-                                            <a href="/guides/data-modelling-many-to-many-association" class="guides-list_item">
-                                                <div class="guides-list_title">Data Modelling: Many-to-Many Association</div>
-                                                <span class="guides-list_description">Data modelling guide: what are Many-to-Many associations and when to use them</span>
-                                            </a>
-                                            
-                                            <a href="/guides/data-modelling-entity-inheritance" class="guides-list_item">
-                                                <div class="guides-list_title">Data Modelling: Entity Inheritance</div>
-                                                <span class="guides-list_description">Data Modelling guide: How entity inheritance can be used in a CUBA application</span>
-                                            </a>
-                                            
-                                            <a href="/guides/data-modelling-composition" class="guides-list_item">
-                                                <div class="guides-list_title">Data Modelling: Composition</div>
-                                                <span class="guides-list_description">Data modelling guide: What are Compositions and when to use them over Associations</span>
-                                            </a>
-                                            
-                                            <a href="/guides/initial-entity-values" class="guides-list_item">
-                                                <div class="guides-list_title">Initial Values for Entity Instances</div>
-                                                <span class="guides-list_description">This guide demonstrates different options on how initial values can be set for an entity</span>
-                                            </a>
-                                            
-                                            <a href="/guides/localization-in-cuba-applications" class="guides-list_item">
-                                                <div class="guides-list_title">Localization in CUBA applications</div>
-                                                <span class="guides-list_description">In this guide the localization features of a CUBA application are explained</span>
-                                            </a>
-                                            
-                                        </div>
+        <span class="tag">&lt;action</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">createRegularCheckup</span><span class="delimiter">&quot;</span></span>
+                <span class="attribute-name">caption</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">msg://createRegularCheckup</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="1"></i><b>(1)</b>
+                <span class="attribute-name">icon</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">font-icon:BRIEFCASE</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+
+    <span class="tag">&lt;/actions&gt;</span>
+    <span class="tag">&lt;buttonsPanel</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">buttonsPanel</span><span class="delimiter">&quot;</span></span>
+                  <span class="attribute-name">alwaysVisible</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;button</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">createForPetBtn</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">action</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">visitsTable.createRegularCheckup</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;/buttonsPanel&gt;</span>
+<span class="tag">&lt;/groupTable&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>msg://createRegularCheckup</code> references the key <code>createRegularCheckup</code> in the current package of the XML descriptor</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="programmatic_localization_of_messages"><a class="anchor" href="#programmatic_localization_of_messages"></a><a class="link" href="#programmatic_localization_of_messages">Programmatic Localization of Messages</a></h3>
+<div class="paragraph">
+<p>The second way of interacting with the Localization mechanism is imperatively through Java code. In the Petclinic example, the "regular checkup" functionality should render the following two dynamic messages programmatically:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>when a new Regular Checkup screen is opened, the description attribute for the visit entity should be pre-filled with a particular localized message</p>
+</li>
+<li>
+<p>once the Regular Checkup is created, a localized notification message should be rendered, containing the name of the pet</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Messages can be received programmatically via the <code>Messages</code> Interface. It provides an API to fetch a translated String through the localization mechanism of CUBA for the locale of the current user.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+In the example code instead of using the <code>Messages</code> Interface, the <code>MessageBundle</code> Interface is used. It is a new shorthand mechanism introduced in CUBA 7.0, that fetches a particular message from the message pack of the calling Java class. This way it is not required to provide the package for every translation API request.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The first localized message for pre-filling the description attribute is created as follows:</p>
+</div>
+<div class="listingblock">
+<div class="title">VisitBrowse.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VisitBrowse</span> <span class="directive">extends</span> StandardLookup&lt;Visit&gt; {
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">private</span> Notifications notifications;
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">private</span> MessageBundle messageBundle;
+    <span class="comment">// ...</span>
+    <span class="directive">private</span> <span class="type">void</span> createVisitForPet(Pet pet) {
+        screenBuilders.editor(visitsTable)
+                .newEntity()
+                .withInitializer(visit -&gt; {
+                    visit.setDescription(
+                        regularCheckupDescriptionContent(pet) <i class="conum" data-value="1"></i><b>(1)</b>
+                    );
+                    visit.setPet(pet);
+                })
+                .withScreenClass(RegularCheckup.class)
+                .withLaunchMode(OpenMode.DIALOG)
+                .withAfterCloseListener(event -&gt;
+                    showRegularCheckupCreatedNotification(pet)
+                )
+                .build()
+                .show();
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">String</span> regularCheckupDescriptionContent(Pet pet) {
+        <span class="keyword">return</span> messageBundle.formatMessage( <i class="conum" data-value="2"></i><b>(2)</b>
+                <span class="string"><span class="delimiter">&quot;</span><span class="content">regularCheckupContent</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="3"></i><b>(3)</b>
+                pet.getName(), <i class="conum" data-value="4"></i><b>(4)</b>
+                pet.getIdentificationNumber()
+        );
+    }</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the description of the visit instance will be set on entity creation</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the <code>messageBundle</code> bean is responsible for fetching the translated message</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td><code>regularCheckupContent</code> is the key of the message to be translated</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>the parameters <code>pet.getName()</code> and <code>pet.getIdentificationNumber()</code> are passed to the translation as dynamic parts</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>For the dynamic parts of a message, the translation should contain the placeholder <code>%s</code> like in this definition:</p>
+</div>
+<div class="listingblock">
+<div class="title">messages_de.properties</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="properties">regularCheckupContent=Kontrolluntersuchung für %s (%s)\n\n
+
+Bestandteile: \n
+- Krallen-Kontrolle\n
+- Temperatur messen\n
+- Zahn-Check</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This code results into the following description value of the regular check:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/i18n-messages/editor-with-programmatic-created-i10n-messages.png" alt="editor with programmatic created i10n messages">
+</div>
+</div>
+<div class="paragraph">
+<p>The second message should be displayed as a notification once the Regular Checkup was successfully created. There is
+ the method <code>showRegularCheckupCreatedNotification</code> in the Visit browser, that will be called once the instance is created:</p>
+</div>
+<div class="listingblock">
+<div class="title">VisitBrowse.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VisitBrowse</span> <span class="directive">extends</span> StandardLookup&lt;Visit&gt; {
+    <span class="comment">// ...</span>
+    <span class="annotation">@Inject</span>
+    <span class="directive">private</span> MetadataTools metadataTools;
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">private</span> MessageBundle messageBundle;
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">private</span> Notifications notifications;
+
+    <span class="directive">private</span> <span class="type">void</span> showRegularCheckupCreatedNotification(Pet pet) {
+
+        <span class="predefined-type">String</span> petName = metadataTools.getInstanceName(pet); <i class="conum" data-value="1"></i><b>(1)</b>
+
+        <span class="predefined-type">String</span> regularCheckupCreatedMessage = messageBundle
+            .formatMessage(<span class="string"><span class="delimiter">&quot;</span><span class="content">regularCheckupCreated</span><span class="delimiter">&quot;</span></span>, petName); <i class="conum" data-value="2"></i><b>(2)</b>
+
+        notifications.create(Notifications.NotificationType.TRAY)
+                .withCaption(regularCheckupCreatedMessage) <i class="conum" data-value="3"></i><b>(3)</b>
+                .show();
+    }</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>metadataTools</code> is used in CUBA 7.0+ to fetch the instance name from an entity</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>messageBundle</code> is used once again to get a particular message with a parameter</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>the localized Message String is passed to the <code>notifications</code> bean to render a tray notification</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="translation_of_existing_ui_screens_functionality"><a class="anchor" href="#translation_of_existing_ui_screens_functionality"></a><a class="link" href="#translation_of_existing_ui_screens_functionality">Translation of Existing UI Screens / Functionality</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Since CUBA comes with certain UI components and with multiple UI screens out of the box, this existing functionality also needs to be localized in order to have a fully translated application. For this problem, there are two main solutions:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Community Languages Packs</p>
+</li>
+<li>
+<p>manually provided translation</p>
+</li>
+</ol>
+</div>
+<div class="sect2">
+<h3 id="community_language_packs"><a class="anchor" href="#community_language_packs"></a><a class="link" href="#community_language_packs">Community Language Packs</a></h3>
+<div class="paragraph">
+<p>The first and easiest solution is to use existing language packs that are created by the community. There are currently twelve Translations available including Spanisch, Russian, French, Chinese, German and a lot more.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+The Community Translations Packs are provided by the community, therefore the accuracy and the catch up with the latest changes in the platform differ and are provided as best effort.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In order to get those translations into the Application they can be fetched manually from the <a href="https://github.com/cuba-platform/translations">Translations Github repository</a>. Some Translations are also directly available via an application component through the <a href="https://www.cuba-platform.com/marketplace/">CUBA marketplace</a>,
+which makes the installation as easy as installing any other application component.</p>
+</div>
+<div class="paragraph">
+<p>Afterwards, the only thing to do is to add the new language to the application property <code>cuba.availableLocales</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="manually_provided_translation"><a class="anchor" href="#manually_provided_translation"></a><a class="link" href="#manually_provided_translation">Manually Provided Translation</a></h3>
+<div class="paragraph">
+<p>In case the target language is not available through the community or some translations are missing or are not accurate, it is also possible to provide those translations directly within the application.</p>
+</div>
+<div class="paragraph">
+<p>CUBA itself provides translations for the screens directly in the source code of the platform as regular <code>*.properties</code> files. The User browse screen for example contains the <a href="https://github.com/cuba-platform/cuba/blob/master/modules/gui/src/com/haulmont/cuba/gui/app/security/user/browse/messages.properties">messages.properties</a> file in the package <code>com.haulmont.cuba.gui.app.security.user.browse</code>,
+which contains the translations for the screen.</p>
+</div>
+<div class="paragraph">
+<p>In order to provide / override translations for this screen, two things have to be done:</p>
+</div>
+<div class="sect3">
+<h4 id="create_gui_module_if_necessary"><a class="anchor" href="#create_gui_module_if_necessary"></a><a class="link" href="#create_gui_module_if_necessary">Create GUI module if Necessary</a></h4>
+<div class="paragraph">
+<p>The destination module of where the translations have to be placed has to be available in the application. The majority of the platform screens are placed in the GUI module, which is not available for 7.0+ CUBA applications by default. In case the target application does not have the GUI module it has to be included into the application to place the translation files into it.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Adding the GUI module via CUBA Studio can be done via the Menu:</p>
+</div>
+<div class="paragraph">
+<p><code>CUBA &gt; Advanced &gt; Manage Modules &gt; Create 'gui' module</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="create_package_mirror_in_the_application"><a class="anchor" href="#create_package_mirror_in_the_application"></a><a class="link" href="#create_package_mirror_in_the_application">Create Package-Mirror in the Application</a></h4>
+<div class="paragraph">
+<p>After ensuring the target module is available in the application, the package where the original translation files exist, have to be created in the application as well. In this directory the additional / replacing message files are placed. CUBA will pick up the files and display the correct translations for the screen.</p>
+</div>
+<div class="paragraph">
+<p>In the Petclinic example, the destination target package has been created for the Users browse screen:
+<a href="https://github.com/cuba-guides/cuba-petclinic-i18n-messages/blob/master/modules/gui/src/com/haulmont/cuba/gui/app/security/user/browse/messages_de.properties">messages_de.properties</a> to provide german translation for the screen.</p>
+</div>
+<div class="paragraph">
+<p>The resulting Users browse screen in german locale looks like this:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/i18n-messages/localized-platform-screen.png" alt="localized platform screen">
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Not all captions are translated in this screen. This is due to the fact, that e.g. the filter component with its buttons and captions like <code>Search</code>, <code>Add search condition</code> etc. are not located in the package of the user browse screen, but instead in the package where the filter component is defined. It is required to look into the sources of the platform screen to identify where a particular translation is located.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>CUBA supports localization of applications out of the box. It provides a mechanism that allows application builders to provide different languages / locales for the application. The application can be provided in different Languages on a per-user basis.</p>
+</div>
+<div class="paragraph">
+<p>A message key is used in the application code to reference a localizable message, which will at runtime translated into the destination language. There are several ways to interact with the localization mechanism. The declarative XML based reference as well as the programmatic reference via the <code>MessageBundle</code> Interface was shown.</p>
+</div>
+<div class="paragraph">
+<p>There are existing translations available in the platform itself and provided by the community, to also cover the translations of platform features and screens like the administration screens.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="further_information"><a class="anchor" href="#further_information"></a><a class="link" href="#further_information">Further Information</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://doc.cuba-platform.com/manual-7.0/messages.html">CUBA docs: Messages Interface</a></p>
+</li>
+<li>
+<p><a href="https://doc.cuba-platform.com/manual-7.0/localization.html">CUBA docs: Localization</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
                                     </div>
                                 </div>
                             </div>
@@ -223,9 +697,45 @@
                     </div>
                 </section>
             </div>
+
+            <!-- Sidebar (right column) -->
+            <div id="blog-sidebar">
+                <div class="region region-sidebar">
+                    <section id="block-block-29" class="block block-block clearfix">
+
+                        <div class="guide-panel">
+                            <h3>Table of contents</h3>
+                            <ul class="sectlevel1">
+<li><a href="#what_will_be_built">What Will be Built</a></li>
+<li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
+<li><a href="#where_translations_are_stored_in_a_cuba_application">Where Translations are Stored in a CUBA Application</a></li>
+<li><a href="#register_available_languages_in_the_application">Register Available Languages in the Application</a></li>
+<li><a href="#referencing_localized_messages">Referencing Localized Messages</a></li>
+<li><a href="#translation_of_existing_ui_screens_functionality">Translation of Existing UI Screens / Functionality</a></li>
+<li><a href="#summary">Summary</a></li>
+<li><a href="#further_information">Further Information</a></li>
+</ul>
+                        </div>
+
+                        <div class="guide-panel download">
+                            <h3>Example code</h3>
+                            <a class=" guide-item_button button-outline"  href="https://github.com/cuba-guides/cuba-petclinic-i18n-messages/archive/master.zip" target="_blank">Download</a>
+                            <a href="https://github.com/cuba-guides/cuba-petclinic-i18n-messages" class="github-link" target="_blank">Github</a>
+                        </div>
+
+                        <div class="guide-panel cuba-version">
+                            <h3>Supported Versions</h3>
+                            <ul>
+                                <li>CUBA: 7.0+</li>
+                                <li>Java: 8+</li>
+                            </ul>
+                        </div>
+
+                    </section>
+                </div>
+            </div>
         </div>
     </div>
-    <!-- End Main Content and Sidebar -->
 
     <!-- Footer -->
     <footer fragment="14269c1b298" class="footer">
@@ -414,17 +924,28 @@
 
 </section>
 
-<script src="/guides/js/toc.js"></script>
 <script src="/guides/js/foundation.min.js"></script>
+<script src="https://unpkg.com/isotope-layout@3.0/dist/isotope.pkgd.js"></script>
+<script src="/guides/js/vendor/modernizr.js"></script>
+<script src="/guides/js/toc.js"></script>
 <script src="/guides/js/navigation.js"></script>
+<script src="/guides/js/navbar.js"></script>
 <script src="/guides/js/extra.js"></script>
 <script src="/guides/js/extra2.js"></script>
 <script src="/guides/js/cuba-new.js"></script>
 <script>
-$(document).foundation();
-var doc = document.documentElement;
-doc.setAttribute('data-useragent', navigator.userAgent);
+(function ($) {
+  $(document).foundation();
+  var doc = document.documentElement;
+  doc.setAttribute('data-useragent', navigator.userAgent)
 
+  /* Issue #24 */
+  $(".blog .content img").each(function() {
+    var imgMarkup = $(this)[0].outerHTML;
+    console.log(imgMarkup);
+    $(this).replaceWith('<div class="img-center">' + imgMarkup + '</div>');
+  });
+})(jQuery); 
 </script>
 </body>
 </html>
