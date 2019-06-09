@@ -254,6 +254,24 @@ properties files to have a clear separation between the application code and the
 <p>For every language and every package there exists a file containing information on how to translate a given text into the target language. The language files contain a suffix according to the locale code of the language (e.g. <code>_ru</code> for russian, <code>_de</code> for german).</p>
 </div>
 <div class="paragraph">
+<p>Additionally there is a default file <code>message.properties</code> without specified locale in the name. This file acts as a fallback in case the desired language is not available or a particular translation is not available.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+When using localization dialogs in Studio, it puts messages for the first selected locale to the default file and others to the files with suffixes.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>If the application is international, it is reasonable to use default files for the language of the application primary audience or for the English language, so that the messages from these default files are displayed to the user if the messages in the required language are not found.</p>
+</div>
+<div class="paragraph">
 <p>An example of this file structure looks like this:</p>
 </div>
 <div class="listingblock">
