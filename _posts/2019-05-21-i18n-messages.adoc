@@ -46,6 +46,12 @@ CUBA follows a common pattern for translations in Java based applications. Messa
 
 For every language and every package there exists a file containing information on how to translate a given text into the target language. The language files contain a suffix according to the locale code of the language (e.g. `_ru` for russian, `_de` for german).
 
+Additionally there is a default file `message.properties` without specified locale in the name. This file acts as a fallback in case the desired language is not available or a particular translation is not available.
+
+TIP: When using localization dialogs in Studio, it puts messages for the first selected locale to the default file and others to the files with suffixes.
+
+If the application is international, it is reasonable to use default files for the language of the application primary audience or for the English language, so that the messages from these default files are displayed to the user if the messages in the required language are not found.
+
 An example of this file structure looks like this:
 
 ```
