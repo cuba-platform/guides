@@ -291,7 +291,19 @@ WARNING: The Community Translations Packs are provided by the community, therefo
 In order to get those translations into the Application they can be fetched manually from the https://github.com/cuba-platform/translations[Translations Github repository]. Some Translations are also directly available via an application component through the https://www.cuba-platform.com/marketplace/[CUBA marketplace],
 which makes the installation as easy as installing any other application component.
 
-Afterwards, the only thing to do is to add the new language to the application property `cuba.availableLocales`.
+In the Petclinic example, as the destination language is german, there is already an existing translation application component available: https://www.cuba-platform.com/marketplace/german-localization/[German Localization] which is utilized.
+
+[TIP]
+====
+The application component can be installed in CUBA Studio via the following menu:
+
+`CUBA > Project Properties > Custom Components`.
+
+image::i18n-messages/cuba-studio-add-translation-component.png[align="center"]
+
+====
+
+Afterwards, the only thing to do is to add the new language to the application property `cuba.availableLocales` manually. Alternatively this can also be done via the the above shown Project Properties screen in CUBA Studio.
 
 === Manually Provided Translation
 
