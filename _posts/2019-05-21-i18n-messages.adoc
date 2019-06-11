@@ -24,9 +24,8 @@ properties files to have a clear separation between the application code and the
 
 This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show how localized messages within the CUBA application can be defined and used:
 
-* the application is also available in German and Russian language
+* the application is also available in german language
 * dynamic data as automatically generated descriptions for visits are localized
-* provide german translation for User browse platform screen
 
 === Final Application
 
@@ -44,7 +43,7 @@ include::includes/petclinic_introduction.adoc[]
 
 CUBA follows a common pattern for translations in Java based applications. Messages for different languages / locales are stores next to the source-code within the same package in `.properties` files.
 
-For every language and every package there exists a file containing information on how to translate a given text into the target language. The language files contain a suffix according to the locale code of the language (e.g. `_ru` for russian, `_de` for german).
+For every language and every package there exists a file containing information on how to translate a given text into the target language. The language files contain a suffix according to the locale code of the language (e.g. `_ru` for russian, `_es` for spanish).
 
 Additionally there is a default file `message.properties` without specified locale in the name. This file acts as a fallback in case the desired language is not available or a particular translation is not available.
 
@@ -52,7 +51,7 @@ TIP: When using localization dialogs in Studio, it puts messages for the first s
 
 If the application is international, it is reasonable to use default files for the language of the application primary audience or for the English language, so that the messages from these default files are displayed to the user if the messages in the required language are not found.
 
-An example of this file structure looks like this:
+In the Petclinic example, this file structure looks like this:
 
 ```
 com.haulmont.sample.petclinic.entity
@@ -64,20 +63,17 @@ com.haulmont.sample.petclinic.entity
 │   ├── Pet.java
 │   ├── PetType.java
 │   ├── messages.properties
-│   ├── messages_de.properties
-│   └── messages_ru.properties
+│   └── messages_de.properties
 ├── vet
 │   ├── Specialty.java
 │   ├── Vet.java
 │   ├── messages.properties
-│   ├── messages_de.properties
-│   └── messages_ru.properties
+│   └── messages_de.properties
 └── visit
     ├── Visit.java
     ├── VisitType.java
-    ├── messages_de.properties
-    ├── messages_ru.properties
-    └── messages.properties
+    ├── messages.properties
+    └── messages_de.properties
 ```
 
 The properties file contains of key-value pairs, where the key is the identifier of the Message that has to be localized and the value is the corresponding translation for the language. The key is the same for all language files, only the value differs. In the example of the petclinic, localized entity and entity attributes names look like this:
@@ -104,7 +100,18 @@ Pet.identificationNumber = Haustier-Identifikationsnummer
 PetType = Tierart
 ----
 
-In the Petclinic example application, the source code contains translations for english, german and russian languages.
+In the Petclinic example, the translations for the entity attributes have been created by creating the `messages_de.properties` files in the project.
+
+
+[TIP]
+====
+CUBA Studio offers a Resouce Bundle view for every package. It allows to see an overview over the the translations for the selected package.
+
+image::i18n-messages/cuba-studio-resource-bundle-screen.png[align="center"]
+
+Due to the side to side view in the Resouce Bundle Editor, creating translations is very comfortable. Missing translaslations for a particular message key are highlighted so that it is easy to spot them.
+====
+
 
 More information about the general structure of how localized messages are stored can be found in the reference documentation: https://doc.cuba-platform.com/manual-{cuba_version}/localization.html[Localization].
 
@@ -115,7 +122,7 @@ In order to activate the possibility to have a language selection for the user, 
 
 The first one is the activation of the language drop-down in the login screen: `cuba.localeSelectVisible`. It has to be set to `true`.
 
-The second configuration is the available languages / locales that should be available for selection: `cuba.availableLocales = English|en;German|de;Russian|ru`.
+The second configuration is the available languages / locales that should be available for selection: `cuba.availableLocales = English|en;German|de`.
 
 Both configurations should be placed in the `web-app.properties`. After this configuration is in place the Login screen displays the language selection box at login:
 
