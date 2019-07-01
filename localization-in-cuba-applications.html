@@ -167,7 +167,7 @@
 <div class="sectionbody">
 <div class="paragraph">
 <p>CUBA applications have build-in support for localized messages for different languages. Translations are externalized in
-properties files to have a clear separation between the application code and the translated messages.</p>
+properties files to have a clear separation between the application code and the actual translations.</p>
 </div>
 </div>
 </div>
@@ -183,7 +183,7 @@ properties files to have a clear separation between the application code and the
 <p>the application is also available in german language</p>
 </li>
 <li>
-<p>dynamic data as automatically generated descriptions for visits are localized</p>
+<p>dynamic messages as automatically generated descriptions for visits are localized</p>
 </li>
 </ul>
 </div>
@@ -598,7 +598,7 @@ Bestandteile: \n
 <p>Community Languages Packs</p>
 </li>
 <li>
-<p>manually provided translation</p>
+<p>manually provided translations</p>
 </li>
 </ol>
 </div>
@@ -653,7 +653,7 @@ which makes the installation as easy as installing any other application compone
 </div>
 </div>
 <div class="sect2">
-<h3 id="manually_provided_translation"><a class="anchor" href="#manually_provided_translation"></a><a class="link" href="#manually_provided_translation">Manually Provided Translation</a></h3>
+<h3 id="manually_provided_translations"><a class="anchor" href="#manually_provided_translations"></a><a class="link" href="#manually_provided_translations">Manually Provided Translations</a></h3>
 <div class="paragraph">
 <p>In case the target language is not available through the community or some translations are missing or are not accurate, it is also possible to provide those translations directly within the application.</p>
 </div>
@@ -712,7 +712,7 @@ which contains the translations for the screen.</p>
 <h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>CUBA supports localization of applications out of the box. It provides a mechanism that allows application builders to provide different languages / locales for the application. The application can be provided in different Languages on a per-user basis.</p>
+<p>CUBA supports localization of applications out of the box. It provides a mechanism that allows application builders to provide different languages / locales for the application. Each user can pick and choose the language of choice.</p>
 </div>
 <div class="paragraph">
 <p>A message key is used in the application code to reference a localized message, which will at runtime translated into the destination language. There are several ways to interact with the localization mechanism. The declarative XML based reference as well as the programmatic reference via the <code>MessageBundle</code> Interface was shown.</p>
