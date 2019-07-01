@@ -17,7 +17,7 @@ permalink: localization-in-cuba-applications
 
 
 CUBA applications have build-in support for localized messages for different languages. Translations are externalized in
-properties files to have a clear separation between the application code and the translated messages.
+properties files to have a clear separation between the application code and the actual translations.
 
 
 == What Will be Built
@@ -25,7 +25,7 @@ properties files to have a clear separation between the application code and the
 This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show how localized messages within the CUBA application can be defined and used:
 
 * the application is also available in german language
-* dynamic data as automatically generated descriptions for visits are localized
+* dynamic messages as automatically generated descriptions for visits are localized
 
 === Final Application
 
@@ -279,7 +279,7 @@ public class VisitBrowse extends StandardLookup<Visit> {
 Since CUBA comes with certain UI components and with multiple UI screens out of the box, this existing functionality also needs to be localized in order to have a fully translated application. For this problem, there are two main solutions:
 
 1. Community Languages Packs
-2. manually provided translation
+2. manually provided translations
 
 
 === Community Language Packs
@@ -305,7 +305,7 @@ image::i18n-messages/cuba-studio-add-translation-component.png[align="center"]
 
 Afterwards, the only thing to do is to add the new language to the application property `cuba.availableLocales` manually. Alternatively this can also be done via the the above shown Project Properties screen in CUBA Studio.
 
-=== Manually Provided Translation
+=== Manually Provided Translations
 
 In case the target language is not available through the community or some translations are missing or are not accurate, it is also possible to provide those translations directly within the application.
 
@@ -341,7 +341,7 @@ image::i18n-messages/localized-platform-screen.png[align="center"]
 
 == Summary
 
-CUBA supports localization of applications out of the box. It provides a mechanism that allows application builders to provide different languages / locales for the application. The application can be provided in different Languages on a per-user basis.
+CUBA supports localization of applications out of the box. It provides a mechanism that allows application builders to provide different languages / locales for the application. Each user can pick and choose the language of choice.
 
 A message key is used in the application code to reference a localized message, which will at runtime translated into the destination language. There are several ways to interact with the localization mechanism. The declarative XML based reference as well as the programmatic reference via the `MessageBundle` Interface was shown.
 
