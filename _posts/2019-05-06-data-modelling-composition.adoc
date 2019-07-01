@@ -81,7 +81,7 @@ The `Owner` edit screen shows a list of `addresses`.
 
 A user can create an `address` and open its editor. When *OK* is clicked in the `Address` editor, the updated instance of the `Address` is not yet saved to the database, but only to the `addressesDc` data container of the `Owner` editor.
 
-The user can create new `Address` instances and delete existing ones. All changes will be saved to the `terminalsDc` data container.
+The user can create new `Address` instances and delete existing ones. All changes will be saved to the `addressesDc` data container.
 
 When a user clicks *OK* in the Owner edit screen, the updated `Owner` instance together with all the updated `Address` instances is submitted to the `dataManager.commit()` method and saved to the database within a single transaction.
 
