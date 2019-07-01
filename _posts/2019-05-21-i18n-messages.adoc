@@ -338,13 +338,12 @@ The resulting Users browse screen in german locale looks like this:
 
 image::i18n-messages/localized-platform-screen.png[align="center"]
 
-WARNING: Not all captions are translated in this screen. This is due to the fact, that e.g. the filter component with its buttons and captions like `Search`, `Add search condition` etc. are not located in the package of the user browse screen, but instead in the package where the filter component is defined. It is required to look into the sources of the platform screen to identify where a particular translation is located.
 
 == Summary
 
 CUBA supports localization of applications out of the box. It provides a mechanism that allows application builders to provide different languages / locales for the application. The application can be provided in different Languages on a per-user basis.
 
-A message key is used in the application code to reference a localizable message, which will at runtime translated into the destination language. There are several ways to interact with the localization mechanism. The declarative XML based reference as well as the programmatic reference via the `MessageBundle` Interface was shown.
+A message key is used in the application code to reference a localized message, which will at runtime translated into the destination language. There are several ways to interact with the localization mechanism. The declarative XML based reference as well as the programmatic reference via the `MessageBundle` Interface was shown.
 
 There are existing translations available in the platform itself and provided by the community, to also cover the translations of platform features and screens like the administration screens.
 
