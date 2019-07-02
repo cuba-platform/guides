@@ -16,15 +16,15 @@ permalink: localization-in-cuba-applications
 :cuba_version: 7.0
 
 
-CUBA applications have build-in support for localized messages for different languages. Translations are externalized in
+CUBA applications have a build-in support for localized messages for different languages. Translations are externalized in
 properties files to have a clear separation between the application code and the actual translations.
 
 
 == What Will be Built
 
-This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show how localized messages within the CUBA application can be defined and used:
+This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA Petclinic] example to show how localized messages within the CUBA application can be defined and used:
 
-* the application is also available in german language
+* the application is also available in German language
 * dynamic messages as automatically generated descriptions for visits are localized
 
 === Final Application
@@ -41,13 +41,13 @@ include::includes/petclinic_introduction.adoc[]
 
 == Where Translations are Stored in a CUBA Application
 
-CUBA follows a common pattern for translations in Java based applications. Messages for different languages / locales are stores next to the source-code within the same package in `.properties` files.
+CUBA follows a common pattern for translations in Java-based applications. Messages for different languages / locales are stored next to the source-code within the same package in `.properties` files.
 
-For every language and every package there exists a file containing information on how to translate a given text into the target language. The language files contain a suffix according to the locale code of the language (e.g. `_ru` for russian, `_es` for spanish).
+For every language and every package there exists a file containing information on how to translate a given text into the target language. The language files contain a suffix according to the locale code of the language (e.g. `_ru` for Russian, `_es` for Spanish).
 
-Additionally there is a default file `message.properties` without specified locale in the name. This file acts as a fallback in case the desired language is not available or a particular translation is not available.
+Additionally there is a default file `message.properties` without a specified locale in the name. This file acts as a fallback in case the desired language is not available or a particular translation is not available.
 
-TIP: When using localization dialogs in Studio, it puts messages for the first selected locale to the default file and others to the files with suffixes.
+TIP: When using localization dialogs in Studio, the Studio puts messages for the first selected locale to the default file and others to the files with suffixes.
 
 If the application is international, it is reasonable to use default files for the language of the application primary audience or for the English language, so that the messages from these default files are displayed to the user if the messages in the required language are not found.
 
@@ -76,7 +76,7 @@ com.haulmont.sample.petclinic.entity
     └── messages_de.properties
 ```
 
-The properties file contains of key-value pairs, where the key is the identifier of the Message that has to be localized and the value is the corresponding translation for the language. The key is the same for all language files, only the value differs. In the example of the petclinic, localized entity and entity attributes names look like this:
+The properties file consists of key-value pairs, where the key is the identifier of the Message that has to be localized and the value is the corresponding translation of the language. The key is the same for all language files, only the value differs. In the Petclinic example, the localized entity and entity attributes' names look like this:
 
 .messages.properties
 [source, java]
@@ -100,16 +100,16 @@ Pet.identificationNumber = Haustier-Identifikationsnummer
 PetType = Tierart
 ----
 
-In the Petclinic example, the translations for the entity attributes have been created by creating the `messages_de.properties` files in the project.
+In the Petclinic example, the translations for the entity attributes have been made by creating the `messages_de.properties` files in the project.
 
 
 [TIP]
 ====
-CUBA Studio offers a Resouce Bundle view for every package. It allows to see an overview over the the translations for the selected package.
+CUBA Studio offers a Resouce Bundle view for every package. It allows you to see an overview over the translations for the selected package.
 
 image::i18n-messages/cuba-studio-resource-bundle-screen.png[align="center"]
 
-Due to the side to side view in the Resouce Bundle Editor, creating translations is very comfortable. Missing translaslations for a particular message key are highlighted so that it is easy to spot them.
+Due to the side-to-side view in the Resouce Bundle Editor, creating translations is very comfortable. Missing translaslations for a particular message key are highlighted so that it is easy to spot them.
 ====
 
 
@@ -124,24 +124,24 @@ The first one is the activation of the language drop-down in the login screen: `
 
 The second configuration is the available languages / locales that should be available for selection: `cuba.availableLocales = English|en;German|de`.
 
-Both configurations should be placed in the `web-app.properties`. After this configuration is in place the Login screen displays the language selection box at login:
+Both configurations should be placed in the `web-app.properties`. After this configuration is in place, the Login screen displays the language selection box at login:
 
 image::i18n-messages/login-screen-with-activated-language-selection.png[align="center"]
 
-When logging in as a user with a given language, the application will display the correct translations. This happens automatically for all UI components if the corresponding translation files are in place. The `<form>` component renders the attribute captions in the correct language:
+When  a user is logging in with a given language, the application displays the correct translations. This happens automatically for all UI components if the corresponding translation files are in place. The `<form>` component renders the attribute captions in the correct language:
 
 image::i18n-messages/localized-editor.png[align="center"]
 
 
 == Referencing Localized Messages
 
-For the two cases of `<groupTable />` and `<form />` the translation are automatically derived from the entity attribute translations that should be displayed. For UI components or messages in the application that are not directly tied to a entity attribute, there are two ways of interacting with the Localization mechanisms of CUBA: either in the XML screen definitions or programmatically from the Java code.
+For the two cases of `<groupTable />` and `<form />` the translations are automatically derived from the entity attribute translations that should be displayed. For UI components or messages in the application that are not directly tied to an entity attribute, there are two ways of interacting with the Localization mechanisms of CUBA: either in the XML screen definitions or programmatically from the Java code.
 
 In order to display the correct localized message, the message keys have to be referenced explicitly in the source code.
 
 === Referencing Messages in XML Descriptors
 
-The first option is to reference a particular message key within XML UI descriptor. In the Petclinic example, the caption of the "regular checkup" button should be displayed localized. This happens through the prefix `msg://` followed by the translation key:
+The first option is to reference a particular message key within the XML UI descriptor. In the Petclinic example, the caption of the "regular checkup" button should be displayed localized. This happens through the prefix `msg://` followed by the translation key:
 
 .visit-browse.xml
 [source,xml]
@@ -166,7 +166,7 @@ The first option is to reference a particular message key within XML UI descript
 
 === Programmatic Localization of Messages
 
-The second way of interacting with the Localization mechanism is imperatively through Java code. In the Petclinic example, the "regular checkup" functionality should render the following two dynamic messages programmatically:
+The second way of interacting with the Localization mechanism is directly through the Java code. In the Petclinic example, the "regular checkup" functionality should render the following two dynamic messages programmatically:
 
 1. when a new Regular Checkup screen is opened, the description attribute for the visit entity should be pre-filled with a particular localized message
 2. once the Regular Checkup is created, a localized notification message should be rendered, containing the name of the pet
