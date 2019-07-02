@@ -166,7 +166,7 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>CUBA applications have build-in support for localized messages for different languages. Translations are externalized in
+<p>CUBA applications have a build-in support for localized messages for different languages. Translations are externalized in
 properties files to have a clear separation between the application code and the actual translations.</p>
 </div>
 </div>
@@ -175,12 +175,12 @@ properties files to have a clear separation between the application code and the
 <h2 id="what_will_be_built"><a class="anchor" href="#what_will_be_built"></a><a class="link" href="#what_will_be_built">What Will be Built</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show how localized messages within the CUBA application can be defined and used:</p>
+<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a> example to show how localized messages within the CUBA application can be defined and used:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>the application is also available in german language</p>
+<p>the application is also available in German language</p>
 </li>
 <li>
 <p>dynamic messages as automatically generated descriptions for visits are localized</p>
@@ -245,13 +245,13 @@ properties files to have a clear separation between the application code and the
 <h2 id="where_translations_are_stored_in_a_cuba_application"><a class="anchor" href="#where_translations_are_stored_in_a_cuba_application"></a><a class="link" href="#where_translations_are_stored_in_a_cuba_application">Where Translations are Stored in a CUBA Application</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>CUBA follows a common pattern for translations in Java based applications. Messages for different languages / locales are stores next to the source-code within the same package in <code>.properties</code> files.</p>
+<p>CUBA follows a common pattern for translations in Java-based applications. Messages for different languages / locales are stored next to the source-code within the same package in <code>.properties</code> files.</p>
 </div>
 <div class="paragraph">
-<p>For every language and every package there exists a file containing information on how to translate a given text into the target language. The language files contain a suffix according to the locale code of the language (e.g. <code>_ru</code> for russian, <code>_es</code> for spanish).</p>
+<p>For every language and every package there exists a file containing information on how to translate a given text into the target language. The language files contain a suffix according to the locale code of the language (e.g. <code>_ru</code> for Russian, <code>_es</code> for Spanish).</p>
 </div>
 <div class="paragraph">
-<p>Additionally there is a default file <code>message.properties</code> without specified locale in the name. This file acts as a fallback in case the desired language is not available or a particular translation is not available.</p>
+<p>Additionally there is a default file <code>message.properties</code> without a specified locale in the name. This file acts as a fallback in case the desired language is not available or a particular translation is not available.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -260,7 +260,7 @@ properties files to have a clear separation between the application code and the
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-When using localization dialogs in Studio, it puts messages for the first selected locale to the default file and others to the files with suffixes.
+When using localization dialogs in Studio, the Studio puts messages for the first selected locale to the default file and others to the files with suffixes.
 </td>
 </tr>
 </table>
@@ -296,7 +296,7 @@ When using localization dialogs in Studio, it puts messages for the first select
 </div>
 </div>
 <div class="paragraph">
-<p>The properties file contains of key-value pairs, where the key is the identifier of the Message that has to be localized and the value is the corresponding translation for the language. The key is the same for all language files, only the value differs. In the example of the petclinic, localized entity and entity attributes names look like this:</p>
+<p>The properties file consists of key-value pairs, where the key is the identifier of the Message that has to be localized and the value is the corresponding translation of the language. The key is the same for all language files, only the value differs. In the Petclinic example, the localized entity and entity attributes' names look like this:</p>
 </div>
 <div class="listingblock">
 <div class="title">messages.properties</div>
@@ -321,7 +321,7 @@ PetType = Tierart</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>In the Petclinic example, the translations for the entity attributes have been created by creating the <code>messages_de.properties</code> files in the project.</p>
+<p>In the Petclinic example, the translations for the entity attributes have been made by creating the <code>messages_de.properties</code> files in the project.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -331,7 +331,7 @@ PetType = Tierart</code></pre>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>CUBA Studio offers a Resouce Bundle view for every package. It allows to see an overview over the the translations for the selected package.</p>
+<p>CUBA Studio offers a Resouce Bundle view for every package. It allows you to see an overview over the translations for the selected package.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -339,7 +339,7 @@ PetType = Tierart</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Due to the side to side view in the Resouce Bundle Editor, creating translations is very comfortable. Missing translaslations for a particular message key are highlighted so that it is easy to spot them.</p>
+<p>Due to the side-to-side view in the Resouce Bundle Editor, creating translations is very comfortable. Missing translaslations for a particular message key are highlighted so that it is easy to spot them.</p>
 </div>
 </td>
 </tr>
@@ -363,7 +363,7 @@ PetType = Tierart</code></pre>
 <p>The second configuration is the available languages / locales that should be available for selection: <code>cuba.availableLocales = English|en;German|de</code>.</p>
 </div>
 <div class="paragraph">
-<p>Both configurations should be placed in the <code>web-app.properties</code>. After this configuration is in place the Login screen displays the language selection box at login:</p>
+<p>Both configurations should be placed in the <code>web-app.properties</code>. After this configuration is in place, the Login screen displays the language selection box at login:</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -371,7 +371,7 @@ PetType = Tierart</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>When logging in as a user with a given language, the application will display the correct translations. This happens automatically for all UI components if the corresponding translation files are in place. The <code>&lt;form&gt;</code> component renders the attribute captions in the correct language:</p>
+<p>When  a user is logging in with a given language, the application displays the correct translations. This happens automatically for all UI components if the corresponding translation files are in place. The <code>&lt;form&gt;</code> component renders the attribute captions in the correct language:</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -384,7 +384,7 @@ PetType = Tierart</code></pre>
 <h2 id="referencing_localized_messages"><a class="anchor" href="#referencing_localized_messages"></a><a class="link" href="#referencing_localized_messages">Referencing Localized Messages</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>For the two cases of <code>&lt;groupTable /&gt;</code> and <code>&lt;form /&gt;</code> the translation are automatically derived from the entity attribute translations that should be displayed. For UI components or messages in the application that are not directly tied to a entity attribute, there are two ways of interacting with the Localization mechanisms of CUBA: either in the XML screen definitions or programmatically from the Java code.</p>
+<p>For the two cases of <code>&lt;groupTable /&gt;</code> and <code>&lt;form /&gt;</code> the translations are automatically derived from the entity attribute translations that should be displayed. For UI components or messages in the application that are not directly tied to an entity attribute, there are two ways of interacting with the Localization mechanisms of CUBA: either in the XML screen definitions or programmatically from the Java code.</p>
 </div>
 <div class="paragraph">
 <p>In order to display the correct localized message, the message keys have to be referenced explicitly in the source code.</p>
@@ -392,7 +392,7 @@ PetType = Tierart</code></pre>
 <div class="sect2">
 <h3 id="referencing_messages_in_xml_descriptors"><a class="anchor" href="#referencing_messages_in_xml_descriptors"></a><a class="link" href="#referencing_messages_in_xml_descriptors">Referencing Messages in XML Descriptors</a></h3>
 <div class="paragraph">
-<p>The first option is to reference a particular message key within XML UI descriptor. In the Petclinic example, the caption of the "regular checkup" button should be displayed localized. This happens through the prefix <code>msg://</code> followed by the translation key:</p>
+<p>The first option is to reference a particular message key within the XML UI descriptor. In the Petclinic example, the caption of the "regular checkup" button should be displayed localized. This happens through the prefix <code>msg://</code> followed by the translation key:</p>
 </div>
 <div class="listingblock">
 <div class="title">visit-browse.xml</div>
@@ -426,7 +426,7 @@ PetType = Tierart</code></pre>
 <div class="sect2">
 <h3 id="programmatic_localization_of_messages"><a class="anchor" href="#programmatic_localization_of_messages"></a><a class="link" href="#programmatic_localization_of_messages">Programmatic Localization of Messages</a></h3>
 <div class="paragraph">
-<p>The second way of interacting with the Localization mechanism is imperatively through Java code. In the Petclinic example, the "regular checkup" functionality should render the following two dynamic messages programmatically:</p>
+<p>The second way of interacting with the Localization mechanism is directly through the Java code. In the Petclinic example, the "regular checkup" functionality should render the following two dynamic messages programmatically:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
