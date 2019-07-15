@@ -201,9 +201,11 @@ public class VisitBrowse extends StandardLookup<Visit> {
                 })
                 .withScreenClass(RegularCheckup.class)
                 .withLaunchMode(OpenMode.DIALOG)
-                .withAfterCloseListener(event ->
-                    showRegularCheckupCreatedNotification(pet)
-                )
+                .withAfterCloseListener(event -> {
+                    if (event.getCloseAction().equals(WINDOW_COMMIT_AND_CLOSE_ACTION)) {
+                        showRegularCheckupCreatedNotification(pet);
+                    }
+                })
                 .build()
                 .show();
     }
