@@ -478,9 +478,11 @@ In the example code instead of using the <code>Messages</code> Interface, the <c
                 })
                 .withScreenClass(RegularCheckup.class)
                 .withLaunchMode(OpenMode.DIALOG)
-                .withAfterCloseListener(event -&gt;
-                    showRegularCheckupCreatedNotification(pet)
-                )
+                .withAfterCloseListener(event -&gt; {
+                    <span class="keyword">if</span> (event.getCloseAction().equals(WINDOW_COMMIT_AND_CLOSE_ACTION)) {
+                        showRegularCheckupCreatedNotification(pet);
+                    }
+                })
                 .build()
                 .show();
     }
