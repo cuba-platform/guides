@@ -1,0 +1,89 @@
+---
+compatible_cuba_versions: 7.0+
+compatible_java_versions: 8+
+project_id: cuba-petclinic-working-with-images
+permalink: working-with-images
+---
+= Working with Images in CUBA applications
+:showtitle:
+:sectlinks:
+:sectanchors:
+:page-navtitle: Working with Images in CUBA applications
+:page-excerpt: In this guide several ways will be explored on how to interact with images in a CUBA application
+:page-root: ../../../
+:project_id: cuba-petclinic-working-with-images
+:java_version: 1.8
+:cuba_version: 7.0
+
+
+In a CUBA application it is possible to interact with images in various ways. In this guide, examples will be shown on how
+to upload and display images in the application. It will also be shown how to attach those images to entities and providing
+ the user the ability to download the image files from the application.
+
+== What Will be Built
+
+This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA Petclinic] example to allow the user to attach with images to entities and interact with them. In particular the following changed will be made:
+
+* allow to upload an image for a Veterinarian
+* render the vets image in the vets browse table
+* create custom lookup-like component that shows the vets image next to the vets name
+* ability to attach x-ray images to a visit and show a preview of the images
+
+=== Final Application
+
+++++
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-working-with-images/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-working-with-images/master/img/login-screen.png"/></a>
+++++
+
+include::includes/guide_requirements.adoc[]
+
+
+include::includes/petclinic_introduction.adoc[]
+
+
+== CUBAs File Storage Subsystem Handles File Interactions
+
+CUBA has a comprehensive set of features, that deal with the task of interacting with files within an application called `File Storage`.
+This set of APIs allow the developer to fulfill the end-to-end process of working with files. It contains mainly:
+
+* ability to let the users upload files
+* store references from business entities to files
+* read & write files in the application
+* ability to let users download files
+
+The default implementation of the File Storage subsystem stores metadata about the file in the relational database and the
+raw file binary in the local filesystem.
+
+More information about this topic can be found in the reference documentation on https://doc.cuba-platform.com/manual-{cuba_version}/file_storage.html[File Storage].
+
+As an Image is just a particular type of a file, it is possible to treat the image handling just like any other kind of file handling
+with some specific additional behavior like preview in the browser.
+
+== Veterinarians Avatar Image
+
+=== Upload Vets Avatar Image
+
+=== Display Vets Avatar Image in the Browse Table
+
+=== Create Vets Lookup Component containing the Avatar Image
+
+
+== X-Ray Images for Visits
+
+=== Create X-Ray Image Preview
+
+=== Download X-Ray Images
+
+
+== Summary
+
+
+image::i18n-messages/localized-platform-screen.png[align="center"]
+
+
+== Summary
+
+== Further Information
+
+* https://doc.cuba-platform.com/manual-{cuba_version}/messages.html[CUBA docs: Messages Interface]
+* https://doc.cuba-platform.com/manual-{cuba_version}/localization.html[CUBA docs: Localization]
