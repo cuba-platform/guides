@@ -51,17 +51,74 @@ This set of APIs allow the developer to fulfill the end-to-end process of workin
 * read & write files in the application
 * ability to let users download files
 
-The default implementation of the File Storage subsystem stores metadata about the file in the relational database and the
-raw file binary in the local filesystem.
+The implementation of the File Storage subsystem separates the storage of the file metadata from the file binary. It stores
+metadata about the file in the relational database and the raw file binary in the local filesystem.
 
 More information about this topic can be found in the reference documentation on https://doc.cuba-platform.com/manual-{cuba_version}/file_storage.html[File Storage].
 
-As an Image is just a particular type of a file, it is possible to treat the image handling just like any other kind of file handling
-with some specific additional behavior like preview in the browser.
+As an Image is just a particular type of a file, it is possible to treat the image handling just like any other kind of file handling with some specific additional behavior like preview in the browser.
 
 == Veterinarians Avatar Image
 
+The first example of this Images guide allows the users to upload & display an avatar image for a particular veterinarian.
+
+In order to achieve this behavior, the data model of the Petclinic example needs to be enhanced, to store a reference to a file for the `Vet` entity. The corresponding JPA entity that is bundled in CUBA itself is called `FileDescriptor`, which represents the metadata part of the file representation. The association type is `MANY-TO-ONE`. In the Studio entity designer, the result looks like this:
+
+image::working-with-images/vet-entity-file-descriptor-reference.png[align="center"]
+
+Once the entity model contains the reference to the `FileDescriptor` entity, the attribute `image` has to be added to the view, in order to interact with this attribute in the UI.
+
+The view `vet-with-specialties` for the `Vet` entity, that is used within the Vet editor, has to be changed to contain the `image` attribute like this:
+
+
+.views.xml
+[source,xml]
+----
+<view class="com.haulmont.sample.petclinic.entity.vet.Vet"
+      extends="_local"
+      name="vet-with-specialties-and-image">
+    <property name="specialties"
+              view="_minimal"/>
+    <property name="image" view="_base" />
+</view>
+----
+
+With this adjustment it makes sense to also rename the view name to `vet-with-specialties-and-image` to reflect the content of the view.
+
 === Upload Vets Avatar Image
+
+
+With those preconditions in place, the next step is to adjust the Vet editor, so that it also contains the ability to upload an image during the process of creating / editing a Vet record.
+
+CUBA has a built-in UI component for dealing with `FileDescriptor` instances - the FileUploadField component. This component can be added to the already existing `<form />` component from in the `vet-edit.xml` screen descriptor:
+
+.vet-edit.xml
+[source,xml]
+----
+<form id="fieldGroup" dataContainer="vetDc">
+    <column width="250px">
+
+        <textField property="firstName"/>
+        <textField property="lastName"/>
+
+        <upload id="imageField"
+                property="image" // <1>
+                fileStoragePutMode="IMMEDIATE"
+                showFileName="true"
+        />
+
+    </column>
+</form>
+----
+<1> the FileUploadField component binds to the `image` attribute of the `vetDc` data container
+
+There are a couple of options for the upload component to control its behavior, that can be looked up in the https://doc.cuba-platform.com/manual-{cuba_version}/gui_FileUploadField.html[reference documentation]. For this use case, the default behavior is sufficient. It will allow the user during the process of creating / editing an Vet instance, to upload, remove and re-upload files and directly attach it to this particular vet instance.
+
+The resulting user interface looks like this:
+
+image::working-with-images/vet-entity-file-descriptor-reference-ui.png[align="center"]
+
+
 
 === Display Vets Avatar Image in the Browse Table
 
