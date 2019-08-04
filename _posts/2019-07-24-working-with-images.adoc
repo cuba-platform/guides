@@ -58,7 +58,12 @@ More information about this topic can be found in the reference documentation on
 
 As an Image is just a particular type of a file, it is possible to treat the image handling just like any other kind of file handling with some specific additional behavior like preview in the browser.
 
+
+image::working-with-images/vet-avatar-example.png[width=200,float="right"]
+
+
 == Veterinarians Avatar Image
+
 
 The first example of this Images guide allows the users to upload & display an avatar image for a particular veterinarian.
 
@@ -110,17 +115,92 @@ CUBA has a built-in UI component for dealing with `FileDescriptor` instances - t
     </column>
 </form>
 ----
-<1> the FileUploadField component binds to the `image` attribute of the `vetDc` data container
+<1> the FileUploadField component binds the uploaded file to the `image` attribute of the `vetDc` data container
 
-There are a couple of options for the upload component to control its behavior, that can be looked up in the https://doc.cuba-platform.com/manual-{cuba_version}/gui_FileUploadField.html[reference documentation]. For this use case, the default behavior is sufficient. It will allow the user during the process of creating / editing an Vet instance, to upload, remove and re-upload files and directly attach it to this particular vet instance.
+There are a couple of options for the upload component to control its behavior, that can be looked up in the https://doc.cuba-platform.com/manual-{cuba_version}/gui_FileUploadField.html[reference documentation]. For this use-case, the default behavior is sufficient. It will allow the user during the process of creating / editing an Vet instance, to upload, download, remove and re-upload files and directly attach it to this particular vet instance.
 
 The resulting user interface looks like this:
 
 image::working-with-images/vet-entity-file-descriptor-reference-ui.png[align="center"]
 
+The attribute `fileStoragePutMode` set to `IMMEDIATE` leads to the behavior that the file is persisted and a corresponding persisted `FileDescriptor` instance is created directly after the upload of the file is completed. It has the benefit, that this behavior allows to link the Vet instance to the image without further programmatic interaction.
 
+However, this has the side effect, that even if the vet instance is not saved, the file will still be kept in the system. It can still be found via `Administration > External Files`. If this behavior is not desired, the `fileStoragePutMode` has to be set to `MANUAL`, which requires manual management of the file persistence. An example of this behavior can also be found in the reference documentation on https://doc.cuba-platform.com/manual-{cuba_version}/file_upload.html[File upload].
 
 === Display Vets Avatar Image in the Browse Table
+
+The next example that deals with the Vets avatar image is that the uploaded file should be displayed in the Vet browse screen. In order to do that, the `image` attribute has to be part of the corresponding view (which it is from the change above).
+
+In order to display an image in a screen the second UI component in this space is the `<image />` component. It allows to render an image based on various sources, which includes:
+
+* Image from the classpath
+* Image from the filesystem
+* Image from an arbitrary URL
+* Image from a `FileDescriptor` instance
+
+See https://doc.cuba-platform.com/manual-{cuba_version}/gui_Image.html[CUBA docs: Image UI component] for more information on the possible options.
+
+In this use-case, since the `Vet` instance holds the reference to a `FileDescriptor` instance via the `image` attribute, it is possible to directly render the image out of the file reference that was stored during the last step.
+
+The target UI should look like this:
+
+image::working-with-images/vet-avatar-browse-screen.png[align="center", link="/guides/images/working-with-images/vet-avatar-browse-screen.png"]
+
+The `image` attribute should be one of the columns in the vets table. Furthermore it should render a particular representation of the image: not the instance name of the `FileDescriptor`, but rather the image itself.
+
+In order to achieve this behavior, the `table` component has a particular API method: `addGeneratedColumn`, which allows to define a `Component` for a particular column in the table.
+
+
+.VetBrowse.java
+[source,java]
+----
+public class VetBrowse extends StandardLookup<Vet> {
+
+    @Inject
+    protected GroupTable<Vet> vetsTable;
+
+    @Inject
+    protected UiComponents uiComponents;
+
+    @Subscribe
+    protected void onInit(InitEvent event) {
+        vetsTable.addGeneratedColumn("image", this::renderAvatarImageComponent); // <1>
+    }
+
+    private Component renderAvatarImageComponent(Vet vet) {
+        FileDescriptor imageFile = vet.getImage(); // <2>
+
+        if (imageFile == null) {
+            return null;
+        }
+
+        Image image = smallAvatarImage();
+
+        image.setSource(FileDescriptorResource.class)
+                .setFileDescriptor(imageFile); // <4>
+
+        return image;
+    }
+
+    private Image smallAvatarImage() {
+        Image image = uiComponents.create(Image.class);  // <3>
+        image.setScaleMode(Image.ScaleMode.CONTAIN);
+        image.setHeight("40");
+        image.setWidth("40");
+        image.setStyleName("avatar-icon-small");
+        return image;
+    }
+
+}
+----
+<1> a new column `image` is registered in the `vetsTable` with the factory method: `renderAvatarImageComponent`
+<2> the `image` `FileDescriptor` reference is retrieved from the `Vet` instanced
+<3> the UI infrastructure bean `uiComponents` is the entry point for creating UI components programmatically
+<4> the Image component is bound to the `FileDescriptor` through the `FileDescriptorResource` variant
+
+With this code in place, a image component is created, configured and bound to the `FileDescriptor` instance. With the corresponding style name `avatar-icon-small`, the image is rendered as shown above.
+
+
 
 === Create Vets Lookup Component containing the Avatar Image
 
@@ -135,12 +215,7 @@ image::working-with-images/vet-entity-file-descriptor-reference-ui.png[align="ce
 == Summary
 
 
-image::i18n-messages/localized-platform-screen.png[align="center"]
-
-
-== Summary
-
 == Further Information
 
-* https://doc.cuba-platform.com/manual-{cuba_version}/messages.html[CUBA docs: Messages Interface]
-* https://doc.cuba-platform.com/manual-{cuba_version}/localization.html[CUBA docs: Localization]
+* https://doc.cuba-platform.com/manual-{cuba_version}/gui_FileUploadField.html[CUBA docs: File Upload UI component]
+* https://doc.cuba-platform.com/manual-{cuba_version}/gui_Image.html[CUBA docs: Image UI component]
