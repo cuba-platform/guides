@@ -281,6 +281,11 @@ metadata about the file in the relational database and the raw file binary in th
 <div class="paragraph">
 <p>As an Image is just a particular type of a file, it is possible to treat the image handling just like any other kind of file handling with some specific additional behavior like preview in the browser.</p>
 </div>
+<div class="imageblock right">
+<div class="content">
+<img src="/guides/images/working-with-images/vet-avatar-example.png" alt="vet avatar example" width="200">
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -349,12 +354,12 @@ metadata about the file in the relational database and the raw file binary in th
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>the FileUploadField component binds to the <code>image</code> attribute of the <code>vetDc</code> data container</td>
+<td>the FileUploadField component binds the uploaded file to the <code>image</code> attribute of the <code>vetDc</code> data container</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>There are a couple of options for the upload component to control its behavior, that can be looked up in the <a href="https://doc.cuba-platform.com/manual-7.0/gui_FileUploadField.html">reference documentation</a>. For this use case, the default behavior is sufficient. It will allow the user during the process of creating / editing an Vet instance, to upload, remove and re-upload files and directly attach it to this particular vet instance.</p>
+<p>There are a couple of options for the upload component to control its behavior, that can be looked up in the <a href="https://doc.cuba-platform.com/manual-7.0/gui_FileUploadField.html">reference documentation</a>. For this use-case, the default behavior is sufficient. It will allow the user during the process of creating / editing an Vet instance, to upload, download, remove and re-upload files and directly attach it to this particular vet instance.</p>
 </div>
 <div class="paragraph">
 <p>The resulting user interface looks like this:</p>
@@ -364,10 +369,123 @@ metadata about the file in the relational database and the raw file binary in th
 <img src="/guides/images/working-with-images/vet-entity-file-descriptor-reference-ui.png" alt="vet entity file descriptor reference ui">
 </div>
 </div>
+<div class="paragraph">
+<p>The attribute <code>fileStoragePutMode</code> set to <code>IMMEDIATE</code> leads to the behavior that the file is persisted and a corresponding persisted <code>FileDescriptor</code> instance is created directly after the upload of the file is completed. It has the benefit, that this behavior allows to link the Vet instance to the image without further programmatic interaction.</p>
+</div>
+<div class="paragraph">
+<p>However, this has the side effect, that even if the vet instance is not saved, the file will still be kept in the system. It can still be found via <code>Administration &gt; External Files</code>. If this behavior is not desired, the <code>fileStoragePutMode</code> has to be set to <code>MANUAL</code>, which requires manual management of the file persistence. An example of this behavior can also be found in the reference documentation on <a href="https://doc.cuba-platform.com/manual-7.0/file_upload.html">File upload</a>.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="display_vets_avatar_image_in_the_browse_table"><a class="anchor" href="#display_vets_avatar_image_in_the_browse_table"></a><a class="link" href="#display_vets_avatar_image_in_the_browse_table">Display Vets Avatar Image in the Browse Table</a></h3>
+<div class="paragraph">
+<p>The next example that deals with the Vets avatar image is that the uploaded file should be displayed in the Vet browse screen. In order to do that, the <code>image</code> attribute has to be part of the corresponding view (which it is from the change above).</p>
+</div>
+<div class="paragraph">
+<p>In order to display an image in a screen the second UI component in this space is the <code>&lt;image /&gt;</code> component. It allows to render an image based on various sources, which includes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Image from the classpath</p>
+</li>
+<li>
+<p>Image from the filesystem</p>
+</li>
+<li>
+<p>Image from an arbitrary URL</p>
+</li>
+<li>
+<p>Image from a <code>FileDescriptor</code> instance</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>See <a href="https://doc.cuba-platform.com/manual-7.0/gui_Image.html">CUBA docs: Image UI component</a> for more information on the possible options.</p>
+</div>
+<div class="paragraph">
+<p>In this use-case, since the <code>Vet</code> instance holds the reference to a <code>FileDescriptor</code> instance via the <code>image</code> attribute, it is possible to directly render the image out of the file reference that was stored during the last step.</p>
+</div>
+<div class="paragraph">
+<p>The target UI should look like this:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="/guides/images/working-with-images/vet-avatar-browse-screen.png"><img src="/guides/images/working-with-images/vet-avatar-browse-screen.png" alt="vet avatar browse screen"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>image</code> attribute should be one of the columns in the vets table. Furthermore it should render a particular representation of the image: not the instance name of the <code>FileDescriptor</code>, but rather the image itself.</p>
+</div>
+<div class="paragraph">
+<p>In order to achieve this behavior, the <code>table</code> component has a particular API method: <code>addGeneratedColumn</code>, which allows to define a <code>Component</code> for a particular column in the table.</p>
+</div>
+<div class="listingblock">
+<div class="title">VetBrowse.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VetBrowse</span> <span class="directive">extends</span> StandardLookup&lt;Vet&gt; {
 
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> GroupTable&lt;Vet&gt; vetsTable;
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> UiComponents uiComponents;
+
+    <span class="annotation">@Subscribe</span>
+    <span class="directive">protected</span> <span class="type">void</span> onInit(InitEvent event) {
+        vetsTable.addGeneratedColumn(<span class="string"><span class="delimiter">&quot;</span><span class="content">image</span><span class="delimiter">&quot;</span></span>, <span class="local-variable">this</span>::renderAvatarImageComponent); <i class="conum" data-value="1"></i><b>(1)</b>
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">Component</span> renderAvatarImageComponent(Vet vet) {
+        <span class="predefined-type">FileDescriptor</span> imageFile = vet.getImage(); <i class="conum" data-value="2"></i><b>(2)</b>
+
+        <span class="keyword">if</span> (imageFile == <span class="predefined-constant">null</span>) {
+            <span class="keyword">return</span> <span class="predefined-constant">null</span>;
+        }
+
+        <span class="predefined-type">Image</span> image = smallAvatarImage();
+
+        image.setSource(FileDescriptorResource.class)
+                .setFileDescriptor(imageFile); <i class="conum" data-value="4"></i><b>(4)</b>
+
+        <span class="keyword">return</span> image;
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">Image</span> smallAvatarImage() {
+        <span class="predefined-type">Image</span> image = uiComponents.create(<span class="predefined-type">Image</span>.class);  <i class="conum" data-value="3"></i><b>(3)</b>
+        image.setScaleMode(<span class="predefined-type">Image</span>.ScaleMode.CONTAIN);
+        image.setHeight(<span class="string"><span class="delimiter">&quot;</span><span class="content">40</span><span class="delimiter">&quot;</span></span>);
+        image.setWidth(<span class="string"><span class="delimiter">&quot;</span><span class="content">40</span><span class="delimiter">&quot;</span></span>);
+        image.setStyleName(<span class="string"><span class="delimiter">&quot;</span><span class="content">avatar-icon-small</span><span class="delimiter">&quot;</span></span>);
+        <span class="keyword">return</span> image;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>a new column <code>image</code> is registered in the <code>vetsTable</code> with the factory method: <code>renderAvatarImageComponent</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the <code>image</code> <code>FileDescriptor</code> reference is retrieved from the <code>Vet</code> instanced</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>the UI infrastructure bean <code>uiComponents</code> is the entry point for creating UI components programmatically</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>the Image component is bound to the <code>FileDescriptor</code> through the <code>FileDescriptorResource</code> variant</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>With this code in place, a image component is created, configured and bound to the <code>FileDescriptor</code> instance. With the corresponding style name <code>avatar-icon-small</code>, the image is rendered as shown above.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="create_vets_lookup_component_containing_the_avatar_image"><a class="anchor" href="#create_vets_lookup_component_containing_the_avatar_image"></a><a class="link" href="#create_vets_lookup_component_containing_the_avatar_image">Create Vets Lookup Component containing the Avatar Image</a></h3>
@@ -391,16 +509,6 @@ metadata about the file in the relational database and the raw file binary in th
 <div class="sect1">
 <h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
 <div class="sectionbody">
-<div class="imageblock text-center">
-<div class="content">
-<img src="/guides/images/i18n-messages/localized-platform-screen.png" alt="localized platform screen">
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="summary_2"><a class="anchor" href="#summary_2"></a><a class="link" href="#summary_2">Summary</a></h2>
-<div class="sectionbody">
 
 </div>
 </div>
@@ -410,10 +518,10 @@ metadata about the file in the relational database and the raw file binary in th
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://doc.cuba-platform.com/manual-7.0/messages.html">CUBA docs: Messages Interface</a></p>
+<p><a href="https://doc.cuba-platform.com/manual-7.0/gui_FileUploadField.html">CUBA docs: File Upload UI component</a></p>
 </li>
 <li>
-<p><a href="https://doc.cuba-platform.com/manual-7.0/localization.html">CUBA docs: Localization</a></p>
+<p><a href="https://doc.cuba-platform.com/manual-7.0/gui_Image.html">CUBA docs: Image UI component</a></p>
 </li>
 </ul>
 </div>
@@ -441,7 +549,6 @@ metadata about the file in the relational database and the raw file binary in th
 <li><a href="#veterinarians_avatar_image">Veterinarians Avatar Image</a></li>
 <li><a href="#x_ray_images_for_visits">X-Ray Images for Visits</a></li>
 <li><a href="#summary">Summary</a></li>
-<li><a href="#summary_2">Summary</a></li>
 <li><a href="#further_information">Further Information</a></li>
 </ul>
                         </div>
