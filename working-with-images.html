@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CUBA Platform Guides</title>
+    <title>Working with Images in CUBA applications</title>
     <meta name="description" content="The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.">
     <meta name="author" content="Haulmont">
     <link rel="shortcut icon" href="/guides/images/favicon.png" type="image/png" />
@@ -18,12 +18,12 @@
     <link rel="stylesheet" href="/guides/css/extra.css">
     <link rel="stylesheet" href="/guides/css/extra2.css">
     <link rel="stylesheet" href="/guides/css/cuba-new.css">
+    <link rel="stylesheet" href="/guides/css/font-awesome.min.css">
     <link rel="stylesheet" href="/guides/css/guides.css">
-    <script src="/guides/js/vendor/modernizr.js"></script>
     <script src="/guides/js/jquery_v2.1.min.js"></script>
     <link rel="stylesheet" href="/guides/css/main.css" />
 </head>
-<body class="cuba-website-styles html not-front not-logged-in no-sidebars page-webinars service-booking i18n-en">
+<body class="html not-front not-logged-in no-sidebars page-node page-node- page-node-962 node-type-blog-post i18n-en">
 
 <section id="wrapper">
     
@@ -153,74 +153,272 @@
 
     <!-- Main Page Content and Sidebar -->
     <div class="content-wrapper">
-        <div class="text-node">
+        <div class="cuba-container text-node blog">
+            <!-- Main content (left column) -->
             <div class="region region-content">
                 <section id="block-system-main" class="block block-system clearfix">
-                    <div class="panel-display panel-1col clearfix" id="webinars-page">
-                        <div class="container layout-main_container">
-                            <div>
-                                <!-- Title -->
-                                <div class="page-header">
-                                    <h1 class="page-header_title">Guides</h1>
-                                    <p class="page-header_description">Comprehensive articles about CUBA Platform specifics (version 7.0+)</p>
-                                </div>
+                    <div id="node-962" class="article node node-blog-post node-promoted clearfix">
+                        <div class="content">
+                            <div class="field field-name-body field-type-text-with-summary field-label-hidden">
+                                <div class="field-items">
+                                    <div class="field-item even" property="content: encoded">
+                                        <h1>Working with Images in CUBA applications</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In a CUBA application it is possible to interact with images in various ways. In this guide, examples will be shown on how
+to upload and display images in the application. It will also be shown how to attach those images to entities and providing
+ the user the ability to download the image files from the application.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="what_will_be_built"><a class="anchor" href="#what_will_be_built"></a><a class="link" href="#what_will_be_built">What Will be Built</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a> example to allow the user to attach with images to entities and interact with them. In particular the following changed will be made:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>allow to upload an image for a Veterinarian</p>
+</li>
+<li>
+<p>render the vets image in the vets browse table</p>
+</li>
+<li>
+<p>create custom lookup-like component that shows the vets image next to the vets name</p>
+</li>
+<li>
+<p>ability to attach x-ray images to a visit and show a preview of the images</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="final_application"><a class="anchor" href="#final_application"></a><a class="link" href="#final_application">Final Application</a></h3>
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-working-with-images/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-working-with-images/master/img/login-screen.png"/></a>
+</div>
+<div class="sect2">
+<h3 id="requirements"><a class="anchor" href="#requirements"></a><a class="link" href="#requirements">Requirements</a></h3>
+<div class="paragraph">
+<p>Your development environment requires to contain the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.oracle.com/technetwork/java/javase/downloads/index.html">JDK 1.8</a></p>
+</li>
+<li>
+<p>a text editor or IDE (<a href="https://www.jetbrains.com/idea/download/">IntelliJ IDEA</a> preferred)</p>
+</li>
+<li>
+<p><a href="https://www.cuba-platform.com/download">CUBA Studio</a> as standalone IDE or as an IDEA plugin (optional)</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-platform/cuba-cli/wiki/Installation">CUBA CLI</a> (optional)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-working-with-images/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
+</div>
+<div class="paragraph">
+<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-working-with-images.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-working-with-images.git</a></code></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="example_cuba_petclinic"><a class="anchor" href="#example_cuba_petclinic"></a><a class="link" href="#example_cuba_petclinic">Example: CUBA petclinic</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The project that is the basis for this example is <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a>. It is based on the commonly known <a href="https://github.com/spring-projects/spring-petclinic">Spring Petclinic</a>. The CUBA Petclinic application deals with the domain of a Pet clinic and the associated business workflows to manage a pet clinic.</p>
+</div>
+<div class="paragraph">
+<p>The underlying domain model for the application looks like this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/guides/images/domain-model.png" alt="Domain model">
+</div>
+</div>
+<div class="paragraph">
+<p>The main entities are <strong>Pet</strong> and <strong>Visit</strong>. A Pet is visiting the petclinic and during this Visit a Vet is taking care of it. A Pet belongs to an Owner, which can hold multiple pets. The visit describes the act of a pet visiting the clinic with the help of its owner.</p>
+</div>
+<a href="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/login-screen.png"/></a>
+</div>
+</div>
+<div class="sect1">
+<h2 id="cubas_file_storage_subsystem_handles_file_interactions"><a class="anchor" href="#cubas_file_storage_subsystem_handles_file_interactions"></a><a class="link" href="#cubas_file_storage_subsystem_handles_file_interactions">CUBAs File Storage Subsystem Handles File Interactions</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>CUBA has a comprehensive set of features, that deal with the task of interacting with files within an application called <code>File Storage</code>.
+This set of APIs allow the developer to fulfill the end-to-end process of working with files. It contains mainly:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ability to let the users upload files</p>
+</li>
+<li>
+<p>store references from business entities to files</p>
+</li>
+<li>
+<p>read &amp; write files in the application</p>
+</li>
+<li>
+<p>ability to let users download files</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The implementation of the File Storage subsystem separates the storage of the file metadata from the file binary. It stores
+metadata about the file in the relational database and the raw file binary in the local filesystem.</p>
+</div>
+<div class="paragraph">
+<p>More information about this topic can be found in the reference documentation on <a href="https://doc.cuba-platform.com/manual-7.0/file_storage.html">File Storage</a>.</p>
+</div>
+<div class="paragraph">
+<p>As an Image is just a particular type of a file, it is possible to treat the image handling just like any other kind of file handling with some specific additional behavior like preview in the browser.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="veterinarians_avatar_image"><a class="anchor" href="#veterinarians_avatar_image"></a><a class="link" href="#veterinarians_avatar_image">Veterinarians Avatar Image</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The first example of this Images guide allows the users to upload &amp; display an avatar image for a particular veterinarian.</p>
+</div>
+<div class="paragraph">
+<p>In order to achieve this behavior, the data model of the Petclinic example needs to be enhanced, to store a reference to a file for the <code>Vet</code> entity. The corresponding JPA entity that is bundled in CUBA itself is called <code>FileDescriptor</code>, which represents the metadata part of the file representation. The association type is <code>MANY-TO-ONE</code>. In the Studio entity designer, the result looks like this:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/working-with-images/vet-entity-file-descriptor-reference.png" alt="vet entity file descriptor reference">
+</div>
+</div>
+<div class="paragraph">
+<p>Once the entity model contains the reference to the <code>FileDescriptor</code> entity, the attribute <code>image</code> has to be added to the view, in order to interact with this attribute in the UI.</p>
+</div>
+<div class="paragraph">
+<p>The view <code>vet-with-specialties</code> for the <code>Vet</code> entity, that is used within the Vet editor, has to be changed to contain the <code>image</code> attribute like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">views.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;view</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.haulmont.sample.petclinic.entity.vet.Vet</span><span class="delimiter">&quot;</span></span>
+      <span class="attribute-name">extends</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">_local</span><span class="delimiter">&quot;</span></span>
+      <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">vet-with-specialties-and-image</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">specialties</span><span class="delimiter">&quot;</span></span>
+              <span class="attribute-name">view</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">_minimal</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">image</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">view</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">_base</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+<span class="tag">&lt;/view&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With this adjustment it makes sense to also rename the view name to <code>vet-with-specialties-and-image</code> to reflect the content of the view.</p>
+</div>
+<div class="sect2">
+<h3 id="upload_vets_avatar_image"><a class="anchor" href="#upload_vets_avatar_image"></a><a class="link" href="#upload_vets_avatar_image">Upload Vets Avatar Image</a></h3>
+<div class="paragraph">
+<p>With those preconditions in place, the next step is to adjust the Vet editor, so that it also contains the ability to upload an image during the process of creating / editing a Vet record.</p>
+</div>
+<div class="paragraph">
+<p>CUBA has a built-in UI component for dealing with <code>FileDescriptor</code> instances - the FileUploadField component. This component can be added to the already existing <code>&lt;form /&gt;</code> component from in the <code>vet-edit.xml</code> screen descriptor:</p>
+</div>
+<div class="listingblock">
+<div class="title">vet-edit.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;form</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">fieldGroup</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">dataContainer</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">vetDc</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;column</span> <span class="attribute-name">width</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">250px</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
 
-                                <!-- List Grid -->
-                                <div class="">
-                                    <div class="pane-content">
-                                        <div class="guides-list">
-                                            
-                                            <a href="/guides/intro-working-with-data-in-cuba" class="guides-list_item">
-                                                <div class="guides-list_title">Introduction to Working with Data in CUBA</div>
-                                                <span class="guides-list_description">Overview on how to read and write data in a CUBA application</span>
-                                            </a>
-                                            
-                                            <a href="/guides/create-business-logic-in-cuba" class="guides-list_item">
-                                                <div class="guides-list_title">Create Business Logic in CUBA</div>
-                                                <span class="guides-list_description">Guide on what options are available for putting business logic into a CUBA application</span>
-                                            </a>
-                                            
-                                            <a href="/guides/decouple-business-logic-with-app-events" class="guides-list_item">
-                                                <div class="guides-list_title">Decouple Business Logic with Application Events</div>
-                                                <span class="guides-list_description">Overview on how application events can be used in a CUBA application to decouple business logic</span>
-                                            </a>
-                                            
-                                            <a href="/guides/logging-in-cuba-applications" class="guides-list_item">
-                                                <div class="guides-list_title">Logging in CUBA Applications</div>
-                                                <span class="guides-list_description">Guide on why and how to use logging in a CUBA application in order to get insights</span>
-                                            </a>
-                                            
-                                            <a href="/guides/data-modelling-many-to-many-association" class="guides-list_item">
-                                                <div class="guides-list_title">Data Modelling: Many-to-Many Association</div>
-                                                <span class="guides-list_description">Data modelling guide: what are Many-to-Many associations and when to use them</span>
-                                            </a>
-                                            
-                                            <a href="/guides/data-modelling-entity-inheritance" class="guides-list_item">
-                                                <div class="guides-list_title">Data Modelling: Entity Inheritance</div>
-                                                <span class="guides-list_description">Data Modelling guide: How entity inheritance can be used in a CUBA application</span>
-                                            </a>
-                                            
-                                            <a href="/guides/data-modelling-composition" class="guides-list_item">
-                                                <div class="guides-list_title">Data Modelling: Composition</div>
-                                                <span class="guides-list_description">Data modelling guide: What are Compositions and when to use them over Associations</span>
-                                            </a>
-                                            
-                                            <a href="/guides/initial-entity-values" class="guides-list_item">
-                                                <div class="guides-list_title">Initial Values for Entity Instances</div>
-                                                <span class="guides-list_description">This guide demonstrates different options on how initial values can be set for an entity</span>
-                                            </a>
-                                            
-                                            <a href="/guides/localization-in-cuba-applications" class="guides-list_item">
-                                                <div class="guides-list_title">Localization in CUBA applications</div>
-                                                <span class="guides-list_description">In this guide the localization features of a CUBA application are explained</span>
-                                            </a>
-                                            
-                                            <a href="/guides/working-with-images" class="guides-list_item">
-                                                <div class="guides-list_title">Working with Images in CUBA applications</div>
-                                                <span class="guides-list_description">In this guide several ways will be explored on how to interact with images in a CUBA application</span>
-                                            </a>
-                                            
-                                        </div>
+        <span class="tag">&lt;textField</span> <span class="attribute-name">property</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">firstName</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+        <span class="tag">&lt;textField</span> <span class="attribute-name">property</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">lastName</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+
+        <span class="tag">&lt;upload</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">imageField</span><span class="delimiter">&quot;</span></span>
+                <span class="attribute-name">property</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">image</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="1"></i><b>(1)</b>
+                <span class="attribute-name">fileStoragePutMode</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">IMMEDIATE</span><span class="delimiter">&quot;</span></span>
+                <span class="attribute-name">showFileName</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span>
+        <span class="tag">/&gt;</span>
+
+    <span class="tag">&lt;/column&gt;</span>
+<span class="tag">&lt;/form&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the FileUploadField component binds to the <code>image</code> attribute of the <code>vetDc</code> data container</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>There are a couple of options for the upload component to control its behavior, that can be looked up in the <a href="https://doc.cuba-platform.com/manual-7.0/gui_FileUploadField.html">reference documentation</a>. For this use case, the default behavior is sufficient. It will allow the user during the process of creating / editing an Vet instance, to upload, remove and re-upload files and directly attach it to this particular vet instance.</p>
+</div>
+<div class="paragraph">
+<p>The resulting user interface looks like this:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/working-with-images/vet-entity-file-descriptor-reference-ui.png" alt="vet entity file descriptor reference ui">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="display_vets_avatar_image_in_the_browse_table"><a class="anchor" href="#display_vets_avatar_image_in_the_browse_table"></a><a class="link" href="#display_vets_avatar_image_in_the_browse_table">Display Vets Avatar Image in the Browse Table</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="create_vets_lookup_component_containing_the_avatar_image"><a class="anchor" href="#create_vets_lookup_component_containing_the_avatar_image"></a><a class="link" href="#create_vets_lookup_component_containing_the_avatar_image">Create Vets Lookup Component containing the Avatar Image</a></h3>
+
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="x_ray_images_for_visits"><a class="anchor" href="#x_ray_images_for_visits"></a><a class="link" href="#x_ray_images_for_visits">X-Ray Images for Visits</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="create_x_ray_image_preview"><a class="anchor" href="#create_x_ray_image_preview"></a><a class="link" href="#create_x_ray_image_preview">Create X-Ray Image Preview</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="download_x_ray_images"><a class="anchor" href="#download_x_ray_images"></a><a class="link" href="#download_x_ray_images">Download X-Ray Images</a></h3>
+
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
+<div class="sectionbody">
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/i18n-messages/localized-platform-screen.png" alt="localized platform screen">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="summary_2"><a class="anchor" href="#summary_2"></a><a class="link" href="#summary_2">Summary</a></h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="further_information"><a class="anchor" href="#further_information"></a><a class="link" href="#further_information">Further Information</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://doc.cuba-platform.com/manual-7.0/messages.html">CUBA docs: Messages Interface</a></p>
+</li>
+<li>
+<p><a href="https://doc.cuba-platform.com/manual-7.0/localization.html">CUBA docs: Localization</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
                                     </div>
                                 </div>
                             </div>
@@ -228,9 +426,45 @@
                     </div>
                 </section>
             </div>
+
+            <!-- Sidebar (right column) -->
+            <div id="blog-sidebar">
+                <div class="region region-sidebar">
+                    <section id="block-block-29" class="block block-block clearfix">
+
+                        <div class="guide-panel">
+                            <h3>Table of contents</h3>
+                            <ul class="sectlevel1">
+<li><a href="#what_will_be_built">What Will be Built</a></li>
+<li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
+<li><a href="#cubas_file_storage_subsystem_handles_file_interactions">CUBAs File Storage Subsystem Handles File Interactions</a></li>
+<li><a href="#veterinarians_avatar_image">Veterinarians Avatar Image</a></li>
+<li><a href="#x_ray_images_for_visits">X-Ray Images for Visits</a></li>
+<li><a href="#summary">Summary</a></li>
+<li><a href="#summary_2">Summary</a></li>
+<li><a href="#further_information">Further Information</a></li>
+</ul>
+                        </div>
+
+                        <div class="guide-panel download">
+                            <h3>Example code</h3>
+                            <a class=" guide-item_button button-outline"  href="https://github.com/cuba-guides/cuba-petclinic-working-with-images/archive/master.zip" target="_blank">Download</a>
+                            <a href="https://github.com/cuba-guides/cuba-petclinic-working-with-images" class="github-link" target="_blank">Github</a>
+                        </div>
+
+                        <div class="guide-panel cuba-version">
+                            <h3>Supported Versions</h3>
+                            <ul>
+                                <li>CUBA: 7.0+</li>
+                                <li>Java: 8+</li>
+                            </ul>
+                        </div>
+
+                    </section>
+                </div>
+            </div>
         </div>
     </div>
-    <!-- End Main Content and Sidebar -->
 
     <!-- Footer -->
     <footer fragment="14269c1b298" class="footer">
@@ -419,17 +653,28 @@
 
 </section>
 
-<script src="/guides/js/toc.js"></script>
 <script src="/guides/js/foundation.min.js"></script>
+<script src="https://unpkg.com/isotope-layout@3.0/dist/isotope.pkgd.js"></script>
+<script src="/guides/js/vendor/modernizr.js"></script>
+<script src="/guides/js/toc.js"></script>
 <script src="/guides/js/navigation.js"></script>
+<script src="/guides/js/navbar.js"></script>
 <script src="/guides/js/extra.js"></script>
 <script src="/guides/js/extra2.js"></script>
 <script src="/guides/js/cuba-new.js"></script>
 <script>
-$(document).foundation();
-var doc = document.documentElement;
-doc.setAttribute('data-useragent', navigator.userAgent);
+(function ($) {
+  $(document).foundation();
+  var doc = document.documentElement;
+  doc.setAttribute('data-useragent', navigator.userAgent)
 
+  /* Issue #24 */
+  $(".blog .content img").each(function() {
+    var imgMarkup = $(this)[0].outerHTML;
+    console.log(imgMarkup);
+    $(this).replaceWith('<div class="img-center">' + imgMarkup + '</div>');
+  });
+})(jQuery); 
 </script>
 </body>
 </html>
