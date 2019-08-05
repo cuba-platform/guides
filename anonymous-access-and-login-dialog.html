@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Localization in CUBA applications</title>
+    <title>Anonymous Access &amp; Login Dialog</title>
     <meta name="description" content="The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.">
     <meta name="author" content="Haulmont">
     <link rel="shortcut icon" href="/guides/images/favicon.png" type="image/png" />
@@ -162,7 +162,7 @@
                             <div class="field field-name-body field-type-text-with-summary field-label-hidden">
                                 <div class="field-items">
                                     <div class="field-item even" property="content: encoded">
-                                        <h1>Localization in CUBA applications</h1>
+                                        <h1>Anonymous Access &amp; Login Dialog</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
@@ -288,7 +288,7 @@ known pet types and their specialities.</p>
 <p>And now we have a first result:</p>
 </div>
 <div class="paragraph">
-<p>image::anonymous-access-and-login-dialog/petclinic_initial_screen.jpg</p>
+<p>image::anonymous-access-and-login-dialog/initial-screen.png</p>
 </div>
 <div class="paragraph">
 <p>Main screen with empty side menu is opened. But it’s not very interesting
@@ -305,26 +305,26 @@ Open “Role” browser and edit “Anonymous” role.</p>
 <p>Permit all required menu items and screens:</p>
 </div>
 <div class="paragraph">
-<p>image::anonymous-access-and-login-dialog/petclinic_screen_permissions.jpg</p>
+<p>image::anonymous-access-and-login-dialog/screen-permissions.png</p>
 </div>
 <div class="paragraph">
 <p>And give permissions to read corresponding entities:</p>
 </div>
 <div class="paragraph">
-<p>image::anonymous-access-and-login-dialog/petclinic_entity_permissions.jpg</p>
+<p>image::anonymous-access-and-login-dialog/entity-permissions.png</p>
 </div>
 <div class="paragraph">
 <p>And restart the app. Now we can view available veterinarian as anonymous:</p>
 </div>
 <div class="paragraph">
-<p>image::anonymous-access-and-login-dialog/petclinic_pemitted_screens.jpg</p>
+<p>image::anonymous-access-and-login-dialog/pemitted-screens.png</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="screen_routes"><a class="anchor" href="#screen_routes"></a><a class="link" href="#screen_routes">Screen routes</a></h3>
 <div class="paragraph">
 <p>CUBA Navigation feature also supports anonymous access, so let’s register routes
-for our screens to be able to open screens directly. It can be done with “@Route” annotation:</p>
+for our screens to be able to open screens directly. It can be done with <code>@Route</code> annotation:</p>
 </div>
 <div class="listingblock">
 <div class="title">VetBrowse.java</div>
@@ -335,7 +335,6 @@ for our screens to be able to open screens directly. It can be done with “@Rou
 <span class="annotation">@LookupComponent</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">vetsTable</span><span class="delimiter">&quot;</span></span>)
 <span class="annotation">@LoadDataBeforeShow</span>
 <span class="directive">public</span> <span class="type">class</span> <span class="class">VetBrowse</span> <span class="directive">extends</span> StandardLookup&lt;Vet&gt; {
-    <span class="comment">// ...</span>
 }</code></pre>
 </div>
 </div>
@@ -345,10 +344,10 @@ for our screens to be able to open screens directly. It can be done with “@Rou
 <div class="ulist">
 <ul>
 <li>
-<p>@Route("pet-types") for PetTypeBrowse</p>
+<p><code>@Route("pet-types")</code> for <code>PetTypeBrowse</code></p>
 </li>
 <li>
-<p>@Route("specs") for SpecialtyBrowse</p>
+<p><code>@Route("specs")</code> for <code>SpecialtyBrowse</code></p>
 </li>
 </ul>
 </div>
@@ -356,10 +355,10 @@ for our screens to be able to open screens directly. It can be done with “@Rou
 <p>Restart the app and try to open Vets screen by the following link:</p>
 </div>
 <div class="paragraph">
-<p><a href="http://localhost:8080/petclinic/#main/vets" class="bare">http://localhost:8080/petclinic/#main/vets</a></p>
+<p>&lt;a href="http://localhost:8080/petclinic/#main/vets"&gt;<a href="http://localhost:8080/petclinic/#main/vets&lt;/a&gt" class="bare">http://localhost:8080/petclinic/#main/vets&lt;/a&gt</a>;</p>
 </div>
 <div class="paragraph">
-<p>image::anonymous-access-and-login-dialog/petclinic_screen_routes.jpg</p>
+<p>image::anonymous-access-and-login-dialog/screen-routes.png</p>
 </div>
 <div class="paragraph">
 <p>Now you can bookmark available pages or share a link with a friend or colleagues!
@@ -382,13 +381,13 @@ and do not lose a context.</p>
 <div class="paragraph">
 <p>Let’s begin with extending default Main Screen. Open “New Screen” dialog in CUBA Studio
 and choose a template named “Main screen with side menu”. You may notice that the screen layout
-has a new component - &lt;userActionsButton/&gt;. It combines “log in” action for anonymous
+has a new component - <code>&lt;userActionsButton/&gt;</code>. It combines “log in” action for anonymous
 and enables you to open “Settings” screen or log out when user is authenticated.</p>
 </div>
 <div class="paragraph">
-<p>The UserActionsButton component has few extension points to override default behavior
+<p>The <code>UserActionsButton</code> component has few extension points to override default behavior
 for login and logout actions. It allows us to define our custom logic to open
-custom dialog - subscribe for InitEvent to get the component and set custom handler:</p>
+custom dialog - subscribe for <code>InitEvent</code> to get the component and set custom handler:</p>
 </div>
 <div class="listingblock">
 <div class="title">ExtMainScreen.java</div>
@@ -404,8 +403,8 @@ custom dialog - subscribe for InitEvent to get the component and set custom hand
     <span class="directive">private</span> <span class="type">void</span> onInit(InitEvent event) {
         UserActionsButton userActionsButton = getUserActionsButton();
         <span class="keyword">if</span> (userActionsButton != <span class="predefined-constant">null</span>) {
+            <span class="comment">// will open login dialog later</span>
             userActionsButton.setLoginHandler((ctx) -&gt; {
-                <span class="comment">// will open login dialog later</span>
             });
         }
     }
@@ -418,7 +417,7 @@ custom dialog - subscribe for InitEvent to get the component and set custom hand
 <div class="paragraph">
 <p>New login dialog will be simplified version of default login screen, so start
 with creating new blank screen. To avoid re-implementing login process logic
-we’ll just make LoginDialog extends LoginScreen:</p>
+we’ll just make <code>LoginDialog</code> extend <code>LoginScreen</code>:</p>
 </div>
 <div class="listingblock">
 <div class="title">LoginDialog.java</div>
@@ -512,7 +511,8 @@ we’ll just make LoginDialog extends LoginScreen:</p>
 <div class="listingblock">
 <div class="title">LoginDialog.java</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Route</span> <span class="comment">// since route is inherited from LoginScreen we should reset it here</span>
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// since route is inherited from LoginScreen we should reset it here</span>
+<span class="annotation">@Route</span>
 <span class="annotation">@DialogMode</span>(width = <span class="string"><span class="delimiter">&quot;</span><span class="content">430</span><span class="delimiter">&quot;</span></span>)
 <span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">login-dialog.xml</span><span class="delimiter">&quot;</span></span>)
 <span class="annotation">@UiController</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">LoginDialog</span><span class="delimiter">&quot;</span></span>)
@@ -520,15 +520,15 @@ we’ll just make LoginDialog extends LoginScreen:</p>
 
     <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">loginButton</span><span class="delimiter">&quot;</span></span>)
     <span class="directive">private</span> <span class="type">void</span> onLoginButtonClick(<span class="predefined-type">Button</span>.ClickEvent event) {
-                login();
-                close(WINDOW_CLOSE_ACTION);
+        login();
+        close(WINDOW_CLOSE_ACTION);
     }
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>To allow the dialog for all users we&#8217;ll use the default permissions mechanism.
-Create “default-permission-values.xml” file in the root package or core module
+Create <code>default-permission-values.xml</code> file in the root package or core module
 with the following content:</p>
 </div>
 <div class="listingblock">
@@ -542,7 +542,7 @@ with the following content:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>And append this config to default permissions in app.properties file:</p>
+<p>And append this config to default permissions in <code>app.properties</code> file:</p>
 </div>
 <div class="listingblock">
 <div class="title">app.properties</div>
@@ -579,7 +579,7 @@ with the following content:</p>
 <p>Restart an app and try to log in:</p>
 </div>
 <div class="paragraph">
-<p>image::anonymous-access-and-login-dialog/petclinic_login_dialog_init.jpg</p>
+<p>image::anonymous-access-and-login-dialog/login-dialog-init.png</p>
 </div>
 <div class="paragraph">
 <p>The last step is to check whether login performed successfully and reopen last screen:</p>
@@ -598,15 +598,12 @@ with the following content:</p>
         <span class="predefined-type">Collection</span>&lt;Screen&gt; openedScreens = screens.getOpenedScreens()
                 .getCurrentBreadcrumbs();
 
-        <span class="comment">// save active screen</span>
         Screen currentScreen = !openedScreens.isEmpty()
                 ? openedScreens.iterator().next()
                 : <span class="predefined-constant">null</span>;
 
-        <span class="comment">// perform login</span>
         login();
 
-        <span class="comment">// close dialog and reopen a screen</span>
         <span class="keyword">if</span> (connection.isAuthenticated()) {
             close(WINDOW_CLOSE_ACTION);
 
@@ -667,7 +664,7 @@ applications and configured with built-in security subsystem.</p>
                         <div class="guide-panel cuba-version">
                             <h3>Supported Versions</h3>
                             <ul>
-                                <li>CUBA: 7.0+</li>
+                                <li>CUBA: 7.1+</li>
                                 <li>Java: 8+</li>
                             </ul>
                         </div>
