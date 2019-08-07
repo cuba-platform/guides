@@ -125,7 +125,7 @@ image::working-with-images/vet-entity-file-descriptor-reference-ui.png[align="ce
 
 The attribute `fileStoragePutMode` set to `IMMEDIATE` leads to the behavior that the file is persisted and a corresponding persisted `FileDescriptor` instance is created directly after the upload of the file is completed. It has the benefit, that this behavior allows to link the Vet instance to the image without further programmatic interaction.
 
-However, this has the side effect, that even if the vet instance is not saved, the file will still be kept in the system. It can still be found via `Administration > External Files`. If this behavior is not desired, the `fileStoragePutMode` has to be set to `MANUAL`, which requires manual management of the file persistence. An example of this behavior can also be found in the reference documentation on https://doc.cuba-platform.com/manual-{cuba_version}/file_upload.html[File upload].
+However, this has the side effect, that even if the vet instance is not saved, the file will still be kept in the system. It can still be found via `Administration > External Files`. If this behavior is not desired, the `fileStoragePutMode` can be set to `MANUAL`, which requires manual management of the file persistence. An example of this behavior can also be found in the reference documentation on https://doc.cuba-platform.com/manual-{cuba_version}/file_upload.html[File upload].
 
 === Display Vets Avatar Image in the Browse Table
 
@@ -133,8 +133,7 @@ The next example that deals with the Vets avatar image is that the uploaded file
 
 In order to display an image in a screen the second UI component in this space is the `<image />` component. It allows to render an image based on various sources, which includes:
 
-* Image from the classpath
-* Image from the filesystem
+* Image from the filesystem / classpath
 * Image from an arbitrary URL
 * Image from a `FileDescriptor` instance
 
@@ -148,8 +147,7 @@ image::working-with-images/vet-avatar-browse-screen.png[align="center", link="/g
 
 The `image` attribute should be one of the columns in the vets table. Furthermore it should render a particular representation of the image: not the instance name of the `FileDescriptor`, but rather the image itself.
 
-In order to achieve this behavior, the `table` component has a particular API method: `addGeneratedColumn`, which allows to define a `Component` for a particular column in the table.
-
+In order to achieve this behavior, the `Table` component has a particular API method: `addGeneratedColumn`, which allows to define a `Component` as the representation for a particular column in the table. This method is called for every entity that should be displayed in the table and it receives the corresponding entity instance as a parameter.
 
 .VetBrowse.java
 [source,java]
@@ -164,7 +162,10 @@ public class VetBrowse extends StandardLookup<Vet> {
 
     @Subscribe
     protected void onInit(InitEvent event) {
-        vetsTable.addGeneratedColumn("image", this::renderAvatarImageComponent); // <1>
+        vetsTable.addGeneratedColumn( // <1>
+                "image",
+                this::renderAvatarImageComponent
+        );
     }
 
     private Component renderAvatarImageComponent(Vet vet) {
@@ -201,9 +202,130 @@ public class VetBrowse extends StandardLookup<Vet> {
 With this code in place, a image component is created, configured and bound to the `FileDescriptor` instance. With the corresponding style name `avatar-icon-small`, the image is rendered as shown above.
 
 
-
 === Create Vets Lookup Component containing the Avatar Image
 
+The last part of this Vet avatar functionality is that in the Visit detail screen, the representation of the Vet should include the icon and the name like this:
+
+image::working-with-images/vet-avatar-example.png[width=300]
+
+This requires to apply the image component in a different way as this component is now part of the Visit editor inside a `<form />` component.
+
+The source code for providing this functionality consists of two main parts. The first part is the controller `VetEdit` which orchestrates the creation and binding of the custom component.
+
+The second part is the `VetPreviewComponentFactory`. This class is responsible for creating the component that is shown above with the correct layout and the binding to the correct fields of the `InstanceContainer`.
+
+The orchestration of within the `VetEdit` controller looks like this:
+
+.VetBrowse.java
+[source,java]
+----
+public class VisitEdit extends StandardEditor<Visit> {
+
+    @Inject
+    protected Form treatingVetForm;
+
+    @Inject
+    protected InstanceContainer<Visit> visitDc;
+
+    // ...
+
+    @Subscribe
+    protected void renderTreatingVetLayout(AfterShowEvent event) {
+
+        VetPreviewComponentFactory vetPreviewComponentFactory =
+            new VetPreviewComponentFactory( // <1>
+                uiComponents,
+                screenBuilders,
+                messageBundle,
+                this
+            );
+
+        Component vetPreview = vetPreviewComponentFactory.create(  // <2>
+                visitDc,
+                vet -> getEditedEntity().setTreatingVet(vet)
+        );
+
+        treatingVetForm.add(vetPreview); // <3>
+    }
+}
+----
+<1> a new `VetPreviewComponentFactory` instance is created with all the required dependencies passed to it
+<2> `create` creates an instance of the desired Vet avatar icon component. It requires the `InstanceContainer` and a `vetSelectionHandler` as a parameter
+<3> the created component is attached to the `treatingVetForm` in order to render the vet avatar icon
+
+
+The `VetPreviewComponentFactory` code contains a little bit more code for correct positioning of the elements within the layout. The key points are listed below (the complete class can be found in the example project: https://github.com/cuba-guides/{project_id}/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/visit/visit/VetPreviewComponentFactory.java[VetPreviewComponentFactory.java]).
+
+
+.VetPreviewComponentFactory.java
+[source,java]
+----
+public class VetPreviewComponentFactory {
+
+    private final UiComponents uiComponents;
+    private final ScreenBuilders screenBuilders;
+    private final FrameOwner frameOwner;
+
+    public Component create( // <1>
+            InstanceContainer<Visit> visitDc,
+            Consumer<Vet> vetSelectionHandler
+    ){
+        return verticalLayout(
+                vetImage(visitDc),
+                horizontalLayout(
+                        treatingVetName(visitDc),
+                        editVetButton(vetSelectionHandler)
+                )
+        );
+    }
+
+    // ...
+
+    private Image vetImage(InstanceContainer<Visit> visitDc) {
+
+        Image image = uiComponents.create(Image.class);
+
+        image.setScaleMode(Image.ScaleMode.CONTAIN); // <2>
+
+        // ...
+
+        image.setValueSource(
+                new ContainerValueSource<>(visitDc, "treatingVet.image") // <3>
+        );
+
+        return image;
+    }
+
+    private Button editVetButton(Consumer<Vet> vetSelectionHandler) {
+
+        LinkButton button = uiComponents.create(LinkButton.class);
+
+        // ...
+        button.setAction(
+                new BaseAction("changeVet")
+                .withHandler(event -> openVetLookup(event, vetSelectionHandler)) // <4>
+        );
+
+        return button;
+    }
+
+    private void openVetLookup(
+            Action.ActionPerformedEvent event,
+            Consumer<Vet> vetSelectionHandler
+    ) {
+        screenBuilders.lookup(Vet.class, frameOwner)
+                .withOpenMode(OpenMode.DIALOG)
+                .withSelectHandler(
+                        vets -> vetSelectionHandler.accept(vets.iterator().next())
+                )
+                .show();
+    }
+}
+----
+<1> a vertical layout containing of the image and and a horizontal layout containing the name and an edit button is created
+<2> the vet image scale mode is set. Multiple options are possible. More information can be found in the https://doc.cuba-platform.com/manual-{cuba_version}/gui_Image.html[CUBA docs: Image UI component]
+<3> the `ValueSource` points to the `image` attribute of the associated `treatingVet` for the data container. With that the correct `FileDescriptor` is loaded by the `image` component
+<4> the handler for the edit button triggers the passed in `vetSelectionHandler`, so the associated actions can be controlled from the outside of this factory method
 
 == X-Ray Images for Visits
 
