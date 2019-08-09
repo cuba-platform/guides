@@ -438,13 +438,10 @@ metadata about the file in the relational database and the raw file binary in th
 
     <span class="directive">private</span> <span class="predefined-type">Component</span> renderAvatarImageComponent(Vet vet) {
         <span class="predefined-type">FileDescriptor</span> imageFile = vet.getImage(); <i class="conum" data-value="2"></i><b>(2)</b>
-
         <span class="keyword">if</span> (imageFile == <span class="predefined-constant">null</span>) {
             <span class="keyword">return</span> <span class="predefined-constant">null</span>;
         }
-
         <span class="predefined-type">Image</span> image = smallAvatarImage();
-
         image.setSource(FileDescriptorResource.class)
                 .setFileDescriptor(imageFile); <i class="conum" data-value="4"></i><b>(4)</b>
 
@@ -459,7 +456,6 @@ metadata about the file in the relational database and the raw file binary in th
         image.setStyleName(<span class="string"><span class="delimiter">&quot;</span><span class="content">avatar-icon-small</span><span class="delimiter">&quot;</span></span>);
         <span class="keyword">return</span> image;
     }
-
 }</code></pre>
 </div>
 </div>
@@ -510,7 +506,7 @@ metadata about the file in the relational database and the raw file binary in th
 <p>The orchestration of within the <code>VetEdit</code> controller looks like this:</p>
 </div>
 <div class="listingblock">
-<div class="title">VetBrowse.java</div>
+<div class="title">VisitEdit.java</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VisitEdit</span> <span class="directive">extends</span> StandardEditor&lt;Visit&gt; {
 
@@ -589,28 +585,22 @@ metadata about the file in the relational database and the raw file binary in th
     <span class="directive">private</span> <span class="predefined-type">Image</span> vetImage(InstanceContainer&lt;Visit&gt; visitDc) {
 
         <span class="predefined-type">Image</span> image = uiComponents.create(<span class="predefined-type">Image</span>.class);
-
         image.setScaleMode(<span class="predefined-type">Image</span>.ScaleMode.CONTAIN); <i class="conum" data-value="2"></i><b>(2)</b>
-
         <span class="comment">// ...</span>
-
         image.setValueSource(
                 <span class="keyword">new</span> ContainerValueSource&lt;&gt;(visitDc, <span class="string"><span class="delimiter">&quot;</span><span class="content">treatingVet.image</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="3"></i><b>(3)</b>
         );
-
         <span class="keyword">return</span> image;
     }
 
     <span class="directive">private</span> <span class="predefined-type">Button</span> editVetButton(Consumer&lt;Vet&gt; vetSelectionHandler) {
 
         LinkButton button = uiComponents.create(LinkButton.class);
-
         <span class="comment">// ...</span>
         button.setAction(
                 <span class="keyword">new</span> BaseAction(<span class="string"><span class="delimiter">&quot;</span><span class="content">changeVet</span><span class="delimiter">&quot;</span></span>)
                 .withHandler(event -&gt; openVetLookup(event, vetSelectionHandler)) <i class="conum" data-value="4"></i><b>(4)</b>
         );
-
         <span class="keyword">return</span> button;
     }
 
@@ -644,9 +634,17 @@ metadata about the file in the relational database and the raw file binary in th
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>the handler for the edit button triggers the passed in <code>vetSelectionHandler</code>, so the associated actions can be controlled from the outside of this factory method</td>
+<td>the handler for the edit button triggers the provided <code>vetSelectionHandler</code>, so the associated actions can be controlled from the outside of this factory method</td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>With this, the final usage of the custom Vet display &amp; selection for the Vet selection looks like this:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="/guides/images/working-with-images/vet-selection-in-visit-edit.png"><img src="/guides/images/working-with-images/vet-selection-in-visit-edit.png" alt="vet selection in visit edit"></a>
+</div>
 </div>
 </div>
 </div>
@@ -654,9 +652,174 @@ metadata about the file in the relational database and the raw file binary in th
 <div class="sect1">
 <h2 id="x_ray_images_for_visits"><a class="anchor" href="#x_ray_images_for_visits"></a><a class="link" href="#x_ray_images_for_visits">X-Ray Images for Visits</a></h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>The second main use-case that is will be covered in this guide is the ability to attach X-Ray images to a particular visit. Those X-Ray images should be displayed on selection and it is further required to download the images.</p>
+</div>
+<div class="paragraph">
+<p>The precondition is another change in the data model. As before for the <code>Vet</code> entity, the <code>Visit</code> also needs a reference to the <code>FileDescriptor</code>, but this time it is a <code>MANY-TO-MANY</code> association. Having this domain model change as well as the corresponding view adjustment in place, the first part can be tackled in the next, where the X-Ray image is previewed next to the table.</p>
+</div>
 <div class="sect2">
 <h3 id="create_x_ray_image_preview"><a class="anchor" href="#create_x_ray_image_preview"></a><a class="link" href="#create_x_ray_image_preview">Create X-Ray Image Preview</a></h3>
+<div class="paragraph">
+<p>In order to render an image preview of the uploaded X-Ray image, the <code>visit-edit.xml</code> needs to be adjusted so that it can display information next to the X-Ray images M:N table.</p>
+</div>
+<div class="listingblock">
+<div class="title">visit-edit.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;hbox</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">contentHBox</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">spacing</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">width</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">100%</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;table</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">xRayImagesTable</span><span class="delimiter">&quot;</span></span>
+           <span class="attribute-name">dataContainer</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">xRayImagesDc</span><span class="delimiter">&quot;</span></span>
+           <span class="attribute-name">width</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">100%</span><span class="delimiter">&quot;</span></span>
+           <span class="attribute-name">height</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">100%</span><span class="delimiter">&quot;</span></span>
+           <span class="attribute-name">columnControlVisible</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">false</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;actions&gt;</span>
+            <span class="tag">&lt;action</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">download</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">trackSelection</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">icon</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">DOWNLOAD</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+            <span class="tag">&lt;action</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">edit</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">edit</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+            <span class="tag">&lt;action</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">remove</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">remove</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+        <span class="tag">&lt;/actions&gt;</span>
+        <span class="tag">&lt;columns&gt;</span>
+            <span class="tag">&lt;column</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+        <span class="tag">&lt;/columns&gt;</span>
+    <span class="tag">&lt;/table&gt;</span>
+    <span class="tag">&lt;hbox</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">xrayImageWrapperLayout</span><span class="delimiter">&quot;</span></span>
+          <span class="attribute-name">height</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">100%</span><span class="delimiter">&quot;</span></span>
+          <span class="attribute-name">width</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">100%</span><span class="delimiter">&quot;</span></span>
+          <span class="attribute-name">spacing</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;/hbox&gt;</span>
+<span class="tag">&lt;/hbox&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The most interesting part is the <code>xrayImageWrapperLayout</code> component, which acts as a placeholder that will contain the image later. Currently it contains no child components. It will be filled at the time a selection is made for the <code>xRayImagesTable</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">VisitEdit.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@UiController</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_Visit.edit</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">visit-edit.xml</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@EditedEntityContainer</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">visitDc</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@LoadDataBeforeShow</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">VisitEdit</span> <span class="directive">extends</span> StandardEditor&lt;Visit&gt; {
 
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> Table&lt;<span class="predefined-type">FileDescriptor</span>&gt; xRayImagesTable;
+
+
+    <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">xRayImagesTable</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">protected</span> <span class="type">void</span> onXRayImagesTableSelection(
+            Table.SelectionEvent&lt;<span class="predefined-type">FileDescriptor</span>&gt; event
+    ) {
+        xrayImageWrapperLayout.removeAll();
+        <span class="predefined-type">Set</span>&lt;<span class="predefined-type">FileDescriptor</span>&gt; selectedXrayImages = event.getSelected(); <i class="conum" data-value="1"></i><b>(1)</b>
+
+        <span class="keyword">if</span> (!selectedXrayImages.isEmpty()) {
+            xrayImageWrapperLayout.add( <i class="conum" data-value="2"></i><b>(2)</b>
+                    xrayImage(
+                            selectedXrayImages.iterator().next()
+                    )
+            );
+        }
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">Component</span> xrayImage(<span class="predefined-type">FileDescriptor</span> file) {
+        XrayPreviewComponentFactory factory = <span class="keyword">new</span> XrayPreviewComponentFactory(
+                uiComponents,
+                messageBundle
+        );
+
+        <span class="keyword">return</span> factory.create(file); <i class="conum" data-value="3"></i><b>(3)</b>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the table selection event is used to fetch the selected <code>FileDescriptor</code> instance (X-Ray image)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>a X-Ray component is placed within the <code>xrayImageWrapperLayout</code> as a child component for the selected X-Ray image</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>the logic to create the X-Ray image preview is delegeted to the <code>XrayPreviewComponentFactory</code> class</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">XrayPreviewComponentFactory.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">XrayPreviewComponentFactory</span> {
+
+    <span class="directive">private</span> <span class="directive">final</span> UiComponents uiComponents;
+    <span class="directive">private</span> <span class="directive">final</span> MessageBundle messageBundle;
+
+    <span class="directive">public</span> XrayPreviewComponentFactory(UiComponents uiComponents, MessageBundle messageBundle) {
+        <span class="local-variable">this</span>.uiComponents = uiComponents;
+        <span class="local-variable">this</span>.messageBundle = messageBundle;
+    }
+
+
+    <span class="directive">public</span> <span class="predefined-type">Component</span> create(<span class="predefined-type">FileDescriptor</span> file) {
+        GroupBoxLayout groupBoxLayout = uiComponents.create(GroupBoxLayout.class);
+
+        groupBoxLayout.setShowAsPanel(<span class="predefined-constant">true</span>);
+        groupBoxLayout.setWidthFull();
+        groupBoxLayout.setHeightFull();
+        groupBoxLayout.setStyleName(<span class="string"><span class="delimiter">&quot;</span><span class="content">well</span><span class="delimiter">&quot;</span></span>);
+        groupBoxLayout.setCaption(messageBundle.formatMessage(<span class="string"><span class="delimiter">&quot;</span><span class="content">previewFile</span><span class="delimiter">&quot;</span></span>, file.getName()));
+
+        <span class="keyword">if</span> (isPdf(file)) {
+            <span class="predefined-type">Component</span> xrayImageComponent = xrayPdfComponent(file);
+            groupBoxLayout.add(xrayImageComponent);
+
+        }
+        <span class="keyword">else</span> <span class="keyword">if</span> (isImage(file)){
+            <span class="predefined-type">Component</span> xrayImageComponent = xrayImageComponent(file);
+            groupBoxLayout.add(xrayImageComponent);
+        }
+
+        <span class="keyword">return</span> groupBoxLayout;
+    }
+
+    <span class="directive">private</span> <span class="type">boolean</span> isPdf(<span class="predefined-type">FileDescriptor</span> file) {
+        <span class="keyword">return</span> file.getExtension().contains(<span class="string"><span class="delimiter">&quot;</span><span class="content">pdf</span><span class="delimiter">&quot;</span></span>);
+    }
+
+    <span class="directive">private</span> <span class="type">boolean</span> isImage(<span class="predefined-type">FileDescriptor</span> imageFile) {
+        <span class="keyword">return</span> imageFile.getExtension().contains(<span class="string"><span class="delimiter">&quot;</span><span class="content">png</span><span class="delimiter">&quot;</span></span>)
+                || imageFile.getExtension().contains(<span class="string"><span class="delimiter">&quot;</span><span class="content">jpg</span><span class="delimiter">&quot;</span></span>)
+                || imageFile.getExtension().contains(<span class="string"><span class="delimiter">&quot;</span><span class="content">jpeg</span><span class="delimiter">&quot;</span></span>);
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">Component</span> xrayPdfComponent(<span class="predefined-type">FileDescriptor</span> imageFile) {
+        BrowserFrame browserFrame = uiComponents.create(BrowserFrame.class);
+        browserFrame.setAlignment(<span class="predefined-type">Component</span>.Alignment.MIDDLE_CENTER);
+        browserFrame.setWidthFull();
+        browserFrame.setHeightFull();
+        browserFrame.setSource(FileDescriptorResource.class)
+                .setFileDescriptor(imageFile)
+                .setMimeType(<span class="string"><span class="delimiter">&quot;</span><span class="content">application/pdf</span><span class="delimiter">&quot;</span></span>);
+        <span class="keyword">return</span> browserFrame;
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">Component</span> xrayImageComponent(<span class="predefined-type">FileDescriptor</span> imageFile) {
+        <span class="predefined-type">Image</span> image = uiComponents.create(<span class="predefined-type">Image</span>.class);
+        image.setScaleMode(<span class="predefined-type">Image</span>.ScaleMode.SCALE_DOWN);
+        image.setAlignment(<span class="predefined-type">Component</span>.Alignment.MIDDLE_CENTER);
+        image.setWidthFull();
+        image.setHeightFull();
+
+        image.setSource(FileDescriptorResource.class)
+                .setFileDescriptor(imageFile);
+
+        <span class="keyword">return</span> image;
+    }
+}</code></pre>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="download_x_ray_images"><a class="anchor" href="#download_x_ray_images"></a><a class="link" href="#download_x_ray_images">Download X-Ray Images</a></h3>
