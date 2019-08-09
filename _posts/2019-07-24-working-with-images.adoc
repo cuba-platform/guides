@@ -170,13 +170,10 @@ public class VetBrowse extends StandardLookup<Vet> {
 
     private Component renderAvatarImageComponent(Vet vet) {
         FileDescriptor imageFile = vet.getImage(); // <2>
-
         if (imageFile == null) {
             return null;
         }
-
         Image image = smallAvatarImage();
-
         image.setSource(FileDescriptorResource.class)
                 .setFileDescriptor(imageFile); // <4>
 
@@ -191,7 +188,6 @@ public class VetBrowse extends StandardLookup<Vet> {
         image.setStyleName("avatar-icon-small");
         return image;
     }
-
 }
 ----
 <1> a new column `image` is registered in the `vetsTable` with the factory method: `renderAvatarImageComponent`
@@ -216,7 +212,7 @@ The second part is the `VetPreviewComponentFactory`. This class is responsible f
 
 The orchestration of within the `VetEdit` controller looks like this:
 
-.VetBrowse.java
+.VisitEdit.java
 [source,java]
 ----
 public class VisitEdit extends StandardEditor<Visit> {
@@ -284,28 +280,22 @@ public class VetPreviewComponentFactory {
     private Image vetImage(InstanceContainer<Visit> visitDc) {
 
         Image image = uiComponents.create(Image.class);
-
         image.setScaleMode(Image.ScaleMode.CONTAIN); // <2>
-
         // ...
-
         image.setValueSource(
                 new ContainerValueSource<>(visitDc, "treatingVet.image") // <3>
         );
-
         return image;
     }
 
     private Button editVetButton(Consumer<Vet> vetSelectionHandler) {
 
         LinkButton button = uiComponents.create(LinkButton.class);
-
         // ...
         button.setAction(
                 new BaseAction("changeVet")
                 .withHandler(event -> openVetLookup(event, vetSelectionHandler)) // <4>
         );
-
         return button;
     }
 
@@ -325,11 +315,170 @@ public class VetPreviewComponentFactory {
 <1> a vertical layout containing of the image and and a horizontal layout containing the name and an edit button is created
 <2> the vet image scale mode is set. Multiple options are possible. More information can be found in the https://doc.cuba-platform.com/manual-{cuba_version}/gui_Image.html[CUBA docs: Image UI component]
 <3> the `ValueSource` points to the `image` attribute of the associated `treatingVet` for the data container. With that the correct `FileDescriptor` is loaded by the `image` component
-<4> the handler for the edit button triggers the passed in `vetSelectionHandler`, so the associated actions can be controlled from the outside of this factory method
+<4> the handler for the edit button triggers the provided `vetSelectionHandler`, so the associated actions can be controlled from the outside of this factory method
+
+With this, the final usage of the custom Vet display & selection for the Vet selection looks like this:
+
+image::working-with-images/vet-selection-in-visit-edit.png[align="center", link="/guides/images/working-with-images/vet-selection-in-visit-edit.png"]
+
 
 == X-Ray Images for Visits
 
+The second main use-case that is will be covered in this guide is the ability to attach X-Ray images to a particular visit. Those X-Ray images should be displayed on selection and it is further required to download the images.
+
+The precondition is another change in the data model. As before for the `Vet` entity, the `Visit` also needs a reference to the `FileDescriptor`, but this time it is a `MANY-TO-MANY` association. Having this domain model change as well as the corresponding view adjustment in place, the first part can be tackled in the next, where the X-Ray image is previewed next to the table.
+
 === Create X-Ray Image Preview
+
+In order to render an image preview of the uploaded X-Ray image, the `visit-edit.xml` needs to be adjusted so that it can display information next to the X-Ray images M:N table.
+
+.visit-edit.xml
+[source,xml]
+----
+<hbox id="contentHBox" spacing="true" width="100%">
+    <table id="xRayImagesTable"
+           dataContainer="xRayImagesDc"
+           width="100%"
+           height="100%"
+           columnControlVisible="false">
+        <actions>
+            <action id="download" trackSelection="true" icon="DOWNLOAD"/>
+            <action id="edit" type="edit"/>
+            <action id="remove" type="remove"/>
+        </actions>
+        <columns>
+            <column id="name"/>
+        </columns>
+    </table>
+    <hbox id="xrayImageWrapperLayout"
+          height="100%"
+          width="100%"
+          spacing="true">
+    </hbox>
+</hbox>
+----
+
+The most interesting part is the `xrayImageWrapperLayout` component, which acts as a placeholder that will contain the image later. Currently it contains no child components. It will be filled at the time a selection is made for the `xRayImagesTable`.
+
+
+.VisitEdit.java
+[source,java]
+----
+
+@UiController("petclinic_Visit.edit")
+@UiDescriptor("visit-edit.xml")
+@EditedEntityContainer("visitDc")
+@LoadDataBeforeShow
+public class VisitEdit extends StandardEditor<Visit> {
+
+    @Inject
+    protected Table<FileDescriptor> xRayImagesTable;
+
+
+    @Subscribe("xRayImagesTable")
+    protected void onXRayImagesTableSelection(
+            Table.SelectionEvent<FileDescriptor> event
+    ) {
+        xrayImageWrapperLayout.removeAll();
+        Set<FileDescriptor> selectedXrayImages = event.getSelected(); // <1>
+
+        if (!selectedXrayImages.isEmpty()) {
+            xrayImageWrapperLayout.add( // <2>
+                    xrayImage(
+                            selectedXrayImages.iterator().next()
+                    )
+            );
+        }
+    }
+
+    private Component xrayImage(FileDescriptor file) {
+        XrayPreviewComponentFactory factory = new XrayPreviewComponentFactory(
+                uiComponents,
+                messageBundle
+        );
+
+        return factory.create(file); // <3>
+    }
+}
+----
+<1> the table selection event is used to fetch the selected `FileDescriptor` instance (X-Ray image)
+<2> a X-Ray component is placed within the `xrayImageWrapperLayout` as a child component for the selected X-Ray image
+<3> the logic to create the X-Ray image preview is delegeted to the `XrayPreviewComponentFactory` class
+
+
+
+.XrayPreviewComponentFactory.java
+[source,java]
+----
+public class XrayPreviewComponentFactory {
+
+    private final UiComponents uiComponents;
+    private final MessageBundle messageBundle;
+
+    public XrayPreviewComponentFactory(UiComponents uiComponents, MessageBundle messageBundle) {
+        this.uiComponents = uiComponents;
+        this.messageBundle = messageBundle;
+    }
+
+
+    public Component create(FileDescriptor file) {
+        GroupBoxLayout groupBoxLayout = uiComponents.create(GroupBoxLayout.class);
+
+        groupBoxLayout.setShowAsPanel(true);
+        groupBoxLayout.setWidthFull();
+        groupBoxLayout.setHeightFull();
+        groupBoxLayout.setStyleName("well");
+        groupBoxLayout.setCaption(messageBundle.formatMessage("previewFile", file.getName()));
+
+        if (isPdf(file)) {
+            Component xrayImageComponent = xrayPdfComponent(file);
+            groupBoxLayout.add(xrayImageComponent);
+
+        }
+        else if (isImage(file)){
+            Component xrayImageComponent = xrayImageComponent(file);
+            groupBoxLayout.add(xrayImageComponent);
+        }
+
+        return groupBoxLayout;
+    }
+
+    private boolean isPdf(FileDescriptor file) {
+        return file.getExtension().contains("pdf");
+    }
+
+    private boolean isImage(FileDescriptor imageFile) {
+        return imageFile.getExtension().contains("png")
+                || imageFile.getExtension().contains("jpg")
+                || imageFile.getExtension().contains("jpeg");
+    }
+
+    private Component xrayPdfComponent(FileDescriptor imageFile) {
+        BrowserFrame browserFrame = uiComponents.create(BrowserFrame.class);
+        browserFrame.setAlignment(Component.Alignment.MIDDLE_CENTER);
+        browserFrame.setWidthFull();
+        browserFrame.setHeightFull();
+        browserFrame.setSource(FileDescriptorResource.class)
+                .setFileDescriptor(imageFile)
+                .setMimeType("application/pdf");
+        return browserFrame;
+    }
+
+    private Component xrayImageComponent(FileDescriptor imageFile) {
+        Image image = uiComponents.create(Image.class);
+        image.setScaleMode(Image.ScaleMode.SCALE_DOWN);
+        image.setAlignment(Component.Alignment.MIDDLE_CENTER);
+        image.setWidthFull();
+        image.setHeightFull();
+
+        image.setSource(FileDescriptorResource.class)
+                .setFileDescriptor(imageFile);
+
+        return image;
+    }
+}
+----
+
 
 === Download X-Ray Images
 
