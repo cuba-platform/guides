@@ -324,9 +324,9 @@ image::working-with-images/vet-selection-in-visit-edit.png[align="center", link=
 
 == X-Ray Images for Visits
 
-The second main use-case that is will be covered in this guide is the ability to attach X-Ray images to a particular visit. Those X-Ray images should be displayed on selection and it is further required to download the images.
+The second main use-case that is will be covered in this guide is the ability to attach X-Ray images to a particular visit. Those X-Ray images should be displayed on selection and it should be further possible to download the images.
 
-The precondition is another change in the data model. As before for the `Vet` entity, the `Visit` also needs a reference to the `FileDescriptor`, but this time it is a `MANY-TO-MANY` association. Having this domain model change as well as the corresponding view adjustment in place, the first part can be tackled in the next, where the X-Ray image is previewed next to the table.
+The precondition is another change in the data model. As before for the `Vet` entity, the `Visit` also needs a reference to the `FileDescriptor`, but this time it is a `MANY-TO-MANY` association. Having this domain model change as well as the corresponding view adjustment in place, the first part can be tackled in the next section where the X-Ray image is previewed next to the table.
 
 === Create X-Ray Image Preview
 
@@ -358,22 +358,16 @@ In order to render an image preview of the uploaded X-Ray image, the `visit-edit
 </hbox>
 ----
 
-The most interesting part is the `xrayImageWrapperLayout` component, which acts as a placeholder that will contain the image later. Currently it contains no child components. It will be filled at the time a selection is made for the `xRayImagesTable`.
+The most interesting part is the `xrayImageWrapperLayout` component, which acts as a placeholder that will contain the image later. Currently it contains no child components. It will be dynamically filled at the time a selection is made for the `xRayImagesTable`.
 
 
 .VisitEdit.java
 [source,java]
 ----
-
-@UiController("petclinic_Visit.edit")
-@UiDescriptor("visit-edit.xml")
-@EditedEntityContainer("visitDc")
-@LoadDataBeforeShow
 public class VisitEdit extends StandardEditor<Visit> {
 
     @Inject
     protected Table<FileDescriptor> xRayImagesTable;
-
 
     @Subscribe("xRayImagesTable")
     protected void onXRayImagesTableSelection(
@@ -403,43 +397,34 @@ public class VisitEdit extends StandardEditor<Visit> {
 ----
 <1> the table selection event is used to fetch the selected `FileDescriptor` instance (X-Ray image)
 <2> a X-Ray component is placed within the `xrayImageWrapperLayout` as a child component for the selected X-Ray image
-<3> the logic to create the X-Ray image preview is delegeted to the `XrayPreviewComponentFactory` class
+<3> the logic to create the X-Ray image preview is delegated to the `XrayPreviewComponentFactory` class
+
+Since the X-Ray image preview also is a composition of multiple Component elements, this logic was factored out into a dedicated `Factory` class. The resulting UI layout consists of a `GroupBox` which has the filename as the caption and the image preview as the content:
 
 
+image::working-with-images/x-ray-image-component.png[align="center", width="600"]
+
+
+The listing for the `XrayPreviewComponentFactory` contains only the most relevant parts. One important functionality is, that it should be able to either render Images or PDF files directly in the browser. This requires a branching logic within the implementation to use the correct UI component based on the file type.
 
 .XrayPreviewComponentFactory.java
 [source,java]
 ----
 public class XrayPreviewComponentFactory {
 
-    private final UiComponents uiComponents;
-    private final MessageBundle messageBundle;
-
-    public XrayPreviewComponentFactory(UiComponents uiComponents, MessageBundle messageBundle) {
-        this.uiComponents = uiComponents;
-        this.messageBundle = messageBundle;
-    }
-
-
     public Component create(FileDescriptor file) {
         GroupBoxLayout groupBoxLayout = uiComponents.create(GroupBoxLayout.class);
-
-        groupBoxLayout.setShowAsPanel(true);
-        groupBoxLayout.setWidthFull();
-        groupBoxLayout.setHeightFull();
+        groupBoxLayout.setShowAsPanel(true); // <1>
         groupBoxLayout.setStyleName("well");
-        groupBoxLayout.setCaption(messageBundle.formatMessage("previewFile", file.getName()));
-
+        groupBoxLayout.setCaption(
+                messageBundle.formatMessage("previewFile", file.getName())
+        );
         if (isPdf(file)) {
-            Component xrayImageComponent = xrayPdfComponent(file);
-            groupBoxLayout.add(xrayImageComponent);
-
+            groupBoxLayout.add(xrayPdfComponent(file));
         }
         else if (isImage(file)){
-            Component xrayImageComponent = xrayImageComponent(file);
-            groupBoxLayout.add(xrayImageComponent);
+            groupBoxLayout.add(xrayImageComponent(file));
         }
-
         return groupBoxLayout;
     }
 
@@ -447,37 +432,32 @@ public class XrayPreviewComponentFactory {
         return file.getExtension().contains("pdf");
     }
 
-    private boolean isImage(FileDescriptor imageFile) {
-        return imageFile.getExtension().contains("png")
-                || imageFile.getExtension().contains("jpg")
-                || imageFile.getExtension().contains("jpeg");
-    }
-
-    private Component xrayPdfComponent(FileDescriptor imageFile) {
-        BrowserFrame browserFrame = uiComponents.create(BrowserFrame.class);
-        browserFrame.setAlignment(Component.Alignment.MIDDLE_CENTER);
-        browserFrame.setWidthFull();
-        browserFrame.setHeightFull();
-        browserFrame.setSource(FileDescriptorResource.class)
-                .setFileDescriptor(imageFile)
-                .setMimeType("application/pdf");
-        return browserFrame;
-    }
+    // ...
 
     private Component xrayImageComponent(FileDescriptor imageFile) {
         Image image = uiComponents.create(Image.class);
         image.setScaleMode(Image.ScaleMode.SCALE_DOWN);
-        image.setAlignment(Component.Alignment.MIDDLE_CENTER);
-        image.setWidthFull();
-        image.setHeightFull();
-
         image.setSource(FileDescriptorResource.class)
-                .setFileDescriptor(imageFile);
-
+                .setFileDescriptor(imageFile); // <2>
         return image;
+    }
+
+    private Component xrayPdfComponent(FileDescriptor imageFile) {
+        BrowserFrame browserFrame = uiComponents.create(BrowserFrame.class);
+        browserFrame.setSource(FileDescriptorResource.class)
+                .setFileDescriptor(imageFile)
+                .setMimeType(MediaType.APPLICATION_PDF_VALUE); // <3>
+        return browserFrame;
     }
 }
 ----
+<1> GroupBox specific stylings will be applied to the wrapper component
+<2> In case of an image, the `Image` component will be used and the file descriptor will be assigned as a source
+<3> In case of a PDF file, the correct mime type has to be set in order to render the file in the browser inline
+
+With those two parts in place, the preview functionality of the X-Ray Images is complete:
+
+image::working-with-images/x-ray-image-preview.png[align="center", link="/guides/images/working-with-images/x-ray-image-preview.png"]
 
 
 === Download X-Ray Images
