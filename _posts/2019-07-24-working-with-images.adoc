@@ -462,6 +462,30 @@ image::working-with-images/x-ray-image-preview.png[align="center", link="/guides
 
 === Download X-Ray Images
 
+The last functionality that is part of the X-Ray Image preview functionality is that it should be possible to download the image files.
+
+For this, an additional button is placed on top of the `xRayImagesTable`. The controller code, uses the `ExportDisplay` bean from CUBA in order to trigger the download of a FileDescriptor in the browser.
+
+.VisitEdit.java
+[source,java]
+----
+public class VisitEdit extends StandardEditor<Visit> {
+
+    @Inject
+    protected ExportDisplay exportDisplay;
+
+    @Subscribe("xRayImagesTable.download")
+    protected void onXRayImagesTableDownload(Action.ActionPerformedEvent event) {
+        downloadFile(xRayImagesTable.getSingleSelected());
+    }
+
+    private void downloadFile(FileDescriptor file) {
+        exportDisplay.show(file, ExportFormat.OCTET_STREAM);
+    }
+}
+----
+
+The `exportDisplay` bean has multiple options to download a file. The one that is used here takes a `FileDescriptor` instance. The constant `ExportFormat.OCTET_STREAM` indicates the browser that it should force the file to be downloaded and not try to render it in another tab e.g.
 
 == Summary
 
