@@ -166,9 +166,7 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>In a CUBA application it is possible to interact with images in various ways. In this guide, examples will be shown on how
-to upload and display images in the application. It will also be shown how to attach those images to entities and providing
- the user the ability to download the image files from the application.</p>
+<p>In a CUBA application it is possible to interact with images in various ways. In this guide, examples will be shown on how to upload and display images in the application. It will also be shown how to attach those images to entities and providing the user the ability to download the image files from the application.</p>
 </div>
 </div>
 </div>
@@ -181,16 +179,16 @@ to upload and display images in the application. It will also be shown how to at
 <div class="ulist">
 <ul>
 <li>
-<p>allow to upload an image for a Veterinarian</p>
+<p>allow to upload an avatar image for a Veterinarian</p>
 </li>
 <li>
-<p>render the vets image in the vets browse table</p>
+<p>render the Veterinarians avatar in the Veterinarians browse table</p>
 </li>
 <li>
-<p>create custom lookup-like component that shows the vets image next to the vets name</p>
+<p>create custom lookup-like component that shows the Veterinarians avatar next to the name</p>
 </li>
 <li>
-<p>ability to attach x-ray images to a visit and show a preview of the images</p>
+<p>ability to attach X-Ray images to a visit and show a preview of the images</p>
 </li>
 </ul>
 </div>
@@ -249,11 +247,13 @@ to upload and display images in the application. It will also be shown how to at
 </div>
 </div>
 <div class="sect1">
-<h2 id="cubas_file_storage_subsystem_handles_file_interactions"><a class="anchor" href="#cubas_file_storage_subsystem_handles_file_interactions"></a><a class="link" href="#cubas_file_storage_subsystem_handles_file_interactions">CUBAs File Storage Subsystem Handles File Interactions</a></h2>
+<h2 id="cubas_file_storage_subsystem"><a class="anchor" href="#cubas_file_storage_subsystem"></a><a class="link" href="#cubas_file_storage_subsystem">CUBAs File Storage Subsystem</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>CUBA has a comprehensive set of features, that deal with the task of interacting with files within an application called <code>File Storage</code>.
-This set of APIs allow the developer to fulfill the end-to-end process of working with files. It contains mainly:</p>
+<p>CUBA has a comprehensive set of features, that deal with the task of interacting with files within an application. The underlying subsystem is called <code>File Storage</code>.</p>
+</div>
+<div class="paragraph">
+<p>This set of APIs allow the developer to fulfill the end-to-end process of working with files. This mainly contains:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -272,8 +272,7 @@ This set of APIs allow the developer to fulfill the end-to-end process of workin
 </ul>
 </div>
 <div class="paragraph">
-<p>The implementation of the File Storage subsystem separates the storage of the file metadata from the file binary. It stores
-metadata about the file in the relational database and the raw file binary in the local filesystem.</p>
+<p>The File Storage subsystem separates the storage of the file metadata from the file binary. It stores metadata about the file in the relational database and the raw file binary in the filesystem.</p>
 </div>
 <div class="paragraph">
 <p>More information about this topic can be found in the reference documentation on <a href="https://doc.cuba-platform.com/manual-7.0/file_storage.html">File Storage</a>.</p>
@@ -295,11 +294,14 @@ metadata about the file in the relational database and the raw file binary in th
 <p>The first example of this Images guide allows the users to upload &amp; display an avatar image for a particular veterinarian.</p>
 </div>
 <div class="paragraph">
-<p>In order to achieve this behavior, the data model of the Petclinic example needs to be enhanced, to store a reference to a file for the <code>Vet</code> entity. The corresponding JPA entity that is bundled in CUBA itself is called <code>FileDescriptor</code>, which represents the metadata part of the file representation. The association type is <code>MANY-TO-ONE</code>. In the Studio entity designer, the result looks like this:</p>
+<p>In order to achieve this behavior, the data model of the Petclinic example needs to be enhanced, to store a reference to a file for the <code>Vet</code> entity. The corresponding JPA entity that is bundled in CUBA itself is called <code>FileDescriptor</code>. It represents the metadata part of a file and acts as a pointer to this file.</p>
+</div>
+<div class="paragraph">
+<p>The association type is <code>MANY-TO-ONE</code>. In the Studio entity designer, the result looks like this:</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="/guides/images/working-with-images/vet-entity-file-descriptor-reference.png" alt="vet entity file descriptor reference">
+<a class="image" href="/guides/images/working-with-images/vet-entity-file-descriptor-reference.png"><img src="/guides/images/working-with-images/vet-entity-file-descriptor-reference.png" alt="vet entity file descriptor reference"></a>
 </div>
 </div>
 <div class="paragraph">
@@ -359,7 +361,7 @@ metadata about the file in the relational database and the raw file binary in th
 </table>
 </div>
 <div class="paragraph">
-<p>There are a couple of options for the upload component to control its behavior, that can be looked up in the <a href="https://doc.cuba-platform.com/manual-7.0/gui_FileUploadField.html">reference documentation</a>. For this use-case, the default behavior is sufficient. It will allow the user during the process of creating / editing an Vet instance, to upload, download, remove and re-upload files and directly attach it to this particular vet instance.</p>
+<p>There are a couple of options for the upload component to control its behavior, that can be looked up in the <a href="https://doc.cuba-platform.com/manual-7.0/gui_FileUploadField.html">reference documentation</a>. For this use case, the default behavior is sufficient. It will allow the user to upload, download, remove and re-upload a file and directly attach it to the vet instance of the editor.</p>
 </div>
 <div class="paragraph">
 <p>The resulting user interface looks like this:</p>
@@ -373,7 +375,7 @@ metadata about the file in the relational database and the raw file binary in th
 <p>The attribute <code>fileStoragePutMode</code> set to <code>IMMEDIATE</code> leads to the behavior that the file is persisted and a corresponding persisted <code>FileDescriptor</code> instance is created directly after the upload of the file is completed. It has the benefit, that this behavior allows to link the Vet instance to the image without further programmatic interaction.</p>
 </div>
 <div class="paragraph">
-<p>However, this has the side effect, that even if the vet instance is not saved, the file will still be kept in the system. It can still be found via <code>Administration &gt; External Files</code>. If this behavior is not desired, the <code>fileStoragePutMode</code> can be set to <code>MANUAL</code>, which requires manual management of the file persistence. An example of this behavior can also be found in the reference documentation on <a href="https://doc.cuba-platform.com/manual-7.0/file_upload.html">File upload</a>.</p>
+<p>However, this has the side effect, that even if the vet instance is not saved, the file will still be kept in the system. It can still be found via <code>Administration &gt; External Files</code>. If this behavior is not desired, the <code>fileStoragePutMode</code> can be set to <code>MANUAL</code>, which requires manual management of the file persistence. The next use case will describe this behavior in further detail.</p>
 </div>
 </div>
 <div class="sect2">
@@ -401,7 +403,7 @@ metadata about the file in the relational database and the raw file binary in th
 <p>See <a href="https://doc.cuba-platform.com/manual-7.0/gui_Image.html">CUBA docs: Image UI component</a> for more information on the possible options.</p>
 </div>
 <div class="paragraph">
-<p>In this use-case, since the <code>Vet</code> instance holds the reference to a <code>FileDescriptor</code> instance via the <code>image</code> attribute, it is possible to directly render the image out of the file reference that was stored during the last step.</p>
+<p>In this use case, since the <code>Vet</code> instance holds the reference to a <code>FileDescriptor</code> instance via the <code>image</code> attribute, it is possible to directly render the image out of the file reference.</p>
 </div>
 <div class="paragraph">
 <p>The target UI should look like this:</p>
@@ -415,7 +417,10 @@ metadata about the file in the relational database and the raw file binary in th
 <p>The <code>image</code> attribute should be one of the columns in the vets table. Furthermore it should render a particular representation of the image: not the instance name of the <code>FileDescriptor</code>, but rather the image itself.</p>
 </div>
 <div class="paragraph">
-<p>In order to achieve this behavior, the <code>Table</code> component has a particular API method: <code>addGeneratedColumn</code>, which allows to define a <code>Component</code> as the representation for a particular column in the table. This method is called for every entity that should be displayed in the table and it receives the corresponding entity instance as a parameter.</p>
+<p>In order to achieve this behavior some programmatic definition in the controller is needed.</p>
+</div>
+<div class="paragraph">
+<p>The <code>Table</code> component has a particular API method: <code>addGeneratedColumn</code>, which allows to define a <code>Component</code> as the representation for a particular column in the table. This method is called for every entity that should be displayed in the table and it receives the corresponding entity instance as a parameter.</p>
 </div>
 <div class="listingblock">
 <div class="title">VetBrowse.java</div>
@@ -467,7 +472,7 @@ metadata about the file in the relational database and the raw file binary in th
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>the <code>image</code> <code>FileDescriptor</code> reference is retrieved from the <code>Vet</code> instanced</td>
+<td>the <code>FileDescriptor</code> reference is retrieved from the <code>Vet</code> instance through the <code>image</code> association</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -486,7 +491,7 @@ metadata about the file in the relational database and the raw file binary in th
 <div class="sect2">
 <h3 id="create_vets_lookup_component_containing_the_avatar_image"><a class="anchor" href="#create_vets_lookup_component_containing_the_avatar_image"></a><a class="link" href="#create_vets_lookup_component_containing_the_avatar_image">Create Vets Lookup Component containing the Avatar Image</a></h3>
 <div class="paragraph">
-<p>The last part of this Vet avatar functionality is that in the Visit detail screen, the representation of the Vet should include the icon and the name like this:</p>
+<p>The last part of this Vet avatar functionality is that in the Visit detail screen, the representation of the Vet should include the image and the name like this:</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -497,10 +502,17 @@ metadata about the file in the relational database and the raw file binary in th
 <p>This requires to apply the image component in a different way as this component is now part of the Visit editor inside a <code>&lt;form /&gt;</code> component.</p>
 </div>
 <div class="paragraph">
-<p>The source code for providing this functionality consists of two main parts. The first part is the controller <code>VetEdit</code> which orchestrates the creation and binding of the custom component.</p>
+<p>The source code for providing this functionality consists of two parts.</p>
 </div>
-<div class="paragraph">
-<p>The second part is the <code>VetPreviewComponentFactory</code>. This class is responsible for creating the component that is shown above with the correct layout and the binding to the correct fields of the <code>InstanceContainer</code>.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>the <code>VetEdit</code> controller which orchestrates the creation and binding of the custom component</p>
+</li>
+<li>
+<p>the <code>VetPreviewComponentFactory</code>, that is responsible for creating the component that is shown above with the correct layout and the binding to the correct fields of the <code>InstanceContainer</code></p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p>The orchestration of within the <code>VetEdit</code> controller looks like this:</p>
@@ -547,11 +559,11 @@ metadata about the file in the relational database and the raw file binary in th
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td><code>create</code> creates an instance of the desired Vet avatar icon component. It requires the <code>InstanceContainer</code> and a <code>vetSelectionHandler</code> as a parameter</td>
+<td><code>create</code> creates an instance of the desired Vet avatar image component</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>the created component is attached to the <code>treatingVetForm</code> in order to render the vet avatar icon</td>
+<td>the created component is attached to the <code>treatingVetForm</code> in order to render the vet avatar image</td>
 </tr>
 </table>
 </div>
@@ -585,10 +597,9 @@ metadata about the file in the relational database and the raw file binary in th
     <span class="directive">private</span> <span class="predefined-type">Image</span> vetImage(InstanceContainer&lt;Visit&gt; visitDc) {
 
         <span class="predefined-type">Image</span> image = uiComponents.create(<span class="predefined-type">Image</span>.class);
-        image.setScaleMode(<span class="predefined-type">Image</span>.ScaleMode.CONTAIN); <i class="conum" data-value="2"></i><b>(2)</b>
         <span class="comment">// ...</span>
         image.setValueSource(
-                <span class="keyword">new</span> ContainerValueSource&lt;&gt;(visitDc, <span class="string"><span class="delimiter">&quot;</span><span class="content">treatingVet.image</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="3"></i><b>(3)</b>
+                <span class="keyword">new</span> ContainerValueSource&lt;&gt;(visitDc, <span class="string"><span class="delimiter">&quot;</span><span class="content">treatingVet.image</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="2"></i><b>(2)</b>
         );
         <span class="keyword">return</span> image;
     }
@@ -599,7 +610,7 @@ metadata about the file in the relational database and the raw file binary in th
         <span class="comment">// ...</span>
         button.setAction(
                 <span class="keyword">new</span> BaseAction(<span class="string"><span class="delimiter">&quot;</span><span class="content">changeVet</span><span class="delimiter">&quot;</span></span>)
-                .withHandler(event -&gt; openVetLookup(event, vetSelectionHandler)) <i class="conum" data-value="4"></i><b>(4)</b>
+                .withHandler(event -&gt; openVetLookup(event, vetSelectionHandler)) <i class="conum" data-value="3"></i><b>(3)</b>
         );
         <span class="keyword">return</span> button;
     }
@@ -626,14 +637,10 @@ metadata about the file in the relational database and the raw file binary in th
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>the vet image scale mode is set. Multiple options are possible. More information can be found in the <a href="https://doc.cuba-platform.com/manual-7.0/gui_Image.html">CUBA docs: Image UI component</a></td>
+<td>the <code>ValueSource</code> references the <code>image</code> attribute of the associated <code>treatingVet</code> for the data container</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>the <code>ValueSource</code> points to the <code>image</code> attribute of the associated <code>treatingVet</code> for the data container. With that the correct <code>FileDescriptor</code> is loaded by the <code>image</code> component</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
 <td>the handler for the edit button triggers the provided <code>vetSelectionHandler</code>, so the associated actions can be controlled from the outside of this factory method</td>
 </tr>
 </table>
@@ -653,13 +660,107 @@ metadata about the file in the relational database and the raw file binary in th
 <h2 id="x_ray_images_for_visits"><a class="anchor" href="#x_ray_images_for_visits"></a><a class="link" href="#x_ray_images_for_visits">X-Ray Images for Visits</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The second main use-case that is will be covered in this guide is the ability to attach X-Ray images to a particular visit. Those X-Ray images should be displayed on selection and it is further required to download the images.</p>
+<p>The second use case that is will be covered in this guide is the ability to attach X-Ray images to a particular visit. Those X-Ray images should be displayed when selected on the Table. Further it should be possible to upload and download those images.</p>
 </div>
 <div class="paragraph">
-<p>The precondition is another change in the data model. As before for the <code>Vet</code> entity, the <code>Visit</code> also needs a reference to the <code>FileDescriptor</code>, but this time it is a <code>MANY-TO-MANY</code> association. Having this domain model change as well as the corresponding view adjustment in place, the first part can be tackled in the next, where the X-Ray image is previewed next to the table.</p>
+<p>The precondition is another change in the data model. As before for the <code>Vet</code> entity, the <code>Visit</code> also needs a reference to the <code>FileDescriptor</code>, but this time it is a <code>MANY-TO-MANY</code> association. With this domain model change as well as the corresponding view adjustment in place, the three parts of uploading, previewing and downloading the X-Ray images can be tackled.</p>
 </div>
 <div class="sect2">
-<h3 id="create_x_ray_image_preview"><a class="anchor" href="#create_x_ray_image_preview"></a><a class="link" href="#create_x_ray_image_preview">Create X-Ray Image Preview</a></h3>
+<h3 id="upload_x_ray_images"><a class="anchor" href="#upload_x_ray_images"></a><a class="link" href="#upload_x_ray_images">Upload X-Ray Images</a></h3>
+<div class="paragraph">
+<p>The first step is to upload the X-Ray image to a particular <code>Visit</code> instance. For this the following <code>&lt;upload /&gt;</code> component will be placed in the <code>&lt;buttonsPanel /&gt;</code> component of the <code>xRayImagesTable</code>. Compared to the first use case, this time the <code>fileStoragePutMode</code> will be set to <code>MANUAL</code>. This gives more freedom in defining the persistence behavior, which is required in this scenario.</p>
+</div>
+<div class="listingblock">
+<div class="title">visit-edit.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;upload</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">upload</span><span class="delimiter">&quot;</span></span>
+        <span class="attribute-name">showClearButton</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">false</span><span class="delimiter">&quot;</span></span>
+        <span class="attribute-name">uploadButtonIcon</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">UPLOAD</span><span class="delimiter">&quot;</span></span>
+        <span class="attribute-name">uploadButtonCaption</span>=<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>
+        <span class="attribute-name">fileStoragePutMode</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">MANUAL</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="1"></i><b>(1)</b>
+        <span class="attribute-name">permittedExtensions</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">.png,.jpg,.pdf</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="attribute-name">dropZone</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">contentHBox</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="3"></i><b>(3)</b>
+        <span class="attribute-name">showFileName</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">false</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the persistence operation will be handled manually by the controller, in order to correctly display the image preview</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>either images or PDF files are allowed to be uploaded</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>the additional drop zone allows the user to drag &amp; drop files onto the table / preview component</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The corresponding <code>VisitEdit</code> controller subscribes to the <code>FileUploadSucceedEvent</code> of the <code>upload</code> component, persists the file and adds the <code>FileDescriptor</code> to the <code>M:N</code> association of the visit instance.</p>
+</div>
+<div class="listingblock">
+<div class="title">VisitEdit.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VisitEdit</span> <span class="directive">extends</span> StandardEditor&lt;Visit&gt; {
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> CollectionPropertyContainer&lt;<span class="predefined-type">FileDescriptor</span>&gt; xRayImagesDc;
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> FileUploadField upload;
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> DataContext dataContext;
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> FileUploadingAPI fileUploadingAPI;
+
+    <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">upload</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">protected</span> <span class="type">void</span> onUploadFileUploadSucceed(
+            FileUploadField.FileUploadSucceedEvent event
+    ) {
+        <span class="predefined-type">FileDescriptor</span> imageFile = upload.getFileDescriptor(); <i class="conum" data-value="1"></i><b>(1)</b>
+
+        <span class="keyword">try</span> {
+            fileUploadingAPI.putFileIntoStorage(upload.getFileId(), imageFile); <i class="conum" data-value="2"></i><b>(2)</b>
+
+            dataContext.merge(imageFile); <i class="conum" data-value="3"></i><b>(3)</b>
+            xRayImagesDc.getMutableItems().add(imageFile);
+            dataContext.commit();
+
+        } <span class="keyword">catch</span> (FileStorageException e) {
+            <span class="comment">/* ... */</span>
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the newly created <code>FileDescriptor</code> instance of the uploaded file is needed to persist the instance</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the uploaded file is transferred to the backend and persisted in the FileStorage</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>the <code>FileDescriptor</code> instance for the now persisted file is added to the commit context and assigned to the X-Ray images <code>M:N</code> association</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>With that subscription code in place, the X-Ray image upload is implemented and can be used to fulfil the next step: preview of the uploaded images.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="x_ray_image_preview"><a class="anchor" href="#x_ray_image_preview"></a><a class="link" href="#x_ray_image_preview">X-Ray Image Preview</a></h3>
 <div class="paragraph">
 <p>In order to render an image preview of the uploaded X-Ray image, the <code>visit-edit.xml</code> needs to be adjusted so that it can display information next to the X-Ray images M:N table.</p>
 </div>
@@ -690,20 +791,15 @@ metadata about the file in the relational database and the raw file binary in th
 </div>
 </div>
 <div class="paragraph">
-<p>The most interesting part is the <code>xrayImageWrapperLayout</code> component, which acts as a placeholder that will contain the image later. Currently it contains no child components. It will be filled at the time a selection is made for the <code>xRayImagesTable</code>.</p>
+<p>The most relevant part for this case is the <code>xrayImageWrapperLayout</code> component, which acts as a placeholder that will contain the image later. Currently it contains no child components, instead it will be dynamically filled at the time a selection is made for the <code>xRayImagesTable</code>.</p>
 </div>
 <div class="listingblock">
 <div class="title">VisitEdit.java</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@UiController</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_Visit.edit</span><span class="delimiter">&quot;</span></span>)
-<span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">visit-edit.xml</span><span class="delimiter">&quot;</span></span>)
-<span class="annotation">@EditedEntityContainer</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">visitDc</span><span class="delimiter">&quot;</span></span>)
-<span class="annotation">@LoadDataBeforeShow</span>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">VisitEdit</span> <span class="directive">extends</span> StandardEditor&lt;Visit&gt; {
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VisitEdit</span> <span class="directive">extends</span> StandardEditor&lt;Visit&gt; {
 
     <span class="annotation">@Inject</span>
     <span class="directive">protected</span> Table&lt;<span class="predefined-type">FileDescriptor</span>&gt; xRayImagesTable;
-
 
     <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">xRayImagesTable</span><span class="delimiter">&quot;</span></span>)
     <span class="directive">protected</span> <span class="type">void</span> onXRayImagesTableSelection(
@@ -711,7 +807,6 @@ metadata about the file in the relational database and the raw file binary in th
     ) {
         xrayImageWrapperLayout.removeAll();
         <span class="predefined-type">Set</span>&lt;<span class="predefined-type">FileDescriptor</span>&gt; selectedXrayImages = event.getSelected(); <i class="conum" data-value="1"></i><b>(1)</b>
-
         <span class="keyword">if</span> (!selectedXrayImages.isEmpty()) {
             xrayImageWrapperLayout.add( <i class="conum" data-value="2"></i><b>(2)</b>
                     xrayImage(
@@ -744,43 +839,39 @@ metadata about the file in the relational database and the raw file binary in th
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>the logic to create the X-Ray image preview is delegeted to the <code>XrayPreviewComponentFactory</code> class</td>
+<td>the logic to create the X-Ray image preview component is delegated to the <code>XrayPreviewComponentFactory</code> class</td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>Since the X-Ray image preview also is a composition of multiple elements, this logic was once again extracted into a dedicated <code>Factory</code> class. The resulting UI layout consists of a <code>GroupBox</code> which has the filename as the caption and the image preview as the content:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/working-with-images/x-ray-image-component.png" alt="x ray image component" width="600">
+</div>
+</div>
+<div class="paragraph">
+<p>The listing for the <code>XrayPreviewComponentFactory</code> contains only the most relevant parts. One important part of the functionality is that it should be able to either render Images or PDF files directly in the browser. This requires a branching logic within the implementation to use the correct UI component based on the file type.</p>
 </div>
 <div class="listingblock">
 <div class="title">XrayPreviewComponentFactory.java</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">XrayPreviewComponentFactory</span> {
 
-    <span class="directive">private</span> <span class="directive">final</span> UiComponents uiComponents;
-    <span class="directive">private</span> <span class="directive">final</span> MessageBundle messageBundle;
-
-    <span class="directive">public</span> XrayPreviewComponentFactory(UiComponents uiComponents, MessageBundle messageBundle) {
-        <span class="local-variable">this</span>.uiComponents = uiComponents;
-        <span class="local-variable">this</span>.messageBundle = messageBundle;
-    }
-
-
     <span class="directive">public</span> <span class="predefined-type">Component</span> create(<span class="predefined-type">FileDescriptor</span> file) {
         GroupBoxLayout groupBoxLayout = uiComponents.create(GroupBoxLayout.class);
-
-        groupBoxLayout.setShowAsPanel(<span class="predefined-constant">true</span>);
-        groupBoxLayout.setWidthFull();
-        groupBoxLayout.setHeightFull();
+        groupBoxLayout.setShowAsPanel(<span class="predefined-constant">true</span>); <i class="conum" data-value="1"></i><b>(1)</b>
         groupBoxLayout.setStyleName(<span class="string"><span class="delimiter">&quot;</span><span class="content">well</span><span class="delimiter">&quot;</span></span>);
-        groupBoxLayout.setCaption(messageBundle.formatMessage(<span class="string"><span class="delimiter">&quot;</span><span class="content">previewFile</span><span class="delimiter">&quot;</span></span>, file.getName()));
-
+        groupBoxLayout.setCaption(
+                messageBundle.formatMessage(<span class="string"><span class="delimiter">&quot;</span><span class="content">previewFile</span><span class="delimiter">&quot;</span></span>, file.getName())
+        );
         <span class="keyword">if</span> (isPdf(file)) {
-            <span class="predefined-type">Component</span> xrayImageComponent = xrayPdfComponent(file);
-            groupBoxLayout.add(xrayImageComponent);
-
+            groupBoxLayout.add(xrayPdfComponent(file));
         }
         <span class="keyword">else</span> <span class="keyword">if</span> (isImage(file)){
-            <span class="predefined-type">Component</span> xrayImageComponent = xrayImageComponent(file);
-            groupBoxLayout.add(xrayImageComponent);
+            groupBoxLayout.add(xrayImageComponent(file));
         }
-
         <span class="keyword">return</span> groupBoxLayout;
     }
 
@@ -788,49 +879,93 @@ metadata about the file in the relational database and the raw file binary in th
         <span class="keyword">return</span> file.getExtension().contains(<span class="string"><span class="delimiter">&quot;</span><span class="content">pdf</span><span class="delimiter">&quot;</span></span>);
     }
 
-    <span class="directive">private</span> <span class="type">boolean</span> isImage(<span class="predefined-type">FileDescriptor</span> imageFile) {
-        <span class="keyword">return</span> imageFile.getExtension().contains(<span class="string"><span class="delimiter">&quot;</span><span class="content">png</span><span class="delimiter">&quot;</span></span>)
-                || imageFile.getExtension().contains(<span class="string"><span class="delimiter">&quot;</span><span class="content">jpg</span><span class="delimiter">&quot;</span></span>)
-                || imageFile.getExtension().contains(<span class="string"><span class="delimiter">&quot;</span><span class="content">jpeg</span><span class="delimiter">&quot;</span></span>);
-    }
-
-    <span class="directive">private</span> <span class="predefined-type">Component</span> xrayPdfComponent(<span class="predefined-type">FileDescriptor</span> imageFile) {
-        BrowserFrame browserFrame = uiComponents.create(BrowserFrame.class);
-        browserFrame.setAlignment(<span class="predefined-type">Component</span>.Alignment.MIDDLE_CENTER);
-        browserFrame.setWidthFull();
-        browserFrame.setHeightFull();
-        browserFrame.setSource(FileDescriptorResource.class)
-                .setFileDescriptor(imageFile)
-                .setMimeType(<span class="string"><span class="delimiter">&quot;</span><span class="content">application/pdf</span><span class="delimiter">&quot;</span></span>);
-        <span class="keyword">return</span> browserFrame;
-    }
+    <span class="comment">// ...</span>
 
     <span class="directive">private</span> <span class="predefined-type">Component</span> xrayImageComponent(<span class="predefined-type">FileDescriptor</span> imageFile) {
         <span class="predefined-type">Image</span> image = uiComponents.create(<span class="predefined-type">Image</span>.class);
         image.setScaleMode(<span class="predefined-type">Image</span>.ScaleMode.SCALE_DOWN);
-        image.setAlignment(<span class="predefined-type">Component</span>.Alignment.MIDDLE_CENTER);
-        image.setWidthFull();
-        image.setHeightFull();
-
         image.setSource(FileDescriptorResource.class)
-                .setFileDescriptor(imageFile);
-
+                .setFileDescriptor(imageFile); <i class="conum" data-value="2"></i><b>(2)</b>
         <span class="keyword">return</span> image;
     }
+
+    <span class="directive">private</span> <span class="predefined-type">Component</span> xrayPdfComponent(<span class="predefined-type">FileDescriptor</span> imageFile) {
+        BrowserFrame browserFrame = uiComponents.create(BrowserFrame.class);
+        browserFrame.setSource(FileDescriptorResource.class)
+                .setFileDescriptor(imageFile)
+                .setMimeType(MediaType.APPLICATION_PDF_VALUE); <i class="conum" data-value="3"></i><b>(3)</b>
+        <span class="keyword">return</span> browserFrame;
+    }
 }</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>GroupBox specific styles will be applied to the wrapper component</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>In case of an image, the <code>Image</code> component will be used and the <code>FileDescriptor</code> will be assigned as a source</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>In case of a PDF file, the correct mime type has to be set in order to render the file in the browser inline</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>With those two parts in place, the preview functionality of the X-Ray Images is complete:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="/guides/images/working-with-images/x-ray-image-preview.png"><img src="/guides/images/working-with-images/x-ray-image-preview.png" alt="x ray image preview"></a>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="download_x_ray_images"><a class="anchor" href="#download_x_ray_images"></a><a class="link" href="#download_x_ray_images">Download X-Ray Images</a></h3>
+<div class="paragraph">
+<p>The last functionality that is part of the X-Ray Image preview use case is that it should be possible to download the image files.</p>
+</div>
+<div class="paragraph">
+<p>To achieve this an additional <code>download</code> button and action are placed on top of the <code>xRayImagesTable</code>. The controller code uses the <code>ExportDisplay</code> bean from CUBA in order to trigger the download of a FileDescriptor in the browser.</p>
+</div>
+<div class="listingblock">
+<div class="title">VisitEdit.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VisitEdit</span> <span class="directive">extends</span> StandardEditor&lt;Visit&gt; {
 
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> ExportDisplay exportDisplay;
+
+    <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">xRayImagesTable.download</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">protected</span> <span class="type">void</span> onXRayImagesTableDownload(<span class="predefined-type">Action</span>.ActionPerformedEvent event) {
+        downloadFile(xRayImagesTable.getSingleSelected());
+    }
+
+    <span class="directive">private</span> <span class="type">void</span> downloadFile(<span class="predefined-type">FileDescriptor</span> file) {
+        exportDisplay.show(file, ExportFormat.OCTET_STREAM);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>exportDisplay</code> bean has multiple options to download a file. The one that is used here takes a <code>FileDescriptor</code> instance. <code>ExportFormat.OCTET_STREAM</code> indicates the browser that it should force the file to be downloaded and not try to render it within the browser.</p>
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
 <div class="sectionbody">
-
+<div class="paragraph">
+<p>Image rendering within CUBA applications as well as custom composition of components will enrich the CRUD experience for users immediately. The main building block is the <code>FileDescriptor</code> abstraction that all UI components integrate seamless with.</p>
+</div>
+<div class="paragraph">
+<p>In this guide, two use cases were shown. The first one with the Vet avatar image used the standard upload functionality within a <code>&lt;form /&gt;</code> component and rendered the result as a generated column within a table. Additionally a custom image-aware "PickerField" was created. The second use case used the APIs more directly in order to upload, preview and download X-Ray images for visits.</p>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -866,7 +1001,7 @@ metadata about the file in the relational database and the raw file binary in th
                             <ul class="sectlevel1">
 <li><a href="#what_will_be_built">What Will be Built</a></li>
 <li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
-<li><a href="#cubas_file_storage_subsystem_handles_file_interactions">CUBAs File Storage Subsystem Handles File Interactions</a></li>
+<li><a href="#cubas_file_storage_subsystem">CUBAs File Storage Subsystem</a></li>
 <li><a href="#veterinarians_avatar_image">Veterinarians Avatar Image</a></li>
 <li><a href="#x_ray_images_for_visits">X-Ray Images for Visits</a></li>
 <li><a href="#summary">Summary</a></li>
