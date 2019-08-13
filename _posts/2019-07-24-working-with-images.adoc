@@ -16,18 +16,16 @@ permalink: working-with-images
 :cuba_version: 7.0
 
 
-In a CUBA application it is possible to interact with images in various ways. In this guide, examples will be shown on how
-to upload and display images in the application. It will also be shown how to attach those images to entities and providing
- the user the ability to download the image files from the application.
+In a CUBA application it is possible to interact with images in various ways. In this guide, examples will be shown on how to upload and display images in the application. It will also be shown how to attach those images to entities and providing the user the ability to download the image files from the application.
 
 == What Will be Built
 
 This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA Petclinic] example to allow the user to attach with images to entities and interact with them. In particular the following changed will be made:
 
-* allow to upload an image for a Veterinarian
-* render the vets image in the vets browse table
-* create custom lookup-like component that shows the vets image next to the vets name
-* ability to attach x-ray images to a visit and show a preview of the images
+* allow to upload an avatar image for a Veterinarian
+* render the Veterinarians avatar in the Veterinarians browse table
+* create custom lookup-like component that shows the Veterinarians avatar next to the name
+* ability to attach X-Ray images to a visit and show a preview of the images
 
 === Final Application
 
@@ -43,16 +41,16 @@ include::includes/petclinic_introduction.adoc[]
 
 == CUBAs File Storage Subsystem
 
-CUBA has a comprehensive set of features, that deal with the task of interacting with files within an application called `File Storage`.
-This set of APIs allow the developer to fulfill the end-to-end process of working with files. It contains mainly:
+CUBA has a comprehensive set of features, that deal with the task of interacting with files within an application. The underlying subsystem is called `File Storage`.
+
+This set of APIs allow the developer to fulfill the end-to-end process of working with files. This mainly contains:
 
 * ability to let the users upload files
 * store references from business entities to files
 * read & write files in the application
 * ability to let users download files
 
-The implementation of the File Storage subsystem separates the storage of the file metadata from the file binary. It stores
-metadata about the file in the relational database and the raw file binary in the local filesystem.
+The File Storage subsystem separates the storage of the file metadata from the file binary. It stores metadata about the file in the relational database and the raw file binary in the filesystem.
 
 More information about this topic can be found in the reference documentation on https://doc.cuba-platform.com/manual-{cuba_version}/file_storage.html[File Storage].
 
@@ -67,9 +65,11 @@ image::working-with-images/vet-avatar-example.png[width=200,float="right"]
 
 The first example of this Images guide allows the users to upload & display an avatar image for a particular veterinarian.
 
-In order to achieve this behavior, the data model of the Petclinic example needs to be enhanced, to store a reference to a file for the `Vet` entity. The corresponding JPA entity that is bundled in CUBA itself is called `FileDescriptor`, which represents the metadata part of the file representation. The association type is `MANY-TO-ONE`. In the Studio entity designer, the result looks like this:
+In order to achieve this behavior, the data model of the Petclinic example needs to be enhanced, to store a reference to a file for the `Vet` entity. The corresponding JPA entity that is bundled in CUBA itself is called `FileDescriptor`. It represents the metadata part of a file and acts as a pointer to this file.
 
-image::working-with-images/vet-entity-file-descriptor-reference.png[align="center"]
+The association type is `MANY-TO-ONE`. In the Studio entity designer, the result looks like this:
+
+image::working-with-images/vet-entity-file-descriptor-reference.png[align="center",link="/guides/images/working-with-images/vet-entity-file-descriptor-reference.png"]
 
 Once the entity model contains the reference to the `FileDescriptor` entity, the attribute `image` has to be added to the view, in order to interact with this attribute in the UI.
 
@@ -117,7 +117,7 @@ CUBA has a built-in UI component for dealing with `FileDescriptor` instances - t
 ----
 <1> the FileUploadField component binds the uploaded file to the `image` attribute of the `vetDc` data container
 
-There are a couple of options for the upload component to control its behavior, that can be looked up in the https://doc.cuba-platform.com/manual-{cuba_version}/gui_FileUploadField.html[reference documentation]. For this use-case, the default behavior is sufficient. It will allow the user during the process of creating / editing an Vet instance, to upload, download, remove and re-upload files and directly attach it to this particular vet instance.
+There are a couple of options for the upload component to control its behavior, that can be looked up in the https://doc.cuba-platform.com/manual-{cuba_version}/gui_FileUploadField.html[reference documentation]. For this use case, the default behavior is sufficient. It will allow the user to upload, download, remove and re-upload a file and directly attach it to the vet instance of the editor.
 
 The resulting user interface looks like this:
 
@@ -125,7 +125,7 @@ image::working-with-images/vet-entity-file-descriptor-reference-ui.png[align="ce
 
 The attribute `fileStoragePutMode` set to `IMMEDIATE` leads to the behavior that the file is persisted and a corresponding persisted `FileDescriptor` instance is created directly after the upload of the file is completed. It has the benefit, that this behavior allows to link the Vet instance to the image without further programmatic interaction.
 
-However, this has the side effect, that even if the vet instance is not saved, the file will still be kept in the system. It can still be found via `Administration > External Files`. If this behavior is not desired, the `fileStoragePutMode` can be set to `MANUAL`, which requires manual management of the file persistence. An example of this behavior can also be found in the reference documentation on https://doc.cuba-platform.com/manual-{cuba_version}/file_upload.html[File upload].
+However, this has the side effect, that even if the vet instance is not saved, the file will still be kept in the system. It can still be found via `Administration > External Files`. If this behavior is not desired, the `fileStoragePutMode` can be set to `MANUAL`, which requires manual management of the file persistence. The next use case will describe this behavior in further detail.
 
 === Display Vets Avatar Image in the Browse Table
 
@@ -139,7 +139,7 @@ In order to display an image in a screen the second UI component in this space i
 
 See https://doc.cuba-platform.com/manual-{cuba_version}/gui_Image.html[CUBA docs: Image UI component] for more information on the possible options.
 
-In this use-case, since the `Vet` instance holds the reference to a `FileDescriptor` instance via the `image` attribute, it is possible to directly render the image out of the file reference that was stored during the last step.
+In this use case, since the `Vet` instance holds the reference to a `FileDescriptor` instance via the `image` attribute, it is possible to directly render the image out of the file reference.
 
 The target UI should look like this:
 
@@ -147,7 +147,9 @@ image::working-with-images/vet-avatar-browse-screen.png[align="center", link="/g
 
 The `image` attribute should be one of the columns in the vets table. Furthermore it should render a particular representation of the image: not the instance name of the `FileDescriptor`, but rather the image itself.
 
-In order to achieve this behavior, the `Table` component has a particular API method: `addGeneratedColumn`, which allows to define a `Component` as the representation for a particular column in the table. This method is called for every entity that should be displayed in the table and it receives the corresponding entity instance as a parameter.
+In order to achieve this behavior some programmatic definition in the controller is needed.
+
+The `Table` component has a particular API method: `addGeneratedColumn`, which allows to define a `Component` as the representation for a particular column in the table. This method is called for every entity that should be displayed in the table and it receives the corresponding entity instance as a parameter.
 
 .VetBrowse.java
 [source,java]
@@ -191,7 +193,7 @@ public class VetBrowse extends StandardLookup<Vet> {
 }
 ----
 <1> a new column `image` is registered in the `vetsTable` with the factory method: `renderAvatarImageComponent`
-<2> the `image` `FileDescriptor` reference is retrieved from the `Vet` instanced
+<2> the `FileDescriptor` reference is retrieved from the `Vet` instance through the `image` association
 <3> the UI infrastructure bean `uiComponents` is the entry point for creating UI components programmatically
 <4> the Image component is bound to the `FileDescriptor` through the `FileDescriptorResource` variant
 
@@ -200,15 +202,16 @@ With this code in place, a image component is created, configured and bound to t
 
 === Create Vets Lookup Component containing the Avatar Image
 
-The last part of this Vet avatar functionality is that in the Visit detail screen, the representation of the Vet should include the icon and the name like this:
+The last part of this Vet avatar functionality is that in the Visit detail screen, the representation of the Vet should include the image and the name like this:
 
 image::working-with-images/vet-avatar-example.png[width=300]
 
 This requires to apply the image component in a different way as this component is now part of the Visit editor inside a `<form />` component.
 
-The source code for providing this functionality consists of two main parts. The first part is the controller `VetEdit` which orchestrates the creation and binding of the custom component.
+The source code for providing this functionality consists of two parts.
 
-The second part is the `VetPreviewComponentFactory`. This class is responsible for creating the component that is shown above with the correct layout and the binding to the correct fields of the `InstanceContainer`.
+* the `VetEdit` controller which orchestrates the creation and binding of the custom component
+* the `VetPreviewComponentFactory`, that is responsible for creating the component that is shown above with the correct layout and the binding to the correct fields of the `InstanceContainer`
 
 The orchestration of within the `VetEdit` controller looks like this:
 
@@ -246,8 +249,8 @@ public class VisitEdit extends StandardEditor<Visit> {
 }
 ----
 <1> a new `VetPreviewComponentFactory` instance is created with all the required dependencies passed to it
-<2> `create` creates an instance of the desired Vet avatar icon component. It requires the `InstanceContainer` and a `vetSelectionHandler` as a parameter
-<3> the created component is attached to the `treatingVetForm` in order to render the vet avatar icon
+<2> `create` creates an instance of the desired Vet avatar image component
+<3> the created component is attached to the `treatingVetForm` in order to render the vet avatar image
 
 
 The `VetPreviewComponentFactory` code contains a little bit more code for correct positioning of the elements within the layout. The key points are listed below (the complete class can be found in the example project: https://github.com/cuba-guides/{project_id}/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/visit/visit/VetPreviewComponentFactory.java[VetPreviewComponentFactory.java]).
@@ -280,10 +283,9 @@ public class VetPreviewComponentFactory {
     private Image vetImage(InstanceContainer<Visit> visitDc) {
 
         Image image = uiComponents.create(Image.class);
-        image.setScaleMode(Image.ScaleMode.CONTAIN); // <2>
         // ...
         image.setValueSource(
-                new ContainerValueSource<>(visitDc, "treatingVet.image") // <3>
+                new ContainerValueSource<>(visitDc, "treatingVet.image") // <2>
         );
         return image;
     }
@@ -294,7 +296,7 @@ public class VetPreviewComponentFactory {
         // ...
         button.setAction(
                 new BaseAction("changeVet")
-                .withHandler(event -> openVetLookup(event, vetSelectionHandler)) // <4>
+                .withHandler(event -> openVetLookup(event, vetSelectionHandler)) // <3>
         );
         return button;
     }
@@ -313,9 +315,8 @@ public class VetPreviewComponentFactory {
 }
 ----
 <1> a vertical layout containing of the image and and a horizontal layout containing the name and an edit button is created
-<2> the vet image scale mode is set. Multiple options are possible. More information can be found in the https://doc.cuba-platform.com/manual-{cuba_version}/gui_Image.html[CUBA docs: Image UI component]
-<3> the `ValueSource` points to the `image` attribute of the associated `treatingVet` for the data container. With that the correct `FileDescriptor` is loaded by the `image` component
-<4> the handler for the edit button triggers the provided `vetSelectionHandler`, so the associated actions can be controlled from the outside of this factory method
+<2> the `ValueSource` references the `image` attribute of the associated `treatingVet` for the data container
+<3> the handler for the edit button triggers the provided `vetSelectionHandler`, so the associated actions can be controlled from the outside of this factory method
 
 With this, the final usage of the custom Vet display & selection for the Vet selection looks like this:
 
@@ -324,13 +325,13 @@ image::working-with-images/vet-selection-in-visit-edit.png[align="center", link=
 
 == X-Ray Images for Visits
 
-The second main use-case that is will be covered in this guide is the ability to attach X-Ray images to a particular visit. Those X-Ray images should be displayed on selection and it should be further possible to download the images.
+The second use case that is will be covered in this guide is the ability to attach X-Ray images to a particular visit. Those X-Ray images should be displayed when selected on the Table. Further it should be possible to upload and download those images.
 
 The precondition is another change in the data model. As before for the `Vet` entity, the `Visit` also needs a reference to the `FileDescriptor`, but this time it is a `MANY-TO-MANY` association. With this domain model change as well as the corresponding view adjustment in place, the three parts of uploading, previewing and downloading the X-Ray images can be tackled.
 
 === Upload X-Ray Images
 
-The first step is to upload the X-Ray image to a particular `Visit` instance. For this the following `<upload />` component will be placed in the `<buttonsPanel />` component of the `xRayImagesTable`. Compared to the first use case, this time the persistence part will be handled manually.
+The first step is to upload the X-Ray image to a particular `Visit` instance. For this the following `<upload />` component will be placed in the `<buttonsPanel />` component of the `xRayImagesTable`. Compared to the first use case, this time the `fileStoragePutMode` will be set to `MANUAL`. This gives more freedom in defining the persistence behavior, which is required in this scenario.
 
 .visit-edit.xml
 [source,xml]
@@ -348,7 +349,7 @@ The first step is to upload the X-Ray image to a particular `Visit` instance. Fo
 <2> either images or PDF files are allowed to be uploaded
 <3> the additional drop zone allows the user to drag & drop files onto the table / preview component
 
-The corresponding `VisitEdit` controller subscribes to the `FileUploadSucceedEvent` of the `upload` component and adds the file to the `M:N` association of the visit instance.
+The corresponding `VisitEdit` controller subscribes to the `FileUploadSucceedEvent` of the `upload` component, persists the file and adds the `FileDescriptor` to the `M:N` association of the visit instance.
 
 .VisitEdit.java
 [source,java]
@@ -368,7 +369,9 @@ public class VisitEdit extends StandardEditor<Visit> {
     protected FileUploadingAPI fileUploadingAPI;
 
     @Subscribe("upload")
-    protected void onUploadFileUploadSucceed(FileUploadField.FileUploadSucceedEvent event) {
+    protected void onUploadFileUploadSucceed(
+            FileUploadField.FileUploadSucceedEvent event
+    ) {
         FileDescriptor imageFile = upload.getFileDescriptor(); // <1>
 
         try {
@@ -388,7 +391,7 @@ public class VisitEdit extends StandardEditor<Visit> {
 <2> the uploaded file is transferred to the backend and persisted in the FileStorage
 <3> the `FileDescriptor` instance for the now persisted file is added to the commit context and assigned to the X-Ray images `M:N` association
 
-With that subscription code in place, the X-Ray image upload is implemented and can be used to fulfil the next requirement: preview of the uploaded image.
+With that subscription code in place, the X-Ray image upload is implemented and can be used to fulfil the next step: preview of the uploaded images.
 
 === X-Ray Image Preview
 
@@ -420,7 +423,7 @@ In order to render an image preview of the uploaded X-Ray image, the `visit-edit
 </hbox>
 ----
 
-The most interesting part is the `xrayImageWrapperLayout` component, which acts as a placeholder that will contain the image later. Currently it contains no child components. It will be dynamically filled at the time a selection is made for the `xRayImagesTable`.
+The most relevant part for this case is the `xrayImageWrapperLayout` component, which acts as a placeholder that will contain the image later. Currently it contains no child components, instead it will be dynamically filled at the time a selection is made for the `xRayImagesTable`.
 
 
 .VisitEdit.java
@@ -437,7 +440,6 @@ public class VisitEdit extends StandardEditor<Visit> {
     ) {
         xrayImageWrapperLayout.removeAll();
         Set<FileDescriptor> selectedXrayImages = event.getSelected(); // <1>
-
         if (!selectedXrayImages.isEmpty()) {
             xrayImageWrapperLayout.add( // <2>
                     xrayImage(
@@ -459,15 +461,15 @@ public class VisitEdit extends StandardEditor<Visit> {
 ----
 <1> the table selection event is used to fetch the selected `FileDescriptor` instance (X-Ray image)
 <2> a X-Ray component is placed within the `xrayImageWrapperLayout` as a child component for the selected X-Ray image
-<3> the logic to create the X-Ray image preview is delegated to the `XrayPreviewComponentFactory` class
+<3> the logic to create the X-Ray image preview component is delegated to the `XrayPreviewComponentFactory` class
 
-Since the X-Ray image preview also is a composition of multiple Component elements, this logic was factored out into a dedicated `Factory` class. The resulting UI layout consists of a `GroupBox` which has the filename as the caption and the image preview as the content:
+Since the X-Ray image preview also is a composition of multiple elements, this logic was once again extracted into a dedicated `Factory` class. The resulting UI layout consists of a `GroupBox` which has the filename as the caption and the image preview as the content:
 
 
 image::working-with-images/x-ray-image-component.png[align="center", width="600"]
 
 
-The listing for the `XrayPreviewComponentFactory` contains only the most relevant parts. One important functionality is, that it should be able to either render Images or PDF files directly in the browser. This requires a branching logic within the implementation to use the correct UI component based on the file type.
+The listing for the `XrayPreviewComponentFactory` contains only the most relevant parts. One important part of the functionality is that it should be able to either render Images or PDF files directly in the browser. This requires a branching logic within the implementation to use the correct UI component based on the file type.
 
 .XrayPreviewComponentFactory.java
 [source,java]
@@ -513,8 +515,8 @@ public class XrayPreviewComponentFactory {
     }
 }
 ----
-<1> GroupBox specific stylings will be applied to the wrapper component
-<2> In case of an image, the `Image` component will be used and the file descriptor will be assigned as a source
+<1> GroupBox specific styles will be applied to the wrapper component
+<2> In case of an image, the `Image` component will be used and the `FileDescriptor` will be assigned as a source
 <3> In case of a PDF file, the correct mime type has to be set in order to render the file in the browser inline
 
 With those two parts in place, the preview functionality of the X-Ray Images is complete:
@@ -524,9 +526,9 @@ image::working-with-images/x-ray-image-preview.png[align="center", link="/guides
 
 === Download X-Ray Images
 
-The last functionality that is part of the X-Ray Image preview functionality is that it should be possible to download the image files.
+The last functionality that is part of the X-Ray Image preview use case is that it should be possible to download the image files.
 
-For this, an additional button is placed on top of the `xRayImagesTable`. The controller code, uses the `ExportDisplay` bean from CUBA in order to trigger the download of a FileDescriptor in the browser.
+To achieve this an additional `download` button and action are placed on top of the `xRayImagesTable`. The controller code uses the `ExportDisplay` bean from CUBA in order to trigger the download of a FileDescriptor in the browser.
 
 .VisitEdit.java
 [source,java]
@@ -547,11 +549,11 @@ public class VisitEdit extends StandardEditor<Visit> {
 }
 ----
 
-The `exportDisplay` bean has multiple options to download a file. The one that is used here takes a `FileDescriptor` instance. The constant `ExportFormat.OCTET_STREAM` indicates the browser that it should force the file to be downloaded and not try to render it within the browser.
+The `exportDisplay` bean has multiple options to download a file. The one that is used here takes a `FileDescriptor` instance. `ExportFormat.OCTET_STREAM` indicates the browser that it should force the file to be downloaded and not try to render it within the browser.
 
 == Summary
 
-Image rendering within CUBA applications as well as custom composition of components will enrich the CRUD experience for users immediately. The main building block is the `FileDescriptor` abstraction that all UI components integrate seamingless with.
+Image rendering within CUBA applications as well as custom composition of components will enrich the CRUD experience for users immediately. The main building block is the `FileDescriptor` abstraction that all UI components integrate seamless with.
 
 In this guide, two use cases were shown. The first one with the Vet avatar image used the standard upload functionality within a `<form />` component and rendered the result as a generated column within a table. Additionally a custom image-aware "PickerField" was created. The second use case used the APIs more directly in order to upload, preview and download X-Ray images for visits.
 
