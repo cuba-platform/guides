@@ -19,7 +19,7 @@ The many-to-many association implies that multiple records of one table are rela
 
 Depending on whether additional fields in the joining table are needed, it can be implemented via a many to many association with an additional entity or without it. The following examples illustrate both approaches.
 
-== What Will be Build
+== What Will Be Built
 
 This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show different use cases of many to many associations. In particular, the following use cases will be covered:
 
