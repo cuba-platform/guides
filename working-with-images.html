@@ -468,7 +468,7 @@
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>a new column <code>image</code> is registered in the <code>vetsTable</code> with the factory method: <code>renderAvatarImageComponent</code></td>
+<td>a new column <code>image</code> is registered in the <code>vetsTable</code> through the method: <code>renderAvatarImageComponent</code></td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -513,6 +513,20 @@
 <p>the <code>VetPreviewComponentFactory</code>, that is responsible for creating the component that is shown above with the correct layout and the binding to the correct fields of the <code>InstanceContainer</code></p>
 </li>
 </ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+A dedicated factory class that defines how the component is created is just one possible option to structure the implementation. It has certain advantages to extract the creating the component into a dedicated class like encapsulation, separation of concerns and the ability to re-use in other screens.<br>
+<br>
+However, it is also possible to include the component creation logic directly into the controller. This variant can be seen as a example on how to structure business logic in the UI layer. More information on this topic can be found in the guide <a href="https://www.cuba-platform.com/guides/create-business-logic-in-cuba">Create business logic in CUBA</a>.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>The orchestration of within the <code>VetEdit</code> controller looks like this:</p>
@@ -978,6 +992,9 @@
 </li>
 <li>
 <p><a href="https://doc.cuba-platform.com/manual-7.0/gui_Image.html">CUBA docs: Image UI component</a></p>
+</li>
+<li>
+<p><a href="https://www.cuba-platform.com/guides/create-business-logic-in-cuba">CUBA guide: Create business logic in CUBA</a></p>
 </li>
 </ul>
 </div>
