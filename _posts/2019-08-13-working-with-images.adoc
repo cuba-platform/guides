@@ -192,7 +192,7 @@ public class VetBrowse extends StandardLookup<Vet> {
     }
 }
 ----
-<1> a new column `image` is registered in the `vetsTable` with the factory method: `renderAvatarImageComponent`
+<1> a new column `image` is registered in the `vetsTable` through the method: `renderAvatarImageComponent`
 <2> the `FileDescriptor` reference is retrieved from the `Vet` instance through the `image` association
 <3> the UI infrastructure bean `uiComponents` is the entry point for creating UI components programmatically
 <4> the Image component is bound to the `FileDescriptor` through the `FileDescriptorResource` variant
@@ -212,6 +212,11 @@ The source code for providing this functionality consists of two parts.
 
 * the `VetEdit` controller which orchestrates the creation and binding of the custom component
 * the `VetPreviewComponentFactory`, that is responsible for creating the component that is shown above with the correct layout and the binding to the correct fields of the `InstanceContainer`
+
+
+TIP: A dedicated factory class that defines how the component is created is just one possible option to structure the implementation. It has certain advantages to extract the creating the component into a dedicated class like encapsulation, separation of concerns and the ability to re-use in other screens. +
+ +
+However, it is also possible to include the component creation logic directly into the controller. This variant can be seen as a example on how to structure business logic in the UI layer. More information on this topic can be found in the guide https://www.cuba-platform.com/guides/create-business-logic-in-cuba[Create business logic in CUBA].
 
 The orchestration of within the `VetEdit` controller looks like this:
 
@@ -562,3 +567,4 @@ In this guide, two use cases were shown. The first one with the Vet avatar image
 
 * https://doc.cuba-platform.com/manual-{cuba_version}/gui_FileUploadField.html[CUBA docs: File Upload UI component]
 * https://doc.cuba-platform.com/manual-{cuba_version}/gui_Image.html[CUBA docs: Image UI component]
+* https://www.cuba-platform.com/guides/create-business-logic-in-cuba[CUBA guide: Create business logic in CUBA]
