@@ -377,15 +377,16 @@ public class VisitEdit extends StandardEditor<Visit> {
     protected void onUploadFileUploadSucceed(
             FileUploadField.FileUploadSucceedEvent event
     ) {
-        FileDescriptor imageFile = upload.getFileDescriptor(); // <1>
+        FileDescriptor imageDescriptor = upload.getFileDescriptor(); // <1>
 
         try {
-            fileUploadingAPI.putFileIntoStorage(upload.getFileId(), imageFile); // <2>
+            fileUploadingAPI.putFileIntoStorage(upload.getFileId(), imageDescriptor); // <2>
 
-            dataContext.merge(imageFile); // <3>
-            xRayImagesDc.getMutableItems().add(imageFile);
-            dataContext.commit();
+            FileDescriptor savedImageDescriptor = dataManager.commit(imageDescriptor);
+            newImageDescriptors.add(savedImageDescriptor);
 
+            xRayImagesDc.getMutableItems().add(savedImageDescriptor); // <3>
+            /* ... */
         } catch (FileStorageException e) {
             /* ... */
         }
@@ -394,7 +395,9 @@ public class VisitEdit extends StandardEditor<Visit> {
 ----
 <1> the newly created `FileDescriptor` instance of the uploaded file is needed to persist the instance
 <2> the uploaded file is transferred to the backend and persisted in the FileStorage
-<3> the `FileDescriptor` instance for the now persisted file is added to the commit context and assigned to the X-Ray images `M:N` association
+<3> the `FileDescriptor` instance for the now persisted file is assigned to the X-Ray images `M:N` association to display it in the table
+
+WARNING: Besides the code in the listing, there is a little bit more relevant code in the example. It handles the case when the edit operation of the visit is cancelled by the user after uploading an image. In this case the images have to be removed again. For more information see the example: https://github.com/cuba-guides/cuba-petclinic-working-with-images/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/visit/visit/VisitEdit.java[VisitEdit.java].
 
 With that subscription code in place, the X-Ray image upload is implemented and can be used to fulfil the next step: preview of the uploaded images.
 
