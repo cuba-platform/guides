@@ -737,15 +737,16 @@ However, it is also possible to include the component creation logic directly in
     <span class="directive">protected</span> <span class="type">void</span> onUploadFileUploadSucceed(
             FileUploadField.FileUploadSucceedEvent event
     ) {
-        <span class="predefined-type">FileDescriptor</span> imageFile = upload.getFileDescriptor(); <i class="conum" data-value="1"></i><b>(1)</b>
+        <span class="predefined-type">FileDescriptor</span> imageDescriptor = upload.getFileDescriptor(); <i class="conum" data-value="1"></i><b>(1)</b>
 
         <span class="keyword">try</span> {
-            fileUploadingAPI.putFileIntoStorage(upload.getFileId(), imageFile); <i class="conum" data-value="2"></i><b>(2)</b>
+            fileUploadingAPI.putFileIntoStorage(upload.getFileId(), imageDescriptor); <i class="conum" data-value="2"></i><b>(2)</b>
 
-            dataContext.merge(imageFile); <i class="conum" data-value="3"></i><b>(3)</b>
-            xRayImagesDc.getMutableItems().add(imageFile);
-            dataContext.commit();
+            <span class="predefined-type">FileDescriptor</span> savedImageDescriptor = dataManager.commit(imageDescriptor);
+            newImageDescriptors.add(savedImageDescriptor);
 
+            xRayImagesDc.getMutableItems().add(savedImageDescriptor); <i class="conum" data-value="3"></i><b>(3)</b>
+            <span class="comment">/* ... */</span>
         } <span class="keyword">catch</span> (FileStorageException e) {
             <span class="comment">/* ... */</span>
         }
@@ -765,7 +766,19 @@ However, it is also possible to include the component creation logic directly in
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>the <code>FileDescriptor</code> instance for the now persisted file is added to the commit context and assigned to the X-Ray images <code>M:N</code> association</td>
+<td>the <code>FileDescriptor</code> instance for the now persisted file is assigned to the X-Ray images <code>M:N</code> association to display it in the table</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Besides the code in the listing, there is a little bit more relevant code in the example. It handles the case when the edit operation of the visit is cancelled by the user after uploading an image. In this case the images have to be removed again. For more information see the example: <a href="https://github.com/cuba-guides/cuba-petclinic-working-with-images/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/visit/visit/VisitEdit.java">VisitEdit.java</a>.
+</td>
 </tr>
 </table>
 </div>
