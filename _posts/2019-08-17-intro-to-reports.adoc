@@ -1,0 +1,88 @@
+---
+compatible_cuba_versions: 7.0+
+compatible_java_versions: 8+
+project_id: cuba-petclinic-intro-to-reports
+permalink: introduction-to-reports
+---
+= Introduction to Reports and Document generation
+:showtitle:
+:sectlinks:
+:sectanchors:
+:page-navtitle: Introduction to Reports and Document generation
+:page-excerpt: In this guide the reports application component will be introduced and different ways to interact with it through the UI and programmatically will be shown
+:page-root: ../../../
+:project_id: cuba-petclinic-intro-to-reports
+:java_version: 1.8
+:cuba_version: 7.0
+
+
+CUBA applications can be enhanced to have a comprehensive report / document generation capability directly embedded into the application. The CUBA application component `reports` supports various file formats like docx, xlsx, PDF, HTML for templating as well as output file formats. Furthermore it contains management screens and provides APIs to interact with the report / document generation process programmatically.
+
+In this guide the reports application component will be introduced and different ways to interact with it through the UI and programmatically will be shown.
+
+== What Will be Built
+
+This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA Petclinic] example to show how report capabilities can be embedded into the application:
+
+* a `recent-visits` report can be downloaded from the visit browse screen. The report contains visits of the last month, exported as an excel sheet with information about the visit, the referenced pet and its owner.
+* a `patient-record` word document containing all relevant information (master data, visit data) for a given pet can be downloaded through the detail screen of the pet.
+* an invoice for a visit is automatically generated once a visit is resolved and attached as a PDF file to the visit
+* a report counting the visits per pet type are displayed as an ad-hoc report as a CUBA table within the application
+
+=== Final Application
+
+++++
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-i18n-messages/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-i18n-messages/master/img/login-screen.png"/></a>
+++++
+
+include::includes/guide_requirements.adoc[]
+
+
+include::includes/petclinic_introduction.adoc[]
+
+== Overview
+
+Oftentimes when working with business applications there is a high demand for document generation, that will take some information from the source application and bring it in the form of a commonly known format, so that it can be shared with other parties like customers, partners or other systems.
+
+These documents might either have the form of human consumable content like a PDF file or are more used as input data for further use like a CSV / Excel file or a Word document.
+
+CUBA being targeted towards the needs of business applications in particular has dedicated support for this kind of use cases through the application component `reports`.
+
+The application component has the ability to define formatted document templates and declare the data that should be used for the document. This definition is done in a declarative way, that does not require development of code in order to generate reports / documents. It is possible for developers as well as administrators and
+
+=== Example Use Cases
+
+As mentioned above there are lots of example use cases, that deal with generating documents / reports out of a source application. Here's a list of examples:
+
+* create a excel sheet of the TOP 10 of customers with the highest total turnovers
+* generate an invoice document for an order stored in the application in PDF format
+* create payment data file as a CSV file for file exchange between the payment system and the BI system
+* show a list of best selling products aggregated by category as an application screen
+* create HTML file of latest sales offers in order to upload & publish this file on a website
+
+
+== Templates + Data = Document
+
+The underpinning of this whole solution is based on on the combination of document templates with data, that are combined in order to create the resulting document / report.
+
+=== The Document Template
+The document template is a file that acts as the blueprint for how the target file should look like.
+
+It contains placeholders as particular text snippets, that the `reports` application component can pick up and put the data into the document.
+
+Those placeholders can just be written into the template file as regular text, but they need a special characters to indicate that this text is a placeholder. A placeholder is written into the template file like this: `${NAME_OF_PLACEHOLDER}`
+
+An example of a document template can be seen below. This example is an excel sheet, that is used later in this guide:
+
+image::intro-to-reports/excel-document-template-example.png[align="center", link="images/intro-to-reports/excel-document-template-example.png"]
+
+As described above, the template contains regular text as well as placeholders like `${pet.name}` or `${pet.identificationNumber}`
+
+Furthermore it is possible to style and adjust the document template in whatever ways is desired. For Word and Excel documents, all the possible formatting options are able to be applied. For HTML documents the complete capabilities of CSS are at the fingertips of the template designer.
+
+== Summary
+
+== Further Information
+
+* https://doc.cuba-platform.com/manual-{cuba_version}/messages.html[CUBA docs: Messages Interface]
+* https://doc.cuba-platform.com/manual-{cuba_version}/localization.html[CUBA docs: Localization]
