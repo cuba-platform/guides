@@ -16,7 +16,7 @@ permalink: introduction-to-reports
 :cuba_version: 7.0
 
 
-CUBA applications can be enhanced to have a comprehensive report / document generation capability directly embedded into the application. The CUBA application component `reports` supports various file formats like docx, xlsx, PDF, HTML for templating as well as output file formats. Furthermore it contains management screens and provides APIs to interact with the report / document generation process programmatically.
+CUBA applications can be enhanced to have a comprehensive report / document generation capability directly embedded into the application. The CUBA application component `reports` supports various file formats like `docx`, `xlsx`, `PDF`, `HTML` for templating as well as output file formats. Furthermore it contains management screens and provides APIs to interact with the report / document generation process programmatically.
 
 In this guide the reports application component will be introduced and different ways to interact with it through the UI and programmatically will be shown.
 
@@ -60,25 +60,42 @@ As mentioned above there are lots of example use cases, that deal with generatin
 * show a list of best selling products aggregated by category as an application screen
 * create HTML file of latest sales offers in order to upload & publish this file on a website
 
+All of those requirements are part of what the `reports` application component is capable on handling. In the next section the overall concepts are covered and afterwards example use cases are implemented.
 
 == Templates + Data = Document
 
 The underpinning of this whole solution is based on on the combination of document templates with data, that are combined in order to create the resulting document / report.
 
 === The Document Template
-The document template is a file that acts as the blueprint for how the target file should look like.
+The document template is a file that acts as the blueprint for how the target file should look like. It contains placeholders as particular text snippets, that the `reports` application component can pick up and put the data into the document.
 
-It contains placeholders as particular text snippets, that the `reports` application component can pick up and put the data into the document.
-
-Those placeholders can just be written into the template file as regular text, but they need a special characters to indicate that this text is a placeholder. A placeholder is written into the template file like this: `${NAME_OF_PLACEHOLDER}`
+Those placeholders can inserted as regular text into the template file, but they need a special characters to indicate that this text is a placeholder. A placeholder is defined in the following form: `${NAME_OF_PLACEHOLDER}`
 
 An example of a document template can be seen below. This example is an excel sheet, that is used later in this guide:
 
 image::intro-to-reports/excel-document-template-example.png[align="center", link="images/intro-to-reports/excel-document-template-example.png"]
 
-As described above, the template contains regular text as well as placeholders like `${pet.name}` or `${pet.identificationNumber}`
+As described above, the template contains regular text as well as the placeholders for the different columns in the table like `${pet.name}` or `${pet.identificationNumber}`.
 
-Furthermore it is possible to style and adjust the document template in whatever ways is desired. For Word and Excel documents, all the possible formatting options are able to be applied. For HTML documents the complete capabilities of CSS are at the fingertips of the template designer.
+Furthermore it is possible to style and adjust the document template in whatever ways is desired. For Word and Excel documents, all the possible formatting options of those programs are able to be applied to the template file. For HTML documents the complete capabilities of CSS can be used for applying styles to the target document.
+
+=== Data Sources
+
+The data that is used for the report can be of various sources. Within a CUBA application it is possible to fetch data directly from the entity layer of the application as the most convenient variant. However, the reports application component is not bound to this particular data source. It can be one of the following data sources:
+
+* CUBA Entities / JPQL
+* SQL
+* Groovy
+* JSON
+
+This various sources allow a high degree of flexibility when it comes to fetch data and provide it to the template file. It is also possible to define multiple data sources and combine all the data in the template.
+
+== Report Entity: the Configuration Holder
+
+Once the data sources are defined and connected through a concept called Bands to particular template placeholders, everything is setup to generate the output document. CUBA stores all of this configuration in a entity `Report`, that holds the configuration of the data sources together with the definition of the templates as well as further configuration information.
+
+image:https://dummyimage.com/600x400/00b5ec/ffffff.png&text=CUBA Report UI configuration[]
+
 
 == Summary
 
