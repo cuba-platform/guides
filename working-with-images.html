@@ -166,7 +166,7 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>In a CUBA application it is possible to interact with images in various ways. In this guide, examples will be shown on how to upload and display images in the application. It will also be shown how to attach those images to entities and providing the user the ability to download the image files from the application.</p>
+<p>In a CUBA application it is possible to interact with images in various ways. In this guide, it will be demonstrated how to upload and display images in the application on live examples. It will be also shown how to attach those images to entities and how to enable users to download the image files from the application.</p>
 </div>
 </div>
 </div>
@@ -174,21 +174,21 @@
 <h2 id="what_will_be_built"><a class="anchor" href="#what_will_be_built"></a><a class="link" href="#what_will_be_built">What Will be Built</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a> example to allow the user to attach with images to entities and interact with them. In particular the following changed will be made:</p>
+<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a> example to allow users to attach images to entities and interact with them. In particular, the following changes will be made:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>allow to upload an avatar image for a Veterinarian</p>
+<p>ability to upload an avatar image for a Veterinarian</p>
 </li>
 <li>
-<p>render the Veterinarians avatar in the Veterinarians browse table</p>
+<p>render the Veterinarian&#8217;s avatar in the Veterinarian&#8217;s browse table</p>
 </li>
 <li>
-<p>create custom lookup-like component that shows the Veterinarians avatar next to the name</p>
+<p>create custom lookup-like component that shows the Veterinarian&#8217;s avatar next to the name</p>
 </li>
 <li>
-<p>ability to attach X-Ray images to a visit and show a preview of the images</p>
+<p>ability to attach X-Ray images to a visit and preview the images</p>
 </li>
 </ul>
 </div>
@@ -247,10 +247,10 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="cubas_file_storage_subsystem"><a class="anchor" href="#cubas_file_storage_subsystem"></a><a class="link" href="#cubas_file_storage_subsystem">CUBAs File Storage Subsystem</a></h2>
+<h2 id="cubas_file_storage_subsystem"><a class="anchor" href="#cubas_file_storage_subsystem"></a><a class="link" href="#cubas_file_storage_subsystem">CUBA&#8217;s File Storage Subsystem</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>CUBA has a comprehensive set of features, that deal with the task of interacting with files within an application. The underlying subsystem is called <code>File Storage</code>.</p>
+<p>CUBA has a comprehensive set of features that deal with the task of interacting with files within an application. The underlying subsystem is called <code>File Storage</code>.</p>
 </div>
 <div class="paragraph">
 <p>This set of APIs allow the developer to fulfill the end-to-end process of working with files. This mainly contains:</p>
@@ -258,16 +258,16 @@
 <div class="ulist">
 <ul>
 <li>
-<p>ability to let the users upload files</p>
+<p>ability for users to upload files</p>
 </li>
 <li>
-<p>store references from business entities to files</p>
+<p>store references from business entities in files</p>
 </li>
 <li>
 <p>read &amp; write files in the application</p>
 </li>
 <li>
-<p>ability to let users download files</p>
+<p>ability for users to download files</p>
 </li>
 </ul>
 </div>
@@ -278,7 +278,7 @@
 <p>More information about this topic can be found in the reference documentation on <a href="https://doc.cuba-platform.com/manual-7.0/file_storage.html">File Storage</a>.</p>
 </div>
 <div class="paragraph">
-<p>As an Image is just a particular type of a file, it is possible to treat the image handling just like any other kind of file handling with some specific additional behavior like preview in the browser.</p>
+<p>As an Image is just a particular type of file, it is possible to treat the image handling just like any other kind of file handling with some specific additional behavior like preview in the browser.</p>
 </div>
 <div class="imageblock right">
 <div class="content">
@@ -288,10 +288,10 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="veterinarians_avatar_image"><a class="anchor" href="#veterinarians_avatar_image"></a><a class="link" href="#veterinarians_avatar_image">Veterinarians Avatar Image</a></h2>
+<h2 id="veterinarians_avatar_image"><a class="anchor" href="#veterinarians_avatar_image"></a><a class="link" href="#veterinarians_avatar_image">Veterinarian&#8217;s Avatar Image</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The first example of this Images guide allows the users to upload &amp; display an avatar image for a particular veterinarian.</p>
+<p>The first example of this Images guide allows users to upload &amp; display an avatar image for a particular veterinarian.</p>
 </div>
 <div class="paragraph">
 <p>In order to achieve this behavior, the data model of the Petclinic example needs to be enhanced, to store a reference to a file for the <code>Vet</code> entity. The corresponding JPA entity that is bundled in CUBA itself is called <code>FileDescriptor</code>. It represents the metadata part of a file and acts as a pointer to this file.</p>
@@ -305,7 +305,7 @@
 </div>
 </div>
 <div class="paragraph">
-<p>Once the entity model contains the reference to the <code>FileDescriptor</code> entity, the attribute <code>image</code> has to be added to the view, in order to interact with this attribute in the UI.</p>
+<p>Since the entity model contains the reference to the <code>FileDescriptor</code> entity, the attribute <code>image</code> must be added to the view, in order to interact with this attribute in the UI.</p>
 </div>
 <div class="paragraph">
 <p>The view <code>vet-with-specialties</code> for the <code>Vet</code> entity, that is used within the Vet editor, has to be changed to contain the <code>image</code> attribute like this:</p>
@@ -323,15 +323,15 @@
 </div>
 </div>
 <div class="paragraph">
-<p>With this adjustment it makes sense to also rename the view name to <code>vet-with-specialties-and-image</code> to reflect the content of the view.</p>
+<p>With this adjustment it makes sense to rename the view name to <code>vet-with-specialties-and-image</code> as well, to reflect the content of the view.</p>
 </div>
 <div class="sect2">
-<h3 id="upload_vets_avatar_image"><a class="anchor" href="#upload_vets_avatar_image"></a><a class="link" href="#upload_vets_avatar_image">Upload Vets Avatar Image</a></h3>
+<h3 id="upload_vets_avatar_image"><a class="anchor" href="#upload_vets_avatar_image"></a><a class="link" href="#upload_vets_avatar_image">Upload Vet&#8217;s Avatar Image</a></h3>
 <div class="paragraph">
-<p>With those preconditions in place, the next step is to adjust the Vet editor, so that it also contains the ability to upload an image during the process of creating / editing a Vet record.</p>
+<p>With those preconditions in place, the next step is to adjust the Vet editor, so that it is also able to upload an image during the process of creating / editing a Vet record.</p>
 </div>
 <div class="paragraph">
-<p>CUBA has a built-in UI component for dealing with <code>FileDescriptor</code> instances - the FileUploadField component. This component can be added to the already existing <code>&lt;form /&gt;</code> component from in the <code>vet-edit.xml</code> screen descriptor:</p>
+<p>CUBA has a built-in UI component for dealing with <code>FileDescriptor</code> instances - the FileUploadField component. This component can be added to the already existing <code>&lt;form /&gt;</code> component form in the <code>vet-edit.xml</code> screen descriptor:</p>
 </div>
 <div class="listingblock">
 <div class="title">vet-edit.xml</div>
@@ -361,7 +361,7 @@
 </table>
 </div>
 <div class="paragraph">
-<p>There are a couple of options for the upload component to control its behavior, that can be looked up in the <a href="https://doc.cuba-platform.com/manual-7.0/gui_FileUploadField.html">reference documentation</a>. For this use case, the default behavior is sufficient. It will allow the user to upload, download, remove and re-upload a file and directly attach it to the vet instance of the editor.</p>
+<p>There are a couple of options for the upload component to control its behavior, that can be looked up in the <a href="https://doc.cuba-platform.com/manual-7.0/gui_FileUploadField.html">reference documentation</a>. For this use case, the default behavior is sufficient. It will allow users to upload, download, remove and re-upload a file and directly attach it to the vet instance of the editor.</p>
 </div>
 <div class="paragraph">
 <p>The resulting user interface looks like this:</p>
@@ -372,19 +372,19 @@
 </div>
 </div>
 <div class="paragraph">
-<p>The attribute <code>fileStoragePutMode</code> set to <code>IMMEDIATE</code> leads to the behavior that the file is persisted and a corresponding persisted <code>FileDescriptor</code> instance is created directly after the upload of the file is completed. It has the benefit, that this behavior allows to link the Vet instance to the image without further programmatic interaction.</p>
+<p>The attribute <code>fileStoragePutMode</code> set to <code>IMMEDIATE</code> leads to the behavior that the file is persisted and a corresponding persisted <code>FileDescriptor</code> instance is created directly after the file uploading is completed. The benefit of such approach is that this behavior allows to link the Vet instance to the image without further programmatic interaction.</p>
 </div>
 <div class="paragraph">
-<p>However, this has the side effect, that even if the vet instance is not saved, the file will still be kept in the system. It can still be found via <code>Administration &gt; External Files</code>. If this behavior is not desired, the <code>fileStoragePutMode</code> can be set to <code>MANUAL</code>, which requires manual management of the file persistence. The next use case will describe this behavior in further detail.</p>
+<p>However, it has the side effect that even if the vet instance is not saved, the file will still be kept in the system. It can still be found via <code>Administration &gt; External Files</code>. If this behavior is not desired, the <code>fileStoragePutMode</code> can be set to <code>MANUAL</code>, which requires manual management of the file persistence. The next use case will describe this behavior in further detail.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="display_vets_avatar_image_in_the_browse_table"><a class="anchor" href="#display_vets_avatar_image_in_the_browse_table"></a><a class="link" href="#display_vets_avatar_image_in_the_browse_table">Display Vets Avatar Image in the Browse Table</a></h3>
+<h3 id="display_vets_avatar_image_in_the_browse_table"><a class="anchor" href="#display_vets_avatar_image_in_the_browse_table"></a><a class="link" href="#display_vets_avatar_image_in_the_browse_table">Display Vet&#8217;s Avatar Image in the Browse Table</a></h3>
 <div class="paragraph">
-<p>The next example that deals with the Vets avatar image is that the uploaded file should be displayed in the Vet browse screen. In order to do that, the <code>image</code> attribute has to be part of the corresponding view (which it is from the change above).</p>
+<p>The next example that deals with the Vet&#8217;s avatar image is that the uploaded file should be displayed in the Vet browse screen. In order to do that, the <code>image</code> attribute has to be a part of the corresponding view (which it is from the change above).</p>
 </div>
 <div class="paragraph">
-<p>In order to display an image in a screen the second UI component in this space is the <code>&lt;image /&gt;</code> component. It allows to render an image based on various sources, which includes:</p>
+<p>In order to display an image in a screen the second UI component in this space is the <code>&lt;image /&gt;</code> component. It allows to render an image based on various sources including:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -414,13 +414,13 @@
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>image</code> attribute should be one of the columns in the vets table. Furthermore it should render a particular representation of the image: not the instance name of the <code>FileDescriptor</code>, but rather the image itself.</p>
+<p>The <code>image</code> attribute should be one of the columns in the vets table. Furthermore, it should render a particular representation of the image: not the instance name of the <code>FileDescriptor</code>, but rather the image itself.</p>
 </div>
 <div class="paragraph">
-<p>In order to achieve this behavior some programmatic definition in the controller is needed.</p>
+<p>To achieve this behavior some programmatic definition in the controller is needed.</p>
 </div>
 <div class="paragraph">
-<p>The <code>Table</code> component has a particular API method: <code>addGeneratedColumn</code>, which allows to define a <code>Component</code> as the representation for a particular column in the table. This method is called for every entity that should be displayed in the table and it receives the corresponding entity instance as a parameter.</p>
+<p>The <code>Table</code> component has a particular API method: <code>addGeneratedColumn</code>, which allows to define a <code>Component</code> as a representation for a particular column in the table. This method is called for every entity that should be displayed in the table and it receives the corresponding entity instance as a parameter.</p>
 </div>
 <div class="listingblock">
 <div class="title">VetBrowse.java</div>
@@ -468,7 +468,7 @@
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>a new column <code>image</code> is registered in the <code>vetsTable</code> through the method: <code>renderAvatarImageComponent</code></td>
+<td>a new column <code>image</code> is registered in the <code>vetsTable</code> through the <code>renderAvatarImageComponent</code> method</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -485,7 +485,7 @@
 </table>
 </div>
 <div class="paragraph">
-<p>With this code in place, a image component is created, configured and bound to the <code>FileDescriptor</code> instance. With the corresponding style name <code>avatar-icon-small</code>, the image is rendered as shown above.</p>
+<p>With this code in place, an image component is created, configured and bound to the <code>FileDescriptor</code> instance. With the corresponding style name <code>avatar-icon-small</code>, the image is rendered as shown above.</p>
 </div>
 </div>
 <div class="sect2">
@@ -499,7 +499,7 @@
 </div>
 </div>
 <div class="paragraph">
-<p>This requires to apply the image component in a different way as this component is now part of the Visit editor inside a <code>&lt;form /&gt;</code> component.</p>
+<p>This requires to apply the image component in a different way as this component is now a part of the Visit editor inside the <code>&lt;form /&gt;</code> component.</p>
 </div>
 <div class="paragraph">
 <p>The source code for providing this functionality consists of two parts.</p>
@@ -510,7 +510,7 @@
 <p>the <code>VetEdit</code> controller which orchestrates the creation and binding of the custom component</p>
 </li>
 <li>
-<p>the <code>VetPreviewComponentFactory</code>, that is responsible for creating the component that is shown above with the correct layout and the binding to the correct fields of the <code>InstanceContainer</code></p>
+<p>the <code>VetPreviewComponentFactory</code> which is responsible for creating the component shown above with the correct layout and binding to the correct fields of the <code>InstanceContainer</code></p>
 </li>
 </ul>
 </div>
@@ -521,15 +521,15 @@
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-A dedicated factory class that defines how the component is created is just one possible option to structure the implementation. It has certain advantages to extract the creating the component into a dedicated class like encapsulation, separation of concerns and the ability to re-use in other screens.<br>
+A dedicated factory class that defines how the component is created is just one possible option to structure the implementation. It has certain advantages to extract the creating of the component into a dedicated class like encapsulation, separation of concerns and the ability to re-use in other screens.<br>
 <br>
-However, it is also possible to include the component creation logic directly into the controller. This variant can be seen as a example on how to structure business logic in the UI layer. More information on this topic can be found in the guide <a href="https://www.cuba-platform.com/guides/create-business-logic-in-cuba">Create business logic in CUBA</a>.
+However, it is also possible to include the component creation logic directly into the controller. This variant can be seen as an example on how to structure business logic in the UI layer. More information about this topic can be found in <a href="https://www.cuba-platform.com/guides/create-business-logic-in-cuba">Create business logic in CUBA</a> guide.
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>The orchestration of within the <code>VetEdit</code> controller looks like this:</p>
+<p>The orchestration within the <code>VetEdit</code> controller looks like this:</p>
 </div>
 <div class="listingblock">
 <div class="title">VisitEdit.java</div>
@@ -577,7 +577,7 @@ However, it is also possible to include the component creation logic directly in
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>the created component is attached to the <code>treatingVetForm</code> in order to render the vet avatar image</td>
+<td>the created component is attached to the <code>treatingVetForm</code> to render the vet avatar image</td>
 </tr>
 </table>
 </div>
@@ -647,7 +647,7 @@ However, it is also possible to include the component creation logic directly in
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>a vertical layout containing of the image and and a horizontal layout containing the name and an edit button is created</td>
+<td>a vertical layout containing the image, a horizontal layout containing the name and an "Edit" button is created</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -655,12 +655,12 @@ However, it is also possible to include the component creation logic directly in
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>the handler for the edit button triggers the provided <code>vetSelectionHandler</code>, so the associated actions can be controlled from the outside of this factory method</td>
+<td>the handler for the "Edit" button triggers the provided <code>vetSelectionHandler</code>, so the associated actions can be controlled from the outside of this factory method</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>With this, the final usage of the custom Vet display &amp; selection for the Vet selection looks like this:</p>
+<p>With this, the final usage of the custom Vet display &amp; selection for the Vet looks like this:</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -674,15 +674,15 @@ However, it is also possible to include the component creation logic directly in
 <h2 id="x_ray_images_for_visits"><a class="anchor" href="#x_ray_images_for_visits"></a><a class="link" href="#x_ray_images_for_visits">X-Ray Images for Visits</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The second use case that is will be covered in this guide is the ability to attach X-Ray images to a particular visit. Those X-Ray images should be displayed when selected on the Table. Further it should be possible to upload and download those images.</p>
+<p>The second use case covered in this guide is the ability to attach X-Ray images to a particular visit. Those X-Ray images should be displayed when selected on the Table. Further it should be possible to upload and download those images.</p>
 </div>
 <div class="paragraph">
-<p>The precondition is another change in the data model. As before for the <code>Vet</code> entity, the <code>Visit</code> also needs a reference to the <code>FileDescriptor</code>, but this time it is a <code>MANY-TO-MANY</code> association. With this domain model change as well as the corresponding view adjustment in place, the three parts of uploading, previewing and downloading the X-Ray images can be tackled.</p>
+<p>The precondition is another change in the data model. As before, for the <code>Vet</code> entity the <code>Visit</code> also needs a reference to the <code>FileDescriptor</code>, but this time it is a <code>MANY-TO-MANY</code> association. With this domain model change as well as the corresponding view adjustment in place, the three parts of uploading, previewing and downloading the X-Ray images can be tackled.</p>
 </div>
 <div class="sect2">
 <h3 id="upload_x_ray_images"><a class="anchor" href="#upload_x_ray_images"></a><a class="link" href="#upload_x_ray_images">Upload X-Ray Images</a></h3>
 <div class="paragraph">
-<p>The first step is to upload the X-Ray image to a particular <code>Visit</code> instance. For this the following <code>&lt;upload /&gt;</code> component will be placed in the <code>&lt;buttonsPanel /&gt;</code> component of the <code>xRayImagesTable</code>. Compared to the first use case, this time the <code>fileStoragePutMode</code> will be set to <code>MANUAL</code>. This gives more freedom in defining the persistence behavior, which is required in this scenario.</p>
+<p>The first step is to upload the X-Ray image to a particular <code>Visit</code> instance. For this the following <code>&lt;upload /&gt;</code> component will be placed in the <code>&lt;buttonsPanel /&gt;</code> component of the <code>xRayImagesTable</code>. Compared to the first use case, this time the <code>fileStoragePutMode</code> will be set to <code>MANUAL</code>. This gives more freedom in defining the persistence behavior which is required in this scenario.</p>
 </div>
 <div class="listingblock">
 <div class="title">visit-edit.xml</div>
@@ -701,7 +701,7 @@ However, it is also possible to include the component creation logic directly in
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>the persistence operation will be handled manually by the controller, in order to correctly display the image preview</td>
+<td>the persistence operation will be handled manually by the controller in order to correctly display the image preview</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -709,7 +709,7 @@ However, it is also possible to include the component creation logic directly in
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>the additional drop zone allows the user to drag &amp; drop files onto the table / preview component</td>
+<td>the additional drop zone allows users to drag &amp; drop files onto the table / preview component</td>
 </tr>
 </table>
 </div>
@@ -766,7 +766,7 @@ However, it is also possible to include the component creation logic directly in
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>the <code>FileDescriptor</code> instance for the now persisted file is assigned to the X-Ray images <code>M:N</code> association to display it in the table</td>
+<td>the <code>FileDescriptor</code> instance for the already persisted file is assigned to the X-Ray images <code>M:N</code> association to display it in the table</td>
 </tr>
 </table>
 </div>
@@ -862,7 +862,7 @@ Besides the code in the listing, there is a little bit more relevant code in the
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>a X-Ray component is placed within the <code>xrayImageWrapperLayout</code> as a child component for the selected X-Ray image</td>
+<td>an X-Ray component is placed within the <code>xrayImageWrapperLayout</code> as a child component for the selected X-Ray image</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -871,7 +871,7 @@ Besides the code in the listing, there is a little bit more relevant code in the
 </table>
 </div>
 <div class="paragraph">
-<p>Since the X-Ray image preview also is a composition of multiple elements, this logic was once again extracted into a dedicated <code>Factory</code> class. The resulting UI layout consists of a <code>GroupBox</code> which has the filename as the caption and the image preview as the content:</p>
+<p>Since the X-Ray image preview is also a composition of multiple elements, this logic was once again extracted into a dedicated <code>Factory</code> class. The resulting UI layout consists of a <code>GroupBox</code> which has the filename as the caption and the image preview as the content:</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -879,7 +879,7 @@ Besides the code in the listing, there is a little bit more relevant code in the
 </div>
 </div>
 <div class="paragraph">
-<p>The listing for the <code>XrayPreviewComponentFactory</code> contains only the most relevant parts. One important part of the functionality is that it should be able to either render Images or PDF files directly in the browser. This requires a branching logic within the implementation to use the correct UI component based on the file type.</p>
+<p>The listing for the <code>XrayPreviewComponentFactory</code> contains only the most relevant parts. One important part of the functionality is that it should be able to render either Images or PDF files directly in the browser. This requires a branching logic within the implementation to use the correct UI component based on the file type.</p>
 </div>
 <div class="listingblock">
 <div class="title">XrayPreviewComponentFactory.java</div>
@@ -934,11 +934,11 @@ Besides the code in the listing, there is a little bit more relevant code in the
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>In case of an image, the <code>Image</code> component will be used and the <code>FileDescriptor</code> will be assigned as a source</td>
+<td>in case of an image, the <code>Image</code> component will be used and the <code>FileDescriptor</code> will be assigned as a source</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>In case of a PDF file, the correct mime type has to be set in order to render the file in the browser inline</td>
+<td>in case of a PDF file, the correct mime type has to be set in order to render the file in the browser inline</td>
 </tr>
 </table>
 </div>
@@ -954,10 +954,10 @@ Besides the code in the listing, there is a little bit more relevant code in the
 <div class="sect2">
 <h3 id="download_x_ray_images"><a class="anchor" href="#download_x_ray_images"></a><a class="link" href="#download_x_ray_images">Download X-Ray Images</a></h3>
 <div class="paragraph">
-<p>The last functionality that is part of the X-Ray Image preview use case is that it should be possible to download the image files.</p>
+<p>The last part of the X-Ray Image preview functionality use case is that it should be possible to download the image files.</p>
 </div>
 <div class="paragraph">
-<p>To achieve this an additional <code>download</code> button and action are placed on top of the <code>xRayImagesTable</code>. The controller code uses the <code>ExportDisplay</code> bean from CUBA in order to trigger the download of a FileDescriptor in the browser.</p>
+<p>To achieve this an additional <code>download</code> button and action are placed on top of the <code>xRayImagesTable</code>. The controller code uses the <code>ExportDisplay</code> bean from CUBA to trigger the download of a FileDescriptor in the browser.</p>
 </div>
 <div class="listingblock">
 <div class="title">VisitEdit.java</div>
@@ -979,7 +979,7 @@ Besides the code in the listing, there is a little bit more relevant code in the
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>exportDisplay</code> bean has multiple options to download a file. The one that is used here takes a <code>FileDescriptor</code> instance. <code>ExportFormat.OCTET_STREAM</code> indicates the browser that it should force the file to be downloaded and not try to render it within the browser.</p>
+<p>The <code>exportDisplay</code> bean has multiple options to download a file. The one that is used here takes a <code>FileDescriptor</code> instance. <code>ExportFormat.OCTET_STREAM</code> indicates that the browser should force the file to be downloaded and not to try to render it within the browser.</p>
 </div>
 </div>
 </div>
@@ -988,10 +988,10 @@ Besides the code in the listing, there is a little bit more relevant code in the
 <h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Image rendering within CUBA applications as well as custom composition of components will enrich the CRUD experience for users immediately. The main building block is the <code>FileDescriptor</code> abstraction that all UI components integrate seamless with.</p>
+<p>Image rendering within CUBA applications as well as custom composition of components will enrich the CRUD experience for users immediately. The main building block is the <code>FileDescriptor</code> abstraction that all UI components seamlessly integrate with.</p>
 </div>
 <div class="paragraph">
-<p>In this guide, two use cases were shown. The first one with the Vet avatar image used the standard upload functionality within a <code>&lt;form /&gt;</code> component and rendered the result as a generated column within a table. Additionally a custom image-aware "PickerField" was created. The second use case used the APIs more directly in order to upload, preview and download X-Ray images for visits.</p>
+<p>In this guide two use cases were shown. The first one with the Vet avatar image used the standard upload functionality within a <code>&lt;form /&gt;</code> component and rendered the result as a generated column within a table. Additionally a custom image-aware "PickerField" was created. The second use case used the APIs more directly to upload, preview and download X-Ray images for visits.</p>
 </div>
 </div>
 </div>
@@ -1031,8 +1031,8 @@ Besides the code in the listing, there is a little bit more relevant code in the
                             <ul class="sectlevel1">
 <li><a href="#what_will_be_built">What Will be Built</a></li>
 <li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
-<li><a href="#cubas_file_storage_subsystem">CUBAs File Storage Subsystem</a></li>
-<li><a href="#veterinarians_avatar_image">Veterinarians Avatar Image</a></li>
+<li><a href="#cubas_file_storage_subsystem">CUBA&#8217;s File Storage Subsystem</a></li>
+<li><a href="#veterinarians_avatar_image">Veterinarian&#8217;s Avatar Image</a></li>
 <li><a href="#x_ray_images_for_visits">X-Ray Images for Visits</a></li>
 <li><a href="#summary">Summary</a></li>
 <li><a href="#further_information">Further Information</a></li>
