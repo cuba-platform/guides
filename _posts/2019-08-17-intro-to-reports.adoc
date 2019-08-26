@@ -46,9 +46,9 @@ Oftentimes when working with business applications there is a high demand for do
 
 These documents might either have the form of human consumable content like a PDF file or are more used as input data for further use like a CSV / Excel file or a Word document.
 
-CUBA being targeted towards the needs of business applications in particular has dedicated support for this kind of use cases through the application component `reports`.
+CUBA being targeted towards the needs of business applications in particular has dedicated support for this kind of use cases through the `reports` application component.
 
-The application component has the ability to define formatted document templates and declare the data that should be used for the document. This definition is done in a declarative way, that does not require development of code in order to generate reports / documents. It is possible for developers as well as administrators and
+It has the ability to define formatted document templates and declare the data that should be used for the document. This definition is done in a declarative way, that does not require development of code in order to generate reports / documents. It is possible for developers as well as administrators and business users with mid-level technical skills.
 
 === Example Use Cases
 
@@ -64,7 +64,7 @@ All of those requirements are part of what the `reports` application component i
 
 == Templates + Data = Document
 
-The underpinning of this whole solution is based on on the combination of document templates with data, that are combined in order to create the resulting document / report.
+The underpinning of this whole solution is based on on the combination of document templates with data, that are merged in order to create the resulting document / report.
 
 === The Document Template
 The document template is a file that acts as the blueprint for how the target file should look like. It contains placeholders as particular text snippets, that the `reports` application component can pick up and put the data into the document.
@@ -75,13 +75,15 @@ An example of a document template can be seen below. This example is an excel sh
 
 image::intro-to-reports/excel-document-template-example.png[align="center", link="images/intro-to-reports/excel-document-template-example.png"]
 
-As described above, the template contains regular text as well as the placeholders for the different columns in the table like `${pet.name}` or `${pet.identificationNumber}`.
+The template contains regular text as well as the placeholders for the different columns in the table like `${pet.name}` or `${pet.identificationNumber}`.
 
 Furthermore it is possible to style and adjust the document template in whatever ways is desired. For Word and Excel documents, all the possible formatting options of those programs are able to be applied to the template file. For HTML documents the complete capabilities of CSS can be used for applying styles to the target document.
 
+TIP: The template file format are not necessarily the file formats of the output document. It is possible to e.g. have a Word based document template that will generate a PDF file when merged with the data.
+
 === Data Sources
 
-The data that is used for the report can be of various sources. Within a CUBA application it is possible to fetch data directly from the entity layer of the application as the most convenient variant. However, the reports application component is not bound to this particular data source. It can be one of the following data sources:
+The data that is used for the report can be of various sources. Within a CUBA application fetching the data directly from the entity layer of the application is the most convenient variant. However, the reports application component is not bound to this particular data source. It can be one of the following data sources:
 
 * CUBA Entities / JPQL
 * SQL
@@ -92,10 +94,35 @@ This various sources allow a high degree of flexibility when it comes to fetch d
 
 == Report Entity: the Configuration Holder
 
-Once the data sources are defined and connected through a concept called Bands to particular template placeholders, everything is setup to generate the output document. CUBA stores all of this configuration in a entity `Report`, that holds the configuration of the data sources together with the definition of the templates as well as further configuration information.
+Once the data sources are defined and connected through a concept called Bands to particular template placeholders, everything is setup to generate the output document. The application component stores all of this configuration in the entity `Report` which holds the configuration of the data sources together with the definition of the templates and further configuration information.
 
-image:https://dummyimage.com/600x400/00b5ec/ffffff.png&text=CUBA Report UI configuration[]
 
+image::intro-to-reports/report-entity-configuration-screen.png[align="center", link="images/intro-to-reports/report-entity-configuration-screen.png"]
+
+There are two main ways of creating those report records.
+
+The first one is to create an instance manually and defining the data sources together with the associated JPQL / SQL queries / groovy scripts.
+
+This is oftentimes needed when more complex reports should be defined which requires skills to create SQL / JPQL statements or even programming abilities through groovy scripts. This option
+is mostly for administrators that have a deep technical understanding of the inner workings of the application. It furthermore requires knowledge about its domain model and an understanding of the technical concepts of the report application component like report bands, report parameters etc.
+
+=== The Report Wizard
+
+The second option is to use the report UI wizard that guides the user through the selection of various options. It includes the ability to define the conditions for entities to be selected for the report, the attributes that should be included. Furthermore it generates a base template which contains already the selected attributes as placeholders.
+
+image::intro-to-reports/report-entity-wizard-1.png[align="center", link="images/intro-to-reports/report-entity-wizard-1.png"]
+
+image::intro-to-reports/report-entity-wizard-2.png[align="center", link="images/intro-to-reports/report-entity-wizard-2.png"]
+
+image::intro-to-reports/report-entity-wizard-3.png[align="center", link="images/intro-to-reports/report-entity-wizard-3.png"]
+
+This variant is targeted more towards business users, since it hides away the technical details of e.g. the query definition behind a user-friendly configuration UI. For easier reports, this wizard can serve as the main UI for creating reports by business users directly.
+
+With the feature of generating a document template that contains the correct placeholders of the selected attributes is allows the business users to only change the formatting of the output document. This template formatting normally happens in the application that they are already familiar with like Word or Excel. The main difference is that this opens up possibilities for non-technical people to work with reports without the need of any developer interaction.
+
+That being said, even for technical people it is oftentimes the fastest way to create a report or at least a starting point for manual adjustments.
+
+One constraint for the report wizard is that it is tied to generating reports / document based on the CUBA entity layer. Groovy / SQL based reports cannot be directly created through the wizard. However, it is possible to use the wizard report as a first step and then adjust the resulting report's bands accordingly through the regular management screen.
 
 == Summary
 
