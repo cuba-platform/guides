@@ -109,7 +109,7 @@ CUBA Studio offers a Resouce Bundle view for every package. It allows you to see
 
 image::i18n-messages/cuba-studio-resource-bundle-screen.png[align="center"]
 
-Due to the side-to-side view in the Resouce Bundle Editor, creating translations is very comfortable. Missing translaslations for a particular message key are highlighted so that it is easy to spot them.
+Due to the side-to-side view in the Resouce Bundle Editor, creating translations is very comfortable. Missing translations for a particular message key are highlighted so that it is easy to spot them.
 ====
 
 
@@ -286,7 +286,7 @@ Since CUBA comes with certain UI components and with multiple UI screens out of 
 
 === Community Language Packs
 
-The first and easiest solution is to use existing language packs that are created by the community. There are currently twelve Translations available including Spanisch, Russian, French, Chinese, German and a lot more.
+The first and easiest solution is to use existing language packs that are created by the community. There are currently twelve Translations available including Spanish, Russian, French, Chinese, German and a lot more.
 
 WARNING: The Community Translations Packs are provided by the community, therefore the accuracy and the catch up with the latest changes in the platform differ and are provided as best effort.
 
