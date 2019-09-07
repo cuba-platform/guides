@@ -942,3 +942,17 @@ body div#toolbar.toolbar {
 #admin-menu .shortcut-toolbar a {
     display: block;
 }
+
+/* Update Guides list layout #51 */
+.text-node {
+   padding-top: 0;
+}
+
+.page-header {
+    margin: 0;
+    border: none;
+}
+
+.header-submenu .header-submenu_container {
+    width: auto;
+}

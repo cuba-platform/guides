@@ -1,5 +1,6 @@
 ---
-compatible_cuba_versions: 7.0
+compatible_cuba_versions: 7.0+
+compatible_java_versions: 8+
 project_id: cuba-petclinic-application-logging
 permalink: logging-in-cuba-applications
 ---
@@ -413,6 +414,6 @@ CUBA offers an opinionated way of dealing with logging configuration and access 
 == Further Information
 
 * https://blog.scalyr.com/2017/12/logging-levels/[Blog article: Explanation of Logging levels]
-* https://doc.cuba-platform.com/manual-{cuba-version}/logging_setup_tomcat.html[CUBA docs: Setup Logging for local development]
-* https://doc.cuba-platform.com/manual-{cuba-version}/log_dir.html[CUBA docs: Log directory of CUBA application]
-* https://doc.cuba-platform.com/manual-{cuba-version}/build.gradle_buildWar.html[CUBA docs: Build WAR with logging configuration]
+* https://doc.cuba-platform.com/manual-{cuba_version}/logging_setup_tomcat.html[CUBA docs: Setup Logging for local development]
+* https://doc.cuba-platform.com/manual-{cuba_version}/log_dir.html[CUBA docs: Log directory of CUBA application]
+* https://doc.cuba-platform.com/manual-{cuba_version}/build.gradle_buildWar.html[CUBA docs: Build WAR with logging configuration]

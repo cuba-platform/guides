@@ -34,45 +34,26 @@
             <div class="region region-content">
                 <section id="block-system-main" class="block block-system clearfix">
                     <div class="panel-display panel-1col clearfix" id="webinars-page">
-                        <div class="panel-panel panel-col">
+                        <div class="container layout-main_container">
                             <div>
                                 <!-- Title -->
-                                <div class="panel-pane pane-custom pane-1">
-                                    <div class="pane-content">
-                                        <div class="sb-block sb-head">
-                                            <h2>Guides</h2>
-                                            <span>Comprehensive articles about CUBA Platform specifics (version 7.0+)</span>
-                                        </div>
-                                    </div>
+                                <div class="page-header">
+                                    <h1 class="page-header_title">Guides</h1>
+                                    <p class="page-header_description">Comprehensive articles about CUBA Platform specifics (version 7.0+)</p>
                                 </div>
 
-                                <!-- Accordion -->
-                                <div class="panel-pane pane-custom pane-2 cuba-container">
+                                <!-- List Grid -->
+                                <div class="">
                                     <div class="pane-content">
-                                        <div class="accordion-webinars">
+                                        <div class="guides-list">
                                             {% for post in site.posts reversed %}
-                                            <div class="item">
-                                                <a name="tr1"></a>
-                                                <div class="item-head collapsed" data-target="#{{ post.permalink }}"  aria-expanded="true">
-                                                    <a href="{{ post.url | prepend: site.baseurl }}">
-                                                        <span>{{ post.navtitle }}</span>
-                                                    </a>
-                                                </div>
-                                                <div class="item-body " id="{{ post.permalink }}" aria-expanded="false">
-                                                    <div class="descr">
-                                                        <div class="main">
-                                                            {{ post.excerpt }}
-                                                        </div>
-                                                        <div class="btn-wrapper">
-                                                            <a href="{{ post.url | prepend: site.baseurl }}" class="guide-item_button button-outline">Read now</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <a href="{{ post.url | prepend: site.baseurl }}" class="guides-list_item">
+                                                <div class="guides-list_title">{{ post.navtitle }}</div>
+                                                <span class="guides-list_description">{{ post.excerpt }}</span>
+                                            </a>
                                             {% endfor %}
                                         </div>
                                     </div>
-                                    <!-- End of accordion -->
                                 </div>
                             </div>
                         </div>
