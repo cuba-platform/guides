@@ -142,7 +142,7 @@ In this report the visits of the last month should be selected. However the conc
 
 The report itself is going to be a little more generic in the sense that it allows to specify a period that defines the date range of the visits that will be taken into consideration. This furthermore has the benefit that the report potentially is re-usable for other future use-cases.
 
-For defining the query conditions two conditions will be added for the attribute `visitDate`, because we want to apply two constrains on the same attribute: the `visitDate` should match a value that is within an range of two dates: "Visit Date Range Start" and "Visit Date Range End". The only difference between the two conditions is that for the first condition the "operation" is `greater or equal than: >=` while the second condition has the operation `smaller than: <`.
+The query consists of two conditions for the attribute `visitDate`. It should match a value that is within an range of two dates: "Visit Date Range Start" and "Visit Date Range End". The only difference between the two conditions is that for the first condition the "operation" is `greater or equal than: >=` while the second condition has the operation `smaller than: <`. With that, the boundaries of the range are expressed as conditions.
 
 image::intro-to-reports/visit-by-period-date-range-creteria.png[align="center", link="images/intro-to-reports/visit-by-period-date-range-creteria.png"]
 
@@ -152,9 +152,9 @@ How the external parameters are handled for this use case is be covered in subse
 
 === Selecting Entity Attributes of the Visit Entity
 
-The next step in the wizard is to define the attributes of the base entity (Visit) and its associated entities that should be part of the report. The selection will influence on the one hand the `SELECT` part of the JPQL statement that is used to fetch the data and the other hand the initial version of the columns within the templates, that is generated for this report when finishing the report wizard.
+The next step in the wizard is to define the attributes of the base entity (Visit) and its associated entities that should be part of the report. The selection will influence on the one hand the `SELECT` part of the JPQL statement that is used to fetch the data. On the other hand it influences the initial version of the columns within the template, that is generated for this report when finishing the report wizard.
 
-For the Recent Visit Report, the following attribute should be part of the report:
+For the `recent-visits` Report, the following attribute should be selected:
 
 * Visit Date: `visitDate`
 * Visit Description: `description`
@@ -164,13 +164,13 @@ For the Recent Visit Report, the following attribute should be part of the repor
 ** Type of the Pet: `pet.type.name`
 ** The city where the Pet lives (expressed through the address of its owner): `pet.owner.city`
 
-After selecting the attributes through the UI wizard, the output template file type can be configured.
+After selecting the attributes through the UI wizard, the output template file type can be configured. In this example, the default settings are applicable.
 
 With that the report wizard is finished and the report configuration is shown for further adjustments.
 
 === External Parameters
 
-A Report configuration can declare external Parameters that need to be provided by the outside world. Those parameters are mainly used for the data fetching parts. In the JPQL / SQL statements as well as the groovy based data bands, those parameters are passed in to use them to dynamically inject the values into the query.
+A Report configuration can declare external parameters that need to be provided by the person or application code that interacts with the report. Those parameters are mainly used for the data fetching parts. In the JPQL / SQL statements as well as the groovy based data bands, those parameters are passed in to dynamically inject the values into the query / the groovy script.
 
 The configuration of the external parameters in the Report configuration screen looks like this:
 
@@ -184,10 +184,9 @@ image::intro-to-reports/report-external-parameters-dynamic-ui.png[align="center"
 
 For the use case of the `recent-visits` report the generic UI is not exposed to the user. Instead the parameters are passed in by the API call to run the report.
 
-
 The complete listing for the triggering of the `recent-visits` report shows the main steps of:
 
-1. identifying the last month
+1. identifying the last month (externalized logic of relative date)
 2. loading the report instance to execute
 3. triggering the report execution and passing in the last month as a parameter
 
@@ -209,13 +208,17 @@ public class VisitBrowse extends StandardLookup<Visit> {
 
     @Subscribe("visitsTable.lastMonthReport")
     protected void onVisitsTableLastMonthReport(Action.ActionPerformedEvent event) {
-        MonthYearValue lastMonth = MonthYearValue.fromDate(today()).minusMonths(1); // <1>
+
+        TimeRange visitDateTimeRange =
+                MonthYearValue
+                        .fromDate(today())
+                        .minusMonths(1); // <1>
 
         reportGuiManager.printReport( // <2>
                 loadReportByCode("visits-by-period"), // <3>
                 ParamsMap.of( // <4>
-                        "visitDateRangeStart", lastMonth.getStart(),
-                        "visitDateRangeEnd", lastMonth.getEnd()
+                        "visitDateRangeStart", visitDateTimeRange.getStart(),
+                        "visitDateRangeEnd", visitDateTimeRange.getEnd()
                         )
         );
     }
@@ -236,13 +239,32 @@ public class VisitBrowse extends StandardLookup<Visit> {
 <1> the last month based on today's date is identified
 <2> `reportGuiManager.printReport` is the API for starting the execution of a report and downloading it immediately
 <3> the correct report instance needs to be loaded from the database. Here it is fetched by relying on the `code` attribute value
-<3> a parameter map is passed in containing the start and end date range parameter of the report through the `MonthYearValue` object
+<4> a parameter map is passed in containing the start and end date range parameter of the report through the `MonthYearValue` object
 
+The main part for passing in the external parameters is the definition of the last month:
 
+`TimeRange visitDateTimeRange = MonthYearValue.fromDate(today()).minusMonths(1);`.
+
+The `TimeRange` class is a custom abstraction of the example
+application that provides an API to define a Time Range (either a MonthYear range or a Quarter range) and has methods to get the border values of
+the range.
+
+After the definition of the values for the parameters, the `reportGuiManager.printReport` has the ability to pass in a Map of parameters.
+The keys of the Map have to match the `parameterAlias` value of the parameter as configured in the Report Entity.
 
 == Summary
 
-== Further Information
+In this introduction to the report and document generation topic, the building blocks of the CUBA application component `reports` were explained.
+A report is the concept that allows to merge a document template with data from data sources to produce an output document / report.
+Both building blocks: the document template as well as the data sources can be of various kinds. With that it provides a high degree
+of flexibility when configuring reports to generate output documents.
 
-* https://doc.cuba-platform.com/manual-{cuba_version}/messages.html[CUBA docs: Messages Interface]
-* https://doc.cuba-platform.com/manual-{cuba_version}/localization.html[CUBA docs: Localization]
+All this configuration is hold in the main entity: `Report`, which can be created through a UI wizard or manually.
+With that it supports users with different levels of technical capabilities.
+
+A report can be run directly through a generic user interface, or programmatically throughout the code of the application.
+It is possible to define external parameters, that get passed into the report. With that, reports can be configured in a
+more generic manner to support multiple use-cases.
+
+
+== Further Information
