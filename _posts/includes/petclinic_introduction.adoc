@@ -1,12 +1,15 @@
 
-== Example: CUBA petclinic
+== 示例: CUBA 宠物诊所
 
-The project that is the basis for this example is https://github.com/cuba-platform/cuba-petclinic[CUBA Petclinic]. It is based on the commonly known https://github.com/spring-projects/spring-petclinic[Spring Petclinic]. The CUBA Petclinic application deals with the domain of a Pet clinic and the associated business workflows to manage a pet clinic.
+这个示例是以 https://github.com/cuba-platform/cuba-petclinic[CUBA 宠物诊所]项目为基础，而这个项目的基础是众所周知的 https://github.com/spring-projects/spring-petclinic[Spring 宠物诊所]项目。CUBA 宠物诊所应用程序涉及到了宠物诊所的领域模型及与管理一家宠物诊所相关的业务流程。
 
-The underlying domain model for the application looks like this:
 
-image::domain-model.png[Domain model]
-The main entities are *Pet* and *Visit*. A Pet is visiting the petclinic and during this Visit a Vet is taking care of it. A Pet belongs to an Owner, which can hold multiple pets. The visit describes the act of a pet visiting the clinic with the help of its owner.
+这个应用程序的领域模型看起来像这样：
+
+image::domain-model.png[领域模型]
+
+主要实体是 *Pet* 和 *Visit*。 一个 Pet 到访一家诊所，在整个诊疗过程(Vist) 会有一名兽医（Vet）负责照顾它。每个宠物都有主人，一个主人可以有多个宠物。一个诊疗过程(Vist)即是一个宠物在主人的帮助下到访诊所的活动。
+
 
 
 ++++

@@ -1,15 +1,15 @@
 
-=== Requirements
+=== 开发环境要求
 
 
-Your development environment requires to contain the following:
+你的开发环境需要满足以下条件：
 
 * https://www.oracle.com/technetwork/java/javase/downloads/index.html[JDK {java_version}]
-* a text editor or IDE (https://www.jetbrains.com/idea/download/[IntelliJ IDEA] preferred)
-* https://www.cuba-platform.com/download[CUBA Studio] as standalone IDE or as an IDEA plugin (optional)
-* https://github.com/cuba-platform/cuba-cli/wiki/Installation[CUBA CLI] (optional)
+* 文件编辑器或者IDE (https://www.jetbrains.com/idea/download/[推荐 IntelliJ IDEA] )
+* 独立运行版或者IDEA插件版的  https://www.cuba-platform.com/download[CUBA Studio] (可选)
+* https://github.com/cuba-platform/cuba-cli/wiki/Installation[CUBA CLI] (可选)
 
 
-https://github.com/cuba-guides/{project_id}/archive/master.zip[Download] and unzip the source repository for this guide, or clone it using git:
+https://github.com/cuba-guides/{project_id}/archive/master.zip[下载] 并解压这个指南的源码，或者使用 git 克隆下来：
 
 `git clone https://github.com/cuba-guides/{project_id}.git`

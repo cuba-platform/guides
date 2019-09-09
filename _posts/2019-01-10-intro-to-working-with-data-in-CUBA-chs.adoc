@@ -1,0 +1,222 @@
+---
+compatible_cuba_versions: 7.0+
+compatible_java_versions: 8+
+project_id: cuba-petclinic-intro-to-datamanager
+permalink: intro-working-with-data-in-cuba
+---
+= 在 CUBA 中进行数据处理
+:showtitle:
+:sectlinks:
+:sectanchors:
+:page-navtitle: 在 CUBA 中进行数据处理
+:page-excerpt: 概括介绍在 CUBA 中如何读写数据
+:page-root: ../../../
+:project_id: cuba-petclinic-intro-to-datamanager
+:java_version: 1.8
+:cuba_version: 7.0
+
+这个指南将向你介绍一些 CUBA 的API，了解了这些API后你可以使用 DataManager API以编程方式与数据库进行交互。
+
+
+== 将要构建什么
+
+这个指南对 https://github.com/cuba-platform/cuba-petclinic[CUBA 宠物医院]示例进行了改进，以便演示出使用DataManager API 进行编程式数据访问的各种场景。特别是我们会涉及到以下场景：
+
+* 根据给定的宠物身份号码自动创建一个到访(Visit)信息
+* 对于有生命有危险的宠物发会自动发送 "疾病警告邮件"
+
+=== 最终的应用程序
+
+++++
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/login-screen.png"/></a>
+++++
+
+include::includes/guide_requirements.adoc[]
+
+
+include::includes/petclinic_introduction.adoc[]
+
+
+==  编程式数据访问交互
+
+通常，以编程方式与数据库进行交互是必要的。在基于CUBA的应用程序中，由于可以以声明的方式对UI进行数据绑定，所以编程式数据访问不会像其它框架那么多，但仍有很多情况我们必须在业务逻辑代码中读写数据库。
+
+CUBA 提供的主要数据交互点是 https://doc.cuba-platform.com/manual-{cuba_version}/dataManager.html[DataManager] API。这个API允许 CUBA 应用程序开发人员通过对实体的一般抽象来加载和存储数据库中的数据。????
+
+
+DataManager 是在 Java Persistence API (JPA) 之上的一个抽象。它隐藏掉了一些在日常操作不需要的细节。
+
+同时它添加了 JPA 中缺少的一些功能。 这些功能主要是 https://doc.cuba-platform.com/manual-{cuba_version}/views.html[视图概念]以及应用程序的 https://doc.cuba-platform.com/manual-{cuba_version}/security_subsystem.html[安全限制]。有关 JPA 和 DataManager 之间差异的详细信息，请参阅文档： https://doc.cuba-platform.com/manual-{cuba_version}/dm_vs_em.html[DataManager vs. EntityManager] 。
+
+
+== 使用 Datamanager 加载数据
+
+DataManager 有多种方式从数据库加载数据。在这个指南中，介绍两个主要方式：基于查询加载单条数据和多条数据。
+
+=== 单条数据
+
+第一种方式是从数据库中加载单个实体实例，有时候需要对单个实体实例进行业务逻辑处理，或者需要使用单个实体实例进行业务处理，这种情况下就需要从数据库中加载单个实体。
+
+在宠物诊所的用例中,在一些业务逻辑中需要为宠物根据其身份号码创建一个新的到访(Visit)记录。
+
+
+++++
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-visit-for-pet.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-visit-for-pet.png"/></a>
+++++
+
+根据宠物身份号码加载宠物(Pet)实例的源码在示例程序中的： https://github.com/cuba-guides/cuba-petclinic-intro-to-datamanager/blob/master/modules/core/src/com/cubaplatform/petclinic/service/visit/VisitServiceBean.java#L47[VisitServiceBean.java] 文件中。
+
+
+DataManager API 的用法看起来像这样：
+
+.VisitServiceBean.java
+[source,java]
+----
+@Inject
+private DataManager dataManager;
+
+/**
+ * loads a Pet by its Identification Number
+ *
+ * @param identificationNumber the Identification Number to load
+ * @return the Pet for the given Identification Number
+ */
+private Pet loadPetByIdentificationNumber(String identificationNumber) {
+    return dataManager.load(Pet.class)
+            .query("select e from petclinic$Pet e where e.identificationNumber = :identificationNumber")
+            .parameter("identificationNumber", identificationNumber)
+            .one();
+}
+----
+
+DataManager 有一个 https://martinfowler.com/bliki/FluentInterface.html[流式 API]，它可以对 load 操作上的一些操作进行链式化，以简化执行参数的定义。 在这种情况下，交互以 `dataManager.load（Pet.class)` 开头。 然后定义JPQL查询、配置相关参数值。 `one()` 方法执行load操作并只提取一个符合条件的实例。 如果满足条件的结果，则会抛出相应的异常。
+
+由应用程序开发人员决定查询是否可以返回一个或多个结果。 在这种情况下，一次只能指定一个身份号码，因此我们可以确定查询最多返回一个实例。
+
+
+在这里, 属性 `identificationNumber` 不是实体的主键。但是它是由宠物管理部门给的全局唯一身份号码 - 因此它在应用程序中被建模为唯一属性。
+
+如果这里要根据主键 (`id`) 加载宠物(Pet)，那么查询会更简单一些， 不需要写查询语句： `dataManager.load(Pet.class).id(id).one();`
+
+
+=== 使用查询加载多个实体
+
+第二个非常常见的方式是使用查询加载多个实体。
+
+Petclinic 应用程序能够让用户发送疾病警告邮件。 用户必须定义已知疾病的位置以及会受该疾病危害的宠物的类型。 系统将找到受疾病威胁的宠物并发送邮件给宠物主人。
+
+++++
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-disease-warning-mailing.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-disease-warning-mailing.png"/></a>
+++++
+
+使用 DataManager API 查找受疾病威胁的宠物的代码像这样：
+
+.DiseaseWarningMailingServiceBean.java
+[source,java]
+----
+@Inject
+private DataManager dataManager;
+
+private List<Pet> findEndangeredPets(PetType petType, String city) {
+    return dataManager.load(Pet.class)
+            .query("select e from petclinic$Pet e where e.owner.city = :ownerCity and e.type.id = :petType")
+            .parameter("ownerCity", city)
+            .parameter("petType", petType)
+            .view("pet-with-owner-and-type")
+            .list();
+}
+----
+
+与上面相比，查询部分稍微复杂一些，但使用相同的模式。 这个例子的不同之处在于使用了 `list()` 方法，因为我们期望数据库查询结果有多个宠物。 此外，还指定了实体视图，因为不仅需要加载宠物本身的信息，同时还必须加载宠物主人的数据才能为其发送邮件。
+
+== 使用 DataManager 写数据
+
+DataManager 还负责将数据写入数据库。根据手头情况，有不同的方法来实现数据写入。
+
+=== 单个项目
+
+
+第一个最常见的情况是在数据库中更新或创建单个项目。 从用法来看，创建和更新实体之间没有太大的差异。
+
+回顾上面的示例，那个示例中为指定的宠物创建了新的到访记录(Visit)，但我们仅查看了通过其宠物ID加载宠物实例的部分。在这里，我们要将注意力放到如何创建到访记录 (Visit) 实体。 创建和保存到访记录(Vist)的源代码如下所示：
+
+
+.VisitServiceBean.java
+[source,java]
+----
+@Inject
+private DataManager dataManager;
+
+private Visit createVisitForPet(Pet pet) {
+
+    Visit visit = dataManager.create(Visit.class); // <1>
+
+    visit.setPet(pet);
+    visit.setVisitDate(timeSource.currentTimestamp());
+
+    return dataManager.commit(visit); // <2>
+
+}
+----
+
+
+<1> 创建实体实例，并在内存中进行所有初始化
+<2> 实体实例被存储到DB
+
+
+通过 DataManager 进行实例的创建也会对实体进行初始化。需要注意的是不要使用 `new Visit()` 创建实例，而是使用工厂方法创建实例，这样 CUBA 就可以完成所有必需的初始化 (例如 `@PostConstruct` 注解方法)。
+
+创建实体实例后，必须使用相应的 setter 方法来为该实体设置数据。 在这个示例中，为新的Visit实例设置了pet属性以及 将当前日期设置为访问日期。
+
+存储实体实例的过程包含几个步骤，如安全检查、执行实体监听器等。 commit 方法的返回值是存储的实例，这个实例包含了所有在存储阶段添加的属性。????
+
+TIP: 平台包含一些用于存储实体的便捷 API。 关于这些 API 的详细信息请参阅：http://files.cuba-platform.com/javadoc/cuba/{cuba_version}/com/haulmont/cuba/core/global/DataManager.html[DataManager API 参考]。
+
+=== 事务 和 提交上下文（Commit Context)
+
+上面的示例演示了如何在数据库中存储单个条目。虽然这能满足一般情况，但很多时候需要在一个事务中保存多个条目。 这种情况的默认示例是从一个账户到另一个账户的银行转账。 在这种情况下至关重要的是两个帐户要么一起更新，要么都不更新，绝不会只更新其中一个。
+
+DataManager API 始终将数据库操作封装在一个事务中。这意味着默认情况下 `commit(visit)` 调用在一个事务中执行。 对 `commit` 的另一个调用将创建另一个事务。
+
+要更新多个实体实例，平台引入了 `CommitContext` 的概念。 提交上下文定义了应创建\更新和删除的所有实体实例。 DataManager接受一个 `CommitContext` 对象代替实体实例。在这种情况下，提交上下文持有的所有实体实例将在一个事务中传输到数据库。
+
+`CommitContext` 有两个方法：http://files.cuba-platform.com/javadoc/cuba/{cuba_version}/com/haulmont/cuba/core/global/CommitContext.html#addInstanceToCommit-com.haulmont.cuba.core.entity.Entity-[addInstanceToCommit] 和 http://files.cuba-platform.com/javadoc/cuba/{cuba_version}/com/haulmont/cuba/core/global/CommitContext.html#addInstanceToRemove-com.haulmont.cuba.core.entity.Entity-[addInstancesToRemove]。 这两个方法允许定义在一个事务中哪些实体需要新增或更新，以及哪此实体需要删除。
+
+在多个到访(visit)记录需要在一个事务中更新的情况下， `CommitContext` 的用法看起来像这样：
+
+
+[source,java]
+----
+@Inject
+private DataManager dataManager;
+
+private void createVisitForPet(Pet pet) {
+
+    Visit todaysVisit = createVisitInstance(pet);
+    todaysVisit.setVisitDate(today());
+
+    Visit followUpCheckVisit = createVisitInstance(pet);
+    followUpCheckVisit.setVisitDate(nextWeek());
+
+    CommitContext commitContext = new CommitContext();
+
+    commitContext.addInstanceToCommit(todaysVisit); // <1>
+    commitContext.addInstanceToCommit(followUpCheckVisit);
+
+    dataManager.commit(commitContext); // <2>
+}
+----
+<1> `addInstanceToCommit` 允许添加实体实例到提交上下文
+<2> `commit` 可以接受一个用于在单一事务中存储多个实体实例的 `CommitContext` 实例
+
+有时，DataManager API 始终创建新事务做法并不是期望的行为，而是应该重用已有的事务。 在这种情况下，可以使用一个名为 `TransactionalDataManager` 的非常相似的API。 它的行为与常规的 `DataManager` 基本相同，区别在于它加入现有事务以及允许编程方式的事务处理。
+
+
+== 总结
+
+DataManager API是一种CUBA抽象，允许应用程序开发人员完成常见的数据库的处理任务。 它有多个操作，允许进行常规的创建(Create)、读取（Read）、更新（Update）和删除(Delete)操作（CRUD）。 实体实例可以直接保存，也可以放在提交上下文中(Commit Context)中保存。 每个操作都将封装在一个新的事务中。
+
+=== 扩展资料
+
+* https://doc.cuba-platform.com/manual-{cuba_version}/dataManager.html[DataManager 参考文档]
+* https://www.cuba-platform.com/webinars/working-data[使用数据(Webinar)]
