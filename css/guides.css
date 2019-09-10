@@ -380,7 +380,7 @@ pre.CodeRay {
 .guides-list_item {
     flex-direction: row !important;
     padding: 15px!important;
-    border-color: #ffffff!important;
+    border: 2px solid #ffffff!important;
     align-items: center;
 }
 .guides-list_item:hover {
