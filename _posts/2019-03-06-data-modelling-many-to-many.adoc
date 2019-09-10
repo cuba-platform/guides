@@ -10,6 +10,7 @@ permalink: data-modelling-many-to-many-association
 :sectanchors:
 :page-navtitle: Data Modelling: Many-to-Many Association
 :page-excerpt: Data modelling guide: what are Many-to-Many associations and when to use them
+:page-icone: images/data-model-many-to-many/guide_icone.svg
 :page-root: ../../../
 :project_id: cuba-petclinic-data-model-many-to-many
 :java_version: 1.8

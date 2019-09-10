@@ -374,3 +374,26 @@ pre.CodeRay {
 #example_cuba_petclinic a.link {
     padding: 25px;
 }
+.guides-list_title {
+    font-size: 14px !important;
+}
+.guides-list_item {
+    flex-direction: row !important;
+    padding: 15px!important;
+    border-color: #ffffff!important;
+    align-items: center;
+}
+.guides-list_item:hover {
+    border: 2px solid #4990e2!important;
+}
+.guides-list_wrapper {
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+    width: 363px;
+}
+.guides-list_icone_wrapper {
+    display: block;
+    width: 61px!important;
+    height: 61px!important;
+}

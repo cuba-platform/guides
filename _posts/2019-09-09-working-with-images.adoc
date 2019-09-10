@@ -10,6 +10,7 @@ permalink: working-with-images
 :sectanchors:
 :page-navtitle: Working with Images in CUBA applications
 :page-excerpt: In this guide several ways will be explored on how to interact with images in a CUBA application
+:page-icone: images/working-with-images/guide_icone.svg
 :page-root: ../../../
 :project_id: cuba-petclinic-working-with-images
 :java_version: 1.8

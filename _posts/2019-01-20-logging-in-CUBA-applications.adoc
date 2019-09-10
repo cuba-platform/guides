@@ -10,6 +10,7 @@ permalink: logging-in-cuba-applications
 :sectanchors:
 :page-navtitle: Logging in CUBA Applications
 :page-excerpt: Guide on why and how to use logging in a CUBA application in order to get insights
+:page-icone: images/application-logging-in-cuba/guide_icone.svg
 :page-root: ../../../
 :project_id: cuba-petclinic-application-logging
 :java_version: 1.8

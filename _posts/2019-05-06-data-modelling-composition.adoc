@@ -10,6 +10,7 @@ permalink: data-modelling-composition
 :sectanchors:
 :page-navtitle: Data Modelling: Composition
 :page-excerpt: Data modelling guide: What are Compositions and when to use them over Associations
+:page-icone: images/data-model-composition/guide_icone.svg
 :page-root: ../../../
 :project_id: cuba-petclinic-data-model-composition
 :java_version: 1.8

@@ -10,6 +10,7 @@ permalink: intro-working-with-data-in-cuba
 :sectanchors:
 :page-navtitle: Introduction to Working with Data in CUBA
 :page-excerpt: Overview on how to read and write data in a CUBA application
+:page-icone: images/intro-to-working-with-data-in-CUBA/guide_icone.svg
 :page-root: ../../../
 :project_id: cuba-petclinic-intro-to-datamanager
 :java_version: 1.8
