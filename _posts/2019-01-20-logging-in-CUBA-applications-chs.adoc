@@ -16,12 +16,11 @@ permalink: logging-in-cuba-applications
 :cuba_version: 7.0
 
 
+要深入了解运行中的CUBA应用程序，记录日志是一种重要的手段。 Java生态系统具有非常成熟的应用程序日志记录机制。这个指南介绍了如何在CUBA应用程序中利用这个生态系统。
 
-In order to get insights into a running CUBA application, Logging is one crucial part to get in place. The Java ecosystem has very mature mechanisms to do application logging. This guide shows how this ecosystem can be leveraged in a CUBA application.
+==  将要构建的内容
 
-== What Will Be Built
-
-This guides enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show how logging can be integrated, configured and viewed as part of the application itself or with the help of external tools.
+这个指南对 https://github.com/cuba-platform/cuba-petclinic[CUBA 宠物医院]示例进行了增强，以演示如何在 CUBA 应用程序中集成、配置日志功能，也演示了如何在CUBA 应用程序中查看日志或使用外部工具查看日志。
 
 
 
@@ -31,13 +30,17 @@ include::includes/guide_requirements.adoc[]
 include::includes/petclinic_introduction.adoc[]
 
 
-== Why Application Logging is Essential
+== 为什么应用程序日志是必须的
 
-Logging information about the running application is essential in order to get insights on how the application behaves, what unexpected behavior occurs and how the users are interacting with the system.
+日志记录对于了解应用程序行为是必须的，通过日志可以看出应用程序出现了哪些异常行为、分析出用户如何与系统进行交互。
 
-Logging is a common tool of application development and operation. The developer writes statements into the application source code indicating that certain actions happened.
+日志是应用程序开发及运营的基本工具。 开发人员在代码中加入语句以标记出特定动作的发生。
+
 
 In the following petclinic example two possible log messages are written. In case of successful storage of the `Pet` instance, an informal message is written with the details of the pet that has been stored. In case of a failure of storing the Pet, an error message is written with information about the failure.
+
+在下面的宠物诊所示例中，两个可能的日志消息会被写入。 如果成功保存了 `Pet` 实例。
+
 
 
 .PetServiceBean.java
