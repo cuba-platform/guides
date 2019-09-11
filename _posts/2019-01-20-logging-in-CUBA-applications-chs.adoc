@@ -36,10 +36,7 @@ include::includes/petclinic_introduction.adoc[]
 
 日志是应用程序开发及运营的基本工具。 开发人员在代码中加入语句以标记出特定动作的发生。
 
-
-In the following petclinic example two possible log messages are written. In case of successful storage of the `Pet` instance, an informal message is written with the details of the pet that has been stored. In case of a failure of storing the Pet, an error message is written with information about the failure.
-
-在下面的宠物诊所示例中，两个可能的日志消息会被写入。 如果成功保存了 `Pet` 实例。
+在下面的宠物诊所示例中，两个可能的日志消息会被写入。在成功地保存了 `Pet` 实例后，会记录一条包含宠物详情的常规消息。在保存失败时，会记录一条包含失败信息的错误级消息。
 
 
 
@@ -58,34 +55,38 @@ private Pet savePet(Pet pet) {
 }
 ----
 
-Those messages will be written in a configured place that some administrator or developer has access to for later use. Normally, this place is a plain text file, but it is also possible to store the logging information in a Database or a centralized logging service.
+日志消息会被保存到配置好的位置，管理员或开发人员会从这些位置访问日志消息。  通常，日志消息被保存到一个文本文件，但也有可能会保存到数据库或一个中心化的日志服务。
 
-While the application is developed there is a possibility to debug the source code. This gives a developer the ability to stop the application at any point of time and reason about its internal state.
+在应用程序开发阶段，开发人员可以随时挂起应用程序的执行来查看应用程序的内部状态。
 
-For a running application, this is normally not the case. Either because of security reasons or simply because the application is not run on a server that is under the control of a developer.
+对于已经上线运行的应用程序，通常不能这样做。这可能是因为安全问题或应用程序运行在不受开发人员控制的服务器上。
 
-Therefore logging is another tool in the toolbox of a developer in order to do diagnostics of a running application.
+因此记录日志成为开发人员诊断应用程序问题的一个必备工具。
 
-== The Java Logging Ecosystem
+== Java 日志生态系统
 
-In the Java ecosystem logging has (as in a lot of other ecosystems as well) played a substantial role. There are various mechanisms and abstractions out there on how to actually interact with the logging mechanisms of the platform the application is running on.
+在 Java 生态系统（也包括其它生态系统）中日志扮演着一个重要的角色。在 Java 生态系统中有各种各样的关于与应用程序所运行的平台的日志机制进行交互的机制和概念。
+
 
 Mainly these are various APIs of the JVM and different logging libraries that encapsulate the technical concern of logging to a file / database from the abstraction of "writing a log message".
 
-In recent years a commonly used combination has been adopted in the Java ecosystem:
+在最近几年，一个常用的组合被 Java 生态采纳，成为一个事实标准。
 
 - Slf4J
 - Logback
 
-Slf4J is an abstract API that encapsulates the concrete details of the logging library. It offers different methods for logging information to the logging system with different servity levels (`DEBUG`, `INFO`, `WARN` etc.).
+Slf4J 是一个抽象的 API，封装了日志库的创建细节。它为不同严重级别（`DEBUG` 、 `INFO` 、 `WARN` 等）的消息提供了不同的方法，这些方法将消息存储到日志系统。
 
-Logback, on the other hand, is the logging library that fulfills this API and does the heavy lifting of writing the message to a log appender. An appender is a component within the logging library that takes a logging event created by an application developer and writes it to a specific output. Logback contains the options to configure how the logging system should behave, which log information go into which appender etc.
+Logback ,可以说是实现了那套 API 的日志库，最终，日志的实际输出是由它执行的。 在 Logback 中使用 Appender 的概念表示一个输出通道，一个 Appender 是一个日志库中的组件，它获取由应用程序开发人员创建的日志事件并将日志事件写入特定的输出目标。Logback 包提供了一些选项，通过这些选项可以配置日志系统的某些行为，比如哪些信息应该写到哪些输出通道（appender）。
 
-== How to Log in a CUBA Application
 
-The usage of logging libraries within a CUBA application does not differ from other Java applications in this regard. CUBA is by default configured with Sl4fJ and Logback in place. The framework itself uses them for framework internal logging messages.
 
-In order to log information within a class, an instance of a Logger has to be created in the class that wants to log information.
+== 在 CUBA 应用程序中如何记录日志
+
+CUBA 应用程序中日志库的用法与其它Java 应用程序没有区别。 CUBA 默认适当地配置了 Sl4fJ 和 Logback 。 框架本身使用它们来记录框架内部的日志消息。
+
+要在一个类里面记录信息，需要在这个类上创建一个 Logger 类的实例。
+
 
 .DiseaseWarningMailingServiceBean.java
 [source,java]
@@ -118,27 +119,30 @@ public class DiseaseWarningMailingServiceBean implements DiseaseWarningMailingSe
     // ...
 }
 ----
-<1> Logger configured for this class is defined through Slf4J
-<2> Write debug log message when `warnAboutDisease` is initiated
-<3> Write summary info message about the outcome of the method execution. Variable parts of the log message can be passed into the method as parameters and marked in the log message as the following placeholder: `{}`
+<1>  给这个类配置的 Logger 是由Slf4J 定义的
+<2>  `warnAboutDisease`  初始化后记录调试日志消息
+<3>  记录方法执行结果的摘要信息。消息中的可变部分可以传递给方法参数并且在日志消息中使用 `{}` 点位符标记出来
 
-=== View Log Messages Through CUBA UI
+=== 通过 CUBA UI 查看日志消息
 
-There are several ways to get access to the log output of the running application. The most common way is a log file within the filesystem of the server. Unfortunately, this oftentimes requires special permissions and knowledge to get access to the file.
+有几种方法可以访问正在运行的应用程序的日志输出。 最常见的方法是直接访问服务器上的日志文件。不幸的是，这通常需要特殊的权限和知识才能访问该文件。
 
-CUBA offers a user interface screen, which displays the log information of the running application. It can be found via `Administration > Server Log > View`:
+
+CUBA 提供了一个用户界面，可以用来查看应用程序的运行时日志信息。 可以通过 `Administration > Server Log > View` 菜单打开这个界面：
+
 
 ++++
 <a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-application-logging/master/img/cuba-server-log-messages.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-application-logging/master/img/cuba-server-log-messages.png"/></a>
 ++++
 
-The UI allows the user to display different log files or download them for later use. It gives also non-administrator roles access to the logs, while it is still possible to restrict access only to allowed roles.
+在这个界面上可以显示不同的日志文件，也可以将日志文件下载下来。这个功能给了非管理员角色访问日志的权限，同时仍然可以限制哪些角色允许访问日志。
 
-=== Logging Levels
 
-Information that should be logged is of different types in multiple dimensions. In order to reason about the messages quickly and help the log message reader to distinguish between signal and noise, all logging libraries offer one very important dimension to categorize the messages: the Log level.
+=== 日志级别
 
-The log level can show how critical / urgent the message is. It is important to note that the log levels are ordered and based on each other. Slf4J defines the following https://www.slf4j.org/api/org/apache/log4j/Level.html[logging levels] that can be used in an application:
+要记录的信息在多个维护有不同类型。为了帮助消息的使用者能快速地区分出有用信息和无用信息， 所有的日志库都提供了一个非常重要的对消息进行分类的维度：日志级别。
+
+日志级别可以表示出消息的重要/紧急程度。请注意，日志级别是按顺序排列的。 Slf4J  定义了下列可用在应用程序中的 https://www.slf4j.org/api/org/apache/log4j/Level.html[日志级别]
 
 - TRACE
 - DEBUG
@@ -147,11 +151,12 @@ The log level can show how critical / urgent the message is. It is important to 
 - ERROR
 - FATAL
 
-`DEBUG` log messages on the one end are normally used for information that helps to identify the internal state of the application for application developers.
+`DEBUG`  日志消息一般用于帮助开发员标识应用程序的内部状态。
 
-`ERROR` and `FATAL` are normally used in cases where an unexpected situation within the application occurred up to the point where the application cannot fulfill its purpose anymore.
+`ERROR` 和  `FATAL`  通常用于应用程序发生了非预期异常，并且不能再继续运行的情况。
 
-== Adjust Logging Configuration
+
+== 调整日志配置
 
 Logback (alongside with other logging libraries) allows customization on how and where the log information is processed and written to the output, mainly through the already mentioned `appender` concept.
 
