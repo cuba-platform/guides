@@ -11,7 +11,7 @@ permalink: decouple-business-logic-with-app-events
 :page-navtitle: Decouple Business Logic with Application Events
 :page-excerpt: Overview on how application events can be used in a CUBA application to decouple business logic
 :page-icone: images/decouple-business-logic-with-application-events/guide_icone.svg
-
+:page-url-first-image: https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-application-events/master/img/login-screen.png
 :page-root: ../../../
 :project_id: cuba-petclinic-intro-to-application-events
 :java_version: 1.8

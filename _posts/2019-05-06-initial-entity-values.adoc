@@ -13,6 +13,7 @@ permalink: initial-entity-values
 :page-icone: images/initial-entity-values/guide_icone.svg
 :page-root: ../../../
 :project_id: cuba-petclinic-initial-entity-values
+:page-url-first-image: https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-initial-entity-values/master/img/login-screen.png
 :java_version: 1.8
 :cuba_version: 7.0
 

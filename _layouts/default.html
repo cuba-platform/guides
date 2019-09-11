@@ -8,6 +8,16 @@
     <title>{{page.title}}</title>
     <meta name="description" content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">
     <meta name="author" content="Haulmont">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@CubaPlatform">
+    <meta name="twitter:creator" content="@CubaPlatform">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="{{page.title}}">
+    <meta property="og:description" content="{{page.excerpt}}">
+    <meta property="og:url" content="https://www.cuba-platform.com{{site.baseurl}}/{{page.permalink}}">
+    <meta property="og:image" content="{{page.url-first-image}}">
+
     <link rel="shortcut icon" href="{{ '/images/favicon.png' | prepend: site.baseurl }}" type="image/png" />
     <link rel="stylesheet" href="{{ '/css/foundation.css' | prepend: site.baseurl }}">
     <link rel="stylesheet" href="{{ '/css/font-awesome.css' | prepend: site.baseurl }}">

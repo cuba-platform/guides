@@ -13,6 +13,7 @@ permalink: data-modelling-composition
 :page-icone: images/data-model-composition/guide_icone.svg
 :page-root: ../../../
 :project_id: cuba-petclinic-data-model-composition
+:page-url-first-image: https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-data-model-composition/master/img/login-screen.png
 :java_version: 1.8
 :cuba_version: 7.0
 
