@@ -374,3 +374,51 @@ pre.CodeRay {
 #example_cuba_petclinic a.link {
     padding: 25px;
 }
+.guides-list_title {
+    font-size: 14px !important;
+}
+.guides-list_item {
+    flex-direction: row !important;
+    padding: 15px!important;
+    border: 2px solid #ffffff!important;
+    align-items: center;
+}
+.guides-list_item:hover {
+    border: 2px solid #4990e2!important;
+}
+.guides-list_wrapper {
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+    width: 363px;
+}
+.guides-list_icone_wrapper {
+    display: block;
+    width: 61px!important;
+    height: 61px!important;
+}
+.conum {
+    position: relative;
+    top: -0.125em;
+}
+.conum {
+    display: inline-block;
+    color: #fff !important;
+    background-color: rgba(0,0,0,0.8);
+    -webkit-border-radius: 100px;
+    border-radius: 100px;
+    text-align: center;
+    width: 1.67em;
+    height: 1.67em;
+    font-size: 0.75em;
+    line-height: 1.67em;
+    font-family: "Open Sans", "Sans", sans-serif;
+    font-style: normal;
+    font-weight: bold;
+}
+.conum:after {
+    content: attr(data-value);
+}
+.conum+b {
+    display: none;
+}
