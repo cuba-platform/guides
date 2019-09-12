@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Business Logic in CUBA</title>
+    <title>Anonymous Access &amp; Login Dialog</title>
     <meta name="description" content="The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.">
     <meta name="author" content="Haulmont">
     <link rel="shortcut icon" href="/guides/images/favicon.png" type="image/png" />
@@ -162,23 +162,22 @@
                             <div class="field field-name-body field-type-text-with-summary field-label-hidden">
                                 <div class="field-items">
                                     <div class="field-item even" property="content: encoded">
-                                        <h1>Create Business Logic in CUBA</h1>
+                                        <h1>Anonymous Access &amp; Login Dialog</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>One of the first questions when developing a CUBA application is: <em>Where should I put my business logic?</em> This guide will explain the options available and their pros and cons.</p>
+<p>Sometimes an app should provide the ability to view some public data like product
+catalog or pricing. Now it is possible with new anonymous access feature.
+This guide shows how it can be configured and describes a way to create custom login dialog.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="what_will_be_built"><a class="anchor" href="#what_will_be_built"></a><a class="link" href="#what_will_be_built">What Will Be Built</a></h2>
+<h2 id="what_will_be_built"><a class="anchor" href="#what_will_be_built"></a><a class="link" href="#what_will_be_built">What Will be Built</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show where business logic can be placed in a CUBA application. Mainly discounts are calculated for Pets based on the total amount of their visits in the Petclinic.</p>
-</div>
-<div class="sect2">
-<h3 id="final_application"><a class="anchor" href="#final_application"></a><a class="link" href="#final_application">Final Application</a></h3>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/login-screen.png"/></a>
+<p>This guides enhances the CUBA petclinic example to demonstrate application public
+access and implement new login dialog.</p>
 </div>
 <div class="sect2">
 <h3 id="requirements"><a class="anchor" href="#requirements"></a><a class="link" href="#requirements">Requirements</a></h3>
@@ -202,10 +201,10 @@
 </ul>
 </div>
 <div class="paragraph">
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-anonymous-access/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
 </div>
 <div class="paragraph">
-<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-business-logic.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-business-logic.git</a></code></p>
+<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-anonymous-access.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-anonymous-access.git</a></code></p>
 </div>
 </div>
 </div>
@@ -231,344 +230,384 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="business_logic_in_controllers"><a class="anchor" href="#business_logic_in_controllers"></a><a class="link" href="#business_logic_in_controllers">Business Logic in Controllers</a></h2>
+<h2 id="public_access"><a class="anchor" href="#public_access"></a><a class="link" href="#public_access">Public Access</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Assuming the discount calculation should be executed when a user clicks a button on the Pets&#8217;s browser screen, the most straightforward way to accomplish this is to put the calculation logic right in the associated controller class.</p>
+<p>Oftentimes CRM like applications have an info that should be available for
+both authenticated and anonymous users - products, services, etc.
+This scenario is also relevant for dashboards, contacts or support pages.
+Since version 7.1 CUBA provides more flexible approach to create publicly
+available screens that can be easily managed with built-in security subsystem.</p>
 </div>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/calculate-discout-for-pet.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/calculate-discout-for-pet.png"/></a>
 <div class="paragraph">
-<p>See the <strong>Calculate discount</strong> button in the petclinic application and the screen controller implementation: <a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetBrowse.java#L15">PetBrowse</a>.</p>
+<p>Since no special user or role is required default “anonymous” user is a good option to use.
+It means that public access can be configured by security permissions (screens, entities, etc) for this user.</p>
+</div>
+<div class="paragraph">
+<p>At the end of this guide you&#8217;ll be able to see veterinarians working in clinic or animals that can be brought for
+treatment.</p>
+</div>
+<div class="paragraph">
+<p>Let’s begin.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="setting_up_anonymous_access"><a class="anchor" href="#setting_up_anonymous_access"></a><a class="link" href="#setting_up_anonymous_access">Setting up anonymous access</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The first thing that should be done is to enable anonymous access via application properties:</p>
 </div>
 <div class="listingblock">
-<div class="title">PetBrowse.java</div>
+<div class="title">web-app.properties</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@UiController</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_Pet.browse</span><span class="delimiter">&quot;</span></span>)
-<span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">pet-browse.xml</span><span class="delimiter">&quot;</span></span>)
-<span class="annotation">@LookupComponent</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petsTable</span><span class="delimiter">&quot;</span></span>)
+<pre class="CodeRay highlight"><code data-lang="properties">cuba.web.allowAnonymousAccess = true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When this setting is on and the current user session is not authenticated (i.e. not logged in),
+the application will check permissions of the anonymous user to this screen instead of redirecting to the login screen.</p>
+</div>
+<div class="sect2">
+<h3 id="initial_screen"><a class="anchor" href="#initial_screen"></a><a class="link" href="#initial_screen">Initial screen</a></h3>
+<div class="paragraph">
+<p>Next step is to configure a screen that will be opened by default:</p>
+</div>
+<div class="listingblock">
+<div class="title">web-app.properties</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="properties">cuba.web.initialScreenId = main</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And now we have a first result:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/anonymous-access-and-login-dialog/initial-screen.png" alt="initial screen">
+</div>
+</div>
+<div class="paragraph">
+<p>Main screen with empty side menu is opened. But it’s not very interesting
+to see a blank page - let’s set up permissions for anonymous.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="anonymous_user_permissions"><a class="anchor" href="#anonymous_user_permissions"></a><a class="link" href="#anonymous_user_permissions">Anonymous user permissions</a></h3>
+<div class="paragraph">
+<p>Click the right button in menu to proceed to login screen and enter the system as administrator.
+Open “Role” browser and edit “Anonymous” role.</p>
+</div>
+<div class="paragraph">
+<p>Permit all required menu items and screens:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/anonymous-access-and-login-dialog/screen-permissions.png" alt="screen permissions">
+</div>
+</div>
+<div class="paragraph">
+<p>And give permissions to read corresponding entities:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/anonymous-access-and-login-dialog/entity-permissions.png" alt="entity permissions">
+</div>
+</div>
+<div class="paragraph">
+<p>And restart the app. Now anonymous users can view the list of veterinarians:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/anonymous-access-and-login-dialog/pemitted-screens.png" alt="pemitted screens">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="screen_routes"><a class="anchor" href="#screen_routes"></a><a class="link" href="#screen_routes">Screen routes</a></h3>
+<div class="paragraph">
+<p>CUBA Navigation feature also supports anonymous access, so let’s register routes
+for our screens to be able to open screens directly. It can be done with <code>@Route</code> annotation:</p>
+</div>
+<div class="listingblock">
+<div class="title">VetBrowse.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Route</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">vets</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@UiController</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_Vet.browse</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">vet-browse.xml</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@LookupComponent</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">vetsTable</span><span class="delimiter">&quot;</span></span>)
 <span class="annotation">@LoadDataBeforeShow</span>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">PetBrowse</span> <span class="directive">extends</span> StandardLookup&lt;Pet&gt; {
+<span class="directive">public</span> <span class="type">class</span> <span class="class">VetBrowse</span> <span class="directive">extends</span> StandardLookup&lt;Vet&gt; {
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Add routes for other screens in the same way:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>@Route("pet-types")</code> for <code>PetTypeBrowse</code></p>
+</li>
+<li>
+<p><code>@Route("specs")</code> for <code>SpecialtyBrowse</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Restart the app and try to open Vets screen by the following link:</p>
+</div>
+<a href="http://localhost:8080/petclinic/#main/vets">http://localhost:8080/petclinic/#main/vets</a>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/anonymous-access-and-login-dialog/screen-routes.png" alt="screen routes">
+</div>
+</div>
+<div class="paragraph">
+<p>Now you can bookmark available pages or share a link with a friend or colleagues.
+Other public pages also can be navigated by their routes, but if you try to open
+not permitted screens you will be redirected to the login screen.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="custom_login_dialog"><a class="anchor" href="#custom_login_dialog"></a><a class="link" href="#custom_login_dialog">Custom Login Dialog</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Default login process in CUBA application requires redirecting to a separate screen.
+In this section, we&#8217;ll implement login using a modal dialog to be able to enter
+the application "in-place" and do not lose the context.</p>
+</div>
+<div class="sect2">
+<h3 id="extended_main_screen"><a class="anchor" href="#extended_main_screen"></a><a class="link" href="#extended_main_screen">Extended Main Screen</a></h3>
+<div class="paragraph">
+<p>Let’s begin with extending default Main Screen. Open “New Screen” dialog in CUBA Studio
+and choose a template named “Main screen with side menu”. You may notice that the screen layout
+has a new component - <code>&lt;userActionsButton/&gt;</code>. It combines “log in” action for anonymous users
+and allows logged in users to open the "Settings" screen or to log out.</p>
+</div>
+<div class="paragraph">
+<p>The <code>UserActionsButton</code> component has a few extension points to override default behavior
+for login and logout actions. It allows us to define our custom logic to open
+dialog - install custom login handler via <code>@Install</code> annotation:</p>
+</div>
+<div class="listingblock">
+<div class="title">ExtMainScreen.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@UiController</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">main</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">ext-main-screen.xml</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">ExtMainScreen</span> <span class="directive">extends</span> MainScreen {
 
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> Notifications notifications;
-
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> Metadata metadata;
-
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> GroupTable&lt;Pet&gt; petsTable;
-
-    <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petsTable.calculateDiscount</span><span class="delimiter">&quot;</span></span>)
-    <span class="directive">public</span> <span class="type">void</span> calculateDiscount(<span class="predefined-type">Action</span>.ActionPerformedEvent actionPerformedEvent) {
-
-        Pet pet = petsTable.getSingleSelected();
-
-        <span class="type">int</span> discount = calculateDiscount(pet);
-
-        showDiscountCalculatedNotification(pet, discount);
+    <span class="annotation">@Install</span>(to = <span class="string"><span class="delimiter">&quot;</span><span class="content">userActionsButton</span><span class="delimiter">&quot;</span></span>, subject = <span class="string"><span class="delimiter">&quot;</span><span class="content">loginHandler</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">private</span> <span class="type">void</span> loginHandler(UserActionsButton.LoginHandlerContext ctx) {
+        <span class="comment">// will open login dialog later</span>
     }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="login_dialog"><a class="anchor" href="#login_dialog"></a><a class="link" href="#login_dialog">Login Dialog</a></h3>
+<div class="paragraph">
+<p>New login dialog will be simplified version of default login screen, so start
+with creating new blank screen. To avoid re-implementing login process logic
+we’ll just make <code>LoginDialog</code> extend <code>LoginScreen</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">LoginDialog.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">login-dialog.xml</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@UiController</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">LoginDialog</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">LoginDialog</span> <span class="directive">extends</span> LoginScreen {
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Dialog layout is just a login form copied from default screen:</p>
+</div>
+<div class="listingblock">
+<div class="title">login-dialog.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;window</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://schemas.haulmont.com/cuba/screen/window.xsd</span><span class="delimiter">&quot;</span></span>
+        <span class="attribute-name">caption</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">mainMsg://loginWindow.loginField</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
 
-    <span class="directive">private</span> <span class="type">int</span> calculateDiscount(Pet pet) {
-        <span class="type">int</span> discount = <span class="integer">0</span>;
+    <span class="tag">&lt;actions&gt;</span>
+        <span class="tag">&lt;action</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">submit</span><span class="delimiter">&quot;</span></span>
+                <span class="attribute-name">caption</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">mainMsg://loginWindow.okButton</span><span class="delimiter">&quot;</span></span>
+                <span class="attribute-name">icon</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">app/images/login-button.png</span><span class="delimiter">&quot;</span></span>
+                <span class="attribute-name">invoke</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">performLogin</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">shortcut</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">ENTER</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;/actions&gt;</span>
 
-        <span class="type">int</span> visitAmount = pet.getVisits().size();
-        <span class="keyword">if</span> (visitAmount &gt; <span class="integer">10</span>) {
-            discount = <span class="integer">10</span>;
-        } <span class="keyword">else</span> <span class="keyword">if</span> (visitAmount &gt; <span class="integer">5</span>) {
-            discount = <span class="integer">5</span>;
-        }
-        <span class="keyword">return</span> discount;
+    <span class="tag">&lt;layout&gt;</span>
+        <span class="tag">&lt;vbox</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">loginMainBox</span><span class="delimiter">&quot;</span></span>
+              <span class="attribute-name">align</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">MIDDLE_CENTER</span><span class="delimiter">&quot;</span></span>
+              <span class="attribute-name">margin</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span>
+              <span class="attribute-name">width</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">320</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+            <span class="tag">&lt;hbox</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">loginTitleBox</span><span class="delimiter">&quot;</span></span>
+                  <span class="attribute-name">align</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">MIDDLE_CENTER</span><span class="delimiter">&quot;</span></span>
+                  <span class="attribute-name">spacing</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span>
+                  <span class="attribute-name">stylename</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">c-login-title</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+                <span class="tag">&lt;image</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">logoImage</span><span class="delimiter">&quot;</span></span>
+                       <span class="attribute-name">align</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">MIDDLE_LEFT</span><span class="delimiter">&quot;</span></span>
+                       <span class="attribute-name">height</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">AUTO</span><span class="delimiter">&quot;</span></span>
+                       <span class="attribute-name">scaleMode</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">SCALE_DOWN</span><span class="delimiter">&quot;</span></span>
+                       <span class="attribute-name">stylename</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">c-login-icon</span><span class="delimiter">&quot;</span></span>
+                       <span class="attribute-name">width</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">AUTO</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+
+                <span class="tag">&lt;label</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">welcomeLabel</span><span class="delimiter">&quot;</span></span>
+                       <span class="attribute-name">align</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">MIDDLE_LEFT</span><span class="delimiter">&quot;</span></span>
+                       <span class="attribute-name">stylename</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">c-login-caption</span><span class="delimiter">&quot;</span></span>
+                       <span class="attribute-name">value</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">mainMsg://loginDialog.label</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+            <span class="tag">&lt;/hbox&gt;</span>
+
+            <span class="tag">&lt;capsLockIndicator</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">capsLockIndicator</span><span class="delimiter">&quot;</span></span>
+                               <span class="attribute-name">align</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">MIDDLE_CENTER</span><span class="delimiter">&quot;</span></span>
+                               <span class="attribute-name">stylename</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">c-login-capslockindicator</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+            <span class="tag">&lt;vbox</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">loginForm</span><span class="delimiter">&quot;</span></span>
+                  <span class="attribute-name">spacing</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span>
+                  <span class="attribute-name">stylename</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">c-login-form</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+                <span class="tag">&lt;cssLayout</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">loginCredentials</span><span class="delimiter">&quot;</span></span>
+                           <span class="attribute-name">stylename</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">c-login-credentials</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+                    <span class="tag">&lt;textField</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">loginField</span><span class="delimiter">&quot;</span></span>
+                               <span class="attribute-name">htmlName</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">loginField</span><span class="delimiter">&quot;</span></span>
+                               <span class="attribute-name">inputPrompt</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">mainMsg://loginWindow.loginPlaceholder</span><span class="delimiter">&quot;</span></span>
+                               <span class="attribute-name">stylename</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">c-login-username</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+                    <span class="tag">&lt;passwordField</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">passwordField</span><span class="delimiter">&quot;</span></span>
+                                   <span class="attribute-name">autocomplete</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span>
+                                   <span class="attribute-name">htmlName</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">passwordField</span><span class="delimiter">&quot;</span></span>
+                                   <span class="attribute-name">inputPrompt</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">mainMsg://loginWindow.passwordPlaceholder</span><span class="delimiter">&quot;</span></span>
+                                   <span class="attribute-name">capsLockIndicator</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">capsLockIndicator</span><span class="delimiter">&quot;</span></span>
+                                   <span class="attribute-name">stylename</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">c-login-password</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+                <span class="tag">&lt;/cssLayout&gt;</span>
+                <span class="tag">&lt;hbox</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">rememberLocalesBox</span><span class="delimiter">&quot;</span></span>
+                      <span class="attribute-name">stylename</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">c-login-remember-locales</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+                    <span class="tag">&lt;checkBox</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">rememberMeCheckBox</span><span class="delimiter">&quot;</span></span>
+                              <span class="attribute-name">caption</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">mainMsg://loginWindow.rememberMe</span><span class="delimiter">&quot;</span></span>
+                              <span class="attribute-name">stylename</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">c-login-remember-me</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+                    <span class="tag">&lt;lookupField</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">localesSelect</span><span class="delimiter">&quot;</span></span>
+                                 <span class="attribute-name">nullOptionVisible</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">false</span><span class="delimiter">&quot;</span></span>
+                                 <span class="attribute-name">stylename</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">c-login-locale</span><span class="delimiter">&quot;</span></span>
+                                 <span class="attribute-name">textInputAllowed</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">false</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+                <span class="tag">&lt;/hbox&gt;</span>
+                <span class="tag">&lt;button</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">loginButton</span><span class="delimiter">&quot;</span></span>
+                        <span class="attribute-name">align</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">MIDDLE_CENTER</span><span class="delimiter">&quot;</span></span>
+                        <span class="attribute-name">action</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">submit</span><span class="delimiter">&quot;</span></span>
+                        <span class="attribute-name">stylename</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">c-login-submit-button</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+            <span class="tag">&lt;/vbox&gt;</span>
+        <span class="tag">&lt;/vbox&gt;</span>
+    <span class="tag">&lt;/layout&gt;</span>
+<span class="tag">&lt;/window&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The last step is to fix dialog width and perform login on button click:</p>
+</div>
+<div class="listingblock">
+<div class="title">LoginDialog.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Route</span>
+<span class="annotation">@DialogMode</span>(width = <span class="string"><span class="delimiter">&quot;</span><span class="content">430</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">login-dialog.xml</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@UiController</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">LoginDialog</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">LoginDialog</span> <span class="directive">extends</span> LoginScreen {
+
+    <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">loginButton</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">private</span> <span class="type">void</span> onLoginButtonClick(<span class="predefined-type">Button</span>.ClickEvent event) {
+        login();
+        close(WINDOW_CLOSE_ACTION);
     }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The new login dialog should be available to all users regardless of their roles, so we&#8217;ll use the default permissions
+mechanism to enable it. Create <code>default-permission-values.xml</code> file in the root package or core module
+with the following content:</p>
+</div>
+<div class="listingblock">
+<div class="title">default-permission-values.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="tag">&lt;default-permission-values</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://schemas.haulmont.com/cuba/default-permission-values.xsd</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="comment">&lt;!-- Permit to open LoginDialog for all roles by default --&gt;</span>
+    <span class="tag">&lt;permission</span> <span class="attribute-name">target</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">LoginDialog</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">value</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">1</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">10</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+<span class="tag">&lt;/default-permission-values&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And append this config to default permissions in <code>app.properties</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="title">app.properties</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="properties">cuba.defaultPermissionValuesConfig = +com/haulmont/sample/petclinic/default-permission-values.xml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now we can open our new dialog:</p>
+</div>
+<div class="listingblock">
+<div class="title">ExtMainScreen.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@UiController</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">main</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">ext-main-screen.xml</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">ExtMainScreen</span> <span class="directive">extends</span> MainScreen {
 
-    <span class="directive">private</span> <span class="type">void</span> showDiscountCalculatedNotification(Pet pet, <span class="type">int</span> discount) {
+    <span class="annotation">@Inject</span>
+    <span class="directive">private</span> Screens screens;
 
-        <span class="predefined-type">String</span> petName = metadata.getTools().getInstanceName(pet);
-
-        <span class="predefined-type">String</span> discountMessage = <span class="string"><span class="delimiter">&quot;</span><span class="content">Discount for </span><span class="delimiter">&quot;</span></span> + petName + <span class="string"><span class="delimiter">&quot;</span><span class="content">: </span><span class="delimiter">&quot;</span></span> + discount + <span class="string"><span class="delimiter">&quot;</span><span class="content">%</span><span class="delimiter">&quot;</span></span>;
-
-        notifications.create()
-                .setCaption(discountMessage)
-                .setType(Notifications.NotificationType.TRAY)
+    <span class="annotation">@Install</span>(to = <span class="string"><span class="delimiter">&quot;</span><span class="content">userActionsButton</span><span class="delimiter">&quot;</span></span>, subject = <span class="string"><span class="delimiter">&quot;</span><span class="content">loginHandler</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">private</span> <span class="type">void</span> loginHandler(UserActionsButton.LoginHandlerContext ctx) {
+        screens.create(LoginDialog.class, OpenMode.DIALOG)
                 .show();
     }
 }</code></pre>
 </div>
 </div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-This approach is acceptable if the logic is invoked from a single point and it is not too complex to fit into a couple of short methods.
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="client_tier_beans"><a class="anchor" href="#client_tier_beans"></a><a class="link" href="#client_tier_beans">Client Tier Beans</a></h2>
-<div class="sectionbody">
 <div class="paragraph">
-<p>The in-controller solution works as long as the logic should only be executed within one screen. Once the calculation should be executed in multiple UI screens there is a better way not to duplicate the code. The logic can be extracted to a common place available for both controllers. This option is using a Spring bean in the client tier.</p>
+<p>Restart an app and try to log in:</p>
 </div>
-<div class="paragraph">
-<p>A managed bean is a class annotated with <code>@Component</code> annotation. It can be injected via <code>@Inject</code> into other beans and screen controllers. If a bean has a separate interface, it can be accessed through the interface instead of the class.</p>
-</div>
-<div class="imageblock">
+<div class="imageblock text-center">
 <div class="content">
-<img src="/guides/images/creating-business-logic-in-cuba/using_client_beans_1.png" alt="class diagramm using client tier beans">
+<img src="/guides/images/anonymous-access-and-login-dialog/login-dialog-init.png" alt="login dialog init">
 </div>
 </div>
 <div class="paragraph">
-<p>Please note that in order to be accessible for screen controllers, the bean must be located in <strong>global</strong>, <strong>gui</strong> or <strong>web</strong> modules of the application. In the former case the bean will be also accessible for the middleware.</p>
-</div>
-<div class="paragraph">
-<p>The example that is implemented as (multiple) client tier beans is to display the contact information of the pet&#8217;s owner directly from the pet browser or the pet details screen.</p>
-</div>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/fetch-contact-of-pet.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/fetch-contact-of-pet.png"/></a>
-<div class="paragraph">
-<p>For this there are two Spring beans:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/global/src/com/cubaplatform/petclinic/contact/PetContactFetcherBean.java">PetContactFetcher</a> that deals with fetching of the appropriate contact data</p>
-</li>
-<li>
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetContactDisplay.java">PetContactDisplay</a> for displaying contact information as notifications</p>
-</li>
-</ul>
+<p>The last step is to check whether login performed successfully and reopen last screen:</p>
 </div>
 <div class="listingblock">
-<div class="title">PetContactFetcherBean.java</div>
+<div class="title">ExtMainScreen.java</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Component</span>(PetContactFetcher.NAME)
-<span class="directive">public</span> <span class="type">class</span> <span class="class">PetContactFetcherBean</span> <span class="directive">implements</span> PetContactFetcher {
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@UiController</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">main</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">ext-main-screen.xml</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">ExtMainScreen</span> <span class="directive">extends</span> MainScreen {
 
     <span class="annotation">@Inject</span>
-    <span class="directive">private</span> DataManager dataManager;
+    <span class="directive">private</span> Screens screens;
 
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> Messages messages;
+    <span class="directive">public</span> <span class="type">void</span> performLogin() {
+        <span class="predefined-type">Collection</span>&lt;Screen&gt; openedScreens = screens.getOpenedScreens()
+                .getCurrentBreadcrumbs();
 
-    <span class="annotation">@Override</span>
-    <span class="directive">public</span> Optional&lt;Contact&gt; findContact(Pet pet) {
+        Screen currentScreen = !openedScreens.isEmpty()
+                ? openedScreens.iterator().next()
+                : <span class="predefined-constant">null</span>;
 
-        Optional&lt;<span class="predefined-type">Owner</span>&gt; petOwner = loadOwnerFor(pet);
+        login();
 
-        <span class="keyword">if</span> (petOwner.isPresent()) {
+        <span class="keyword">if</span> (connection.isAuthenticated()) {
+            close(WINDOW_CLOSE_ACTION);
 
-            <span class="predefined-type">Owner</span> owner = petOwner.get();
-            <span class="predefined-type">String</span> telephone = owner.getTelephone();
-            <span class="predefined-type">String</span> email = owner.getEmail();
-            <span class="predefined-type">String</span> address = formatOwnerAddress(owner);
-
-            <span class="keyword">if</span> (isAvailable(telephone)) {
-                <span class="keyword">return</span> createContact(telephone, ContactType.TELEPHONE);
-            } <span class="keyword">else</span> <span class="keyword">if</span> (isAvailable(email)) {
-                <span class="keyword">return</span> createContact(email, ContactType.EMAIL);
-            } <span class="keyword">else</span> <span class="keyword">if</span> (isAvailable(address)) {
-                <span class="keyword">return</span> createContact(address, ContactType.ADDRESS);
-            } <span class="keyword">else</span> {
-                <span class="keyword">return</span> Optional.empty();
+            <span class="keyword">if</span> (currentScreen != <span class="predefined-constant">null</span>) {
+                screens.create(currentScreen.getClass(), OpenMode.NEW_TAB)
+                        .show();
             }
-        } <span class="keyword">else</span> {
-            <span class="keyword">return</span> Optional.empty();
         }
     }
-
-    <span class="comment">//...</span>
 }</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>The beans are used in the <a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetBrowse.java#L24">Pet browse screen</a> and the
-<a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetEdit.java#L19">Pet details screen</a>. The usage looks like this:</p>
-</div>
-<div class="listingblock">
-<div class="title">PetEdit.java</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@UiController</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_Pet.edit</span><span class="delimiter">&quot;</span></span>)
-<span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">pet-edit.xml</span><span class="delimiter">&quot;</span></span>)
-<span class="annotation">@EditedEntityContainer</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petCt</span><span class="delimiter">&quot;</span></span>)
-<span class="annotation">@LoadDataBeforeShow</span>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">PetEdit</span> <span class="directive">extends</span> StandardEditor&lt;Pet&gt; {
-
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> PetContactFetcher petContactFetcher;
-
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> PetContactDisplay petContactDisplay;
-
-    <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">fetchContact</span><span class="delimiter">&quot;</span></span>)
-    <span class="directive">public</span> <span class="type">void</span> fetchContact() {
-
-        Pet pet = getEditedEntity();
-
-        Optional&lt;Contact&gt; contactInformation = petContactFetcher.findContact(pet);
-
-        petContactDisplay.displayContact(contactInformation, <span class="local-variable">this</span>);
-    }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The benefit compared to the first in-controller solution is that the code-reuse is higher. It is possible to use the logic in different places.</p>
-</div>
-<div class="paragraph">
-<p><code>PetContactDisplay</code> is a bean in the web module, therefore it is only available within the client tier.
-<code>PetContactFetcher</code>, on the other hand, is a bean in the global module which means that it is also possible to use the logic in the middleware as well as the client tier.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="middleware_services"><a class="anchor" href="#middleware_services"></a><a class="link" href="#middleware_services">Middleware Services</a></h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The next approach on where to put the business logic is a <a href="https://doc.cuba-platform.com/manual-7.0/services.html">middleware service</a>. The service is the most appropriate place for business logic, because it achieves the following goals:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>The business logic will be available for all types of clients including the Polymer UI.</p>
-</li>
-<li>
-<p>APIs that are available only on the middleware: <a href="https://doc.cuba-platform.com/manual-7.0/entityManager.html">EntityManager</a>, Transaction, etc. are accessible to the business logic</p>
-</li>
-</ul>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="/guides/images/creating-business-logic-in-cuba/using_services_1.png" alt="class diagramm using services">
-</div>
-</div>
-<div class="paragraph">
-<p>In order to invoke the middleware business logic from the client, a service needs to be created. CUBA Studio streamlines the creation process of a service:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Select the <strong>Middleware</strong> section in the CUBA project tree and click <strong>New &gt; Service</strong> in the context menu.</p>
-</li>
-<li>
-<p>Change the service interface name to <code>DiseaseWarningMailingService</code>. The bean class and service names will be changed accordingly. Click <strong>OK</strong>.</p>
-</li>
-<li>
-<p>Open the service interface in the editor. Create a method and implement it in the service class.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>In the Petclinic application, the following service was created: <code>DiseaseWarningMailingService</code>. It sends out disease warning mailings to the potentially endangered pets' owners.</p>
-</div>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/create-disease-warning-mailing.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/create-disease-warning-mailing.png"/></a>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/global/src/com/cubaplatform/petclinic/service/DiseaseWarningMailingService.java">DiseaseWarningMailingService</a> - service interface</p>
-</li>
-<li>
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/global/src/com/cubaplatform/petclinic/service/DiseaseWarningMailingServiceBean.java">DiseaseWarningMailingServiceBean</a> - service implementation</p>
-</li>
-<li>
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/CreateDiseaseWarningMailing.java">CreateDiseaseWarningMailing</a> - screen controller that uses the service</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>The implementation of a service looks like this in case of <code>DiseaseWarningMailingService</code>:</p>
-</div>
-<div class="listingblock">
-<div class="title">DiseaseWarningMailingServiceBean.java</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Service</span>(DiseaseWarningMailingService.NAME) <i class="conum" data-value="1"></i><b>(1)</b>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">DiseaseWarningMailingServiceBean</span> <span class="directive">implements</span> DiseaseWarningMailingService {
-
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> DataManager dataManager;
-
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> EmailerAPI emailerAPI;
-
-    <span class="annotation">@Override</span>
-    <span class="directive">public</span> <span class="type">int</span> warnAboutDisease(PetType petType, <span class="predefined-type">String</span> disease, <span class="predefined-type">String</span> city) { <i class="conum" data-value="2"></i><b>(2)</b>
-
-        <span class="predefined-type">List</span>&lt;Pet&gt; petsInDiseaseCity = findPetsInDiseaseCity(petType, city);
-
-        <span class="predefined-type">List</span>&lt;Pet&gt; petsWithEmail = filterPetsWithValidOwnersEmail(petsInDiseaseCity);
-
-        petsWithEmail.forEach(pet -&gt; sendEmailToPetsOwner(pet, disease, city));
-
-        <span class="keyword">return</span> petsWithEmail.size();
-    }
-
-    <span class="comment">// ...</span>
-
-}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Declaration of <code>DiseaseWarningMailingServiceBean</code> as the Middleware Service implementation</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Implementation of the business logic interface</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>The UI controller usage is very similar to the invocation of a client tier bean. The <code>CreateDiseaseWarningMailing</code> screen controller looks like this:</p>
-</div>
-<div class="listingblock">
-<div class="title">CreateDiseaseWarningMailing.java</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@UiController</span>
-<span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">create-disease-warning-mailing.xml</span><span class="delimiter">&quot;</span></span>)
-<span class="directive">public</span> <span class="type">class</span> <span class="class">CreateDiseaseWarningMailing</span> <span class="directive">extends</span> Screen {
-
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> DiseaseWarningMailingService diseaseWarningMailingService; <i class="conum" data-value="1"></i><b>(1)</b>
-
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> Notifications notifications;
-
-    <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">createDiseaseWarningMailing</span><span class="delimiter">&quot;</span></span>)
-    <span class="directive">protected</span> <span class="type">void</span> createDiseaseWarningMailing(<span class="predefined-type">Action</span>.ActionPerformedEvent event) {
-
-        <span class="type">int</span> endangeredPets = diseaseWarningMailingService.warnAboutDisease(petType.getValue(),
-                disease.getValue(), city.getValue()); <i class="conum" data-value="2"></i><b>(2)</b>
-
-        closeWithCommit().then(() -&gt;
-                notifications.create()
-                        .setCaption(endangeredPets + <span class="string"><span class="delimiter">&quot;</span><span class="content"> Owner(s) of endangered Pets have been notified</span><span class="delimiter">&quot;</span></span>)
-                        .setType(Notifications.NotificationType.TRAY)
-                        .show()
-        );
-    }
-}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Injection of the middleware service via its interface definition</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Invocation of the business logic in the controller action</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>With that middleware service in place, the logic of creating disease warning mailings can now be shared across UI screens in the web tier. Additionally any other middleware code can execute the logic, since
-it is not tied to the web tier anymore. Furthermore, it is possible to trigger it via the REST API and with that to expose it also to other UI technologies like the Polymer UI.</p>
 </div>
 </div>
 </div>
@@ -576,10 +615,9 @@ it is not tied to the web tier anymore. Furthermore, it is possible to trigger i
 <h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>There are several options when it comes to where to put the business logic in a CUBA application. A controller can be a good and easy start, although it has some downsides when it comes to sharing the code. A client bean solves this problem to some degree. Middleware services allow for sharing business logic across different clients (e.g. Polymer Client) and is the most appropriate way of putting business logic.</p>
-</div>
-<div class="paragraph">
-<p>Additionally, there are several advanced techniques like <a href="https://doc.cuba-platform.com/manual-6.10/jmx_beans.html">JMX Beans</a> or <a href="https://doc.cuba-platform.com/manual-6.10/entity_listeners.html">Entity Listeners</a> that also allow for certain business logic to be executed in particular scenarios. The decision where to put the business logic for a given case should be done on a case to case basis. But the mentioned main places of Controllers &amp; Spring Beans / Spring Services for placing business logic are a good starting point.</p>
+<p>Anonymous access allows you to provide some publicly available information from your application, like dashboards
+or announcements. In this guide we have described a way how it can be implemented for CUBA based
+applications and configured with built-in security subsystem.</p>
 </div>
 </div>
 </div>
@@ -599,25 +637,25 @@ it is not tied to the web tier anymore. Furthermore, it is possible to trigger i
                         <div class="guide-panel">
                             <h3>Table of contents</h3>
                             <ul class="sectlevel1">
-<li><a href="#what_will_be_built">What Will Be Built</a></li>
+<li><a href="#what_will_be_built">What Will be Built</a></li>
 <li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
-<li><a href="#business_logic_in_controllers">Business Logic in Controllers</a></li>
-<li><a href="#client_tier_beans">Client Tier Beans</a></li>
-<li><a href="#middleware_services">Middleware Services</a></li>
+<li><a href="#public_access">Public Access</a></li>
+<li><a href="#setting_up_anonymous_access">Setting up anonymous access</a></li>
+<li><a href="#custom_login_dialog">Custom Login Dialog</a></li>
 <li><a href="#summary">Summary</a></li>
 </ul>
                         </div>
 
                         <div class="guide-panel download">
                             <h3>Example code</h3>
-                            <a class=" guide-item_button button-outline"  href="https://github.com/cuba-guides/cuba-petclinic-business-logic/archive/master.zip" target="_blank">Download</a>
-                            <a href="https://github.com/cuba-guides/cuba-petclinic-business-logic" class="github-link" target="_blank">Github</a>
+                            <a class=" guide-item_button button-outline"  href="https://github.com/cuba-guides/cuba-petclinic-anonymous-access/archive/master.zip" target="_blank">Download</a>
+                            <a href="https://github.com/cuba-guides/cuba-petclinic-anonymous-access" class="github-link" target="_blank">Github</a>
                         </div>
 
                         <div class="guide-panel cuba-version">
                             <h3>Supported Versions</h3>
                             <ul>
-                                <li>CUBA: 7.0+</li>
+                                <li>CUBA: 7.1+</li>
                                 <li>Java: 8+</li>
                             </ul>
                         </div>
