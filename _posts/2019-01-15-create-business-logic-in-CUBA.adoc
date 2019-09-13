@@ -8,8 +8,8 @@ permalink: create-business-logic-in-cuba
 :showtitle:
 :sectlinks:
 :sectanchors:
-:page-navtitle: Create Business Logic in CUBA
-:page-excerpt: Guide on what options are available for putting business logic into a CUBA application
+:page-navtitle: 在 CUBA 中创建业务逻辑
+:page-excerpt: 关于在 CUBA 应用程序中放置业务逻辑的各种方式
 :page-icone: images/creating-business-logic-in-cuba/guide_icone.svg
 :page-root: ../../../
 :project_id: cuba-petclinic-business-logic

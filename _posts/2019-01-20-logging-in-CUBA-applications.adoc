@@ -8,8 +8,8 @@ permalink: logging-in-cuba-applications
 :showtitle:
 :sectlinks:
 :sectanchors:
-:page-navtitle: Logging in CUBA Applications
-:page-excerpt: Guide on why and how to use logging in a CUBA application in order to get insights
+:page-navtitle: 在 CUBA 应用程序中使用日志
+:page-excerpt:  关于为什么及如何在 CUBA 应用程序中使用日志以获得洞见力
 :page-icone: images/application-logging-in-cuba/guide_icone.svg
 :page-root: ../../../
 :project_id: cuba-petclinic-application-logging

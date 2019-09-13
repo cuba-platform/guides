@@ -8,8 +8,8 @@ permalink: intro-working-with-data-in-cuba
 :showtitle:
 :sectlinks:
 :sectanchors:
-:page-navtitle: Introduction to Working with Data in CUBA
-:page-excerpt: Overview on how to read and write data in a CUBA application
+:page-navtitle: 在 CUBA 中进行数据处理
+:page-excerpt: 概括介绍在 CUBA 中如何读写数据
 :page-icone: images/intro-to-working-with-data-in-CUBA/guide_icone.svg
 :page-root: ../../../
 :project_id: cuba-petclinic-intro-to-datamanager
