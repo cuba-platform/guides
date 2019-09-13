@@ -4,29 +4,33 @@ compatible_java_versions: 8+
 project_id: cuba-petclinic-data-model-many-to-many
 permalink: data-modelling-many-to-many-association
 ---
-= Data Modelling: Many-to-Many Association
+= 数据建模: 多对多关系
 :showtitle:
 :sectlinks:
 :sectanchors:
-:page-navtitle: Data Modelling: Many-to-Many Association
-:page-excerpt: Data modelling guide: what are Many-to-Many associations and when to use them
+:page-navtitle: 数据建模: 多对多关系
+:page-excerpt: 数据建模指南：什么是多对多关系及什么时候使用它
 :page-root: ../../../
 :project_id: cuba-petclinic-data-model-many-to-many
 :java_version: 1.8
 :cuba_version: 7.0
 
-The many-to-many association implies that multiple records of one table are related to multiple records of another table. The joining table will store the primary keys of both related entities. Optionally, this table may contain additional columns.
 
-Depending on whether additional fields in the joining table are needed, it can be implemented via a many to many association with an additional entity or without it. The following examples illustrate both approaches.
+多对多关系实现了一表条多记录与另一个表的多条记录关联。 关联表中将存储两个关联实体的主键。这个表中也可以包含其它附加列。
 
-== What Will Be Built
+根据是否需要在关联表中包含附加列，多对多关系的实现有两种方式，即添加一个附加的实体或不添加附加实体。下面的示例演示这两种方式。
 
-This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show different use cases of many to many associations. In particular, the following use cases will be covered:
+== 将要构建的内容
 
-* `Vet` <--> `Specialty` is modeled as a direct Many-to-Many association and the UI is updated accordingly
-* `Pet` <--> `InsuranceCompany` is modeled as an indirect Many-to-Many association with an explicit entity to store the validity range
+这个向导对 https://github.com/cuba-platform/cuba-petclinic[CUBA 宠物诊所] 示例进行了增强，以演示多对多关系的用法。以下用例会重点演示：
 
-=== Final Application
+* `Vet` <--> `Specialty` 被建模为多对多关系，相应的UI也做了更新
+
+* `Pet` <--> `InsuranceCompany` 被建模为间接的多对多关系，用了一个明确定义的实体来将两个实现建立关联，同时在这个实体中存储“有效范围” ????
+
+
+
+=== 最终的应用程序
 
 ++++
 <a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-data-model-many-to-many/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-data-model-many-to-many/master/img/login-screen.png"/></a>
@@ -38,20 +42,22 @@ include::includes/guide_requirements.adoc[]
 include::includes/petclinic_introduction.adoc[]
 
 
-== Direct Many-to-Many Association
+== 直接的多对多关系
 
-An example of direct many-to-many relationships is the following in the petclinic example:
+这里有一个宠物诊所应用中的一个直接多对多关系的示例：
 
 image::data-model-many-to-many/direct_many_to_many.png[align="center"]
 
-A `Vet` can have multiple specialties and a `Speciality` on the other hand can also be linked to multiple vets.
 
-On the database, it is represented as a Join Table, but there is _no_ explicit entity defined as the joining entity.
+一个 `兽医（Vet）` 可以拥有多项 `专长(Speciality)`，另一方面一项专长也可以关联到多个兽医。
+
+在数据库层面 ，这种关系表现为一个关联表，但是实体模型设计层面 ，_没有_一个明确定义的关联实体。
 
 
-TIP: In the Studio entity designer, set the following settings for the `specialties` attribute: *Attribute type* - `ASSOCIATION`, *Cardinality* - `MANY_TO_MANY`. `Vet` will be marked as the owning side of the relationship, and Studio will suggest creating the corresponding `vets` attribute in the `Specialty` entity as the inverse side of the association.
+TIP: 在 Studio 提供的实体设计器中，给 `specialties` 属性做以下设置：
+*Attribute type* - `ASSOCIATION`, *Cardinality* - `MANY_TO_MANY`. `Vet` 将被标记为关系的拥有方，同时 Studio 也会提示在 `Specialty` 实体中创建一个对应的  `vets`  属性作为关系反向引用。
 
-https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/vet/Vet.java[Vet.java] - the `Vet` entity contains a many-to-many list of `specialties`.
+https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/vet/Vet.java[Vet.java] -  `Vet` 实体包含一个名称为 `specialties` 、 被标记为多对多关系的列表属性。
 
 .Vet.java
 [source, java]
@@ -63,7 +69,7 @@ https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/maste
 protected Set<Specialty> specialties;
 ----
 
-https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/vet/Specialty.java[Specialty.java] - the `Specialty` entity now contains the many-to-many list of `vets`: *Attribute type* - `ASSOCIATION`, *Cardinality* - `MANY_TO_MANY`.
+https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/vet/Specialty.java[Specialty.java] -  `Specialty` 现在包含了一个标记为多对多关系的列表属性 `vets` ，设置如下： *Attribute type* - `ASSOCIATION`, *Cardinality* - `MANY_TO_MANY` 。
 
 .Specialty.java
 [source, java]
@@ -75,34 +81,39 @@ https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/maste
 protected List<Vet> vets;
 ----
 
-`Specialty` will be _also_ marked by default as the owning side of the relationship, which enables modification of the collections on both sides.
+`Specialty` 也默认被标记为关系的拥有方，这样在两边都可以修改关联的集合了。
 
-* https://github.com/cuba-platform/sample-model/blob/master/modules/global/src/com/company/sample/views.xml[views.xml] - the `vet-with-specialties` view of the vet editing screen contains the specialties association attribute with the `_minimal` view. The `specialty-with-vets` view includes the vets association as well.
+* https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/global/src/com/haulmont/sample/petclinic/views.xml[views.xml] - 兽医编辑界面使用的视图： `vet-with-specialties` 包含了关联属性： `specialties（专长）`，这个属性使用了 `_minimal` 视图。 视图 `specialty-with-vets` 同样也包含了 `vets(兽医)` 属性 。
 
-* https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/vet/vet/vet-edit.xml[vet-edit.xml] - the XML descriptor of the vet editor defines a datasource for the `Vet` instance and a nested one for its specialties. It also contains a table displaying specialties and https://doc.cuba-platform.com/manual-latest/list_actions.html#addAction[add] and https://doc.cuba-platform.com/manual-latest/list_actions.html#removeAction[remove] actions.
+* https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/vet/vet/vet-edit.xml[vet-edit.xml] - 兽医编辑界面的 XML 描述中为 `Vet` 实例定义了一个数据源，同时也为兽医的专长定义了一个嵌套数据源。界面上还有一个用于显示兽医专长的表格，表格上带有 https://doc.cuba-platform.com/manual-latest/list_actions.html#addAction[添加] 和 https://doc.cuba-platform.com/manual-latest/list_actions.html#removeAction[移除] 操作。
 
-* https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/vet/specialty/specialty-edit.xml[specialty-edit.xml] - the XML descriptor of the specialty editor defines a datasource for the `Specialty` instance and a nested one for its vets. It also contains a table displaying vets and *add* and *remove* actions .
+* https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/vet/specialty/specialty-edit.xml[specialty-edit.xml] - 专长编辑界面的XML 描述中为 `Specialty` 实例定义了一个数据源， 同时也为对应的兽医定义了一个嵌套数据源。界面上同样有表格和 *添加* 、 *移除* 操作。
 
-So, the `Vet` and the `Specialty` editors are absolutely symmetrical.
+所以 ，`Vet` 和 `Specialty` 编辑器是完全对称的。
 
 
-== Indirect Many-to-Many Association with Joining Entity
+== 使用关联实体的间接多对多关系
 
-The many-to-many association is always implemented using a joining table, but creating an entity to reflect this table is optional. The joining entity can be created when some additional attributes should be stored in the joining table.
+多对多关系都是使用一个关联表实现的，但是不是必须创建一个实体去对应这个表。如果需要在关联表中存储一些额外属性时，那么就需要创建一个关联实体。
 
-An example of an indirect many-to-many association is the following in the petclinic example:
+
+下面是一个在宠物诊所示例中关于间接多对多关系的示例：
 
 image::data-model-many-to-many/indirect_many_to_many.png[align="center"]
 
 A `Pet` might over the years be insured by different `InsuranceCompanies` and an `InsuranceCompany` on the other hand has multiple memberships.
 
-On the database, it is represented as a Join Table and there _is_ an explicit entity defined as the joining entity called `InsuranceMembership`. It also holds additional information about the membership: the validity range in which the Pet is insured by the insurance company. Therefore it has values `validFrom` and `validUntil`.
+一个 `Pet` 每年可以不同的保险公司投保，另一方面，`InsuranceCompany（保险公司）` 也会有多个
 
+
+在数据库中，这种关系表现为一个关联表，并且有一个显式定义的实体作为关联实体。投保关系中也要记录保险公司给宠物提供的保险范围。所以实体上有 `validFrom`  和 `validUntil` 属性。
 
 
 TIP: In the Studio entity designer, set the following settings for the `insuranceMemberships` attribute: *Attribute type* - `COMPOSITION`, *Cardinality* - `ONE_TO_MANY`.
 
-https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/pet/Pet.java[Pet.java] - the `Pet` entity contains a one-to-many composition of `InsuranceMembership` instances.
+TIP: 在 Studio 提供的实体设计中, 为  `insuranceMemberships`  属性进行以下设置： *Attribute type* - `COMPOSITION` ， *Cardinality* - `ONE_TO_MANY`。
+
+https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/pet/Pet.java[Pet.java] - `Pet` 实体包含一个一对多的 `InsuranceMembership` 实例组合。
 
 .Pet.java
 [source, java]
@@ -113,12 +124,11 @@ https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/maste
 protected List<InsuranceMembership> insurancesMemberships;
 ----
 
+TIP: 在 Studio  提供的实体设计器中给 `memberships` 属性进行以下设置: *Attribute type* - `COMPOSITION`, *Cardinality* - `ONE_TO_MANY`.
 
 
-TIP: In the Studio entity designer, set the following settings for the `memberships` attribute: *Attribute type* - `COMPOSITION`, *Cardinality* - `ONE_TO_MANY`.
 
-
-https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/insurance/InsuranceCompany.java[InsuranceCompany.java] - the `InsuranceCompany` entity contains a one-to-many composition of `InsuranceMembership` instances.
+https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/insurance/InsuranceCompany.java[InsuranceCompany.java] - `InsuranceCompany` 实体包含一个一对多的 `InsuranceMembership` 实例组合。
 
 .InsuranceCompany.java
 [source, java]
@@ -130,7 +140,7 @@ protected List<InsuranceMembership> memberships;
 ----
 
 
-https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/insurance/InsuranceMembership.java[InsuranceMembership.java] - thus, the `InsuranceMembership` entity contains two many-to-one references: `pet` and `insuranceCompany`.
+https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/insurance/InsuranceMembership.java[InsuranceMembership.java] - 从而,  `InsuranceMembership` 实体包含两个多对一引用： `pet` 和 `insuranceCompany`.
 
 .InsuranceMembership.java
 [source, java]
@@ -155,26 +165,28 @@ protected Date validFrom;
 protected Date validUntil;
 ----
 
+* https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/global/src/com/haulmont/sample/petclinic/views.xml[views.xml] - 宠物编辑界面使用的 `pet-with-owner-and-type-and-memberships` 视图含有 `insuranceMemberships` 组合属性（引用 `InsuranceMembership` 关联实体），其中包含 `insuranceCompany` 和额外的有效期信息：`validFrom` 和 `validUntil` 。
 
-* https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/global/src/com/haulmont/sample/petclinic/views.xml[views.xml] - the `pet-with-owner-and-type-and-memberships` view of the pet editing screen contains the composition of `insuranceMemberships` (referencing the `InsuranceMembership` joining entity) with `insuranceCompany` and the additional validity information: `validFrom` and `validUntil`.
 
 +
-The `insuranceCompany-with-memberships` view follows the same logic: it includes the composition of `memberships` (referencing the `InsuranceMembership` joining entity) with `pet` and the additional validity information: `validFrom` and `validUntil`.
-
-* https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/pet/pet/pet-edit.xml[pet-edit.xml] - the XML descriptor of the pet editor defines a data container for the `Pet` instance and a nested one for its `insuranceCompany` instances (through the `InsuranceMembership` relationship). It also contains a table displaying memberships and the custom action to pick an `InsuranceCompany` directly, bypassing the `InsuranceMembership` editor.
-
-As a result, editing of an `InsuranceMembership` instance works as follows:
-
-The `Pet` edit screen shows a list of insurance companies and the validity range of the membership.
+`insuranceCompany-with-memberships` 视图遵循相同的逻辑：含有 `memberships` 组合属性（引用 `InsuranceMembership` 关联实体 ）， 其中包含了 `pet` 和额外的有效期信息： `validFrom` 和 `validUntil` 。
 
 
-A user can click *Add Insurance*, the `InsuranceCompany` lookup will be opened, and the user can either select an insurance company to add or create a new insurance company. When the user selects an insurance company, a new `InsuranceMembership` instance https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/pet/pet/PetEdit.java#L57[is created] with the default validity range. This instance is not saved to the database directly, but added to the `insurancesMembershipsDc` data container of the `Pet` editor.
+宠物编辑界面的 XML 描述中为 `Pet` 实例定义了一个数据容器，为它的 `insuranceCompany` （通过  `InsuranceMembership` 关系） 实例定义了一个嵌套数据容器。 界面上有一个用于显示投保关系的表格和一个可以跳过`InsuranceMembership` 编辑器直接选择 `InsuranceCompany` 的自定义操作。
 
-TIP: When within the above described creation of a many-to-many relationship from the Pet editor an `InsuranceCompany` is created or updated through the https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/insurance/insurancecompany/InsuranceCompanyEdit.java[`InsuranceCompany` editor], the created / updated instance of the insurance company is directly saved to the database as the `InsuranceCompany` entity is fully independent. A user can create new insurance companies and delete existing ones. All changes will be saved to the database in separate transactions.
+最终 ，编辑 `InsuranceMembership` 实例的过程如下:
 
-When a user clicks OK in the pet edit screen, the updated `Pet` instance together with all the updated `InsuranceMembership` instances is submitted to the `DataManager.commit()` method on the middleware and saved to the database within a single transaction.
+`Pet` 编辑界面显示一个保险公司列表和投保关系的有效期范围。
 
 
-== Summary
+用户可以点击  *Add Insurance*  按钮， `InsuranceCompany` 的查找界面会被打开，用户可以选择一个已有的保险公司或者创建一个新的保险公司。当前用户选择了一个保险公司后，一个新的 `InsuranceMembership` 实例会被 https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/pet/pet/PetEdit.java#L57[创建]，新的实例使用了默认的有效期范围。这个实例不会被直接保存到数据库， 只是添加到了 `Pet` 编辑界面的 `insurancesMembershipsDc` 数据容器。
 
-In this data modelling guide the many-to-many association was shown. Many-to-many associations are valuable if both sides of the association should be linked to multiple items of the other side as shown for the `Vet` <--> `Specialty` case. If required by the business case, this association can be also enhanced via additional information that describes the association further as it was shown with the `validFrom` & `validUntil` attributes for the `InsuranceMembership` entity.
+TIP:  当从宠物编辑界面通过上述方式进行了多对多关系的创建后，会通过  https://github.com/cuba-guides/cuba-petclinic-data-model-many-to-many/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/insurance/insurancecompany/InsuranceCompanyEdit.java[`InsuranceCompany` 编辑界面] 创建或更新一个  `InsuranceCompany` 实例。 保险公司实例的创建或更新是完全独立地被保存到数据库。用户可以创建一个新的保险公司同时删除一个已有的保险公司，对保险公司的所有修改都是在一个独立的事务中保存到数据库。
+
+
+当用户点击宠物编辑界面上的 OK 按钮，修改后的 `Pet` 实例和所有修改的 `InsuranceMembership`  实例会提交到中间件的  `DataManager.commit()` 方法并在同一个事务中保存到数据库。
+
+
+== 总结
+
+在这个数据建模指南中我们演示了多对多关系。多对多关系对于关系的两边都需要链接另一边的多个条目时非常有用，上述的 `Vet` <--> `Specialty`  用例即是这种情况。如果业务场景需要，可以通过添加额外的信息对这关系进行增强，上面展示的为 `InsuranceMembership` 实体添加 `validFrom` & `validUntil` 属性的用例即是这种场景。
