@@ -4,20 +4,21 @@ compatible_java_versions: 8+
 project_id: cuba-petclinic-data-model-entity-inheritance
 permalink: data-modelling-entity-inheritance
 ---
-= Data Modelling: Entity Inheritance
+= 数据建模: 实体继承
 :showtitle:
 :sectlinks:
 :sectanchors:
-:page-navtitle: Data Modelling: Entity Inheritance
-:page-excerpt: Data Modelling guide: How entity inheritance can be used in a CUBA application
+:page-navtitle: 数据建模: 实体继承
+:page-excerpt: 数据建模指南： 在 CUBA 应用程序中如何使用实体继承
 :page-root: ../../../
 :project_id: cuba-petclinic-data-model-entity-inheritance
 :java_version: 1.8
 :cuba_version: 7.0
 
-This guide demonstrates how to use entity inheritance in CUBA applications.
+这个指南演示在 CUBA 应用程序中如何使用实体继承。
 
 In the petclinic example different types of Pets are groomed during their stay in the clinic - cats, birds and rats. All these types of pets have some common attributes. The application should store common attributes within one table and use separate linked tables to store specific attributes for the different pet types.
+
 
 
 == What Will be Built
