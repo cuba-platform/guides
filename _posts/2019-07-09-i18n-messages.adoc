@@ -10,8 +10,10 @@ permalink: localization-in-cuba-applications
 :sectanchors:
 :page-navtitle: Localization in CUBA applications
 :page-excerpt: In this guide the localization features of a CUBA application are explained
+:page-icone: images/i18n-messages/guide_icone.svg
 :page-root: ../../../
 :project_id: cuba-petclinic-i18n-messages
+:page-url-first-image: https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-i18n-messages/master/img/login-screen.png
 :java_version: 1.8
 :cuba_version: 7.0
 

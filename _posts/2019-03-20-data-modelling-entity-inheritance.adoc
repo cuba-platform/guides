@@ -8,10 +8,12 @@ permalink: data-modelling-entity-inheritance
 :showtitle:
 :sectlinks:
 :sectanchors:
-:page-navtitle: 数据建模: 实体继承
-:page-excerpt: 数据建模指南： 在 CUBA 应用程序中如何使用实体继承
+:page-navtitle: Data Modelling: Entity Inheritance
+:page-excerpt: Data Modelling guide: How entity inheritance can be used in a CUBA application
+:page-icone: images/data-model-entity-inheritance/guide_icone.svg
 :page-root: ../../../
 :project_id: cuba-petclinic-data-model-entity-inheritance
+:page-url-first-image: https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-data-model-entity-inheritance/master/img/login-screen.png
 :java_version: 1.8
 :cuba_version: 7.0
 

@@ -8,10 +8,12 @@ permalink: data-modelling-many-to-many-association
 :showtitle:
 :sectlinks:
 :sectanchors:
-:page-navtitle: 数据建模: 多对多关系
-:page-excerpt: 数据建模指南：什么是多对多关系及什么时候使用它
+:page-navtitle: Data Modelling: Many-to-Many Association
+:page-excerpt: Data modelling guide: what are Many-to-Many associations and when to use them
+:page-icone: images/data-model-many-to-many/guide_icone.svg
 :page-root: ../../../
 :project_id: cuba-petclinic-data-model-many-to-many
+:page-url-first-image: https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-data-model-many-to-many/master/img/login-screen.png
 :java_version: 1.8
 :cuba_version: 7.0
 

@@ -8,13 +8,14 @@ permalink: logging-in-cuba-applications
 :showtitle:
 :sectlinks:
 :sectanchors:
-:page-navtitle: 在 CUBA 应用程序中使用日志
-:page-excerpt:  关于为什么及如何在 CUBA 应用程序中使用日志以获得洞见力
+:page-navtitle: Logging in CUBA Applications
+:page-excerpt: Guide on why and how to use logging in a CUBA application in order to get insights
+:page-icone: images/application-logging-in-cuba/guide_icone.svg
 :page-root: ../../../
 :project_id: cuba-petclinic-application-logging
 :java_version: 1.8
 :cuba_version: 7.0
-
+:page-url-first-image: https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-application-logging/master/img/cuba-server-log-messages.png
 
 要深入了解运行中的CUBA应用程序，记录日志是一种重要的手段。 Java生态系统具有非常成熟的应用程序日志记录机制。这个指南介绍了如何在CUBA应用程序中利用这个生态系统。
 
