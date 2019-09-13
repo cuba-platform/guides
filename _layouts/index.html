@@ -48,8 +48,11 @@
                                         <div class="guides-list">
                                             {% for post in site.posts reversed %}
                                             <a href="{{ post.url | prepend: site.baseurl }}" class="guides-list_item">
-                                                <div class="guides-list_title">{{ post.navtitle }}</div>
-                                                <span class="guides-list_description">{{ post.excerpt }}</span>
+                                                <div class="guides-list_icone_wrapper"><img src="{{ post.icone }}"></div>
+                                                <div class="guides-list_wrapper">
+                                                    <div class="guides-list_title">{{ post.navtitle }}</div>
+                                                    <span class="guides-list_description">{{ post.excerpt }}</span>
+                                                </div>
                                             </a>
                                             {% endfor %}
                                         </div>
