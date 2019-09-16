@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CUBA Platform Guides</title>
+    <title>Introduction to Reports and Document generation</title>
     <meta name="description" content="The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.">
     <meta name="author" content="Haulmont">
     <link rel="shortcut icon" href="/guides/images/favicon.png" type="image/png" />
@@ -18,12 +18,12 @@
     <link rel="stylesheet" href="/guides/css/extra.css">
     <link rel="stylesheet" href="/guides/css/extra2.css">
     <link rel="stylesheet" href="/guides/css/cuba-new.css">
+    <link rel="stylesheet" href="/guides/css/font-awesome.min.css">
     <link rel="stylesheet" href="/guides/css/guides.css">
-    <script src="/guides/js/vendor/modernizr.js"></script>
     <script src="/guides/js/jquery_v2.1.min.js"></script>
     <link rel="stylesheet" href="/guides/css/main.css" />
 </head>
-<body class="cuba-website-styles html not-front not-logged-in no-sidebars page-webinars service-booking i18n-en">
+<body class="html not-front not-logged-in no-sidebars page-node page-node- page-node-962 node-type-blog-post i18n-en">
 
 <section id="wrapper">
     
@@ -153,74 +153,538 @@
 
     <!-- Main Page Content and Sidebar -->
     <div class="content-wrapper">
-        <div class="text-node">
+        <div class="cuba-container text-node blog">
+            <!-- Main content (left column) -->
             <div class="region region-content">
                 <section id="block-system-main" class="block block-system clearfix">
-                    <div class="panel-display panel-1col clearfix" id="webinars-page">
-                        <div class="container layout-main_container">
-                            <div>
-                                <!-- Title -->
-                                <div class="page-header">
-                                    <h1 class="page-header_title">Guides</h1>
-                                    <p class="page-header_description">Comprehensive articles about CUBA Platform specifics (version 7.0+)</p>
-                                </div>
+                    <div id="node-962" class="article node node-blog-post node-promoted clearfix">
+                        <div class="content">
+                            <div class="field field-name-body field-type-text-with-summary field-label-hidden">
+                                <div class="field-items">
+                                    <div class="field-item even" property="content: encoded">
+                                        <h1>Introduction to Reports and Document generation</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>CUBA applications can be enhanced to have a comprehensive report / document generation capability directly embedded into the application. The CUBA application component <code>reports</code> supports various file formats like <code>docx</code>, <code>xlsx</code>, <code>PDF</code>, <code>HTML</code> for templating as well as output file formats. Furthermore it contains management screens and provides APIs to interact with the report / document generation process programmatically.</p>
+</div>
+<div class="paragraph">
+<p>In this guide the reports application component will be introduced and different ways to interact with it through the UI and programmatically will be shown.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="what_will_be_built"><a class="anchor" href="#what_will_be_built"></a><a class="link" href="#what_will_be_built">What Will be Built</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a> example to show how report capabilities can be embedded into the application:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>a <code>recent-visits</code> report can be downloaded from the visit browse screen. The report contains visits of the last month, exported as an excel sheet with information about the visit, the referenced pet and its owner.</p>
+</li>
+<li>
+<p>a <code>patient-record</code> word document containing all relevant information (master data, visit data) for a given pet can be downloaded through the detail screen of the pet.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="final_application"><a class="anchor" href="#final_application"></a><a class="link" href="#final_application">Final Application</a></h3>
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-i18n-messages/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-i18n-messages/master/img/login-screen.png"/></a>
+</div>
+<div class="sect2">
+<h3 id="requirements"><a class="anchor" href="#requirements"></a><a class="link" href="#requirements">Requirements</a></h3>
+<div class="paragraph">
+<p>Your development environment requires to contain the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.oracle.com/technetwork/java/javase/downloads/index.html">JDK 1.8</a></p>
+</li>
+<li>
+<p>a text editor or IDE (<a href="https://www.jetbrains.com/idea/download/">IntelliJ IDEA</a> preferred)</p>
+</li>
+<li>
+<p><a href="https://www.cuba-platform.com/download">CUBA Studio</a> as standalone IDE or as an IDEA plugin (optional)</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-platform/cuba-cli/wiki/Installation">CUBA CLI</a> (optional)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-intro-to-reports/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
+</div>
+<div class="paragraph">
+<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-intro-to-reports.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-intro-to-reports.git</a></code></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="example_cuba_petclinic"><a class="anchor" href="#example_cuba_petclinic"></a><a class="link" href="#example_cuba_petclinic">Example: CUBA petclinic</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The project that is the basis for this example is <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a>. It is based on the commonly known <a href="https://github.com/spring-projects/spring-petclinic">Spring Petclinic</a>. The CUBA Petclinic application deals with the domain of a Pet clinic and the associated business workflows to manage a pet clinic.</p>
+</div>
+<div class="paragraph">
+<p>The underlying domain model for the application looks like this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/guides/images/domain-model.png" alt="Domain model">
+</div>
+</div>
+<div class="paragraph">
+<p>The main entities are <strong>Pet</strong> and <strong>Visit</strong>. A Pet is visiting the petclinic and during this Visit a Vet is taking care of it. A Pet belongs to an Owner, which can hold multiple pets. The visit describes the act of a pet visiting the clinic with the help of its owner.</p>
+</div>
+<a href="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/login-screen.png"/></a>
+</div>
+</div>
+<div class="sect1">
+<h2 id="overview"><a class="anchor" href="#overview"></a><a class="link" href="#overview">Overview</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Oftentimes when working with business applications there is a high demand for document generation, that will take some information from the source application and bring it in the form of a commonly known format, so that it can be shared with other parties like customers, partners or other systems.</p>
+</div>
+<div class="paragraph">
+<p>These documents might either have the form of human consumable content like a PDF file or are more used as input data for further use like a CSV / Excel file or a Word document.</p>
+</div>
+<div class="paragraph">
+<p>CUBA being targeted towards the needs of business applications in particular has dedicated support for this kind of use cases through the <code>reports</code> application component.</p>
+</div>
+<div class="paragraph">
+<p>It has the ability to define formatted document templates and declare the data that should be used for the document. This definition is done in a declarative way, that does not require development of code in order to generate reports / documents. It is possible for developers as well as administrators and business users with mid-level technical skills.</p>
+</div>
+<div class="sect2">
+<h3 id="example_use_cases"><a class="anchor" href="#example_use_cases"></a><a class="link" href="#example_use_cases">Example Use Cases</a></h3>
+<div class="paragraph">
+<p>As mentioned above there are lots of example use cases, that deal with generating documents / reports out of a source application. Here&#8217;s a list of examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>create a excel sheet of the TOP 10 of customers with the highest total turnovers</p>
+</li>
+<li>
+<p>generate an invoice document for an order stored in the application in PDF format</p>
+</li>
+<li>
+<p>create payment data file as a CSV file for file exchange between the payment system and the BI system</p>
+</li>
+<li>
+<p>show a list of best selling products aggregated by category as an application screen</p>
+</li>
+<li>
+<p>create HTML file of latest sales offers in order to upload &amp; publish this file on a website</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>All of those requirements are part of what the <code>reports</code> application component is capable on handling. In the next section the overall concepts are covered and afterwards example use cases are implemented.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="templates_data_document"><a class="anchor" href="#templates_data_document"></a><a class="link" href="#templates_data_document">Templates + Data = Document</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The underpinning of this whole solution is based on on the combination of document templates with data, that are merged in order to create the resulting document / report.</p>
+</div>
+<div class="sect2">
+<h3 id="the_document_template"><a class="anchor" href="#the_document_template"></a><a class="link" href="#the_document_template">The Document Template</a></h3>
+<div class="paragraph">
+<p>The document template is a file that acts as the blueprint for how the target file should look like. It contains placeholders as particular text snippets, that the <code>reports</code> application component can pick up and put the data into the document.</p>
+</div>
+<div class="paragraph">
+<p>Those placeholders can inserted as regular text into the template file, but they need a special characters to indicate that this text is a placeholder. A placeholder is defined in the following form: <code>${NAME_OF_PLACEHOLDER}</code></p>
+</div>
+<div class="paragraph">
+<p>An example of a document template can be seen below. This example is an excel sheet, that is used later in this guide:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/intro-to-reports/excel-document-template-example.png"><img src="/guides/images/intro-to-reports/excel-document-template-example.png" alt="excel document template example"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>The template contains regular text as well as the placeholders for the different columns in the table like <code>${pet.name}</code> or <code>${pet.identificationNumber}</code>.</p>
+</div>
+<div class="paragraph">
+<p>Furthermore it is possible to style and adjust the document template in whatever ways is desired. For Word and Excel documents, all the possible formatting options of those programs are able to be applied to the template file. For HTML documents the complete capabilities of CSS can be used for applying styles to the target document.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The template file format are not necessarily the file formats of the output document. It is possible to e.g. have a Word based document template that will generate a PDF file when merged with the data.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="data_sources"><a class="anchor" href="#data_sources"></a><a class="link" href="#data_sources">Data Sources</a></h3>
+<div class="paragraph">
+<p>The data that is used for the report can be of various sources. Within a CUBA application fetching the data directly from the entity layer of the application is the most convenient variant. However, the reports application component is not bound to this particular data source. It can be one of the following data sources:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>CUBA Entities / JPQL</p>
+</li>
+<li>
+<p>SQL</p>
+</li>
+<li>
+<p>Groovy</p>
+</li>
+<li>
+<p>JSON</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This various sources allow a high degree of flexibility when it comes to fetch data and provide it to the template file. It is also possible to define multiple data sources and combine all the data in the template.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="report_configuration"><a class="anchor" href="#report_configuration"></a><a class="link" href="#report_configuration">Report Configuration</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Once the data sources are defined and connected through a concept called Bands to particular template placeholders, everything is setup to generate the output document. The application component stores all of this configuration in the entity <code>Report</code> which holds the configuration of the data sources together with the definition of the templates and further configuration information.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/intro-to-reports/report-entity-configuration-screen.png"><img src="/guides/images/intro-to-reports/report-entity-configuration-screen.png" alt="report entity configuration screen"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>There are two main ways of creating those report records.</p>
+</div>
+<div class="paragraph">
+<p>The first one is to create an instance manually and defining the data sources together with the associated JPQL / SQL queries / groovy scripts.</p>
+</div>
+<div class="paragraph">
+<p>This is oftentimes needed when more complex reports should be defined which requires skills to create SQL / JPQL statements or even programming abilities through groovy scripts. This option
+is mostly for administrators that have a deep technical understanding of the inner workings of the application. It furthermore requires knowledge about its domain model and an understanding of the technical concepts of the report application component like report bands, report parameters etc.</p>
+</div>
+<div class="sect2">
+<h3 id="the_report_wizard"><a class="anchor" href="#the_report_wizard"></a><a class="link" href="#the_report_wizard">The Report Wizard</a></h3>
+<div class="paragraph">
+<p>The second option is to use the report UI wizard that guides the user through the selection of various options. It includes the ability to define the conditions for entities to be selected for the report, the attributes that should be included. Furthermore it generates a base template which contains already the selected attributes as placeholders.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/intro-to-reports/report-entity-wizard-1.png"><img src="/guides/images/intro-to-reports/report-entity-wizard-1.png" alt="report entity wizard 1"></a>
+</div>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/intro-to-reports/report-entity-wizard-2.png"><img src="/guides/images/intro-to-reports/report-entity-wizard-2.png" alt="report entity wizard 2"></a>
+</div>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/intro-to-reports/report-entity-wizard-3.png"><img src="/guides/images/intro-to-reports/report-entity-wizard-3.png" alt="report entity wizard 3"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>This variant is targeted more towards business users, since it hides away the technical details of e.g. the query definition behind a user-friendly configuration UI. For easier reports, this wizard can serve as the main UI for creating reports by business users directly.</p>
+</div>
+<div class="paragraph">
+<p>With the feature of generating a document template that contains the correct placeholders of the selected attributes is allows the business users to only change the formatting of the output document. This template formatting normally happens in the application that they are already familiar with like Word or Excel. The main difference is that this opens up possibilities for non-technical people to work with reports without the need of any developer interaction.</p>
+</div>
+<div class="paragraph">
+<p>That being said also for tech-savvy people it is oftentimes the fastest way to create a report it is or at least a starting point for manual adjustments.</p>
+</div>
+<div class="paragraph">
+<p>One constraint for the report wizard is that it is tied to generating reports / document based on the CUBA entity layer. Groovy / SQL based reports cannot <em>directly</em> be created through the wizard. However, it is possible to use the wizard report as a first step and then adjust the resulting report&#8217;s bands accordingly through the regular management screen.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="external_parameters"><a class="anchor" href="#external_parameters"></a><a class="link" href="#external_parameters">External Parameters</a></h3>
+<div class="paragraph">
+<p>A Report configuration can declare external parameters that need to be provided by the person or application code that interacts with the report. Those parameters are mainly used for the data fetching parts. In the JPQL / SQL statements as well as the groovy based data bands, those parameters are passed in to dynamically inject the values into the query / the groovy script.</p>
+</div>
+<div class="paragraph">
+<p>The configuration of the external parameters in the Report configuration screen looks like this:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/intro-to-reports/report-entity-configuration-external-parameters.png"><img src="/guides/images/intro-to-reports/report-entity-configuration-external-parameters.png" alt="report entity configuration external parameters"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>When external parameters are defined, the values can be entered in two ways. The first way is to expose this parameters as a form in the generic UI. It will appear at the point when the report is executed through the generic Report execution UI. An example of such a UI can be seen here:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/intro-to-reports/report-external-parameters-dynamic-ui.png"><img src="/guides/images/intro-to-reports/report-external-parameters-dynamic-ui.png" alt="report external parameters dynamic ui"></a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="recent_visits_report"><a class="anchor" href="#recent_visits_report"></a><a class="link" href="#recent_visits_report">Recent Visits Report</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The first document that should be generated by the application is the <code>recent-visits</code> report. It should be accessible as a download directly from the visit browse screen. The report contains visits of the last month, exported as an excel sheet with information about the visit, the referenced pet and its owner.</p>
+</div>
+<div class="paragraph">
+<p>In order to fulfill this requirement the first step is to create a report via the Report Wizard. The following main settings are set:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Report Entity: <code>Visit (petclinic_Visit)</code></p>
+</li>
+<li>
+<p>Template Type: <code>XLSX</code></p>
+</li>
+<li>
+<p>Report Name: <code>Vists by Period</code></p>
+</li>
+<li>
+<p>Report Type: <code>Report for list of entities, selected by query</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The next step is to define the query. The report Wizard allows to set the query by defining conditions through the UI.</p>
+</div>
+<div class="paragraph">
+<p>In this report the visits of the last month should be selected. However the concept of "relative dates" is not present in the report application component directly. Due to this, this piece of logic has to be externalized to the code that triggers the report run.</p>
+</div>
+<div class="paragraph">
+<p>The report itself is going to be a little more generic in the sense that it allows to specify a period that defines the date range of the visits that will be taken into consideration. This furthermore has the benefit that the report potentially is re-usable for other future use-cases.</p>
+</div>
+<div class="paragraph">
+<p>The query consists of two conditions for the attribute <code>visitDate</code>. It should match a value that is within an range of two dates: "Visit Date Range Start" and "Visit Date Range End". The only difference between the two conditions is that for the first condition the "operation" is <code>greater or equal than: &gt;=</code> while the second condition has the operation <code>smaller than: &lt;</code>. With that, the boundaries of the range are expressed as conditions.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/intro-to-reports/visit-by-period-date-range-creteria.png"><img src="/guides/images/intro-to-reports/visit-by-period-date-range-creteria.png" alt="visit by period date range creteria"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>For each condition an external parameter will be created so that the concrete values can be inserted programmatically or alternatively by the user through a UI.</p>
+</div>
+<div class="sect2">
+<h3 id="selecting_entity_attributes_of_the_visit_entity"><a class="anchor" href="#selecting_entity_attributes_of_the_visit_entity"></a><a class="link" href="#selecting_entity_attributes_of_the_visit_entity">Selecting Entity Attributes of the Visit Entity</a></h3>
+<div class="paragraph">
+<p>The next step in the wizard is to define the attributes of the base entity (Visit) and its associated entities that should be part of the report. The selection will influence on the one hand the <code>SELECT</code> part of the JPQL statement that is used to fetch the data. On the other hand it influences the initial version of the columns within the template, that is generated for this report when finishing the report wizard.</p>
+</div>
+<div class="paragraph">
+<p>For the <code>recent-visits</code> Report, the following attribute should be selected:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Visit Date: <code>visitDate</code></p>
+</li>
+<li>
+<p>Visit Description: <code>description</code></p>
+</li>
+<li>
+<p>Information about the associated Pet</p>
+<div class="ulist">
+<ul>
+<li>
+<p>the Pets' name: <code>pet.name</code></p>
+</li>
+<li>
+<p>the Pets' Identification Number: <code>pet.identificationNumber</code></p>
+</li>
+<li>
+<p>Type of the Pet: <code>pet.type.name</code></p>
+</li>
+<li>
+<p>The city where the Pet lives (expressed through the address of its owner): <code>pet.owner.city</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>After selecting the attributes through the UI wizard, the output template file type can be configured. In this example, the default settings are applicable.</p>
+</div>
+<div class="paragraph">
+<p>With that the report wizard is finished and the report configuration is shown for further adjustments.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="providing_external_parameters_programmatically"><a class="anchor" href="#providing_external_parameters_programmatically"></a><a class="link" href="#providing_external_parameters_programmatically">Providing External Parameters Programmatically</a></h3>
+<div class="paragraph">
+<p>For the use case of the <code>recent-visits</code> report the generic UI is not exposed to the user. Instead the parameters are passed in by the API call to run the report.</p>
+</div>
+<div class="paragraph">
+<p>The complete listing for the triggering of the <code>recent-visits</code> report shows the main steps of:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>identifying the last month (externalized logic of relative date)</p>
+</li>
+<li>
+<p>loading the report instance to execute</p>
+</li>
+<li>
+<p>triggering the report execution and passing in the last month as a parameter</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="title">VisitBrowse.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VisitBrowse</span> <span class="directive">extends</span> StandardLookup&lt;Visit&gt; {
 
-                                <!-- List Grid -->
-                                <div class="">
-                                    <div class="pane-content">
-                                        <div class="guides-list">
-                                            
-                                            <a href="/guides/intro-working-with-data-in-cuba" class="guides-list_item">
-                                                <div class="guides-list_title">Introduction to Working with Data in CUBA</div>
-                                                <span class="guides-list_description">Overview on how to read and write data in a CUBA application</span>
-                                            </a>
-                                            
-                                            <a href="/guides/create-business-logic-in-cuba" class="guides-list_item">
-                                                <div class="guides-list_title">Create Business Logic in CUBA</div>
-                                                <span class="guides-list_description">Guide on what options are available for putting business logic into a CUBA application</span>
-                                            </a>
-                                            
-                                            <a href="/guides/decouple-business-logic-with-app-events" class="guides-list_item">
-                                                <div class="guides-list_title">Decouple Business Logic with Application Events</div>
-                                                <span class="guides-list_description">Overview on how application events can be used in a CUBA application to decouple business logic</span>
-                                            </a>
-                                            
-                                            <a href="/guides/logging-in-cuba-applications" class="guides-list_item">
-                                                <div class="guides-list_title">Logging in CUBA Applications</div>
-                                                <span class="guides-list_description">Guide on why and how to use logging in a CUBA application in order to get insights</span>
-                                            </a>
-                                            
-                                            <a href="/guides/data-modelling-many-to-many-association" class="guides-list_item">
-                                                <div class="guides-list_title">Data Modelling: Many-to-Many Association</div>
-                                                <span class="guides-list_description">Data modelling guide: what are Many-to-Many associations and when to use them</span>
-                                            </a>
-                                            
-                                            <a href="/guides/data-modelling-entity-inheritance" class="guides-list_item">
-                                                <div class="guides-list_title">Data Modelling: Entity Inheritance</div>
-                                                <span class="guides-list_description">Data Modelling guide: How entity inheritance can be used in a CUBA application</span>
-                                            </a>
-                                            
-                                            <a href="/guides/data-modelling-composition" class="guides-list_item">
-                                                <div class="guides-list_title">Data Modelling: Composition</div>
-                                                <span class="guides-list_description">Data modelling guide: What are Compositions and when to use them over Associations</span>
-                                            </a>
-                                            
-                                            <a href="/guides/initial-entity-values" class="guides-list_item">
-                                                <div class="guides-list_title">Initial Values for Entity Instances</div>
-                                                <span class="guides-list_description">This guide demonstrates different options on how initial values can be set for an entity</span>
-                                            </a>
-                                            
-                                            <a href="/guides/localization-in-cuba-applications" class="guides-list_item">
-                                                <div class="guides-list_title">Localization in CUBA applications</div>
-                                                <span class="guides-list_description">In this guide the localization features of a CUBA application are explained</span>
-                                            </a>
-                                            
-                                            <a href="/guides/introduction-to-reports" class="guides-list_item">
-                                                <div class="guides-list_title">Introduction to Reports and Document generation</div>
-                                                <span class="guides-list_description">In this guide the reports application component will be introduced and different ways to interact with it through the UI and programmatically will be shown</span>
-                                            </a>
-                                            
-                                        </div>
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> ReportGuiManager reportGuiManager;
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> DataManager dataManager;
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> TimeSource timeSource;
+
+    <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">visitsTable.lastMonthReport</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">protected</span> <span class="type">void</span> onVisitsTableLastMonthReport(<span class="predefined-type">Action</span>.ActionPerformedEvent event) {
+
+        TimeRange visitDateTimeRange =
+                MonthYearValue
+                        .fromDate(today())
+                        .minusMonths(<span class="integer">1</span>); <i class="conum" data-value="1"></i><b>(1)</b>
+
+        reportGuiManager.printReport( <i class="conum" data-value="2"></i><b>(2)</b>
+                loadReportByCode(<span class="string"><span class="delimiter">&quot;</span><span class="content">visits-by-period</span><span class="delimiter">&quot;</span></span>), <i class="conum" data-value="3"></i><b>(3)</b>
+                ParamsMap.of( <i class="conum" data-value="4"></i><b>(4)</b>
+                        <span class="string"><span class="delimiter">&quot;</span><span class="content">visitDateRangeStart</span><span class="delimiter">&quot;</span></span>, visitDateTimeRange.getStart(),
+                        <span class="string"><span class="delimiter">&quot;</span><span class="content">visitDateRangeEnd</span><span class="delimiter">&quot;</span></span>, visitDateTimeRange.getEnd()
+                        )
+        );
+    }
+
+    <span class="directive">private</span> LocalDate today() {
+        <span class="keyword">return</span> timeSource.now().toLocalDate();
+    }
+
+    <span class="directive">private</span> Report loadReportByCode(<span class="predefined-type">String</span> reportCode) {
+        <span class="keyword">return</span> dataManager.load(Report.class)
+                .query(<span class="string"><span class="delimiter">&quot;</span><span class="content">select e from report$Report e where e.code = :reportCode</span><span class="delimiter">&quot;</span></span>)
+                .parameter(<span class="string"><span class="delimiter">&quot;</span><span class="content">reportCode</span><span class="delimiter">&quot;</span></span>, reportCode)
+                .one();
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the last month based on today&#8217;s date is identified</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>reportGuiManager.printReport</code> is the API for starting the execution of a report and downloading it immediately</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>the correct report instance needs to be loaded from the database. Here it is fetched by relying on the <code>code</code> attribute value</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>a parameter map is passed in containing the start and end date range parameter of the report through the <code>MonthYearValue</code> object</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The main part for passing in the external parameters is the definition of the last month:</p>
+</div>
+<div class="paragraph">
+<p><code>TimeRange visitDateTimeRange = MonthYearValue.fromDate(today()).minusMonths(1);</code>.</p>
+</div>
+<div class="paragraph">
+<p>The <code>TimeRange</code> class is a custom abstraction of the example
+application that provides an API to define a Time Range (either a MonthYear range or a Quarter range) and has methods to get the border values of
+the range.</p>
+</div>
+<div class="paragraph">
+<p>After the definition of the values for the parameters, the <code>reportGuiManager.printReport</code> has the ability to pass in a Map of parameters.
+The keys of the Map have to match the <code>parameterAlias</code> value of the parameter as configured in the Report Entity.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="patient_record"><a class="anchor" href="#patient_record"></a><a class="link" href="#patient_record">Patient Record</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The second report that should be generated is a patient record for a given pet. It contains an overview of the pet&#8217;s master data as well as visit data form that pet.</p>
+</div>
+<div class="paragraph">
+<p>In this case the document template will be a Word document. However, the target document will be a PDF file.</p>
+</div>
+<div class="sect2">
+<h3 id="defining_the_attributes"><a class="anchor" href="#defining_the_attributes"></a><a class="link" href="#defining_the_attributes">Defining the Attributes</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="tabular_region_for_visit_data"><a class="anchor" href="#tabular_region_for_visit_data"></a><a class="link" href="#tabular_region_for_visit_data">Tabular Region for Visit Data</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="configuring_the_output_document"><a class="anchor" href="#configuring_the_output_document"></a><a class="link" href="#configuring_the_output_document">Configuring the Output document</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="libreoffice_for_accurate_word_to_pdf_conversion"><a class="anchor" href="#libreoffice_for_accurate_word_to_pdf_conversion"></a><a class="link" href="#libreoffice_for_accurate_word_to_pdf_conversion">LibreOffice for accurate Word to PDF conversion</a></h3>
+<div class="paragraph">
+<p>After configuring the output document to be PDF, adjustments need to be made in the configuration of the application. In order to increase the accuracy of the PDF ouput document, CUBA is able to leverage the conversion facilities of LibreOffice.</p>
+</div>
+<div class="paragraph">
+<p>LibreOffice has an API that other programs can use to convert different file formats (especially PDF file generation). The <code>report</code> application component uses that API when LibreOffice is installed on the operating system and configured in the CUBA application properties.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this introduction to the report and document generation topic, the building blocks of the CUBA application component <code>reports</code> were explained.
+A report is the concept that allows to merge a document template with data from data sources to produce an output document / report.
+Both building blocks: the document template as well as the data sources can be of various kinds. With that it provides a high degree
+of flexibility when configuring reports to generate output documents.</p>
+</div>
+<div class="paragraph">
+<p>All this configuration is hold in the main entity: <code>Report</code>, which can be created through a UI wizard or manually.
+With that it supports users with different levels of technical capabilities.</p>
+</div>
+<div class="paragraph">
+<p>A report can be run directly through a generic user interface, or programmatically throughout the code of the application.
+It is possible to define external parameters, that get passed into the report. With that, reports can be configured in a
+more generic manner to support multiple use-cases.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="further_information"><a class="anchor" href="#further_information"></a><a class="link" href="#further_information">Further Information</a></h2>
+<div class="sectionbody">
+
+</div>
+</div>
                                     </div>
                                 </div>
                             </div>
@@ -228,9 +692,46 @@
                     </div>
                 </section>
             </div>
+
+            <!-- Sidebar (right column) -->
+            <div id="blog-sidebar">
+                <div class="region region-sidebar">
+                    <section id="block-block-29" class="block block-block clearfix">
+
+                        <div class="guide-panel">
+                            <h3>Table of contents</h3>
+                            <ul class="sectlevel1">
+<li><a href="#what_will_be_built">What Will be Built</a></li>
+<li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#templates_data_document">Templates + Data = Document</a></li>
+<li><a href="#report_configuration">Report Configuration</a></li>
+<li><a href="#recent_visits_report">Recent Visits Report</a></li>
+<li><a href="#patient_record">Patient Record</a></li>
+<li><a href="#summary">Summary</a></li>
+<li><a href="#further_information">Further Information</a></li>
+</ul>
+                        </div>
+
+                        <div class="guide-panel download">
+                            <h3>Example code</h3>
+                            <a class=" guide-item_button button-outline"  href="https://github.com/cuba-guides/cuba-petclinic-intro-to-reports/archive/master.zip" target="_blank">Download</a>
+                            <a href="https://github.com/cuba-guides/cuba-petclinic-intro-to-reports" class="github-link" target="_blank">Github</a>
+                        </div>
+
+                        <div class="guide-panel cuba-version">
+                            <h3>Supported Versions</h3>
+                            <ul>
+                                <li>CUBA: 7.0+</li>
+                                <li>Java: 8+</li>
+                            </ul>
+                        </div>
+
+                    </section>
+                </div>
+            </div>
         </div>
     </div>
-    <!-- End Main Content and Sidebar -->
 
     <!-- Footer -->
     <footer fragment="14269c1b298" class="footer">
@@ -419,17 +920,28 @@
 
 </section>
 
-<script src="/guides/js/toc.js"></script>
 <script src="/guides/js/foundation.min.js"></script>
+<script src="https://unpkg.com/isotope-layout@3.0/dist/isotope.pkgd.js"></script>
+<script src="/guides/js/vendor/modernizr.js"></script>
+<script src="/guides/js/toc.js"></script>
 <script src="/guides/js/navigation.js"></script>
+<script src="/guides/js/navbar.js"></script>
 <script src="/guides/js/extra.js"></script>
 <script src="/guides/js/extra2.js"></script>
 <script src="/guides/js/cuba-new.js"></script>
 <script>
-$(document).foundation();
-var doc = document.documentElement;
-doc.setAttribute('data-useragent', navigator.userAgent);
+(function ($) {
+  $(document).foundation();
+  var doc = document.documentElement;
+  doc.setAttribute('data-useragent', navigator.userAgent)
 
+  /* Issue #24 */
+  $(".blog .content img").each(function() {
+    var imgMarkup = $(this)[0].outerHTML;
+    console.log(imgMarkup);
+    $(this).replaceWith('<div class="img-center">' + imgMarkup + '</div>');
+  });
+})(jQuery); 
 </script>
 </body>
 </html>
