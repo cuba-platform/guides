@@ -17,18 +17,18 @@ permalink: data-modelling-entity-inheritance
 :java_version: 1.8
 :cuba_version: 7.0
 
-这个指南演示在 CUBA 应用程序中如何使用实体继承。
+这个指南演示了在 CUBA 应用程序中如何使用实体继承。
 
-在宠物诊所示例中，在诊疗期间有各种类型的宠物需要被照料，像猫、鸟及鼠类。应用程序应该在一个表里存储公共的属性，使用独立的链接表去存储特定于各种宠物的属性。
+宠物诊所示例中，有各种宠物在诊疗期间需要被照看，像猫、鸟及鼠类。应用程序应该在一个表里存储所有宠物的公共属性，使用独立的关联表去存储每种宠物特定的属性。
 
 
 == 将要构建的内容
 
-这个向导对 https://github.com/cuba-platform/cuba-petclinic[CUBA 宠物诊所] 示例进行了增强，以演示实体继承机制。特别是会覆盖以下用例：
+这个指南对 https://github.com/cuba-platform/cuba-petclinic[CUBA 宠物诊所] 示例进行了增强，以演示实体继承机制。特别是会覆盖以下用例：
 
 * `Pet` 实体成为所有宠物类型的超类
 * `Cat` 、  `Bird` 和 `Rat` 被创建为具体的宠物类型实体
-* 用户有机会以在创建宠物时选择不同的宠物类型。系统将展示相应的实体编辑器，用户可以输入特定宠物类型的信息。
+* 用户可以在创建宠物时选择不同的宠物类型。系统将显示相应的实体编辑器，用户可以输入特定宠物类型的信息。
 
 
 === 最终应用程序
@@ -52,15 +52,14 @@ include::includes/petclinic_introduction.adoc[]
 
 两个实体表（例如 `PETCLINIC_PET` 和  `PETCLINIC_BIRD` ）之间通过外键关联。
 
-另外，在超类中有一个特殊类型的列，称之为  `DTYPE` 。这个列只在对象-关系映射（JPA）内部使用，用于在从数据库中加载数据时创建正确的实例。
+另外，在超类中有一个名为 `DTYPE` 的特殊类型的列，称之为鉴别列 。这个列只在对象-关系映射机制（JPA）内部使用，用于在从数据库中加载数据时创建正确的实例。
 
 对于继承层次中的每个类，都有一个特定的值来标识对应层次的类。在 `Pet` 类的子类中使用下列值：`CAT` 、 `BIRD` 、 `RAT` ， `PET` 用于 `Pet` 超类实例本身。
 
-鉴别列的值通过加在实体上的 `@DiscriminatorValue("BIRD")` 注解来定义。 这个特殊的数据库列通常不暴露为实体属性。它只是持久化层内部使用，用于在区别不同的实体子类。
+鉴别列的值通过加在实体上的 `@DiscriminatorValue("BIRD")` 注解来定义。 这个特殊的数据库列通常不暴露为实体属性。它只在持久化层内部使用，用于在区别不同的实体子类。
 
 
-TIP:  如果用户需要使用类型属性，有必要考虑在超类上创建另外一个枚举类型的  `type` 属性，枚举中包含所有可能的实体子类。这样就允许系统使用类型信息，比如在通过界面按类型过滤或排序 。
-
+TIP:  如果用户需要使用类型属性，有必要考虑在超类上创建另外一个枚举类型的  `type` 属性，枚举中包含所有可能的实体子类。这样就允许系统使使用实例的类型信息，比如在通过界面按类型过滤或排序 。
 
 在宠物诊所示例中，`Pet` 实体继承关系看起来是这样：
 
@@ -95,13 +94,13 @@ public class Pet extends NamedEntity {
 ----
 <1> 对鉴别列的描述，包括了列名和列类型
 <2> 类层次的继承策略（可选项有： `SINGLE_TABLE` 、 `TABLE_PER_CLASS` 和 `JOINED`）
-<3> The discriminator column value for the superclass itself. Sometimes instances of superclasses make sense. In the case of the `Pet` example, creating a generic `Pet` does not reflect the real world
-超类本身鉴别列的值。有时超类的实例是有意义的。在 `Pet` 示例中， 创建一个不反映到真实世界的泛化的 `Pet`。 ????
-<4> 所有的子类共享的公共属性
+//TODO
+<3> 超类本身鉴别列的值，有的情况下超类的实例是有实际意义的。在 `Pet` 示例中 ，`Pet` 实例不能反映真实世界。
+<4> 所有子类共享的公共属性
 
 === Cat 子类
 
-Cat 子类作为一个具体宠物类型的示例，包含两个继承相关的注解。
+Cat 子类作为一个具体宠物类型的示例，包含两个实体继承相关的注解。
 
 .Cat.java
 [source, java]
@@ -130,7 +129,7 @@ public class Cat extends Pet {
 
 === 宠物(Pet)浏览界面
 
-在宠物诊所示例中，有一个主菜单：`Petclinic > Pets`。在这个界面，应该显示了与具体宠物类型无关的所有宠物。在 JPL 查询中使用超类 `Pet` 时可以实现这个效果。
+在宠物诊所示例中，有一个主菜单：`Petclinic>Pets`。在这个界面，应该显示了与具体宠物类型无关的所有宠物。在 JPL 查询中使用超类 `Pet` 时可以实现这个效果。
 
 
 .bet-browse.xml
@@ -149,18 +148,17 @@ public class Cat extends Pet {
 
 有了这个数据容器，所有的宠物（猫,、鸟 和鼠类）都会显示在浏览界面。
 
-这种情况是显而易见的，在一个表格中是不可能显示出特定于子类的属性，因为超类 `Pet` 不知道它的子类的属性，比如  `Cat.clawLength`。
+这种情况是显而易见的，在一个表格中是不可能显示出特定于子类的属性，因为子类属性对于超类（`Pet`） 是不可见的  ，比如  `Cat.clawLength`。
 
 
 === 用于创建宠物的 UI
 
-In order to create different types of Pet instances it is required to differentiate at some point in the user interface between the concrete type, that should be created. Also, when it comes to selecting a concrete entity instance during a selection process, it is sometimes required to differentiate between the available types to select.
 
-要创建不同类型的宠物实例，需要区分具体类型界面之间的不同点。
+要创建不同类型的宠物实例，需要区分具体类型界面之间的不同点。 同样，在选择一个具体的宠物实例的时候，有时候也要区分出不同的宠物类型。
 
-用于创建新宠物的界面将在宠物浏览界面中进行调整适应。在创建新的宠物时，必须选择具体子类。
+用于创建新宠物的界面将基于宠物浏览界面进行调整、适应。在创建新的宠物时，必须选择具体宠物子类。
 
-image::data-model-entity-inheritance/pet-browse-screen-inheritance.png[Pet browse screen with entity inheritance]
+image::data-model-entity-inheritance/pet-browse-screen-inheritance.png[可显示所有宠物的浏览界面]
 
 
 .PetBrowse.java
@@ -246,7 +244,6 @@ public class PetBrowse extends StandardLookup<Pet> {
 
 要实现这个效果，首先创建一个 `CatVisit` ，它继承了  `Visit` 实体。
 
-
 .CatVisit.java
 [source, java]
 ----
@@ -263,12 +260,9 @@ public class CatVisit extends Visit {
 
 在这里，使用了 `SINGLE_TABLE` 继承策略，这意味着超类和子类的所有属性都存储在一个表中。
 
-
 TIP: 当继承类型使用了 `SINGLE_TABLE` 时，子类的属性上不能有 `NOT NULL` DB 约束，这是因为继承层次上的其它实体不可能满足这个约束。 但是在实体层的 `@NotNull` bean 验证是允许的。
 
-
-为了通过 UI 创建一个特定的 `CatVisit` 实例 ，这里使用了前面描述的模式。为了实现在猫的就诊编辑器中过滤 `Visit.pet` 属性， 对 `lookupPickerField` 组件做了一些轻微的调整。
-
+为了通过 UI 创建一个特定的 `CatVisit` 实例 ，这里使用了前面描述的模式。为了实现在猫的就诊（Visit）编辑器中过滤 `Visit.pet` 属性， 对 `lookupPickerField` 组件做了一些细微的调整。
 
 .cat-edit.xml
 [source, xml]
@@ -304,7 +298,7 @@ TIP: 当继承类型使用了 `SINGLE_TABLE` 时，子类的属性上不能有 `
 <2> `petField` 控件使用 `catsDc` 作为选项数据源，这样就只显示猫
 <3> 可以为 `CatVisit` 定义特定的属性
 
-使用了这些配置，用于选择宠物 lookup 组件只显示猫。
+使用了这些配置，用于选择宠物的 lookup 组件将只显示猫。
 
 image::data-model-entity-inheritance/cat-visit-editor-with-filtered-pet-selection.png[ 用于猫的就诊编辑器，对可选择的宠物进行了过滤]
 
@@ -328,8 +322,6 @@ public class NamedEntity extends StandardEntity {
 }
 ----
 
-TIP: CUBA itself offers mapped superclasses for defining standard attributes across all tables within a CUBA application. `StandardEntity` is the most commonly known example. It e.g. contains the timestamp related attributes `createTs` and `updateTs`.
-
 这个类使用了 `@MappedSuperclass` 注解，表示它可被继承，但是不会产生明确的数据库表关联。 继承自 `NamedEntity` 实体的类比如 `Specialty` ，会继承  `NamedEntity` 实体的所有属性，并且这些属性全部都存储在自身的表 `PETCLINIC_SPECIALTY`。
 
 TIP: CUBA 本身提供了一些映射超类，用于为 CUBA 应用程序中的所有表定义一些标准属性。 `StandardEntity` 是一个最常见的例子，它包含了时间戳相关的属性： `createTs` 和 `updateTs`。
@@ -339,7 +331,7 @@ TIP: CUBA 本身提供了一些映射超类，用于为 CUBA 应用程序中的�
 
 在这个数据建模指南中，介绍了实体继承。 继承是面向对象编程中通过类层次共享数据和行为的常用方法。 在数据库级别，继承的概念不是直接可用的。 但是，JPA 作为 OR 映射工具，允许用不同的模式表达继承，以弥合两个世界之间的差距。
 
-可以通过不同方式实现实体继承。 `MappedSuperclass` 允许只共享属性而不使用共享表。 当应该表示继承时，可以使用JPA `@ Inheritance` 注解。 In this case it is possible that other entities can create associations that reference the entity inheritance structure (like `Visit` -> `Pet` where `Pet` is an entity inheritance). ????
+可以通过不同方式实现实体继承。 `MappedSuperclass` 允许只共享属性而不使用共享表。 当应该表示继承时，可以使用JPA `@Inheritance` 注解。 In this case it is possible that other entities can create associations that reference the entity inheritance structure (like `Visit` -> `Pet` where `Pet` is an entity inheritance). 在这种情况下，其它实体可以直接与超类实体关联(比如 `Visit` -> `Pet` 中，`Pet` 是一个超类实体)。
 
 在UI层上，也必须能反映出实体的继承关系。 根据使用场景，用户可以调整界面，以使用户界面显示继承层次中的所有实体实例或者只显示实体继承中的一部分。
 
