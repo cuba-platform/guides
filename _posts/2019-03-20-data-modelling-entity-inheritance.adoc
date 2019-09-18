@@ -331,7 +331,7 @@ TIP: CUBA 本身提供了一些映射超类，用于为 CUBA 应用程序中的�
 
 在这个数据建模指南中，介绍了实体继承。 继承是面向对象编程中通过类层次共享数据和行为的常用方法。 在数据库级别，继承的概念不是直接可用的。 但是，JPA 作为 OR 映射工具，允许用不同的模式表达继承，以弥合两个世界之间的差距。
 
-可以通过不同方式实现实体继承。 `MappedSuperclass` 允许只共享属性而不使用共享表。 当应该表示继承时，可以使用JPA `@Inheritance` 注解。 In this case it is possible that other entities can create associations that reference the entity inheritance structure (like `Visit` -> `Pet` where `Pet` is an entity inheritance). 在这种情况下，其它实体可以直接与超类实体关联(比如 `Visit` -> `Pet` 中，`Pet` 是一个超类实体)。
+可以通过不同方式实现实体继承。 `MappedSuperclass` 允许只共享属性而不使用共享表。 当应该表示继承时，可以使用JPA `@Inheritance` 注解。 在这种情况下，其它实体可以直接与超类实体关联(比如 `Visit` -> `Pet` 中，`Pet` 是一个超类实体)。
 
 在UI层上，也必须能反映出实体的继承关系。 根据使用场景，用户可以调整界面，以使用户界面显示继承层次中的所有实体实例或者只显示实体继承中的一部分。
 
