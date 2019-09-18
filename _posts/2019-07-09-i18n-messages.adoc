@@ -4,12 +4,12 @@ compatible_java_versions: 8+
 project_id: cuba-petclinic-i18n-messages
 permalink: localization-in-cuba-applications
 ---
-= Localization in CUBA applications
+= CUBA 应用程序中的本地化
 :showtitle:
 :sectlinks:
 :sectanchors:
-:page-navtitle: Localization in CUBA applications
-:page-excerpt: In this guide the localization features of a CUBA application are explained
+:page-navtitle: CUBA 应用程序中的本地化
+:page-excerpt: 本指南中解释了CUBA 应用程序中的本地化功能
 :page-icone: images/i18n-messages/guide_icone.svg
 :page-root: ../../../
 :project_id: cuba-petclinic-i18n-messages
@@ -20,6 +20,7 @@ permalink: localization-in-cuba-applications
 
 CUBA applications have a build-in support for localized messages for different languages. Translations are externalized in
 properties files to have a clear separation between the application code and the actual translations.
+CUBA 应用程序对于不同语言的本地化消息具有内建支持。
 
 
 == What Will be Built
