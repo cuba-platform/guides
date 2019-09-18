@@ -2,7 +2,7 @@
 layout: index
 ---
 
-= CUBA Platform Guides
+= CUBA 平台指南
 :showtitle:
-:page-title: CUBA Platform Guides
-:page-description: The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.
+:page-title: CUBA 平台指南
+:page-description: 本指南覆盖了 CUBA 平台的各个方面，通过提供具体的示例来为您使用 CUBA 平台提供建议。
