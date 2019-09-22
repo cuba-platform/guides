@@ -18,19 +18,16 @@ permalink: localization-in-cuba-applications
 :cuba_version: 7.0
 
 
-CUBA applications have a build-in support for localized messages for different languages. Translations are externalized in
-properties files to have a clear separation between the application code and the actual translations.
-CUBA 应用程序对于不同语言的本地化消息具有内建支持。
+CUBA 应用程序对于本地化语言消息具有内建支持。语言翻译保存在属性文件中，应用程序代码和语言翻译之间清楚地分离开。
 
+== 将要构建的内容
 
-== What Will be Built
+本指南对 https://github.com/cuba-platform/cuba-petclinic[CUBA 宠物诊所]示例进行了增强，以演示如何在 CUBA 应用程序中定义和使用本地化消息。
 
-This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA Petclinic] example to show how localized messages within the CUBA application can be defined and used:
+*  使应用程序支持德语
+*  对登记宠物就诊时自动生成的描述信息进行本地化
 
-* the application is also available in German language
-* dynamic messages as automatically generated descriptions for visits are localized
-
-=== Final Application
+=== 最终应用程序
 
 ++++
 <a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-i18n-messages/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-i18n-messages/master/img/login-screen.png"/></a>
@@ -42,19 +39,19 @@ include::includes/guide_requirements.adoc[]
 include::includes/petclinic_introduction.adoc[]
 
 
-== Where Translations are Stored in a CUBA Application
+== CUBA 应用程序中本地化翻译的保存位置
 
-CUBA follows a common pattern for translations in Java-based applications. Messages for different languages / locales are stored next to the source-code within the same package in `.properties` files.
+CUBA 遵循 Java 应用程序处理本地化翻译的通用模式。不同的语言或本地化消息存放在与源码相同的包下的 `.properties`  文件中。
 
-For every language and every package there exists a file containing information on how to translate a given text into the target language. The language files contain a suffix according to the locale code of the language (e.g. `_ru` for Russian, `_es` for Spanish).
+每个Java包下对于每种语言都有一个属性文件，这些文件包含了将特定文本翻译成目标语言的信息。语言文件的后缀语言的本地代码对应，比如 俄语是 `_ru`  ,西班牙语是 `_es` 。
 
-Additionally there is a default file `message.properties` without a specified locale in the name. This file acts as a fallback in case the desired language is not available or a particular translation is not available.
+另外有一个在文件名中没有指定本地化代码的默认文件 `message.properties` 。这个文件在目标语言不可用或特定的翻译不可用时起到了一个“失败恢复”的作用。
 
-TIP: When using localization dialogs in Studio, the Studio puts messages for the first selected locale to the default file and others to the files with suffixes.
+TIP: 在 Studio 中使用本地化对话框时，Studio 会把选中的第一个本地化代码的消息放到默认文件中，其它的放到带有后缀的文件中。
 
-If the application is international, it is reasonable to use default files for the language of the application primary audience or for the English language, so that the messages from these default files are displayed to the user if the messages in the required language are not found.
+如果应用程序是国际化的，将英语或主要受众的语言作为默认语言文件的语言是比较合理的方式，这样当需要的语言缺失时， 可以从默认文件获取消息显示给用户。
 
-In the Petclinic example, this file structure looks like this:
+在宠物诊所示例中，文件结构看起来是这样：
 
 ```
 com.haulmont.sample.petclinic.entity
@@ -79,7 +76,7 @@ com.haulmont.sample.petclinic.entity
     └── messages_de.properties
 ```
 
-The properties file consists of key-value pairs, where the key is the identifier of the Message that has to be localized and the value is the corresponding translation of the language. The key is the same for all language files, only the value differs. In the Petclinic example, the localized entity and entity attributes' names look like this:
+属性文件由键值对组成，键名是要本地化的消息的标识，值是对应的语言翻译。键名在所有语言文件中都是相同的，只是值不同。在宠物诊所示例中，本地化实体和实体属性名看起来是这样：
 
 .messages.properties
 [source, java]
@@ -103,48 +100,51 @@ Pet.identificationNumber = Haustier-Identifikationsnummer
 PetType = Tierart
 ----
 
-In the Petclinic example, the translations for the entity attributes have been made by creating the `messages_de.properties` files in the project.
+在宠物诊所示例中，实体属性的翻译通过在项目中创建 `messages_de.properties` 文件实现。
 
 
 [TIP]
 ====
-CUBA Studio offers a Resouce Bundle view for every package. It allows you to see an overview over the translations for the selected package.
+CUBA Studio 为每个 Java 包提供了一个资源包查看器，通过它可以查看选中包的所有翻译。
 
 image::i18n-messages/cuba-studio-resource-bundle-screen.png[align="center"]
 
-Due to the side-to-side view in the Resouce Bundle Editor, creating translations is very comfortable. Missing translations for a particular message key are highlighted so that it is easy to spot them.
+由于资源包编辑器使用了两边对应的布局，右边显示各种语言的翻译，创建翻译的操作比较方便。在左边显示出所有消息键名，如果某些消息缺少特定的翻译，键名会高亮显示，这样可以很容易地发现它们。
 ====
 
+ 关于本地化消息存储结构的详细信息请参考文档：https://doc.cuba-platform.com/manual-{cuba_version}/localization.html[本地化] 。
 
-More information about the general structure of how localized messages are stored can be found in the reference documentation: https://doc.cuba-platform.com/manual-{cuba_version}/localization.html[Localization].
 
+== 在应用程序中注册可用的语言
 
-== Register Available Languages in the Application
+要激活允许用户选择语言的功能，需要在应用程序中配置两个主要属性。
 
-In order to activate the possibility to have a language selection for the user, the application needs two main configuration options in place.
+第一个属性是激活登录界面的语言下拉框：`cuba.localeSelectVisible` ，这个属性应该设置为 `true` 。
 
-The first one is the activation of the language drop-down in the login screen: `cuba.localeSelectVisible`. It has to be set to `true`.
+第二个属性是可选的语言/本地化代码： `cuba.availableLocales = English|en;German|de` 。
 
-The second configuration is the available languages / locales that should be available for selection: `cuba.availableLocales = English|en;German|de`.
 
 Both configurations should be placed in the `web-app.properties`. After this configuration is in place, the Login screen displays the language selection box at login:
 
+两个属性都要放到  `web-app.properties` 文件。在这些配置完成后，登录界面会显示一个语言选择框：
+
 image::i18n-messages/login-screen-with-activated-language-selection.png[align="center"]
 
-When  a user is logging in with a given language, the application displays the correct translations. This happens automatically for all UI components if the corresponding translation files are in place. The `<form>` component renders the attribute captions in the correct language:
+当用户使用一个指定语言登录后，应用程序会显示正确的翻译。如果所有 UI 组件需要的翻译文件都准备就绪，框架会自动应用这些翻译。 `<form>` 组件以正确的语言显示属性标题：
 
 image::i18n-messages/localized-editor.png[align="center"]
 
 
-== Referencing Localized Messages
+== 引用本地化消息
 
-For the two cases of `<groupTable />` and `<form />` the translations are automatically derived from the entity attribute translations that should be displayed. For UI components or messages in the application that are not directly tied to an entity attribute, there are two ways of interacting with the Localization mechanisms of CUBA: either in the XML screen definitions or programmatically from the Java code.
+对于 `<groupTable />` 和 `<form />` ，会自动使用相关的实体属性的翻译。 对于没有直接与实体属性绑定的UI组件，有两种方式与 CUBA 的本地化机制交互：
+在界面 XML 描述中定义或在Java代码中使用编程方式。
 
-In order to display the correct localized message, the message keys have to be referenced explicitly in the source code.
+要显示正确的本地化消息，需要在代码以中显式地引用消息键名。
 
-=== Referencing Messages in XML Descriptors
+=== 在 XML 描述中引用消息
 
-The first option is to reference a particular message key within the XML UI descriptor. In the Petclinic example, the caption of the "regular checkup" button should be displayed localized. This happens through the prefix `msg://` followed by the translation key:
+第一个选项是在 XML UI 描述中引用特定的消息键名。在宠物诊所示例中，"regular checkup"  按钮标题应该以本地化语言显示，这里通过 `msg://` 后面跟上消息键名来实现。
 
 .visit-browse.xml
 [source,xml]
@@ -165,21 +165,23 @@ The first option is to reference a particular message key within the XML UI desc
     </buttonsPanel>
 </groupTable>
 ----
-<1> `msg://createRegularCheckup` references the key `createRegularCheckup` in the current package of the XML descriptor
 
-=== Programmatic Localization of Messages
-
-The second way of interacting with the Localization mechanism is directly through the Java code. In the Petclinic example, the "regular checkup" functionality should render the following two dynamic messages programmatically:
-
-1. when a new Regular Checkup screen is opened, the description attribute for the visit entity should be pre-filled with a particular localized message
-2. once the Regular Checkup is created, a localized notification message should be rendered, containing the name of the pet
-
-Messages can be received programmatically via the `Messages` Interface. It provides an API to fetch a translated String through the localization mechanism of CUBA for the locale of the current user.
-
-TIP: In the example code instead of using the `Messages` Interface, the `MessageBundle` Interface is used. It is a new shorthand mechanism introduced in CUBA 7.0, that fetches a particular message from the message pack of the calling Java class. This way it is not required to provide the package for every translation API request.
+<1> `msg://createRegularCheckup` 引用了 XML 描述所在包下的  `createRegularCheckup` 消息
 
 
-The first localized message for pre-filling the description attribute is created as follows:
+=== 编程式消息本地化
+
+与本地化机制交互的第二种方式是通过 Java 代码。在宠物诊所示例中，"regular checkup" 功能应该以编程方式显示两种动态消息 ：
+
+1. 当用户打开新建常规检查的界面，就诊实体(visit)的discription属性应该自动填写一个特定的本地化消息
+2. 一旦常规检查记录被创建，应该显示一个本地化的通知消息， 消息中包含宠物的名称。
+
+可以使用  `Messages`  接口以编程的方式获取消息。它提供了一个通过 CUBA 的本地化消息机制获取翻译的字符串的 API，本地化语言是根据当前登录用户的本地化设置确定的。
+
+
+TIP: 在示例代码中没有使用 `Messages` 接口，而是使用了 `MessageBundle`  接口。它是 CUBA 7.0 新引入的快捷机制，它从正在调用的 Java 类的消息包中获取特定消息。这种方式省略了使用翻译 API 时指定消息包的步骤。
+
+第一个预填写的 description  属性的本地化消息这样创建：
 
 
 .VisitBrowse.java
@@ -221,12 +223,12 @@ public class VisitBrowse extends StandardLookup<Visit> {
         );
     }
 ----
-<1> the description of the visit instance will be set on entity creation
-<2> the `messageBundle` bean is responsible for fetching the translated message
-<3> `regularCheckupContent` is the key of the message to be translated
-<4> the parameters `pet.getName()` and `pet.getIdentificationNumber()` are passed to the translation as dynamic parts
+<1> 将在实体创建时设置就诊(visit)实体的 description 属性。
+<2> `messageBundle`  Bean 用于获取翻译的消息
+<3>  `regularCheckupContent`  是要翻译的消息的键
+<4> 参数 `pet.getName()` 和 `pet.getIdentificationNumber()` 作为动态部分传递给翻译
 
-For the dynamic parts of a message, the translation should contain the placeholder `%s` like in this definition:
+对于消息的动态部分，应该像下面的翻译一样包使用占位符：`%s`
 
 .messages_de.properties
 [source,properties]
@@ -239,13 +241,12 @@ Bestandteile: \n
 - Zahn-Check
 ----
 
-This code results into the following description value of the regular check:
+这段代码会产生如下对常规检测的描述值：
+
 
 image::i18n-messages/editor-with-programmatic-created-i10n-messages.png[align="center"]
 
-
-The second message should be displayed as a notification once the Regular Checkup was successfully created. There is
- the method `showRegularCheckupCreatedNotification` in the Visit browser, that will be called once the instance is created:
+常规检查（Regular Checkup ）创建成功后应该以通知的方式显示第二条消息。Visit 浏览界面控制器中的 `showRegularCheckupCreatedNotification`  方法在实例创建成功后会被调用。
 
 
 .VisitBrowse.java
@@ -274,33 +275,34 @@ public class VisitBrowse extends StandardLookup<Visit> {
                 .show();
     }
 ----
-<1> `metadataTools` is used in CUBA 7.0+ to fetch the instance name from an entity
-<2> The `messageBundle` is used once again to get a particular message with a parameter
-<3> the localized Message String is passed to the `notifications` bean to render a tray notification
+<1>  `metadataTools`  在 CUBA 7.0+ 中用于获取实体实例
+<2> 又一次使用 `messageBundle` 获取特定的参数化消息
+<3> 本地化消息被传递给 `notifications`  bean 来显示一个托盘消息
 
 
-== Translation of Existing UI Screens / Functionality
 
-Since CUBA comes with certain UI components and with multiple UI screens out of the box, this existing functionality also needs to be localized in order to have a fully translated application. For this problem, there are two main solutions:
-
-1. Community Languages Packs
-2. manually provided translations
+== 对已有 UI 界面或功能的翻译
 
 
-=== Community Language Packs
+由于 CUBA 内置了一些 UI 组件和多个开箱即用的 UI 界面，现有的功能了需要进行本地化。对于这个问题， 有两种主要的解决方案：
 
-The first and easiest solution is to use existing language packs that are created by the community. There are currently twelve Translations available including Spanish, Russian, French, Chinese, German and a lot more.
+1. 社区语言包
+2. 手动提供的翻译
 
-WARNING: The Community Translations Packs are provided by the community, therefore the accuracy and the catch up with the latest changes in the platform differ and are provided as best effort.
 
-In order to get those translations into the Application they can be fetched manually from the https://github.com/cuba-platform/translations[Translations Github repository]. Some Translations are also directly available via an application component through the https://www.cuba-platform.com/marketplace/[CUBA marketplace],
-which makes the installation as easy as installing any other application component.
+=== 社区语言包
 
-In the Petclinic example, as the destination language is german, there is already an existing translation application component available: https://www.cuba-platform.com/marketplace/german-localization/[German Localization] which is utilized.
+首选且最简单的方案是使用社区已经提供的语言包。当前有12个可用的翻译： 西班牙语、俄语、法语、简体中文、德语及其它。
+
+WARNING: 社区翻译包由社区提供，因此在准确性及与平台的同步方面是有区别的，社区只能尽力做到最好。
+
+要将这些翻译加入应用程序，可以从 https://github.com/cuba-platform/translations[Github 仓库上的翻译] 来手工获取。有些翻译可以以应用程序组件的方式使用，可以在这里查找可用的翻译： https://www.cuba-platform.com/marketplace/[CUBA 市场]， 这种方式最简捷。
+
+在宠物诊所示例中，由于目标语言是德语，已经有现成的应用程序组件可用：https://www.cuba-platform.com/marketplace/german-localization/[德语本地化] 。
 
 [TIP]
 ====
-The application component can be installed in CUBA Studio via the following menu:
+在 CUBA Studio  中应用程序组件可以通过下列菜单安装：
 
 `CUBA > Project Properties > Custom Components`.
 
@@ -308,52 +310,50 @@ image::i18n-messages/cuba-studio-add-translation-component.png[align="center"]
 
 ====
 
-Afterwards, the only thing to do is to add the new language to the application property `cuba.availableLocales` manually. Alternatively this can also be done via the the above shown Project Properties screen in CUBA Studio.
+然后，唯一需要做的事情是将新语言手工加到应用程序属性：`cuba.availableLocales` 。 也可以在 CUBA Studio  通过项目属性界面来添加。
 
-=== Manually Provided Translations
 
-In case the target language is not available through the community or some translations are missing or are not accurate, it is also possible to provide those translations directly within the application.
+=== 手动提供语言
 
-CUBA itself provides translations for the screens directly in the source code of the platform as regular `*.properties` files. The User browse screen for example contains the https://github.com/cuba-platform/cuba/blob/master/modules/gui/src/com/haulmont/cuba/gui/app/security/user/browse/messages.properties[messages.properties] file in the package `com.haulmont.cuba.gui.app.security.user.browse`,
-which contains the translations for the screen.
+在社区没有提供目标语言或者提供的语言不完整或有错误，可以在应用程序中直接提供这些翻译。
 
-In order to provide / override translations for this screen, two things have to be done:
+CUBA 本身为界面提供的翻译在平台的源码中，以常规的 `*.properties`  属性文件方式提供。比如用户浏览(User Browser)界面，在 `com.haulmont.cuba.gui.app.security.user.browse`包中包含了 https://github.com/cuba-platform/cuba/blob/master/modules/gui/src/com/haulmont/cuba/gui/app/security/user/browse/messages.properties[messages.properties]  文件，在这个文件中包含有界面的翻译。
 
-==== Create GUI module if Necessary
+要为这个界面提供或覆盖翻译，需要完成两件事：
 
-The destination module of where the translations have to be placed has to be available in the application. The majority of the platform screens are placed in the GUI module, which is not available for 7.0+ CUBA applications by default. In case the target application does not have the GUI module it has to be included into the application to place the translation files into it.
+==== 必要时创建 GUI 模块
+
+放置翻译的模块在应用程序中必须可用。 大多数平台界面是在 GUI 模块，但是此模块在 CUBA 7.0+ 的应用程序中是默认不启用的。如果目标应用程序没有 GUI 模块，就需要添加一个 GUI 模块来放置翻译文件。
 
 [TIP]
 ====
-Adding the GUI module via CUBA Studio can be done via the Menu:
+在 CUBA  Studio 中通过以下菜单添加 GUI 模块：
 
 `CUBA > Advanced > Manage Modules > Create 'gui' module`.
 ====
 
+==== 在应用程序中创建包镜像（Package-Mirror）
 
-==== Create Package-Mirror in the Application
+确认了目标模块在应用程序中可用后，原始翻译文件所在的包必须在应用程序中再创建出来。在这些包目录中存放添加或替换的消息文件。 CUBA 将读取这些文件来显示正确的界面翻译。
 
-After ensuring the target module is available in the application, the package where the original translation files exist, have to be created in the application as well. In this directory the additional / replacing message files are placed. CUBA will pick up the files and display the correct translations for the screen.
+在宠物诊所示例中，已经为用户浏览界面创建了消息文件：https://github.com/cuba-guides/{project_id}/blob/master/modules/gui/src/com/haulmont/cuba/gui/app/security/user/browse/messages_de.properties[messages_de.properties] ,  用于为这个界面提供德语翻译。
 
-In the Petclinic example, the destination target package has been created for the Users browse screen:
-https://github.com/cuba-guides/{project_id}/blob/master/modules/gui/src/com/haulmont/cuba/gui/app/security/user/browse/messages_de.properties[messages_de.properties] to provide german translation for the screen.
-
-
-The resulting Users browse screen in german locale looks like this:
+最终使用了德语本地化设置的用户浏览界面看起来是这样：
 
 image::i18n-messages/localized-platform-screen.png[align="center"]
 
 
-== Summary
+== 总结
 
-CUBA supports localization of applications out of the box. It provides a mechanism that allows application builders to provide different languages / locales for the application. Each user can pick and choose the language of choice.
+CUBA 支持开箱即用的应用程序本地化以支持。它提供了一个机制，允许应用程序的构建者为应用程序提供多语言/本地化支持。每个用户都可以选择所需的语言。
 
-A message key is used in the application code to reference a localized message, which will at runtime translated into the destination language. There are several ways to interact with the localization mechanism. The declarative XML based reference as well as the programmatic reference via the `MessageBundle` Interface was shown.
+在应用程序代码中可以使用消息键来引用本地化消息，消息是在运行时被转换成目标语言。有几种方式可以与本地化机制交互。这里展示了基于 XML 声明式引用和使用 `MessageBundle` 接口的编程式引用。
 
-There are existing translations available in the platform itself and provided by the community, to also cover the translations of platform features and screens like the administration screens.
+有一些由社区提供的对平台本身的翻译，这些翻译涵盖了平台功能和界面（比如管理员界面）。
 
 
-== Further Information
+
+== 更多信息
 
 * https://doc.cuba-platform.com/manual-{cuba_version}/messages.html[CUBA docs: Messages Interface]
 * https://doc.cuba-platform.com/manual-{cuba_version}/localization.html[CUBA docs: Localization]
