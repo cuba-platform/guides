@@ -4,12 +4,12 @@ compatible_java_versions: 8+
 project_id: cuba-petclinic-working-with-images
 permalink: working-with-images
 ---
-= Working with Images in CUBA applications
+=  在 CUBA 应用程序中使用图片
 :showtitle:
 :sectlinks:
 :sectanchors:
-:page-navtitle: Working with Images in CUBA applications
-:page-excerpt: In this guide several ways will be explored on how to interact with images in a CUBA application
+:page-navtitle: 在 CUBA 应用程序中使用图片
+:page-excerpt: 这个指南将探究 CUBA 应用程序中图片的几种使用方式
 :page-icone: images/working-with-images/guide_icone.svg
 :page-root: ../../../
 :project_id: cuba-petclinic-working-with-images
@@ -18,18 +18,19 @@ permalink: working-with-images
 :cuba_version: 7.0
 
 
-In a CUBA application it is possible to interact with images in various ways. In this guide, it will be demonstrated how to upload and display images in the application on live examples. It will be also shown how to attach those images to entities and how to enable users to download the image files from the application.
+在 CUBA 应用程序中有几种使用图片的方式。在这个指南中会演示如何上传和显示图片。也演示了如何将图片附加到实体同时允许用户从应用程序中下载图片文件。
 
-== What Will be Built
+== 将要构建的内容
 
-This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA Petclinic] example to allow users to attach images to entities and interact with them. In particular, the following changes will be made:
 
-* ability to upload an avatar image for a Veterinarian
-* render the Veterinarian's avatar in the Veterinarian's browse table
-* create custom lookup-like component that shows the Veterinarian's avatar next to the name
-* ability to attach X-Ray images to a visit and preview the images
+本指南对 https://github.com/cuba-platform/cuba-petclinic[CUBA 宠物诊所]示例进行了增强，允许用户附加图片到实体，并且使用这些图片。特定是进行了下列修改：
 
-=== Final Application
+* 允许给兽医上传头像
+* 在兽医浏览界面显示兽医的头像
+* 创建了类似 lookup 的自定义组件，使用这个组件显示将兽医头像显示在姓名旁边 ????
+* 允许给就诊记录附加 X-光照片，也可以查看这些照片
+
+=== 最终应用程序
 
 ++++
 <a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-working-with-images/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-working-with-images/master/img/login-screen.png"/></a>
@@ -41,41 +42,40 @@ include::includes/guide_requirements.adoc[]
 include::includes/petclinic_introduction.adoc[]
 
 
-== CUBA's File Storage Subsystem
+== CUBA 文件存储子系统
+CUBA 提供了一组综合性的功能用来在应用程序中处理文件。 底层子系统被称作  `文件存储`。
 
-CUBA has a comprehensive set of features that deal with the task of interacting with files within an application. The underlying subsystem is called `File Storage`.
 
-This set of APIs allow the developer to fulfill the end-to-end process of working with files. This mainly contains:
+这组 API 为开发人员在文件处理方面提供了端对端（前端到后端）的功能实现：
 
-* ability for users to upload files
-* store references from business entities in files
-* read & write files in the application
-* ability for users to download files
+* 用户上传文件的功能
+* 在业务实体中保存文件引用
+* 在应用程序中读&写文件
+* 用户下载文件的功能
 
-The File Storage subsystem separates the storage of the file metadata from the file binary. It stores metadata about the file in the relational database and the raw file binary in the filesystem.
+文件存储子系统从物理文件中分离出文件元数据，文件元数据存储在关系数据库，物理文件存储在文件系统。
 
-More information about this topic can be found in the reference documentation on https://doc.cuba-platform.com/manual-{cuba_version}/file_storage.html[File Storage].
+关于这个主题的详细信息可参考文档：https://doc.cuba-platform.com/manual-{cuba_version}/file_storage.html[文件存储] 。
 
-As an Image is just a particular type of file, it is possible to treat the image handling just like any other kind of file handling with some specific additional behavior like preview in the browser.
+由于图片是一种比较特别的文件类型，所以对于图片文件的处理加入了一些特殊的额外行为，比如在浏览器中预览图片。
 
 
 image::working-with-images/vet-avatar-example.png[width=200,float="right"]
 
 
-== Veterinarian's Avatar Image
+== 兽医头像图片
 
+本指南的第一个示例是允许用户上传并显示特定兽医的头像图片。
 
-The first example of this Images guide allows users to upload & display an avatar image for a particular veterinarian.
+要实现这个功能，宠物诊所示例中的数据模型需要进行一些改进，以便在 `Vet` 实体中存储文件引用。 CUBA  内置的对应 JPA 实体是 `FileDescriptor` 。 它存储文件的元数据部分， 同时作为指向物理文件的指针。
 
-In order to achieve this behavior, the data model of the Petclinic example needs to be enhanced, to store a reference to a file for the `Vet` entity. The corresponding JPA entity that is bundled in CUBA itself is called `FileDescriptor`. It represents the metadata part of a file and acts as a pointer to this file.
-
-The association type is `MANY-TO-ONE`. In the Studio entity designer, the result looks like this:
+关系类型是 `MANY-TO-ONE` 。在 Studio 的实体设计器中结果看起来是这样：
 
 image::working-with-images/vet-entity-file-descriptor-reference.png[align="center",link="/guides/images/working-with-images/vet-entity-file-descriptor-reference.png"]
 
-Since the entity model contains the reference to the `FileDescriptor` entity, the attribute `image` must be added to the view, in order to interact with this attribute in the UI.
+由于实体模型包含对 `FileDescriptor`  实体的引用，属性 `image` 必须被添加到视图中，以便在 UI 中使用这个属性。
 
-The view `vet-with-specialties` for the `Vet` entity, that is used within the Vet editor, has to be changed to contain the `image` attribute like this:
+实体的 `vet-with-specialties`  视图在兽医(Vet)编辑界面使用，必须修改成包含 `image` 属性：
 
 
 .views.xml
@@ -90,14 +90,14 @@ The view `vet-with-specialties` for the `Vet` entity, that is used within the Ve
 </view>
 ----
 
-With this adjustment it makes sense to rename the view name to `vet-with-specialties-and-image` as well, to reflect the content of the view.
-
-=== Upload Vet's Avatar Image
+进行了这个调整后有必要将视图重命名为  `vet-with-specialties-and-image` ，以反映出视图内容。
 
 
-With those preconditions in place, the next step is to adjust the Vet editor, so that it is also able to upload an image during the process of creating / editing a Vet record.
+=== 上传兽医头像
 
-CUBA has a built-in UI component for dealing with `FileDescriptor` instances - the FileUploadField component. This component can be added to the already existing `<form />` component form in the `vet-edit.xml` screen descriptor:
+满足了上述先决条件后，下一步是调整兽医编辑界面，以允许在创建或编辑兽医记录时可以上传图片。
+
+CUBA  有一个内置的用于处理 `FileDescriptor`  实例的 UI 组件。这个组件可以添加到 `vet-edit.xml` 界面描述文件中的 `<form />` 表单组件中。
 
 .vet-edit.xml
 [source,xml]
@@ -117,41 +117,46 @@ CUBA has a built-in UI component for dealing with `FileDescriptor` instances - t
     </column>
 </form>
 ----
-<1> the FileUploadField component binds the uploaded file to the `image` attribute of the `vetDc` data container
 
-There are a couple of options for the upload component to control its behavior, that can be looked up in the https://doc.cuba-platform.com/manual-{cuba_version}/gui_FileUploadField.html[reference documentation]. For this use case, the default behavior is sufficient. It will allow users to upload, download, remove and re-upload a file and directly attach it to the vet instance of the editor.
+<1> FileUploadField 组件将上传的文件绑定到 `vetDc`  数据容器的  `image`  属性
 
-The resulting user interface looks like this:
+有几个控制上传组件行为的选项，可在这里找到： https://doc.cuba-platform.com/manual-{cuba_version}/gui_FileUploadField.html[参考文档] 。在当前案例中，使用默认行为就可以了。它允许用户上传、下载、移除和重新上传文件，并且直接将文件附加到编辑界面上的 Vet 实例。
+
+最终用户界面看下来像这样：
 
 image::working-with-images/vet-entity-file-descriptor-reference-ui.png[align="center"]
 
-The attribute `fileStoragePutMode` set to `IMMEDIATE` leads to the behavior that the file is persisted and a corresponding persisted `FileDescriptor` instance is created directly after the file uploading is completed. The benefit of such approach is that this behavior allows to link the Vet instance to the image without further programmatic interaction.
+`fileStoragePutMode` 属性设置为 `IMMEDIAT`  时，文件上传完成后会被持久化并且直接创建一个 `FileDescriptor` 实体实例。这种方式的好处是 Vet 实例会和图片直接关联起来，不需要额外的编程处理。
 
-However, it has the side effect that even if the vet instance is not saved, the file will still be kept in the system. It can still be found via `Administration > External Files`. If this behavior is not desired, the `fileStoragePutMode` can be set to `MANUAL`, which requires manual management of the file persistence. The next use case will describe this behavior in further detail.
 
-=== Display Vet's Avatar Image in the Browse Table
+但是，这种方式有一个副作用： 在 Vet 实例没有保存的情况下，文件仍然会被保存到文件系统。这个文件也可以通过 `Administration > External Files` 功能查到。  如果这不期望的行为， 可以将 `fileStoragePutMode` 设置为 `MANUAL` ，这时就需要手动管理文件的持久化。 接下来的用例会描述这种行为的更多细节。
 
-The next example that deals with the Vet's avatar image is that the uploaded file should be displayed in the Vet browse screen. In order to do that, the `image` attribute has to be a part of the corresponding view (which it is from the change above).
 
-In order to display an image in a screen the second UI component in this space is the `<image />` component. It allows to render an image based on various sources including:
+=== 在浏览表格中显示兽医的头像
 
-* Image from the filesystem / classpath
-* Image from an arbitrary URL
-* Image from a `FileDescriptor` instance
+下一个示例是处理上传的兽医头像图片，这个图片要显示在兽医浏览界面。要做到这点， `image`  属性应该出现在相应的视图（根据上面的视图修改而来）
 
-See https://doc.cuba-platform.com/manual-{cuba_version}/gui_Image.html[CUBA docs: Image UI component] for more information on the possible options.
+在界面上显示图片的第二个 UI 组件是 `<image />` 组件。它允许使用各种来源来渲染一个图片，来源包括：
 
-In this use case, since the `Vet` instance holds the reference to a `FileDescriptor` instance via the `image` attribute, it is possible to directly render the image out of the file reference.
+* 来自文件系统/classpath 的图片
+* 来自任务 URL 的图片
+* 来自 `FileDescriptor` 实例
 
-The target UI should look like this:
+参考 https://doc.cuba-platform.com/manual-{cuba_version}/gui_Image.html[CUBA 文档： 图片 UI 组件] 了解更多关于各种选项的信息。
+
+
+在这种情况下，由于 `Vet` 通过 `image` 属性实例持有 `FileDescriptor` 的引用，所以可以直接渲染文件引用的图片。
+
+目标 UI 看起来是这样：
 
 image::working-with-images/vet-avatar-browse-screen.png[align="center", link="/guides/images/working-with-images/vet-avatar-browse-screen.png"]
 
-The `image` attribute should be one of the columns in the vets table. Furthermore, it should render a particular representation of the image: not the instance name of the `FileDescriptor`, but rather the image itself.
+`image`  属性应该是兽医表格中的一列，此外，这列应该渲染一个特定的图片，不应该是 `FileDescriptor` 实例的实例名，而是图片本身。
 
-To achieve this behavior some programmatic definition in the controller is needed.
+要实现这种效果，就需要在控制器中写一些代码。
 
-The `Table` component has a particular API method: `addGeneratedColumn`, which allows to define a `Component` as a representation for a particular column in the table. This method is called for every entity that should be displayed in the table and it receives the corresponding entity instance as a parameter.
+
+`Table`  组件有一个特别的方法： `addGeneratedColumn` ，这个方法允许为特定的列定义一个组件来作为这个列的渲染器。 这个方法对于每个要显示的实体都调用一次，接受相应的实体实例作为参数。
 
 .VetBrowse.java
 [source,java]
@@ -194,15 +199,16 @@ public class VetBrowse extends StandardLookup<Vet> {
     }
 }
 ----
-<1> a new column `image` is registered in the `vetsTable` through the `renderAvatarImageComponent` method 
-<2> the `FileDescriptor` reference is retrieved from the `Vet` instance through the `image` association
-<3> the UI infrastructure bean `uiComponents` is the entry point for creating UI components programmatically
-<4> the Image component is bound to the `FileDescriptor` through the `FileDescriptorResource` variant
+<1> 通过 `renderAvatarImageComponent` 方法在 `vetsTable` 表格中注册一个新的列： `image`
+<2> 通过 `Vet`  实例的 `image` 属性获取到 `FileDescriptor`  引用
+<3>  UI 基础设施 `uiComponents` bean 是编程方式创建 UI 组件的入口点
+<4> Image 组件通过 `FileDescriptorResource`  变体类型绑定到 `FileDescriptor`
 
-With this code in place, an image component is created, configured and bound to the `FileDescriptor` instance. With the corresponding style name `avatar-icon-small`, the image is rendered as shown above.
+有了这些代码，就可以创建一个 Image 组件、配置好并绑定到 `FileDescriptor` 实例。使用对应的样式名称 `avatar-icon-small`，图片被渲染成上面展示的效果。
 
 
-=== Create Vets Lookup Component containing the Avatar Image
+=== 创建包含头像的兽医 Lookup 组件
+
 
 The last part of this Vet avatar functionality is that in the Visit detail screen, the representation of the Vet should include the image and the name like this:
 
