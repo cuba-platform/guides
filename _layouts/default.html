@@ -41,8 +41,14 @@
     <!-- Main Page Content and Sidebar -->
     <div class="content-wrapper">
         <div class="cuba-container text-node blog">
+
+
+
             <!-- Main content (left column) -->
             <div class="region region-content">
+
+
+
                 <section id="block-system-main" class="block block-system clearfix">
                     <div id="node-962" class="article node node-blog-post node-promoted clearfix">
                         <div class="content">
@@ -57,32 +63,24 @@
                     </div>
                 </section>
             </div>
-
             <!-- Sidebar (right column) -->
             <div id="blog-sidebar">
-                <div class="region region-sidebar">
+                <div class="region region-sidebar ">
                     <section id="block-block-29" class="block block-block clearfix">
 
                         <div class="guide-panel">
-                            <h3>Table of contents</h3>
-                            {{ page.document | tocify_asciidoc: 1 }}
+                            <h3 class="header-table-content">Table of contents</h3>
+                            {{ page.document | tocify_asciidoc: 2 }}
                         </div>
 
+                        <div class="sidebar-razd"></div>
                         <div class="guide-panel download">
-                            <h3>Example code</h3>
-                            <a class=" guide-item_button button-outline"  href="https://github.com/cuba-guides/{{ page.project_id }}/archive/master.zip" target="_blank">Download</a>
-                            <a href="https://github.com/cuba-guides/{{ page.project_id }}" class="github-link" target="_blank">Github</a>
+                            <a href="https://github.com/cuba-guides/{{ page.project_id }}" class="github-link" target="_blank">Example code on Github</a>
                         </div>
-
-                        <div class="guide-panel cuba-version">
-                            <h3>Supported Versions</h3>
-                            <ul>
-                                <li>CUBA: {{ page.compatible_cuba_versions }}</li>
-                                <li>Java: {{ page.compatible_java_versions }}</li>
-                            </ul>
-                        </div>
+                        <div class="guide-panel cuba-version">Supported versions: CUBA {{ page.compatible_cuba_versions }}; Java {{ page.compatible_java_versions }}</div>
 
                     </section>
+                    </div>
                 </div>
             </div>
         </div>
