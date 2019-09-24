@@ -249,8 +249,8 @@ pre.CodeRay {
 
 .blog .guide-panel {
     width: 100%;
-    padding: 0.5em 28px 0.5em 40px;
-    margin: 0 0 0.5em 0;
+    padding: 0.5em 28px 0.5em 30px;
+    margin: 0;
 
     border: none!important;
 }
@@ -286,7 +286,7 @@ pre.CodeRay {
 }
 
 .blog .guide-panel.download {
-    padding: 0.5em 18px 1.5em 40px;
+    padding: 0.5em 18px 0.9em 30px;
 }
 
 /*.blog .guide-panel.download .button {
@@ -442,8 +442,8 @@ pre.CodeRay {
     padding-bottom: 0;
 }
 #blog-sidebar ul li {
-    margin-bottom: 10px;
-    margin-top: 10px;
+    margin-bottom: 7px;
+    margin-top: 7px;
 }
 .region-sidebar {
    overflow: hidden;
@@ -456,8 +456,8 @@ pre.CodeRay {
     overflow: scroll;
     overflow-x: hidden!important;
     text-align: left;
-    height: 70%;
-    margin-top: 120px!important;
+    height: 60%;
+    margin-top: 110px!important;
     position: fixed!important;
 }
 .blog #blog-sidebar {
@@ -473,18 +473,16 @@ pre.CodeRay {
 .sidebar-razd {
     height: 1px;
     background: #C4C4C4;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 .guide-panel {
     background-color: #f7f7f7!important;
     width: 373px!important;
-    margin-left: 40px;
     overflow: visible;
 }
 .guide-panel.cuba-version {
     color: #979797;
-    padding: 0 20px 20px 40px!important;
-    direction: ltr;
+    padding: 0 20px 15px 30px!important;
 }
 @media screen and (max-width: 1100px) {
     .blog .region-content {
@@ -493,4 +491,14 @@ pre.CodeRay {
     .blog #blog-sidebar {
        display: none;
     }
+}
+.footer {
+    position: relative;
+}
+.footer_columns {
+    padding-top: 30px!important;
+}
+.footer_bottom {
+    padding-top: 15px!important;
+    padding-bottom: 17px!important;
 }
