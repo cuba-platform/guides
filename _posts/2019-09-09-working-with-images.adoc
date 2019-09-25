@@ -209,22 +209,25 @@ public class VetBrowse extends StandardLookup<Vet> {
 
 === 创建包含头像的兽医 Lookup 组件
 
-
-The last part of this Vet avatar functionality is that in the Visit detail screen, the representation of the Vet should include the image and the name like this:
+兽医头像功能的最后一部分是就诊详情界面，在兽医姓名的旁边应该显示兽医的头像。
 
 image::working-with-images/vet-avatar-example.png[width=300]
 
 This requires to apply the image component in a different way as this component is now a part of the Visit editor inside the `<form />` component.
 
-The source code for providing this functionality consists of two parts.
 
-* the `VetEdit` controller which orchestrates the creation and binding of the custom component
-* the `VetPreviewComponentFactory` which is responsible for creating the component shown above with the correct layout and binding to the correct fields of the `InstanceContainer`
+提供这个功能的源码分由两部分组成：
+
+* `VetEdit` 控制器协调自定义组件的创建和绑定
+* `VetPreviewComponentFactory` 负责使用正确的布局创建上面显示的组件，并且绑定到  `InstanceContainer`  的正确字段
 
 
 TIP: A dedicated factory class that defines how the component is created is just one possible option to structure the implementation. It has certain advantages to extract the creating of the component into a dedicated class like encapsulation, separation of concerns and the ability to re-use in other screens. +
  +
 However, it is also possible to include the component creation logic directly into the controller. This variant can be seen as an example on how to structure business logic in the UI layer. More information about this topic can be found in https://www.cuba-platform.com/guides/create-business-logic-in-cuba[Create business logic in CUBA] guide.
+
+
+
 
 The orchestration within the `VetEdit` controller looks like this:
 
