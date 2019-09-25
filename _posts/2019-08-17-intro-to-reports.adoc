@@ -254,12 +254,28 @@ The second report that should be generated is a patient record for a given pet. 
 
 In this case the document template will be a Word document. However, the target document will be a PDF file.
 
+The report will have the following default settings:
+
+* Report Entity: `Pet (petclinic_Pet)`
+* Template Type: `DOCX`
+* Report Name: `Patient Record`
+* Report Type: `Report for single entity`
+
 
 === Defining the Attributes
 
-// TODO: explain, but now show (screenshot) different attributes of the pet's master data
+The direct master data of the pet are similar to what has been selected in the `recent-visits` report, basically the data of the Pet entity as well as the associated Owner entity.
 
-=== Tabular Region for Visit Data
+In order to display a list of associated visits of this Pet entity, another data band has to be created. This is possible during the initial Report wizard.
+
+In the second step after initially defining the direct attributes of the entity, it is possible to create additional "regions" in the report. Those regions basically translate to a particular data bands that is generated out of those selections.
+
+
+image::intro-to-reports/report-entity-wizard-add-tabular-section.png[align="center", link="images/intro-to-reports/report-entity-wizard-add-tabular-section.png"]
+
+In order to select the `visits` attribute here, it is required to have this relationship in the domain model. Currently the `Pet` entity does not have an association / composition reference to the visits. Instead the reference is only expressed from the Visit entity to the Pet entity.
+
+By adding a 1:N composition attribute `visits` to the Pet entity, it is possible to select this reference in the report wizard in order to create the second region in the report for the visit related data.
 
 // TODO: explain the concept of multiple data bands
 
