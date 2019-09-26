@@ -8,6 +8,16 @@
     <title>Data Modelling: Entity Inheritance</title>
     <meta name="description" content="The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.">
     <meta name="author" content="Haulmont">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@CubaPlatform">
+    <meta name="twitter:creator" content="@CubaPlatform">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Data Modelling: Entity Inheritance">
+    <meta property="og:description" content="Data Modelling guide: How entity inheritance can be used in a CUBA application">
+    <meta property="og:url" content="https://www.cuba-platform.com/guides/data-modelling-entity-inheritance">
+    <meta property="og:image" content="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-data-model-entity-inheritance/master/img/login-screen.png">
+
     <link rel="shortcut icon" href="/guides/images/favicon.png" type="image/png" />
     <link rel="stylesheet" href="/guides/css/foundation.css">
     <link rel="stylesheet" href="/guides/css/font-awesome.css">
@@ -154,8 +164,14 @@
     <!-- Main Page Content and Sidebar -->
     <div class="content-wrapper">
         <div class="cuba-container text-node blog">
+
+
+
             <!-- Main content (left column) -->
             <div class="region region-content">
+
+
+
                 <section id="block-system-main" class="block block-system clearfix">
                     <div id="node-962" class="article node node-blog-post node-promoted clearfix">
                         <div class="content">
@@ -564,7 +580,7 @@ When inheritance type <code>SINGLE_TABLE</code> is used, the additional attribut
 <p>In order to create a specific <code>CatVisit</code> instance through the UI, the same pattern from above is used. In order to achieve the filtering of the <code>Visit.pet</code> attribute within the cat visit editor, the <code>lookupPickerField</code> is adjusted slightly:</p>
 </div>
 <div class="listingblock">
-<div class="title">cat-edit.xml</div>
+<div class="title">cat-visit-edit.xml</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;data&gt;</span>
     <span class="tag">&lt;instance</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">catVisitDc</span><span class="delimiter">&quot;</span></span>
@@ -678,39 +694,47 @@ CUBA itself offers mapped superclasses for defining standard attributes across a
                     </div>
                 </section>
             </div>
-
             <!-- Sidebar (right column) -->
             <div id="blog-sidebar">
-                <div class="region region-sidebar">
+                <div class="region region-sidebar ">
                     <section id="block-block-29" class="block block-block clearfix">
 
                         <div class="guide-panel">
-                            <h3>Table of contents</h3>
+                            <h3 class="header-table-content">Table of contents</h3>
                             <ul class="sectlevel1">
-<li><a href="#what_will_be_built">What Will be Built</a></li>
+<li><a href="#what_will_be_built">What Will be Built</a>
+<ul class="sectlevel2">
+<li><a href="#final_application">Final Application</a></li>
+<li><a href="#requirements">Requirements</a></li>
+</ul>
+</li>
 <li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
-<li><a href="#entity_inheritance_in_jpa">Entity Inheritance in JPA</a></li>
-<li><a href="#ui_for_entity_inheritance">UI for Entity Inheritance</a></li>
+<li><a href="#entity_inheritance_in_jpa">Entity Inheritance in JPA</a>
+<ul class="sectlevel2">
+<li><a href="#pet_superclass">Pet Superclass</a></li>
+<li><a href="#cat_subclass">Cat Subclass</a></li>
+</ul>
+</li>
+<li><a href="#ui_for_entity_inheritance">UI for Entity Inheritance</a>
+<ul class="sectlevel2">
+<li><a href="#pet_browse_ui">Pet Browse UI</a></li>
+<li><a href="#ui_for_creating_pets">UI for Creating Pets</a></li>
+<li><a href="#selecting_a_specific_subclass">Selecting a Specific Subclass</a></li>
+</ul>
+</li>
 <li><a href="#mapped_superclasses">Mapped Superclasses</a></li>
 <li><a href="#summary">Summary</a></li>
 </ul>
                         </div>
 
+                        <div class="sidebar-razd"></div>
                         <div class="guide-panel download">
-                            <h3>Example code</h3>
-                            <a class=" guide-item_button button-outline"  href="https://github.com/cuba-guides/cuba-petclinic-data-model-entity-inheritance/archive/master.zip" target="_blank">Download</a>
-                            <a href="https://github.com/cuba-guides/cuba-petclinic-data-model-entity-inheritance" class="github-link" target="_blank">Github</a>
+                            <a href="https://github.com/cuba-guides/cuba-petclinic-data-model-entity-inheritance" class="github-link" target="_blank">Example code on Github</a>
                         </div>
-
-                        <div class="guide-panel cuba-version">
-                            <h3>Supported Versions</h3>
-                            <ul>
-                                <li>CUBA: 7.0+</li>
-                                <li>Java: 8+</li>
-                            </ul>
-                        </div>
+                        <div class="guide-panel cuba-version">Supported versions: CUBA 7.0+; Java 8+</div>
 
                     </section>
+                    </div>
                 </div>
             </div>
         </div>

@@ -231,31 +231,28 @@ pre.CodeRay {
 
 .blog .github-link {
     position: relative;
-    padding-left: 32px;
+    padding-left: 40px;
     font-weight: 600;
-    color: #b2b2b2;
+    color: #0F88E4;
+    font-size: 16px;
 }
 
 .blog .github-link:before {
     position: absolute;
     content: '';
     background-image: url("/guides/images/icon-github.svg");
-    width: 18px;
-    height: 18px;
+    width: 28px;
+    height: 28px;
     left: 3px;
-    top: 1px;
+    top: -5px;
 }
 
 .blog .guide-panel {
-    background: #f7f7f7;
-    border: 1px solid #ebebeb;
-    border-radius: 3px;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    -o-border-radius: 3px;
     width: 100%;
-    padding: 0.5em 18px;
-    margin: 0 0 2em 0;
+    padding: 0.5em 28px 0.5em 30px;
+    margin: 0;
+
+    border: none!important;
 }
 
 .blog .guide-panel  h4 {
@@ -277,18 +274,19 @@ pre.CodeRay {
     font-weight: 500;
     position: relative;
     line-height: 26px;
+    color: #3E3E3E;
 }
-
-.blog .guide-panel ul li a::after {
-    content: ' \226B';
-    font-size: 9px;
-    position: absolute;
-    padding-left: 5px;
-    line-height: 26px;
+.blog .guide-panel ul.sectlevel1 li a {
+    font-size: 17px;
+    font-weight: 400;
+}
+.blog .guide-panel ul.sectlevel2 li a {
+    font-weight: 400;
+    font-size: 16px;
 }
 
 .blog .guide-panel.download {
-    padding: 0.5em 18px 1.5em;
+    padding: 0.5em 18px 0.9em 30px;
 }
 
 /*.blog .guide-panel.download .button {
@@ -373,4 +371,134 @@ pre.CodeRay {
 
 #example_cuba_petclinic a.link {
     padding: 25px;
+}
+.guides-list_title {
+    font-size: 14px !important;
+}
+.guides-list_item {
+    flex-direction: row !important;
+    padding: 15px!important;
+    border: 2px solid #ffffff!important;
+    align-items: center;
+}
+.guides-list_item:hover {
+    border: 2px solid #4990e2!important;
+}
+.guides-list_wrapper {
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+    width: 363px;
+}
+.guides-list_icone_wrapper {
+    display: block;
+    height: 61px!important;
+}
+.conum {
+    position: relative;
+    top: -0.125em;
+}
+.conum {
+    display: inline-block;
+    color: #fff !important;
+    background-color: rgba(0,0,0,0.8);
+    -webkit-border-radius: 100px;
+    border-radius: 100px;
+    text-align: center;
+    width: 1.67em;
+    height: 1.67em;
+    font-size: 0.75em;
+    line-height: 1.67em;
+    font-family: "Open Sans", "Sans", sans-serif;
+    font-style: normal;
+    font-weight: bold;
+}
+.conum:after {
+    content: attr(data-value);
+}
+.conum+b {
+    display: none;
+}
+.blog .region-content {
+    margin-left: 7%!important;
+    margin-right: 0!important;
+    float:right!important;
+    width: 60%;
+    max-width: 714px;
+}
+#blog-sidebar .header-table-content {
+    font-size: 20px;
+    text-transform: uppercase;
+}
+#blog-sidebar a:hover {
+    text-decoration: none;
+}
+#blog-sidebar a:focus {
+    color: #0784E3;
+    text-decoration: none;
+}
+#blog-sidebar ul {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+#blog-sidebar ul li {
+    margin-bottom: 7px;
+    margin-top: 7px;
+}
+.region-sidebar {
+   overflow: hidden;
+    width: 373px!important;
+    background-color: #f7f7f7!important;
+}
+#block-block-29 {
+    width: 373px!important;
+    background-color: #f7f7f7;
+    overflow: scroll;
+    overflow-x: hidden!important;
+    text-align: left;
+    height: 60%;
+    margin-top: 110px!important;
+    position: fixed!important;
+}
+.blog #blog-sidebar {
+    width: 373px!important;
+    max-width: 373px!important;
+    background-color: #f7f7f7;
+    overflow: hidden;
+    padding-top: 0;
+}
+#node-962 h1 {
+    padding-top: 0!important;
+}
+.sidebar-razd {
+    height: 1px;
+    background: #C4C4C4;
+    margin-bottom: 20px;
+}
+.guide-panel {
+    background-color: #f7f7f7!important;
+    width: 373px!important;
+    overflow: visible;
+}
+.guide-panel.cuba-version {
+    color: #979797;
+    padding: 0 20px 15px 30px!important;
+}
+@media screen and (max-width: 1100px) {
+    .blog .region-content {
+        width: 100% !important;
+    }
+    .blog #blog-sidebar {
+       display: none;
+    }
+}
+.footer {
+    position: relative;
+}
+.footer_columns {
+    padding-top: 30px!important;
+}
+.footer_bottom {
+    padding-top: 15px!important;
+    padding-bottom: 17px!important;
 }

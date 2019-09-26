@@ -8,6 +8,16 @@
     <title>Data Modelling: Composition</title>
     <meta name="description" content="The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.">
     <meta name="author" content="Haulmont">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@CubaPlatform">
+    <meta name="twitter:creator" content="@CubaPlatform">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Data Modelling: Composition">
+    <meta property="og:description" content="Data modelling guide: What are Compositions and when to use them over Associations">
+    <meta property="og:url" content="https://www.cuba-platform.com/guides/data-modelling-composition">
+    <meta property="og:image" content="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-data-model-composition/master/img/login-screen.png">
+
     <link rel="shortcut icon" href="/guides/images/favicon.png" type="image/png" />
     <link rel="stylesheet" href="/guides/css/foundation.css">
     <link rel="stylesheet" href="/guides/css/font-awesome.css">
@@ -154,8 +164,14 @@
     <!-- Main Page Content and Sidebar -->
     <div class="content-wrapper">
         <div class="cuba-container text-node blog">
+
+
+
             <!-- Main content (left column) -->
             <div class="region region-content">
+
+
+
                 <section id="block-system-main" class="block block-system clearfix">
                     <div id="node-962" class="article node node-blog-post node-promoted clearfix">
                         <div class="content">
@@ -596,39 +612,47 @@ In the Studio entity designer, set the following settings for the <code>addresse
                     </div>
                 </section>
             </div>
-
             <!-- Sidebar (right column) -->
             <div id="blog-sidebar">
-                <div class="region region-sidebar">
+                <div class="region region-sidebar ">
                     <section id="block-block-29" class="block block-block clearfix">
 
                         <div class="guide-panel">
-                            <h3>Table of contents</h3>
+                            <h3 class="header-table-content">Table of contents</h3>
                             <ul class="sectlevel1">
-<li><a href="#what_will_be_built">What Will be Built</a></li>
+<li><a href="#what_will_be_built">What Will be Built</a>
+<ul class="sectlevel2">
+<li><a href="#final_application">Final Application</a></li>
+<li><a href="#requirements">Requirements</a></li>
+</ul>
+</li>
 <li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
 <li><a href="#composition_vs_association">Composition vs. Association</a></li>
-<li><a href="#one_to_many_composition">One-to-Many Composition</a></li>
-<li><a href="#one_to_one_composition">One-to-One Composition</a></li>
+<li><a href="#one_to_many_composition">One-to-Many Composition</a>
+<ul class="sectlevel2">
+<li><a href="#one_to_many_one_level_of_nesting">One-to-Many: One Level of Nesting</a></li>
+<li><a href="#one_to_many_two_levels_of_nesting">One-to-Many: Two Levels of Nesting</a></li>
+<li><a href="#more_levels_of_nesting">More Levels of Nesting</a></li>
+</ul>
+</li>
+<li><a href="#one_to_one_composition">One-to-One Composition</a>
+<ul class="sectlevel2">
+<li><a href="#one_to_one_with_a_details_screen">One-to-One with a Details Screen</a></li>
+<li><a href="#one_to_one_composition_with_a_single_editor">One-to-One Composition with a Single Editor</a></li>
+</ul>
+</li>
 <li><a href="#summary">Summary</a></li>
 </ul>
                         </div>
 
+                        <div class="sidebar-razd"></div>
                         <div class="guide-panel download">
-                            <h3>Example code</h3>
-                            <a class=" guide-item_button button-outline"  href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition/archive/master.zip" target="_blank">Download</a>
-                            <a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition" class="github-link" target="_blank">Github</a>
+                            <a href="https://github.com/cuba-guides/cuba-petclinic-data-model-composition" class="github-link" target="_blank">Example code on Github</a>
                         </div>
-
-                        <div class="guide-panel cuba-version">
-                            <h3>Supported Versions</h3>
-                            <ul>
-                                <li>CUBA: 7.0+</li>
-                                <li>Java: 8+</li>
-                            </ul>
-                        </div>
+                        <div class="guide-panel cuba-version">Supported versions: CUBA 7.0+; Java 8+</div>
 
                     </section>
+                    </div>
                 </div>
             </div>
         </div>
