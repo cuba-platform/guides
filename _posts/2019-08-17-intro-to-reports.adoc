@@ -273,24 +273,44 @@ In the second step after initially defining the direct attributes of the entity,
 
 image::intro-to-reports/report-entity-wizard-add-tabular-section.png[align="center", link="images/intro-to-reports/report-entity-wizard-add-tabular-section.png"]
 
-In order to select the `visits` attribute here, it is required to have this relationship in the domain model. Currently the `Pet` entity does not have an association / composition reference to the visits. Instead the reference is only expressed from the Visit entity to the Pet entity.
-
-By adding a 1:N composition attribute `visits` to the Pet entity, it is possible to select this reference in the report wizard in order to create the second region in the report for the visit related data.
-
-// TODO: explain the concept of multiple data bands
-
-// TODO: show example created second band
-
 
 === Configuring the Output document
 
-// TODO: show template section of "Report Configuration"
+The output document for this report contains one template defined initially through the report wizard. The corresponding section in the Report Configuration screen therefore contains one template entry.
 
-// TODO: switch template to PDF
+The output type is set to PDF while the template file is DOCX.
+
+
+image::intro-to-reports/report-configuration-default-template.png[align="center", link="images/intro-to-reports/report-configuration-default-template.png"]
+
+Additionally it is possible to define the filename of the output document. This can be either be a static filename or it can be programmatically configured.
+
+In this case the filename should look like this for the Pet with the name "Horsea": `Patient Record - Horsea.pdf`.
+
+In order to achieve this, a pattern can be configured whicn in this case references to a particular band: `${Root.title}.pdf`
+
+`Root.title` refers to the `title` value of the `Root` data band. A groovy based data set will define the value for the title attribute like this:
+
+
+.Title data set in Root data band
+[source,groovy]
+----
+def petName = params["entity"]["name"] // <1>
+
+return [
+    ["title" : "Patient Record - $petName"] // <2>
+]
+----
+<1> the params variable gives access to the different external parameters. `params["entity"]` refers to the selected pet instance.
+<2> a List of Maps has to be returned from this groovy script. Under the key `title` it will put the target filename
+
+The resulting usage of the groovy based data set looks like this:
+
+image::intro-to-reports/report-configuration-report-output-title.png[align="center", link="images/intro-to-reports/report-configuration-report-output-title.png"]
 
 === LibreOffice for accurate Word to PDF conversion
 
-After configuring the output document to be PDF, adjustments need to be made in the configuration of the application. In order to increase the accuracy of the PDF ouput document, CUBA is able to leverage the conversion facilities of LibreOffice.
+After configuring the output document to be PDF, adjustments need to be made in the configuration of the application. In order to increase the accuracy of the PDF output document, CUBA is able to leverage the conversion facilities of LibreOffice.
 
 LibreOffice has an API that other programs can use to convert different file formats (especially PDF file generation). The `report` application component uses that API when LibreOffice is installed on the operating system and configured in the CUBA application properties.
 
