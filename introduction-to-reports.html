@@ -182,10 +182,10 @@
 <div class="ulist">
 <ul>
 <li>
-<p>a <code>recent-visits</code> report can be downloaded from the visit browse screen. The report contains visits of the last month, exported as an excel sheet with information about the visit, the referenced pet and its owner.</p>
+<p>a <code>patient-record</code> word document containing all relevant information (master data, visit data) for a given pet can be downloaded through the detail screen of the pet.</p>
 </li>
 <li>
-<p>a <code>patient-record</code> word document containing all relevant information (master data, visit data) for a given pet can be downloaded through the detail screen of the pet.</p>
+<p>a <code>recent-visits</code> report can be downloaded from the visit browse screen. The report contains visits of the last month, exported as an excel sheet with information about the visit, the referenced pet and its owner.</p>
 </li>
 </ul>
 </div>
@@ -435,10 +435,200 @@ is mostly for administrators that have a deep technical understanding of the inn
 </div>
 </div>
 <div class="sect1">
+<h2 id="patient_record"><a class="anchor" href="#patient_record"></a><a class="link" href="#patient_record">Patient Record</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The first report that should be generated is a patient record for a given pet. It contains an overview of the pet&#8217;s master data as well as visit data form that pet.</p>
+</div>
+<div class="paragraph">
+<p>In this case the document template will be a Word document. However, the target document will be a PDF file.</p>
+</div>
+<div class="paragraph">
+<p>The report will have the following default settings:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Report Entity: <code>Pet (petclinic_Pet)</code></p>
+</li>
+<li>
+<p>Template Type: <code>DOCX</code></p>
+</li>
+<li>
+<p>Report Name: <code>Patient Record</code></p>
+</li>
+<li>
+<p>Report Type: <code>Report for single entity</code></p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="defining_the_attributes"><a class="anchor" href="#defining_the_attributes"></a><a class="link" href="#defining_the_attributes">Defining the Attributes</a></h3>
+<div class="paragraph">
+<p>The direct master data of the pet are similar to what has been selected in the <code>recent-visits</code> report, basically the data of the Pet entity as well as the associated Owner entity.</p>
+</div>
+<div class="paragraph">
+<p>In order to display a list of associated visits of this Pet entity, another data band has to be created. This is possible during the initial Report wizard.</p>
+</div>
+<div class="paragraph">
+<p>In the second step after initially defining the direct attributes of the entity, it is possible to create additional "regions" in the report. Those regions basically translate to a particular data bands that is generated out of those selections.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/intro-to-reports/report-entity-wizard-add-tabular-section.png"><img src="/guides/images/intro-to-reports/report-entity-wizard-add-tabular-section.png" alt="report entity wizard add tabular section"></a>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configuring_the_output_document"><a class="anchor" href="#configuring_the_output_document"></a><a class="link" href="#configuring_the_output_document">Configuring the Output document</a></h3>
+<div class="paragraph">
+<p>The output document for this report contains one template defined initially through the report wizard. The corresponding section in the Report Configuration screen therefore contains one template entry.</p>
+</div>
+<div class="paragraph">
+<p>The output type is set to <code>PDF</code> while the template file is <code>DOCX</code>.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/intro-to-reports/report-configuration-default-template.png"><img src="/guides/images/intro-to-reports/report-configuration-default-template.png" alt="report configuration default template"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>Additionally it is possible to define the filename of the output document. This can be either be a static filename or it can be programmatically configured.</p>
+</div>
+<div class="paragraph">
+<p>In this case the filename should look like this for the Pet with the name "Horsea": <code>Patient Record - Horsea.pdf</code>.</p>
+</div>
+<div class="paragraph">
+<p>In order to achieve this, a pattern can be configured whicn in this case references to a particular band: <code>${Root.title}.pdf</code></p>
+</div>
+<div class="paragraph">
+<p><code>Root.title</code> refers to the <code>title</code> value of the <code>Root</code> data band. A groovy based data set will define the value for the title attribute like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">Title data set in Root data band</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">def</span> petName = params[<span class="string"><span class="delimiter">&quot;</span><span class="content">entity</span><span class="delimiter">&quot;</span></span>][<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>] <i class="conum" data-value="1"></i><b>(1)</b>
+
+<span class="keyword">return</span> [
+    [<span class="string"><span class="delimiter">&quot;</span><span class="content">title</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">Patient Record - </span><span class="inline"><span class="inline-delimiter">$</span>petName</span><span class="delimiter">&quot;</span></span>] <i class="conum" data-value="2"></i><b>(2)</b>
+]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the params variable gives access to the different external parameters. <code>params["entity"]</code> refers to the selected pet instance.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>a List of Maps has to be returned from this groovy script. Under the key <code>title</code> it will put the target filename</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The resulting usage of the groovy based data set looks like this:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/intro-to-reports/report-configuration-report-output-title.png"><img src="/guides/images/intro-to-reports/report-configuration-report-output-title.png" alt="report configuration report output title"></a>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="libreoffice_for_accurate_word_to_pdf_conversion"><a class="anchor" href="#libreoffice_for_accurate_word_to_pdf_conversion"></a><a class="link" href="#libreoffice_for_accurate_word_to_pdf_conversion">LibreOffice for accurate Word to PDF conversion</a></h3>
+<div class="paragraph">
+<p>After configuring the output document to be PDF, adjustments need to be made in the configuration of the application. In order to increase the accuracy of the PDF output document, CUBA is able to leverage the conversion facilities of LibreOffice.</p>
+</div>
+<div class="paragraph">
+<p>LibreOffice has an API that other programs can use to convert different file formats (especially PDF file generation). The <code>report</code> application component uses that API when LibreOffice is installed on the operating system and configured in the CUBA application properties.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="running_the_report_from_the_pet_detail_screen"><a class="anchor" href="#running_the_report_from_the_pet_detail_screen"></a><a class="link" href="#running_the_report_from_the_pet_detail_screen">Running the Report from the Pet Detail Screen</a></h3>
+<div class="paragraph">
+<p>There are two variants on how to run a report programmatically from a screen.</p>
+</div>
+<div class="paragraph">
+<p>In this variant, the report configuration itself determines in which screens it should be "available". The remaining code in the controller just declares, that it wants to print a report and the report application component will then figure out which reports are possible in this context.</p>
+</div>
+<div class="paragraph">
+<p>The corresponding configuration section in the Report is "Roles and Screens". Within this section a list of UI screens can be configured in which the report is available.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/intro-to-reports/report-configuration-roles-and-screens.png"><img src="/guides/images/intro-to-reports/report-configuration-roles-and-screens.png" alt="report configuration roles and screens"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>The screen <code>petclinic_Pet.edit</code> is added to the list of screens on the right side of the configuration interface.</p>
+</div>
+<div class="paragraph">
+<p>In the target UI screen, the following code is added in order to trigger a report execution.</p>
+</div>
+<div class="listingblock">
+<div class="title">pet-edit.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;hbox</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">editActions</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">spacing</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;button</span> <span class="attribute-name">action</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">windowCommitAndClose</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;button</span> <span class="attribute-name">action</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">windowClose</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;button</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">patientRecordBtn</span><span class="delimiter">&quot;</span></span>
+            <span class="attribute-name">caption</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">msg://patientRecord</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="tag">&lt;/hbox&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>a new <code>patientRecordBtn</code> is placed next to the default save &amp; close buttons</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">PetEdit.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">com.haulmont.reports.gui.actions.EditorPrintFormAction</span>;
+
+<span class="annotation">@UiController</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_Pet.edit</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">PetEdit</span> <span class="directive">extends</span> StandardEditor&lt;Pet&gt; {
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> <span class="predefined-type">Button</span> patientRecordBtn;
+
+    <span class="annotation">@Subscribe</span>
+    <span class="directive">protected</span> <span class="type">void</span> onInit(InitEvent event) {
+        patientRecordBtn.setAction( <i class="conum" data-value="1"></i><b>(1)</b>
+                <span class="keyword">new</span> EditorPrintFormAction(<span class="local-variable">this</span>, <span class="predefined-constant">null</span>) <i class="conum" data-value="2"></i><b>(2)</b>
+        );
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the action is configured at the init event of the edit screen</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the <code>EditorPrintFormAction</code> from the reports application component is used which automatically searches for reports that configured this screen</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In case multiple reports are configured to be available, the user is prompted with a popup to select the correct report to run. In this case, there is only one report configured for this screen, which results in automatic execution of that report without any further required interaction with the user.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="recent_visits_report"><a class="anchor" href="#recent_visits_report"></a><a class="link" href="#recent_visits_report">Recent Visits Report</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The first document that should be generated by the application is the <code>recent-visits</code> report. It should be accessible as a download directly from the visit browse screen. The report contains visits of the last month, exported as an excel sheet with information about the visit, the referenced pet and its owner.</p>
+<p>The second example that should be generated by the application is the <code>recent-visits</code> report. It should be accessible as a download directly from the visit browse screen. The report contains visits of the last month, exported as an excel sheet with information about the visit, the referenced pet and its owner.</p>
 </div>
 <div class="paragraph">
 <p>In order to fulfill this requirement the first step is to create a report via the Report Wizard. The following main settings are set:</p>
@@ -529,6 +719,15 @@ is mostly for administrators that have a deep technical understanding of the inn
 <p>For the use case of the <code>recent-visits</code> report the generic UI is not exposed to the user. Instead the parameters are passed in by the API call to run the report.</p>
 </div>
 <div class="paragraph">
+<p>In the <code>patient-record</code> report, the report screen connection was configured in the report configuration.</p>
+</div>
+<div class="paragraph">
+<p>There is an alternative approach on how to trigger report execution, which will be leveraged in this example.</p>
+</div>
+<div class="paragraph">
+<p>In this case the report instance is selected programmatically (through the <code>system code</code> attribute) and directly passed into the reports API in order to execute the report and download the resulting document.</p>
+</div>
+<div class="paragraph">
 <p>The complete listing for the triggering of the <code>recent-visits</code> report shows the main steps of:</p>
 </div>
 <div class="olist arabic">
@@ -617,124 +816,13 @@ is mostly for administrators that have a deep technical understanding of the inn
 </div>
 <div class="paragraph">
 <p>The <code>TimeRange</code> class is a custom abstraction of the example
-application that provides an API to define a Time Range (either a MonthYear range or a Quarter range) and has methods to get the border values of
-the range.</p>
+application that provides an API to define a Time Range (either a MonthYear range or a Quarter range) and has methods to get the border values of the range.</p>
 </div>
 <div class="paragraph">
-<p>After the definition of the values for the parameters, the <code>reportGuiManager.printReport</code> has the ability to pass in a Map of parameters.
-The keys of the Map have to match the <code>parameterAlias</code> value of the parameter as configured in the Report Entity.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="patient_record"><a class="anchor" href="#patient_record"></a><a class="link" href="#patient_record">Patient Record</a></h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The second report that should be generated is a patient record for a given pet. It contains an overview of the pet&#8217;s master data as well as visit data form that pet.</p>
+<p>After the definition of the values for the parameters, the <code>reportGuiManager.printReport</code> has the ability to pass in a Map of parameters.</p>
 </div>
 <div class="paragraph">
-<p>In this case the document template will be a Word document. However, the target document will be a PDF file.</p>
-</div>
-<div class="paragraph">
-<p>The report will have the following default settings:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Report Entity: <code>Pet (petclinic_Pet)</code></p>
-</li>
-<li>
-<p>Template Type: <code>DOCX</code></p>
-</li>
-<li>
-<p>Report Name: <code>Patient Record</code></p>
-</li>
-<li>
-<p>Report Type: <code>Report for single entity</code></p>
-</li>
-</ul>
-</div>
-<div class="sect2">
-<h3 id="defining_the_attributes"><a class="anchor" href="#defining_the_attributes"></a><a class="link" href="#defining_the_attributes">Defining the Attributes</a></h3>
-<div class="paragraph">
-<p>The direct master data of the pet are similar to what has been selected in the <code>recent-visits</code> report, basically the data of the Pet entity as well as the associated Owner entity.</p>
-</div>
-<div class="paragraph">
-<p>In order to display a list of associated visits of this Pet entity, another data band has to be created. This is possible during the initial Report wizard.</p>
-</div>
-<div class="paragraph">
-<p>In the second step after initially defining the direct attributes of the entity, it is possible to create additional "regions" in the report. Those regions basically translate to a particular data bands that is generated out of those selections.</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<a class="image" href="images/intro-to-reports/report-entity-wizard-add-tabular-section.png"><img src="/guides/images/intro-to-reports/report-entity-wizard-add-tabular-section.png" alt="report entity wizard add tabular section"></a>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="configuring_the_output_document"><a class="anchor" href="#configuring_the_output_document"></a><a class="link" href="#configuring_the_output_document">Configuring the Output document</a></h3>
-<div class="paragraph">
-<p>The output document for this report contains one template defined initially through the report wizard. The corresponding section in the Report Configuration screen therefore contains one template entry.</p>
-</div>
-<div class="paragraph">
-<p>The output type is set to PDF while the template file is DOCX.</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<a class="image" href="images/intro-to-reports/report-configuration-default-template.png"><img src="/guides/images/intro-to-reports/report-configuration-default-template.png" alt="report configuration default template"></a>
-</div>
-</div>
-<div class="paragraph">
-<p>Additionally it is possible to define the filename of the output document. This can be either be a static filename or it can be programmatically configured.</p>
-</div>
-<div class="paragraph">
-<p>In this case the filename should look like this for the Pet with the name "Horsea": <code>Patient Record - Horsea.pdf</code>.</p>
-</div>
-<div class="paragraph">
-<p>In order to achieve this, a pattern can be configured whicn in this case references to a particular band: <code>${Root.title}.pdf</code></p>
-</div>
-<div class="paragraph">
-<p><code>Root.title</code> refers to the <code>title</code> value of the <code>Root</code> data band. A groovy based data set will define the value for the title attribute like this:</p>
-</div>
-<div class="listingblock">
-<div class="title">Title data set in Root data band</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">def</span> petName = params[<span class="string"><span class="delimiter">&quot;</span><span class="content">entity</span><span class="delimiter">&quot;</span></span>][<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>] <i class="conum" data-value="1"></i><b>(1)</b>
-
-<span class="keyword">return</span> [
-    [<span class="string"><span class="delimiter">&quot;</span><span class="content">title</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">Patient Record - </span><span class="inline"><span class="inline-delimiter">$</span>petName</span><span class="delimiter">&quot;</span></span>] <i class="conum" data-value="2"></i><b>(2)</b>
-]</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>the params variable gives access to the different external parameters. <code>params["entity"]</code> refers to the selected pet instance.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>a List of Maps has to be returned from this groovy script. Under the key <code>title</code> it will put the target filename</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>The resulting usage of the groovy based data set looks like this:</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<a class="image" href="images/intro-to-reports/report-configuration-report-output-title.png"><img src="/guides/images/intro-to-reports/report-configuration-report-output-title.png" alt="report configuration report output title"></a>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="libreoffice_for_accurate_word_to_pdf_conversion"><a class="anchor" href="#libreoffice_for_accurate_word_to_pdf_conversion"></a><a class="link" href="#libreoffice_for_accurate_word_to_pdf_conversion">LibreOffice for accurate Word to PDF conversion</a></h3>
-<div class="paragraph">
-<p>After configuring the output document to be PDF, adjustments need to be made in the configuration of the application. In order to increase the accuracy of the PDF output document, CUBA is able to leverage the conversion facilities of LibreOffice.</p>
-</div>
-<div class="paragraph">
-<p>LibreOffice has an API that other programs can use to convert different file formats (especially PDF file generation). The <code>report</code> application component uses that API when LibreOffice is installed on the operating system and configured in the CUBA application properties.</p>
+<p>The keys of the Map have to match the <code>parameterAlias</code> value of the parameter as configured in the Report Entity.</p>
 </div>
 </div>
 </div>
@@ -743,26 +831,37 @@ The keys of the Map have to match the <code>parameterAlias</code> value of the p
 <h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this introduction to the report and document generation topic, the building blocks of the CUBA application component <code>reports</code> were explained.
-A report is the concept that allows to merge a document template with data from data sources to produce an output document / report.
-Both building blocks: the document template as well as the data sources can be of various kinds. With that it provides a high degree
+<p>In this introduction to reports and document generation, the building blocks of the CUBA application component <code>reports</code> were explained.
+A report is the concept that allows to merge a document template with data from data sources to produce an output document.</p>
+</div>
+<div class="paragraph">
+<p>Both building blocks: the document template as well as the data sources can be of various kinds. With that it provides a high degree
 of flexibility when configuring reports to generate output documents.</p>
 </div>
 <div class="paragraph">
-<p>All this configuration is hold in the main entity: <code>Report</code>, which can be created through a UI wizard or manually.
-With that it supports users with different levels of technical capabilities.</p>
+<p>All this configuration is hold in the main entity: <code>Report</code>, which can be created through a UI wizard or manually through the configuration UI.
+With that differentiation it supports users with different levels of technical capabilities.</p>
 </div>
 <div class="paragraph">
 <p>A report can be run directly through a generic user interface, or programmatically throughout the code of the application.
 It is possible to define external parameters, that get passed into the report. With that, reports can be configured in a
 more generic manner to support multiple use-cases.</p>
 </div>
+<div class="paragraph">
+<p>In this guide two reports were created. The first report generated an excel sheet containing the visits of the last month. In this case external parameters were leverages to</p>
+</div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="further_information"><a class="anchor" href="#further_information"></a><a class="link" href="#further_information">Further Information</a></h2>
 <div class="sectionbody">
-
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://doc.cuba-platform.com/reporting-7.0/index.html">CUBA docs: Reporting</a></p>
+</li>
+</ul>
+</div>
 </div>
 </div>
                                     </div>
@@ -786,8 +885,8 @@ more generic manner to support multiple use-cases.</p>
 <li><a href="#overview">Overview</a></li>
 <li><a href="#templates_data_document">Templates + Data = Document</a></li>
 <li><a href="#report_configuration">Report Configuration</a></li>
-<li><a href="#recent_visits_report">Recent Visits Report</a></li>
 <li><a href="#patient_record">Patient Record</a></li>
+<li><a href="#recent_visits_report">Recent Visits Report</a></li>
 <li><a href="#summary">Summary</a></li>
 <li><a href="#further_information">Further Information</a></li>
 </ul>
