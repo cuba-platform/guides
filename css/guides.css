@@ -432,9 +432,10 @@ pre.CodeRay {
 }
 #blog-sidebar a:hover {
     text-decoration: none;
+    color: #0784E3;
 }
 #blog-sidebar a:focus {
-    color: #0784E3;
+    font-weight: 400;
     text-decoration: none;
 }
 #blog-sidebar ul {
@@ -444,6 +445,10 @@ pre.CodeRay {
 #blog-sidebar ul li {
     margin-bottom: 7px;
     margin-top: 7px;
+}
+#blog-sidebar ul > li.active > a {
+    color: #0784E3;
+    text-decoration: none;
 }
 .region-sidebar {
    overflow: hidden;
