@@ -222,10 +222,19 @@ pre.CodeRay {
 /* Right panel */
 .blog #blog-sidebar {
     position: relative;
+    width: 373px !important;
+    max-width: 373px !important;
+    background-color: #f7f7f7 !important;
+    padding-top: 0!important;
+   /* overflow: scroll;
+    overflow-x: hidden!important;*/
 }
-
 .blog .region-sidebar > section {
     top: 20px;
+    width: 373px!important;
+    overflow: scroll;
+    overflow-x: hidden!important;
+    background-color: #f7f7f7 !important;
     /*width: 280px;*/
 }
 
@@ -450,28 +459,7 @@ pre.CodeRay {
     color: #0784E3;
     text-decoration: none;
 }
-.region-sidebar {
-   overflow: hidden;
-    width: 373px!important;
-    background-color: #f7f7f7!important;
-}
-#block-block-29 {
-    width: 373px!important;
-    background-color: #f7f7f7;
-    overflow: scroll;
-    overflow-x: hidden!important;
-    text-align: left;
-    height: 60%;
-    margin-top: 110px!important;
-    position: fixed!important;
-}
-.blog #blog-sidebar {
-    width: 373px!important;
-    max-width: 373px!important;
-    background-color: #f7f7f7;
-    overflow: hidden;
-    padding-top: 0;
-}
+
 #node-962 h1 {
     padding-top: 0!important;
 }
@@ -487,7 +475,7 @@ pre.CodeRay {
 }
 .guide-panel.cuba-version {
     color: #979797;
-    padding: 0 20px 15px 30px!important;
+    padding: 0 20px 30px 30px!important;
 }
 @media screen and (max-width: 1100px) {
     .blog .region-content {
@@ -506,4 +494,8 @@ pre.CodeRay {
 .footer_bottom {
     padding-top: 15px!important;
     padding-bottom: 17px!important;
+}
+.footer-menu {
+    font-size: 13px;
+    line-height: 18px;
 }
