@@ -31,7 +31,7 @@ This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA Pet
 === Final Application
 
 ++++
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-i18n-messages/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-i18n-messages/master/img/login-screen.png"/></a>
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-reports/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-reports/master/img/login-screen.png"/></a>
 ++++
 
 include::includes/guide_requirements.adoc[]
@@ -203,7 +203,25 @@ After configuring the output document to be PDF, adjustments need to be made in 
 
 LibreOffice has an API that other programs can use to convert different file formats (especially PDF file generation). The `report` application component uses that API when LibreOffice is installed on the operating system and configured in the CUBA application properties.
 
-// TODO: explain config properties
+.app.properties
+[source,properties]
+----
+reporting.openoffice.docx.useOfficeForDocumentConversion = true
+
+## Unix:
+# reporting.openoffice.path = /usr/lib/libreoffice/program
+
+## Windows:
+# reporting.openoffice.path = C:/Program Files (x86)/LibreOffice 5/program
+
+## MacOS:
+reporting.openoffice.path = /Applications/LibreOffice.app/Contents/MacOS
+----
+
+The usage of LibreOffice has to be activated and additionally the path to the LibreOffice binary has to be configured to CUBA. Once this configuration is done, the CUBA application is able to render PDF files from `DOCX` and `XSLX` templates.
+
+More information on the configuration can be found in the official reporting docs: https://doc.cuba-platform.com/reporting-7.1/open_office.html[Appendix A: Installing and Configuring OpenOffice].
+
 
 
 === Running the Report from the Pet Detail Screen
@@ -382,21 +400,19 @@ The keys of the Map have to match the `parameterAlias` value of the parameter as
 
 == Summary
 
-In this introduction to reports and document generation, the building blocks of the CUBA application component `reports` were explained.
-A report is the concept that allows to merge a document template with data from data sources to produce an output document.
+In this introduction to reports and document generation, the building blocks of the CUBA application component `reports` were explained. A report is the concept that allows to merge a document template with data from data sources to produce an output document.
 
-Both building blocks: the document template as well as the data sources can be of various kinds. With that it provides a high degree
-of flexibility when configuring reports to generate output documents.
+Both building blocks: the document template as well as the data sources can be of various kinds. With that it provides a high degree of flexibility when configuring reports to generate output documents.
 
-All this configuration is hold in the main entity: `Report`, which can be created through a UI wizard or manually through the configuration UI.
-With that differentiation it supports users with different levels of technical capabilities.
+All this configuration is hold in the main entity: `Report`, which can be created through a UI wizard or manually through the configuration UI. With that differentiation it supports users with different levels of technical capabilities.
 
-A report can be run directly through a generic user interface, or programmatically throughout the code of the application.
-It is possible to define external parameters, that get passed into the report. With that, reports can be configured in a
-more generic manner to support multiple use-cases.
+A report can be run directly through a generic user interface, or programmatically throughout the code of the application. It is possible to define external parameters, that get passed into the report. With that, reports can be configured in a more generic manner to support multiple use-cases.
 
-In this guide two reports were created. The first report generated an excel sheet containing the visits of the last month. In this case external parameters were leverages to
+In this guide two reports were created. The first report uses the PDF generation in order to create a patient record for a pet. The report uses the screens configuration to declaratively configure in which screens the report should be offered.
+
+The second report generated an excel sheet containing the visits of the last month. In this case external parameters were leveraged to dynamically pass in a specific date range for the report to work on.
 
 == Further Information
 
 * https://doc.cuba-platform.com/reporting-7.0/index.html[CUBA docs: Reporting]
+* https://doc.cuba-platform.com/reporting-7.1/open_office.html[CUBA docs: Reporting - Appendix A: Installing and Configuring OpenOffice]
