@@ -8,6 +8,16 @@
     <title>{{page.title}}</title>
     <meta name="description" content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">
     <meta name="author" content="Haulmont">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@CubaPlatform">
+    <meta name="twitter:creator" content="@CubaPlatform">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="{{page.title}}">
+    <meta property="og:description" content="{{page.excerpt}}">
+    <meta property="og:url" content="https://www.cuba-platform.com{{site.baseurl}}/{{page.permalink}}">
+    <meta property="og:image" content="{{page.url-first-image}}">
+
     <link rel="shortcut icon" href="{{ '/images/favicon.png' | prepend: site.baseurl }}" type="image/png" />
     <link rel="stylesheet" href="{{ '/css/foundation.css' | prepend: site.baseurl }}">
     <link rel="stylesheet" href="{{ '/css/font-awesome.css' | prepend: site.baseurl }}">
@@ -31,8 +41,14 @@
     <!-- Main Page Content and Sidebar -->
     <div class="content-wrapper">
         <div class="cuba-container text-node blog">
+
+
+
             <!-- Main content (left column) -->
             <div class="region region-content">
+
+
+
                 <section id="block-system-main" class="block block-system clearfix">
                     <div id="node-962" class="article node node-blog-post node-promoted clearfix">
                         <div class="content">
@@ -47,32 +63,24 @@
                     </div>
                 </section>
             </div>
-
             <!-- Sidebar (right column) -->
             <div id="blog-sidebar">
-                <div class="region region-sidebar">
+                <div class="region region-sidebar ">
                     <section id="block-block-29" class="block block-block clearfix">
 
                         <div class="guide-panel">
-                            <h3>Table of contents</h3>
-                            {{ page.document | tocify_asciidoc: 1 }}
+                            <h3 class="header-table-content">Table of contents</h3>
+                            {{ page.document | tocify_asciidoc: 2 }}
                         </div>
 
+                        <div class="sidebar-razd"></div>
                         <div class="guide-panel download">
-                            <h3>Example code</h3>
-                            <a class=" guide-item_button button-outline"  href="https://github.com/cuba-guides/{{ page.project_id }}/archive/master.zip" target="_blank">Download</a>
-                            <a href="https://github.com/cuba-guides/{{ page.project_id }}" class="github-link" target="_blank">Github</a>
+                            <a href="https://github.com/cuba-guides/{{ page.project_id }}" class="github-link" target="_blank">Example code on Github</a>
                         </div>
-
-                        <div class="guide-panel cuba-version">
-                            <h3>Supported Versions</h3>
-                            <ul>
-                                <li>CUBA: {{ page.compatible_cuba_versions }}</li>
-                                <li>Java: {{ page.compatible_java_versions }}</li>
-                            </ul>
-                        </div>
+                        <div class="guide-panel cuba-version">Supported versions: CUBA {{ page.compatible_cuba_versions }}; Java {{ page.compatible_java_versions }}</div>
 
                     </section>
+                    </div>
                 </div>
             </div>
         </div>
@@ -103,7 +111,52 @@
     console.log(imgMarkup);
     $(this).replaceWith('<div class="img-center">' + imgMarkup + '</div>');
   });
-})(jQuery); 
+})(jQuery);
+
+// Cache selectors
+var lastId,
+    topMenu = $(".sectlevel1"),
+    topMenuHeight = topMenu.outerHeight()+1,
+    // All list items
+    menuItems = topMenu.find("a"),
+    // Anchors corresponding to menu items
+    scrollItems = menuItems.map(function(){
+        var item = $($(this).attr("href"));
+        if (item.length) { return item; }
+    });
+
+menuItems.click(function(e){
+    var href = $(this).attr("href"),
+        offsetTop = href === "#" ? 0 : $(href).offset().top-topMenuHeight+1;
+    $('html, body').stop().animate({
+        scrollTop: offsetTop
+    }, 850);
+    e.preventDefault();
+});
+
+// Bind to scroll
+$(window).scroll(function(){
+    // Get container scroll position
+    var fromTop = $(this).scrollTop()+topMenuHeight;
+
+    // Get id of current scroll item
+    var cur = scrollItems.map(function(){
+        if ($(this).offset().top < fromTop)
+            return this;
+    });
+    // Get the id of the current element
+    cur = cur[cur.length-1];
+    var id = cur && cur.length ? cur[0].id : "";
+
+    if (lastId !== id) {
+        lastId = id;
+        // Set/remove active class
+        menuItems
+            .parent().removeClass("active")
+            .end().filter("[href=#"+id+"]").parent().addClass("active");
+    }
+});
+
 </script>
 </body>
 </html>

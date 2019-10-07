@@ -10,10 +10,12 @@ permalink: intro-working-with-data-in-cuba
 :sectanchors:
 :page-navtitle: Introduction to Working with Data in CUBA
 :page-excerpt: Overview on how to read and write data in a CUBA application
+:page-icone: images/intro-to-working-with-data-in-CUBA/guide_icone.svg
 :page-root: ../../../
 :project_id: cuba-petclinic-intro-to-datamanager
 :java_version: 1.8
 :cuba_version: 7.0
+:page-url-first-image: https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-visit-for-pet.png
 
 This guide walks you through the CUBA APIs for programmatically interacting with the database through the DataManager API.
 

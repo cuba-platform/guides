@@ -10,8 +10,10 @@ permalink: data-modelling-entity-inheritance
 :sectanchors:
 :page-navtitle: Data Modelling: Entity Inheritance
 :page-excerpt: Data Modelling guide: How entity inheritance can be used in a CUBA application
+:page-icone: images/data-model-entity-inheritance/guide_icone.svg
 :page-root: ../../../
 :project_id: cuba-petclinic-data-model-entity-inheritance
+:page-url-first-image: https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-data-model-entity-inheritance/master/img/login-screen.png
 :java_version: 1.8
 :cuba_version: 7.0
 
@@ -264,7 +266,7 @@ TIP: When inheritance type `SINGLE_TABLE` is used, the additional attributes of 
 In order to create a specific `CatVisit` instance through the UI, the same pattern from above is used. In order to achieve the filtering of the `Visit.pet` attribute within the cat visit editor, the `lookupPickerField` is adjusted slightly:
 
 
-.cat-edit.xml
+.cat-visit-edit.xml
 [source, xml]
 ----
 <data>
