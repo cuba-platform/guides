@@ -14,7 +14,7 @@
     <meta name="twitter:creator" content="@CubaPlatform">
     <meta property="og:type" content="article">
     <meta property="og:title" content="Introduction to Reports and Document generation">
-    <meta property="og:description" content="In this guide the reports application component will be introduced and different ways to interact with it through the UI and programmatically will be shown">
+    <meta property="og:description" content="In this guide the reports add-on will be introduced and different ways to interact with it through the UI and programmatically will be shown">
     <meta property="og:url" content="https://www.cuba-platform.com/guides/introduction-to-reports">
     <meta property="og:image" content="">
 
@@ -181,10 +181,10 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>CUBA applications can be enhanced to have a comprehensive report / document generation capability directly embedded into the application. The CUBA application component <code>reports</code> supports various file formats like <code>docx</code>, <code>xlsx</code>, <code>PDF</code>, <code>HTML</code> for templating as well as output file formats. Furthermore it contains management screens and provides APIs to interact with the report / document generation process programmatically.</p>
+<p>CUBA applications can be enhanced to have a comprehensive report / document generation capability directly embedded into the application. The CUBA add-on <code>reports</code> supports various file formats like <code>DOCX</code>, <code>XLSX</code>, <code>PDF</code>, <code>HTML</code> for templating as well as output file formats. Furthermore it contains management screens and provides APIs to interact with the report / document generation process programmatically.</p>
 </div>
 <div class="paragraph">
-<p>In this guide the reports application component will be introduced and different ways to interact with it through the UI and programmatically will be shown.</p>
+<p>In this guide the <code>reports</code> add-on will be introduced and different ways to interact with it through the UI and programmatically will be shown.</p>
 </div>
 </div>
 </div>
@@ -268,7 +268,7 @@
 <p>These documents might either have the form of human consumable content like a PDF file or are more used as input data for further use like a CSV / Excel file or a Word document.</p>
 </div>
 <div class="paragraph">
-<p>CUBA being targeted towards the needs of business applications in particular has dedicated support for this kind of use cases through the <code>reports</code> application component.</p>
+<p>CUBA being targeted towards the needs of business applications in particular has dedicated support for this kind of use cases through the <code>reports</code> add-on.</p>
 </div>
 <div class="paragraph">
 <p>It has the ability to define formatted document templates and declare the data that should be used for the document. This definition is done in a declarative way, that does not require development of code in order to generate reports / documents. It is possible for developers as well as administrators and business users with mid-level technical skills.</p>
@@ -298,7 +298,7 @@
 </ul>
 </div>
 <div class="paragraph">
-<p>All of those requirements are part of what the <code>reports</code> application component is capable on handling. In the next section the overall concepts are covered and afterwards example use cases are implemented.</p>
+<p>All of those requirements are part of what the <code>reports</code> add-on is capable on handling. In the next section the overall concepts are covered and afterwards example use cases are implemented.</p>
 </div>
 </div>
 </div>
@@ -312,7 +312,7 @@
 <div class="sect2">
 <h3 id="the_document_template"><a class="anchor" href="#the_document_template"></a><a class="link" href="#the_document_template">The Document Template</a></h3>
 <div class="paragraph">
-<p>The document template is a file that acts as the blueprint for how the target file should look like. It contains placeholders as particular text snippets, that the <code>reports</code> application component can pick up and put the data into the document.</p>
+<p>The document template is a file that acts as the blueprint for how the target file should look like. It contains placeholders as particular text snippets, that the <code>reports</code> add-on can pick up and put the data into the document.</p>
 </div>
 <div class="paragraph">
 <p>Those placeholders can inserted as regular text into the template file, but they need a special characters to indicate that this text is a placeholder. A placeholder is defined in the following form: <code>${NAME_OF_PLACEHOLDER}</code></p>
@@ -347,7 +347,7 @@ The template file format are not necessarily the file formats of the output docu
 <div class="sect2">
 <h3 id="data_sources"><a class="anchor" href="#data_sources"></a><a class="link" href="#data_sources">Data Sources</a></h3>
 <div class="paragraph">
-<p>The data that is used for the report can be of various sources. Within a CUBA application fetching the data directly from the entity layer of the application is the most convenient variant. However, the reports application component is not bound to this particular data source. It can be one of the following data sources:</p>
+<p>The data that is used for the report can be of various sources. Within a CUBA application fetching the data directly from the entity layer of the application is the most convenient variant. However, the <code>reports</code> add-on is not bound to this particular data source. It can be one of the following data sources:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -375,7 +375,7 @@ The template file format are not necessarily the file formats of the output docu
 <h2 id="report_configuration"><a class="anchor" href="#report_configuration"></a><a class="link" href="#report_configuration">Report Configuration</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Once the data sources are defined and connected through a concept called Bands to particular template placeholders, everything is setup to generate the output document. The application component stores all of this configuration in the entity <code>Report</code> which holds the configuration of the data sources together with the definition of the templates and further configuration information.</p>
+<p>Once the data sources are defined and connected through a concept called Bands to particular template placeholders, everything is setup to generate the output document. The add-on stores all of this configuration in the entity <code>Report</code> which holds the configuration of the data sources together with the definition of the templates and further configuration information.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -390,7 +390,7 @@ The template file format are not necessarily the file formats of the output docu
 </div>
 <div class="paragraph">
 <p>This is oftentimes needed when more complex reports should be defined which requires skills to create SQL / JPQL statements or even programming abilities through groovy scripts. This option
-is mostly for administrators that have a deep technical understanding of the inner workings of the application. It furthermore requires knowledge about its domain model and an understanding of the technical concepts of the report application component like report bands, report parameters etc.</p>
+is mostly for administrators that have a deep technical understanding of the inner workings of the application. It furthermore requires knowledge about its domain model and an understanding of the technical concepts of the report add-on like report bands, report parameters etc.</p>
 </div>
 <div class="sect2">
 <h3 id="the_report_wizard"><a class="anchor" href="#the_report_wizard"></a><a class="link" href="#the_report_wizard">The Report Wizard</a></h3>
@@ -556,7 +556,7 @@ is mostly for administrators that have a deep technical understanding of the inn
 <p>After configuring the output document to be PDF, adjustments need to be made in the configuration of the application. In order to increase the accuracy of the PDF output document, CUBA is able to leverage the conversion facilities of LibreOffice.</p>
 </div>
 <div class="paragraph">
-<p>LibreOffice has an API that other programs can use to convert different file formats (especially PDF file generation). The <code>report</code> application component uses that API when LibreOffice is installed on the operating system and configured in the CUBA application properties.</p>
+<p>LibreOffice has an API that other programs can use to convert different file formats (especially PDF file generation). The <code>report</code> add-on uses that API when LibreOffice is installed on the operating system and configured in the CUBA application properties.</p>
 </div>
 <div class="listingblock">
 <div class="title">app.properties</div>
@@ -586,7 +586,7 @@ reporting.openoffice.path = /Applications/LibreOffice.app/Contents/MacOS</code><
 <p>There are two variants on how to run a report programmatically from a screen.</p>
 </div>
 <div class="paragraph">
-<p>In this variant, the report configuration itself determines in which screens it should be "available". The remaining code in the controller just declares, that it wants to print a report and the report application component will then figure out which reports are possible in this context.</p>
+<p>In this variant, the report configuration itself determines in which screens it should be "available". The remaining code in the controller just declares, that it wants to print a report and the report add-on will then figure out which reports are possible in this context.</p>
 </div>
 <div class="paragraph">
 <p>The corresponding configuration section in the Report is "Roles and Screens". Within this section a list of UI screens can be configured in which the report is available.</p>
@@ -650,7 +650,7 @@ reporting.openoffice.path = /Applications/LibreOffice.app/Contents/MacOS</code><
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>the <code>EditorPrintFormAction</code> from the reports application component is used which automatically searches for reports that configured this screen</td>
+<td>the <code>EditorPrintFormAction</code> from the <code>reports</code> add-on is used which automatically searches for reports that configured this screen</td>
 </tr>
 </table>
 </div>
@@ -689,7 +689,7 @@ reporting.openoffice.path = /Applications/LibreOffice.app/Contents/MacOS</code><
 <p>The next step is to define the query. The report Wizard allows to set the query by defining conditions through the UI.</p>
 </div>
 <div class="paragraph">
-<p>In this report the visits of the last month should be selected. However the concept of "relative dates" is not present in the report application component directly. Due to this, this piece of logic has to be externalized to the code that triggers the report run.</p>
+<p>In this report the visits of the last month should be selected. However the concept of "relative dates" is not present in the report add-on directly. Due to this, this piece of logic has to be externalized to the code that triggers the report run.</p>
 </div>
 <div class="paragraph">
 <p>The report itself is going to be a little more generic in the sense that it allows to specify a period that defines the date range of the visits that will be taken into consideration. This furthermore has the benefit that the report potentially is re-usable for other future use-cases.</p>
@@ -794,7 +794,9 @@ reporting.openoffice.path = /Applications/LibreOffice.app/Contents/MacOS</code><
     <span class="directive">protected</span> TimeSource timeSource;
 
     <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">visitsTable.lastMonthReport</span><span class="delimiter">&quot;</span></span>)
-    <span class="directive">protected</span> <span class="type">void</span> onVisitsTableLastMonthReport(<span class="predefined-type">Action</span>.ActionPerformedEvent event) {
+    <span class="directive">protected</span> <span class="type">void</span> onVisitsTableLastMonthReport(
+            <span class="predefined-type">Action</span>.ActionPerformedEvent event
+    ) {
 
         TimeRange visitDateTimeRange =
                 MonthYearValue
@@ -867,7 +869,7 @@ application that provides an API to define a Time Range (either a MonthYear rang
 <h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this introduction to reports and document generation, the building blocks of the CUBA application component <code>reports</code> were explained. A report is the concept that allows to merge a document template with data from data sources to produce an output document.</p>
+<p>In this introduction to reports and document generation, the building blocks of the CUBA add-on <code>reports</code> were explained. A report is the concept that allows to merge a document template with data from data sources to produce an output document.</p>
 </div>
 <div class="paragraph">
 <p>Both building blocks: the document template as well as the data sources can be of various kinds. With that it provides a high degree of flexibility when configuring reports to generate output documents.</p>
