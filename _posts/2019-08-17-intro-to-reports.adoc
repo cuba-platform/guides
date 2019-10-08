@@ -9,16 +9,16 @@ permalink: introduction-to-reports
 :sectlinks:
 :sectanchors:
 :page-navtitle: Introduction to Reports and Document generation
-:page-excerpt: In this guide the reports application component will be introduced and different ways to interact with it through the UI and programmatically will be shown
+:page-excerpt: In this guide the reports add-on will be introduced and different ways to interact with it through the UI and programmatically will be shown
 :page-root: ../../../
 :project_id: cuba-petclinic-intro-to-reports
 :java_version: 1.8
 :cuba_version: 7.0
 
 
-CUBA applications can be enhanced to have a comprehensive report / document generation capability directly embedded into the application. The CUBA application component `reports` supports various file formats like `docx`, `xlsx`, `PDF`, `HTML` for templating as well as output file formats. Furthermore it contains management screens and provides APIs to interact with the report / document generation process programmatically.
+CUBA applications can be enhanced to have a comprehensive report / document generation capability directly embedded into the application. The CUBA add-on `reports` supports various file formats like `DOCX`, `XLSX`, `PDF`, `HTML` for templating as well as output file formats. Furthermore it contains management screens and provides APIs to interact with the report / document generation process programmatically.
 
-In this guide the reports application component will be introduced and different ways to interact with it through the UI and programmatically will be shown.
+In this guide the `reports` add-on will be introduced and different ways to interact with it through the UI and programmatically will be shown.
 
 == What Will be Built
 
@@ -45,7 +45,7 @@ Oftentimes when working with business applications there is a high demand for do
 
 These documents might either have the form of human consumable content like a PDF file or are more used as input data for further use like a CSV / Excel file or a Word document.
 
-CUBA being targeted towards the needs of business applications in particular has dedicated support for this kind of use cases through the `reports` application component.
+CUBA being targeted towards the needs of business applications in particular has dedicated support for this kind of use cases through the `reports` add-on.
 
 It has the ability to define formatted document templates and declare the data that should be used for the document. This definition is done in a declarative way, that does not require development of code in order to generate reports / documents. It is possible for developers as well as administrators and business users with mid-level technical skills.
 
@@ -59,14 +59,14 @@ As mentioned above there are lots of example use cases, that deal with generatin
 * show a list of best selling products aggregated by category as an application screen
 * create HTML file of latest sales offers in order to upload & publish this file on a website
 
-All of those requirements are part of what the `reports` application component is capable on handling. In the next section the overall concepts are covered and afterwards example use cases are implemented.
+All of those requirements are part of what the `reports` add-on is capable on handling. In the next section the overall concepts are covered and afterwards example use cases are implemented.
 
 == Templates + Data = Document
 
 The underpinning of this whole solution is based on on the combination of document templates with data, that are merged in order to create the resulting document / report.
 
 === The Document Template
-The document template is a file that acts as the blueprint for how the target file should look like. It contains placeholders as particular text snippets, that the `reports` application component can pick up and put the data into the document.
+The document template is a file that acts as the blueprint for how the target file should look like. It contains placeholders as particular text snippets, that the `reports` add-on can pick up and put the data into the document.
 
 Those placeholders can inserted as regular text into the template file, but they need a special characters to indicate that this text is a placeholder. A placeholder is defined in the following form: `${NAME_OF_PLACEHOLDER}`
 
@@ -82,7 +82,7 @@ TIP: The template file format are not necessarily the file formats of the output
 
 === Data Sources
 
-The data that is used for the report can be of various sources. Within a CUBA application fetching the data directly from the entity layer of the application is the most convenient variant. However, the reports application component is not bound to this particular data source. It can be one of the following data sources:
+The data that is used for the report can be of various sources. Within a CUBA application fetching the data directly from the entity layer of the application is the most convenient variant. However, the `reports` add-on is not bound to this particular data source. It can be one of the following data sources:
 
 * CUBA Entities / JPQL
 * SQL
@@ -93,7 +93,7 @@ This various sources allow a high degree of flexibility when it comes to fetch d
 
 == Report Configuration
 
-Once the data sources are defined and connected through a concept called Bands to particular template placeholders, everything is setup to generate the output document. The application component stores all of this configuration in the entity `Report` which holds the configuration of the data sources together with the definition of the templates and further configuration information.
+Once the data sources are defined and connected through a concept called Bands to particular template placeholders, everything is setup to generate the output document. The add-on stores all of this configuration in the entity `Report` which holds the configuration of the data sources together with the definition of the templates and further configuration information.
 
 image::intro-to-reports/report-entity-configuration-screen.png[align="center", link="images/intro-to-reports/report-entity-configuration-screen.png"]
 
@@ -102,7 +102,7 @@ There are two main ways of creating those report records.
 The first one is to create an instance manually and defining the data sources together with the associated JPQL / SQL queries / groovy scripts.
 
 This is oftentimes needed when more complex reports should be defined which requires skills to create SQL / JPQL statements or even programming abilities through groovy scripts. This option
-is mostly for administrators that have a deep technical understanding of the inner workings of the application. It furthermore requires knowledge about its domain model and an understanding of the technical concepts of the report application component like report bands, report parameters etc.
+is mostly for administrators that have a deep technical understanding of the inner workings of the application. It furthermore requires knowledge about its domain model and an understanding of the technical concepts of the report add-on like report bands, report parameters etc.
 
 === The Report Wizard
 
@@ -201,7 +201,7 @@ image::intro-to-reports/report-configuration-report-output-title.png[align="cent
 
 After configuring the output document to be PDF, adjustments need to be made in the configuration of the application. In order to increase the accuracy of the PDF output document, CUBA is able to leverage the conversion facilities of LibreOffice.
 
-LibreOffice has an API that other programs can use to convert different file formats (especially PDF file generation). The `report` application component uses that API when LibreOffice is installed on the operating system and configured in the CUBA application properties.
+LibreOffice has an API that other programs can use to convert different file formats (especially PDF file generation). The `report` add-on uses that API when LibreOffice is installed on the operating system and configured in the CUBA application properties.
 
 .app.properties
 [source,properties]
@@ -228,7 +228,7 @@ More information on the configuration can be found in the official reporting doc
 
 There are two variants on how to run a report programmatically from a screen.
 
-In this variant, the report configuration itself determines in which screens it should be "available". The remaining code in the controller just declares, that it wants to print a report and the report application component will then figure out which reports are possible in this context.
+In this variant, the report configuration itself determines in which screens it should be "available". The remaining code in the controller just declares, that it wants to print a report and the report add-on will then figure out which reports are possible in this context.
 
 The corresponding configuration section in the Report is "Roles and Screens". Within this section a list of UI screens can be configured in which the report is available.
 
@@ -272,7 +272,7 @@ public class PetEdit extends StandardEditor<Pet> {
 }
 ----
 <1> the action is configured at the init event of the edit screen
-<2> the `EditorPrintFormAction` from the reports application component is used which automatically searches for reports that configured this screen
+<2> the `EditorPrintFormAction` from the `reports` add-on is used which automatically searches for reports that configured this screen
 
 In case multiple reports are configured to be available, the user is prompted with a popup to select the correct report to run. In this case, there is only one report configured for this screen, which results in automatic execution of that report without any further required interaction with the user.
 
@@ -291,7 +291,7 @@ In order to fulfill this requirement the first step is to create a report via th
 
 The next step is to define the query. The report Wizard allows to set the query by defining conditions through the UI.
 
-In this report the visits of the last month should be selected. However the concept of "relative dates" is not present in the report application component directly. Due to this, this piece of logic has to be externalized to the code that triggers the report run.
+In this report the visits of the last month should be selected. However the concept of "relative dates" is not present in the report add-on directly. Due to this, this piece of logic has to be externalized to the code that triggers the report run.
 
 The report itself is going to be a little more generic in the sense that it allows to specify a period that defines the date range of the visits that will be taken into consideration. This furthermore has the benefit that the report potentially is re-usable for other future use-cases.
 
@@ -353,7 +353,9 @@ public class VisitBrowse extends StandardLookup<Visit> {
     protected TimeSource timeSource;
 
     @Subscribe("visitsTable.lastMonthReport")
-    protected void onVisitsTableLastMonthReport(Action.ActionPerformedEvent event) {
+    protected void onVisitsTableLastMonthReport(
+            Action.ActionPerformedEvent event
+    ) {
 
         TimeRange visitDateTimeRange =
                 MonthYearValue
@@ -400,7 +402,7 @@ The keys of the Map have to match the `parameterAlias` value of the parameter as
 
 == Summary
 
-In this introduction to reports and document generation, the building blocks of the CUBA application component `reports` were explained. A report is the concept that allows to merge a document template with data from data sources to produce an output document.
+In this introduction to reports and document generation, the building blocks of the CUBA add-on `reports` were explained. A report is the concept that allows to merge a document template with data from data sources to produce an output document.
 
 Both building blocks: the document template as well as the data sources can be of various kinds. With that it provides a high degree of flexibility when configuring reports to generate output documents.
 
