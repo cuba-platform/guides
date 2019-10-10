@@ -1058,6 +1058,7 @@ There are two ways to listen to events. Above <code>@TransactionalEventListener<
     console.log(imgMarkup);
     $(this).replaceWith('<div class="img-center">' + imgMarkup + '</div>');
   });
+
 })(jQuery);
 
 // Cache selectors
@@ -1079,6 +1080,13 @@ menuItems.click(function(e){
         scrollTop: offsetTop
     }, 850);
     e.preventDefault();
+});
+
+$( document ).ready(function() {
+    const hash = location.hash.replace('#','');
+    if(hash !== ''){
+        $('html, body').animate({ scrollTop: $('a[href=#' + hash + ']').offset().top - 80}, 1000);
+    }
 });
 
 // Bind to scroll
