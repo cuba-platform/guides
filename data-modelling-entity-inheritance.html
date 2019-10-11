@@ -947,6 +947,7 @@ CUBA itself offers mapped superclasses for defining standard attributes across a
 var lastId,
     topMenu = $(".sectlevel1"),
     topMenuHeight = topMenu.outerHeight()+1,
+
     // All list items
     menuItems = topMenu.find("a"),
     // Anchors corresponding to menu items
@@ -954,21 +955,21 @@ var lastId,
         var item = $($(this).attr("href"));
         if (item.length) { return item; }
     });
-
+console.log(topMenuHeight );
 menuItems.click(function(e){
     var href = $(this).attr("href"),
-        offsetTop = href === "#" ? 0 : $(href).offset().top-topMenuHeight+1;
+        offsetTop = href === "#" ? 0 : $(href).offset().top - 85;
     $('html, body').stop().animate({
         scrollTop: offsetTop
     }, 850);
     e.preventDefault();
-    window.location =  $( this ).attr('href');
+    window.location =  href;
 });
 
 $( document ).ready(function() {
     const hash = location.hash.replace('#','');
     if(hash !== ''){
-        $('html, body').animate({ scrollTop: $('a[href=#' + hash + ']').offset().top - 80}, 1000);
+        $('html, body').stop().animate({ scrollTop: $('a[href=#' + hash + ']').offset().top - 85}, 850);
     }
 });
 
