@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Initial Entity Values</title>
+    <title>Introduction to Reporting and Document generation</title>
     <meta name="description" content="The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.">
     <meta name="author" content="Haulmont">
 
@@ -13,10 +13,10 @@
     <meta name="twitter:site" content="@CubaPlatform">
     <meta name="twitter:creator" content="@CubaPlatform">
     <meta property="og:type" content="article">
-    <meta property="og:title" content="Initial Entity Values">
-    <meta property="og:description" content="This guide demonstrates different options on how initial values can be set for an entity">
-    <meta property="og:url" content="https://www.cuba-platform.com/guides/initial-entity-values">
-    <meta property="og:image" content="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-initial-entity-values/master/img/login-screen.png">
+    <meta property="og:title" content="Introduction to Reporting and Document generation">
+    <meta property="og:description" content="In this guide the Reporting add-on will be introduced and different ways to interact with it through the UI and programmatically will be shown">
+    <meta property="og:url" content="https://www.cuba-platform.com/guides/introduction-to-reporting">
+    <meta property="og:image" content="">
 
     <link rel="shortcut icon" href="/guides/images/favicon.png" type="image/png" />
     <link rel="stylesheet" href="/guides/css/foundation.css">
@@ -177,14 +177,14 @@
                             <div class="field field-name-body field-type-text-with-summary field-label-hidden">
                                 <div class="field-items">
                                     <div class="field-item even" property="content: encoded">
-                                        <h1>Initial Entity Values</h1>
+                                        <h1>Introduction to Reporting and Document generation</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>This guide demonstrates different options on how initial values can be set for an entity.</p>
+<p>CUBA applications can be enhanced to have a comprehensive report / document generation capability directly embedded into the application. The CUBA add-on <code>Reporting</code> supports various file formats like <code>DOCX</code>, <code>XLSX</code>, <code>PDF</code>, <code>HTML</code> for templating as well as output file formats. Furthermore, it contains management screens and provides APIs to interact with the report / document generation process programmatically.</p>
 </div>
 <div class="paragraph">
-<p>In the petclinic example there are use cases, where certain default values for entities should be set either globally or on a per use-case basis.</p>
+<p>In this guide the <code>Reporting</code> add-on will be introduced and different ways to interact with it through the UI and programmatically will be shown.</p>
 </div>
 </div>
 </div>
@@ -192,27 +192,21 @@
 <h2 id="what_will_be_built"><a class="anchor" href="#what_will_be_built"></a><a class="link" href="#what_will_be_built">What Will be Built</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show the different ways to set initial values for entity instances. In particular, the following use cases will be covered:</p>
+<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a> example to show how reporting capabilities can be embedded into the application:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Global default values for the <code>paid</code> attribute of the <code>Visit</code> entity</p>
+<p>a <code>patient-record</code> word document containing all relevant information (master data, visit data) for a given pet can be downloaded through the details screen of the pet.</p>
 </li>
 <li>
-<p>A regular checkup, a special type of Visit should be initialized with a particular description</p>
-</li>
-<li>
-<p>The <code>paid</code> attribute of the Visit is automatically pre-filled by the selection of the dependent <code>type</code> attribute</p>
-</li>
-<li>
-<p>Auto-generated visit number that is derived from attributes of the <code>Visit</code> instance</p>
+<p>a <code>recent-visits</code> report can be downloaded from the visit browse screen. The report contains visits of the last month, exported as an excel sheet with information about the visit, the referenced pet and its owner.</p>
 </li>
 </ul>
 </div>
 <div class="sect2">
 <h3 id="final_application"><a class="anchor" href="#final_application"></a><a class="link" href="#final_application">Final Application</a></h3>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-initial-entity-values/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-initial-entity-values/master/img/login-screen.png"/></a>
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-reports/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-reports/master/img/login-screen.png"/></a>
 </div>
 <div class="sect2">
 <h3 id="requirements"><a class="anchor" href="#requirements"></a><a class="link" href="#requirements">Requirements</a></h3>
@@ -236,10 +230,10 @@
 </ul>
 </div>
 <div class="paragraph">
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-initial-entity-values/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-intro-to-reporting/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
 </div>
 <div class="paragraph">
-<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-initial-entity-values.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-initial-entity-values.git</a></code></p>
+<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-intro-to-reporting.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-intro-to-reporting.git</a></code></p>
 </div>
 </div>
 </div>
@@ -265,91 +259,384 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="entity_fields_initialization"><a class="anchor" href="#entity_fields_initialization"></a><a class="link" href="#entity_fields_initialization">Entity Fields Initialization</a></h2>
+<h2 id="overview"><a class="anchor" href="#overview"></a><a class="link" href="#overview">Overview</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Simple attributes (<code>Boolean</code>, <code>Integer</code> etc.) and enumerations can be initialized in the declaration of the corresponding field of an entity class. In the Petclinic example, the Visit entity has an attribute <code>paid</code> which is a boolean flag to indicate, if a visit has been paid already. This value should by default be <code>FALSE</code>. The default value can be set directly in the field definition.</p>
-</div>
-<div class="listingblock">
-<div class="title">Visit.java</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">Visit</span> <span class="directive">extends</span> StandardEntity {
-
-    <span class="comment">// ...</span>
-
-    <span class="annotation">@Column</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">PAID</span><span class="delimiter">&quot;</span></span>)
-    <span class="directive">protected</span> <span class="predefined-type">Boolean</span> paid = <span class="predefined-constant">false</span>;
-
-}</code></pre>
-</div>
+<p>Oftentimes when working with business applications there is a high demand for document generation, that will take some information from the source application and bring it in the form of a commonly known format, so that it can be shared with other parties like customers, partners or other systems.</p>
 </div>
 <div class="paragraph">
-<p>Additionally, a specific initialization method with a <code>@PostConstruct</code> annotation can be created in the entity class. In this case, any global infrastructure interfaces as well as managed beans can be invoked during initialization. One example of this post-construct initialization can be seen in the <code>Visit</code> entity:</p>
+<p>These documents might either have the form of human consumable content like a PDF file or are  used more as input data for further use like a CSV / Excel file or a Word document.</p>
 </div>
-<div class="listingblock">
-<div class="title">Visit.java</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">Visit</span> <span class="directive">extends</span> StandardEntity {
-
-    <span class="annotation">@Temporal</span>(TemporalType.DATE)
-    <span class="annotation">@NotNull</span>
-    <span class="annotation">@Column</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">VISIT_DATE</span><span class="delimiter">&quot;</span></span>, nullable = <span class="predefined-constant">false</span>)
-    <span class="directive">protected</span> <span class="predefined-type">Date</span> visitDate;
-
-    <span class="comment">// ...</span>
-
-    <span class="annotation">@PostConstruct</span> <i class="conum" data-value="1"></i><b>(1)</b>
-    <span class="directive">private</span> <span class="type">void</span> initVisitDate() {
-        <span class="keyword">if</span> (visitDate == <span class="predefined-constant">null</span>) {
-            setVisitDate(today());
-        }
-    }
-
-    <span class="directive">private</span> <span class="predefined-type">Date</span> today() {
-        TimeSource timeSource = AppBeans.get(TimeSource.class); <i class="conum" data-value="2"></i><b>(2)</b>
-        <span class="keyword">return</span> timeSource.currentTimestamp();
-    }
-}</code></pre>
+<div class="paragraph">
+<p>CUBA, being targeted towards the needs of business applications, in particular has dedicated support for this kind of use cases through the <code>Reporting</code> add-on.</p>
 </div>
+<div class="paragraph">
+<p>It has the ability to define formatted document templates and declare the data that should be used for the document. This definition is done in a declarative way, that does not require writing any code in order to generate reports / documents. It is possible for developers as well as administrators and business users with mid-level technical skills.</p>
 </div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td><code>@PostConstruct</code> triggers this method after creation of an instance of this class. It is called when manually creating an instance via <code>metadata.create(Visit.class)</code> as well as when the instance is created in the UI by the framework</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Managed beans can be referenced via <code>AppBeans.get()</code></td>
-</tr>
-</table>
+<div class="sect2">
+<h3 id="example_use_cases"><a class="anchor" href="#example_use_cases"></a><a class="link" href="#example_use_cases">Example Use Cases</a></h3>
+<div class="paragraph">
+<p>As it was mentioned above, there are lots of use cases that deal with generating documents / reports out of a source application. Here&#8217;s a list of examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>create an excel sheet of the TOP 10 customers with the highest total turnovers</p>
+</li>
+<li>
+<p>generate an invoice for an order stored in the application in PDF format</p>
+</li>
+<li>
+<p>create payment data file as a CSV file for file exchange between the payment system and the BI system</p>
+</li>
+<li>
+<p>show a list of best sold products aggregated by category as an application screen</p>
+</li>
+<li>
+<p>create an HTML file of the latest sales offers in order to upload &amp; publish this file on a website</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>All of those requirements are the part of what the <code>Reporting</code> add-on is capable of handling. In the next section the overall concepts are covered and afterwards use cases are implemented.</p>
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="ui_layer_initialization"><a class="anchor" href="#ui_layer_initialization"></a><a class="link" href="#ui_layer_initialization">UI Layer Initialization</a></h2>
+<h2 id="templates_data_document"><a class="anchor" href="#templates_data_document"></a><a class="link" href="#templates_data_document">Templates + Data = Document</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>On the UI layer there are two main ways to initialize an entity during screen creation. The first one is internal within the screen controller, that should show the newly created entity. The second one is external, where the entity is defined by the code calling the destination screen.</p>
+<p>The underpinning of this whole solution is based on on the combination of document templates with data, that are merged in order to create the resulting document / report.</p>
 </div>
 <div class="sect2">
-<h3 id="internal_initialization_via_initentityevent"><a class="anchor" href="#internal_initialization_via_initentityevent"></a><a class="link" href="#internal_initialization_via_initentityevent">Internal Initialization via InitEntityEvent</a></h3>
+<h3 id="the_document_template"><a class="anchor" href="#the_document_template"></a><a class="link" href="#the_document_template">The Document Template</a></h3>
 <div class="paragraph">
-<p>The first option is that the entity initialization happens within the destination screen controller itself. In this case the CUBA platform UI events can be leveraged. For instance, for <code>StandardEditor</code> screens there is a particular UI event that is designed exactly for this purpose: the <code>InitEntityEvent</code>.</p>
+<p>The document template is a file that acts as a blueprint for how the target file should look like. It contains placeholders as particular text snippets, that the <code>Reporting</code> add-on can pick up and put the data into the document.</p>
 </div>
 <div class="paragraph">
-<p>In the Petclinic example this internal initialization is used to set the paid status of the regular checkup visit instance to paid.</p>
+<p>Those placeholders can be inserted as regular text into the template file, but they need a special character to indicate that this text is a placeholder. A placeholder is defined in the following way: <code>${NAME_OF_PLACEHOLDER}</code></p>
+</div>
+<div class="paragraph">
+<p>An example of a document template can be seen below. This example is an excel sheet, that is used later in this guide:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/intro-to-reports/excel-document-template-example.png"><img src="/guides/images/intro-to-reports/excel-document-template-example.png" alt="excel document template example"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>The template contains regular text as well as the placeholders for different columns in a table like <code>${pet.name}</code> or <code>${pet.identificationNumber}</code>.</p>
+</div>
+<div class="paragraph">
+<p>Furthermore, it is possible to style and adjust the document template in any desired ways. For Word and Excel documents all the possible formatting options of those programs are able to be applied to the template file. For HTML documents the complete capabilities of CSS can be used for applying styles to the target document.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The template file format is not necessarily the file format of the output document. It is possible to e.g. have a Word based document template that will generate a PDF file when merged with the data.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="data_sources"><a class="anchor" href="#data_sources"></a><a class="link" href="#data_sources">Data Sources</a></h3>
+<div class="paragraph">
+<p>The data that is used for the report can be of various sources. Within a CUBA application fetching the data directly from the entity layer of the application is the most convenient variant. However, the <code>Reporting</code> add-on is not bound to this particular data source. It can use one of the following data sources:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>CUBA Entities / JPQL</p>
+</li>
+<li>
+<p>SQL</p>
+</li>
+<li>
+<p>Groovy</p>
+</li>
+<li>
+<p>JSON</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>These various sources provide a high degree of flexibility when it comes to fetch data and provide it to the template file. It is also possible to define multiple data sources and combine all the data in the template.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="report_configuration"><a class="anchor" href="#report_configuration"></a><a class="link" href="#report_configuration">Report Configuration</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Once the data sources are defined and connected through a concept called Bands to particular template placeholders, everything is setup to generate the output document. The add-on stores all this configuration in the <code>Report</code> entity which holds the configuration of the data sources together with the definition of the templates and further configuration information.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/intro-to-reports/report-entity-configuration-screen.png"><img src="/guides/images/intro-to-reports/report-entity-configuration-screen.png" alt="report entity configuration screen"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>There are two main ways of creating those report records.</p>
+</div>
+<div class="paragraph">
+<p>The first one is to create an instance manually and define the data sources together with the associated JPQL / SQL queries / groovy scripts.</p>
+</div>
+<div class="paragraph">
+<p>This is oftentimes needed when more complex reports should be defined which requires skills to create SQL / JPQL statements or even programming abilities through groovy scripts. This option
+is mostly for administrators that have a deep technical understanding of the inner processes of the application. It furthermore requires knowledge about its domain model and an understanding of the technical concepts of the Reporting add-on like report bands, report parameters etc.</p>
+</div>
+<div class="sect2">
+<h3 id="the_report_wizard"><a class="anchor" href="#the_report_wizard"></a><a class="link" href="#the_report_wizard">The Report Wizard</a></h3>
+<div class="paragraph">
+<p>The second option is to use the report UI wizard that guides the user through the selection of various options. It includes the ability to define the conditions for entities to be selected for the report, the attributes that should be included. Furthermore, it generates a base template which already contains the selected attributes as placeholders.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/intro-to-reports/report-entity-wizard-1.png"><img src="/guides/images/intro-to-reports/report-entity-wizard-1.png" alt="report entity wizard 1"></a>
+</div>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/intro-to-reports/report-entity-wizard-2.png"><img src="/guides/images/intro-to-reports/report-entity-wizard-2.png" alt="report entity wizard 2"></a>
+</div>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/intro-to-reports/report-entity-wizard-3.png"><img src="/guides/images/intro-to-reports/report-entity-wizard-3.png" alt="report entity wizard 3"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>This variant is more targeted towards business users, since it hides away the technical details of e.g. the query definition behind a user-friendly configuration UI. For easier reports, this wizard can serve as the main UI for creating reports by business users directly.</p>
+</div>
+<div class="paragraph">
+<p>With the feature of generating a document template that contains the correct placeholders of the selected attributes is allows business users to change only the formatting of the output document. This template formatting normally happens in the application that they are already familiar with like Word or Excel. The main difference is that this opens up possibilities for non-technical people to work with reports without the need of any developer interaction.</p>
+</div>
+<div class="paragraph">
+<p>That being said, also, for tech-savvy people it is oftentimes the fastest way to create a report or at least a starting point for manual adjustments.</p>
+</div>
+<div class="paragraph">
+<p>One constraint for the report wizard is that it is tied to generating reports / documents based on the CUBA entity layer. Groovy / SQL based reports cannot <em>directly</em> be created through the wizard. However, it is possible to use the wizard report as a first step and then adjust the resulting reports bands accordingly through the regular management screen.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="external_parameters"><a class="anchor" href="#external_parameters"></a><a class="link" href="#external_parameters">External Parameters</a></h3>
+<div class="paragraph">
+<p>A Report configuration can declare external parameters that need to be provided by the person or application code that interacts with the report. Those parameters are mainly used for the data fetching parts. In the JPQL / SQL statements as well as the groovy based data bands, those parameters are passed in to dynamically inject the values into the query / the groovy script.</p>
+</div>
+<div class="paragraph">
+<p>The configuration of the external parameters in the Reports configuration screen looks like this:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/intro-to-reports/report-entity-configuration-external-parameters.png"><img src="/guides/images/intro-to-reports/report-entity-configuration-external-parameters.png" alt="report entity configuration external parameters"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>When external parameters are defined, the values can be entered in two ways. The first way is to expose these parameters as a form in the generic UI. It will appear at the point when the report is executed through the generic Reports execution UI. An example of such a UI can be seen here:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/intro-to-reports/report-external-parameters-dynamic-ui.png"><img src="/guides/images/intro-to-reports/report-external-parameters-dynamic-ui.png" alt="report external parameters dynamic ui"></a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="patient_record"><a class="anchor" href="#patient_record"></a><a class="link" href="#patient_record">Patient Record</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The first report that should be generated is a patient record for a given pet. It contains an overview of the pet&#8217;s master data as well as visit data form that pet.</p>
+</div>
+<div class="paragraph">
+<p>In this case the document template will be a Word document. However, the target document will be a PDF file.</p>
+</div>
+<div class="paragraph">
+<p>The report will have the following default settings:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Report Entity: <code>Pet (petclinic_Pet)</code></p>
+</li>
+<li>
+<p>Template Type: <code>DOCX</code></p>
+</li>
+<li>
+<p>Report Name: <code>Patient Record</code></p>
+</li>
+<li>
+<p>Report Type: <code>Report for single entity</code></p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="defining_the_attributes"><a class="anchor" href="#defining_the_attributes"></a><a class="link" href="#defining_the_attributes">Defining the Attributes</a></h3>
+<div class="paragraph">
+<p>The direct master data of the pet are similar to what has been selected in the <code>recent-visits</code> report, basically the data of the Pet entity as well as the associated Owner entity.</p>
+</div>
+<div class="paragraph">
+<p>In order to display a list of associated visits of this Pet entity, another data band has to be created. This is possible during the initial Reporting wizard.</p>
+</div>
+<div class="paragraph">
+<p>In the second step after initially defining the direct attributes of the entity, it is possible to create additional "regions" in the report. Those regions are basically translated to a particular data bands that are generated out of those selections.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/intro-to-reports/report-entity-wizard-add-tabular-section.png"><img src="/guides/images/intro-to-reports/report-entity-wizard-add-tabular-section.png" alt="report entity wizard add tabular section"></a>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configuring_the_output_document"><a class="anchor" href="#configuring_the_output_document"></a><a class="link" href="#configuring_the_output_document">Configuring the Output document</a></h3>
+<div class="paragraph">
+<p>The output document for this report contains one template defined initially through the report wizard. The corresponding section in the Report Configuration screen therefore contains one template entry.</p>
+</div>
+<div class="paragraph">
+<p>The output type is set to <code>PDF</code> while the template file is <code>DOCX</code>.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/intro-to-reports/report-configuration-default-template.png"><img src="/guides/images/intro-to-reports/report-configuration-default-template.png" alt="report configuration default template"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>Additionally, it is possible to define the filename of the output document. This can either be a static filename or it can be programmatically configured.</p>
+</div>
+<div class="paragraph">
+<p>In this case, the filename should look like this for the Pet with the name "Horsea": <code>Patient Record - Horsea.pdf</code>.</p>
+</div>
+<div class="paragraph">
+<p>In order to achieve this, a pattern can be configured whicn in this case references to a particular band: <code>${Root.title}.pdf</code></p>
+</div>
+<div class="paragraph">
+<p><code>Root.title</code> refers to the <code>title</code> value of the <code>Root</code> data band. A groovy based data set will define the value for the title attribute like this:</p>
 </div>
 <div class="listingblock">
-<div class="title">RegularCheckup.java</div>
+<div class="title">Title data set in Root data band</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">RegularCheckup</span> <span class="directive">extends</span> StandardEditor&lt;Visit&gt; {
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">def</span> petName = params[<span class="string"><span class="delimiter">&quot;</span><span class="content">entity</span><span class="delimiter">&quot;</span></span>][<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>] <i class="conum" data-value="1"></i><b>(1)</b>
+
+<span class="keyword">return</span> [
+    [<span class="string"><span class="delimiter">&quot;</span><span class="content">title</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">Patient Record - </span><span class="inline"><span class="inline-delimiter">$</span>petName</span><span class="delimiter">&quot;</span></span>] <i class="conum" data-value="2"></i><b>(2)</b>
+]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the params variable gives access to the different external parameters. <code>params["entity"]</code> refers to the selected pet instance.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>a List of Maps has to be returned from this groovy script. Under the key <code>title</code> it will put the target filename</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The resulting usage of the groovy based data set looks like this:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/intro-to-reports/report-configuration-report-output-title.png"><img src="/guides/images/intro-to-reports/report-configuration-report-output-title.png" alt="report configuration report output title"></a>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="libreoffice_for_accurate_word_to_pdf_conversion"><a class="anchor" href="#libreoffice_for_accurate_word_to_pdf_conversion"></a><a class="link" href="#libreoffice_for_accurate_word_to_pdf_conversion">LibreOffice for accurate Word to PDF conversion</a></h3>
+<div class="paragraph">
+<p>After configuring the output document to be PDF, adjustments need to be made in the configuration of the application. In order to increase the accuracy of the PDF output document, CUBA is able to leverage the conversion facilities of LibreOffice.</p>
+</div>
+<div class="paragraph">
+<p>LibreOffice has an API that other programs can use to convert different file formats (especially PDF file generation). The <code>Reporting</code> add-on uses this API when LibreOffice is installed on the operating system and configured in the CUBA application properties.</p>
+</div>
+<div class="listingblock">
+<div class="title">app.properties</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="properties">reporting.openoffice.docx.useOfficeForDocumentConversion = true
+
+## Unix:
+# reporting.openoffice.path = /usr/lib/libreoffice/program
+
+## Windows:
+# reporting.openoffice.path = C:/Program Files (x86)/LibreOffice 5/program
+
+## MacOS:
+reporting.openoffice.path = /Applications/LibreOffice.app/Contents/MacOS</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The usage of LibreOffice has to be activated and additionally the path to the LibreOffice binary has to be configured to CUBA. Once this configuration is done, the CUBA application is able to render PDF files from <code>DOCX</code> and <code>XSLX</code> templates.</p>
+</div>
+<div class="paragraph">
+<p>More information on the configuration can be found in the official Reporting docs: <a href="https://doc.cuba-platform.com/reporting-7.1/open_office.html">Appendix A: Installing and Configuring OpenOffice</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="running_the_report_from_the_pet_detail_screen"><a class="anchor" href="#running_the_report_from_the_pet_detail_screen"></a><a class="link" href="#running_the_report_from_the_pet_detail_screen">Running the Report from the Pet Detail Screen</a></h3>
+<div class="paragraph">
+<p>There are two variants on how to run a report programmatically from a screen.</p>
+</div>
+<div class="paragraph">
+<p>In this variant, the report configuration itself determines in which screens it should be "available". The remaining code in the controller just declares, that it wants to print a report and the Reporting add-on will then figure out which reports are possible in this context.</p>
+</div>
+<div class="paragraph">
+<p>The corresponding configuration section in the Reporting is "Roles and Screens". Within this section a list of UI screens can be configured in which the report is available.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/intro-to-reports/report-configuration-roles-and-screens.png"><img src="/guides/images/intro-to-reports/report-configuration-roles-and-screens.png" alt="report configuration roles and screens"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>The screen <code>petclinic_Pet.edit</code> is added to the list of screens on the right side of the configuration interface.</p>
+</div>
+<div class="paragraph">
+<p>In the target UI screen, the following code is added in order to trigger the report execution.</p>
+</div>
+<div class="listingblock">
+<div class="title">pet-edit.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;hbox</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">editActions</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">spacing</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;button</span> <span class="attribute-name">action</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">windowCommitAndClose</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;button</span> <span class="attribute-name">action</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">windowClose</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;button</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">patientRecordBtn</span><span class="delimiter">&quot;</span></span>
+            <span class="attribute-name">caption</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">msg://patientRecord</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="tag">&lt;/hbox&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>a new <code>patientRecordBtn</code> is placed next to the default save &amp; close buttons</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">PetEdit.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">com.haulmont.reports.gui.actions.EditorPrintFormAction</span>;
+
+<span class="annotation">@UiController</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_Pet.edit</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">PetEdit</span> <span class="directive">extends</span> StandardEditor&lt;Pet&gt; {
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> <span class="predefined-type">Button</span> patientRecordBtn;
 
     <span class="annotation">@Subscribe</span>
-    <span class="directive">protected</span> <span class="type">void</span> initRegularCheckupVisit(InitEntityEvent&lt;Visit&gt; event) { <i class="conum" data-value="1"></i><b>(1)</b>
-        Visit visit = event.getEntity();
-
-        visit.setPaid(<span class="predefined-constant">false</span>); <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="directive">protected</span> <span class="type">void</span> onInit(InitEvent event) {
+        patientRecordBtn.setAction( <i class="conum" data-value="1"></i><b>(1)</b>
+                <span class="keyword">new</span> EditorPrintFormAction(<span class="local-variable">this</span>, <span class="predefined-constant">null</span>) <i class="conum" data-value="2"></i><b>(2)</b>
+        );
     }
 
 }</code></pre>
@@ -359,67 +646,183 @@
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <code>initRegularCheckupVisit</code> method subscribes to the <code>InitEntityEvent</code> of the newly created <code>Visit</code> instance</td>
+<td>the action is configured at the init event of the edit screen</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td><code>event.getEntity()</code> returns the Visit instance that can be changed during screen initialization</td>
+<td>the <code>EditorPrintFormAction</code> from the <code>Reporting</code> add-on is used, which automatically searches for reports that are configured in this screen</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>The upside of this kind of initialization is that it is very easy to achieve and requires very little overall code changes. The downside is that since it is scoped within the destination screen it is not so easy to react to external parameters that get passed into the screen. Therefore, it is a very good fit when particular attributes, that are not dynamic, should be initialized.</p>
+<p>In case multiple reports are configured to be available, the user is prompted with a pop-up to select the correct report to run. In this case, there is only one report configured for this screen, which results in automatic execution of that report without any further required interaction with the user.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="recent_visits_report"><a class="anchor" href="#recent_visits_report"></a><a class="link" href="#recent_visits_report">Recent Visits Report</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The second example that should be generated by the application is the <code>recent-visits</code> report. It should be accessible as a download directly from the visit browse screen. The report contains visits of the last month, exported as an excel sheet with information about the visit, the referenced pet and its owner.</p>
+</div>
+<div class="paragraph">
+<p>In order to fulfill this requirement the first step is to create a report via the Report Wizard. The following main settings are set:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Report Entity: <code>Visit (petclinic_Visit)</code></p>
+</li>
+<li>
+<p>Template Type: <code>XLSX</code></p>
+</li>
+<li>
+<p>Report Name: <code>Vists by Period</code></p>
+</li>
+<li>
+<p>Report Type: <code>Report for list of entities, selected by query</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The next step is to define the query. The report Wizard allows users to set the query by defining conditions through the UI.</p>
+</div>
+<div class="paragraph">
+<p>In this report the visits of the last month should be selected. However, the concept of "relative dates" is not present in the Reporting add-on directly. Due to this, this piece of logic has to be externalized to the code that triggers the report run.</p>
+</div>
+<div class="paragraph">
+<p>The report itself is going to be a little more generic in the sense that it allows to specify a period that defines the date range of the visits that will be taken into consideration. This also has the benefit: the report is potentially re-usable for other future use-cases.</p>
+</div>
+<div class="paragraph">
+<p>The query consists of two conditions for the attribute <code>visitDate</code>. It should match a value that is within the range of two dates: "Visit Date Range Start" and "Visit Date Range End". The only difference between the two conditions is that for the first condition the "operation" is <code>greater or equal than: &gt;=</code> while the second condition has the operation <code>smaller than: &lt;</code>. With that, the boundaries of the range are expressed as conditions.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/intro-to-reports/visit-by-period-date-range-creteria.png"><img src="/guides/images/intro-to-reports/visit-by-period-date-range-creteria.png" alt="visit by period date range creteria"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>For each condition an external parameter will be created so that the concrete values can be inserted programmatically or alternatively by a user through a UI.</p>
+</div>
+<div class="sect2">
+<h3 id="selecting_entity_attributes_of_the_visit_entity"><a class="anchor" href="#selecting_entity_attributes_of_the_visit_entity"></a><a class="link" href="#selecting_entity_attributes_of_the_visit_entity">Selecting Entity Attributes of the Visit Entity</a></h3>
+<div class="paragraph">
+<p>The next step in the wizard is to define the attributes of the base entity (Visit) and its associated entities that should be part of the report. The selection will influence, on the one hand, the <code>SELECT</code> part of the JPQL statement that is used to fetch the data. On the other hand, it influences the initial version of the columns within the template, that is generated for this report when finishing the report wizard.</p>
+</div>
+<div class="paragraph">
+<p>For the <code>recent-visits</code> Report, the following attributes should be selected:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Visit Date: <code>visitDate</code></p>
+</li>
+<li>
+<p>Visit Description: <code>description</code></p>
+</li>
+<li>
+<p>Information about the associated Pet</p>
+<div class="ulist">
+<ul>
+<li>
+<p>the Pet&#8217;s name: <code>pet.name</code></p>
+</li>
+<li>
+<p>the Pet&#8217;s Identification Number: <code>pet.identificationNumber</code></p>
+</li>
+<li>
+<p>Type of the Pet: <code>pet.type.name</code></p>
+</li>
+<li>
+<p>The city where the Pet lives (expressed through the address of its owner): <code>pet.owner.city</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>After selecting the attributes through the UI wizard, the output template file type can be configured. In this example, the default settings are applicable.</p>
+</div>
+<div class="paragraph">
+<p>With that the report wizard is finished and the report configuration is shown for further adjustments.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="external_initialization_via_screen_builders"><a class="anchor" href="#external_initialization_via_screen_builders"></a><a class="link" href="#external_initialization_via_screen_builders">External Initialization via Screen Builders</a></h3>
+<h3 id="providing_external_parameters_programmatically"><a class="anchor" href="#providing_external_parameters_programmatically"></a><a class="link" href="#providing_external_parameters_programmatically">Providing External Parameters Programmatically</a></h3>
 <div class="paragraph">
-<p>On the frontend layer with CUBA 7 the <code>ScreenBuilders</code> API was introduced. It allows programmatic creation and screen opening via a Builder pattern, which exposes various options for further configuration.</p>
+<p>For the use case of the <code>recent-visits</code> report the generic UI is not exposed to the user. Instead, the parameters are passed in by the API call to run the report.</p>
 </div>
 <div class="paragraph">
-<p>One of this options is the possibility to define an initializer method that gets executed before opening the screen, where it is possible for an Editor screen to change attributes of the entity that will be displayed.</p>
+<p>In the <code>patient-record</code> report, the report screen connection was configured in the report configuration.</p>
 </div>
 <div class="paragraph">
-<p>In the Petclinic example there is a screen that creates a particular visit instance. This visit is a "regular checkup", as this checkup is always the same in the sense that it requires some checklist kind of description. Furthermore, it is always paid upfront. Since it is a burden for the users to create those special kinds of visits over and over again, a screen, that comes with sensible defaults for this kind of use-case, was implemented.</p>
+<p>There is an alternative approach on how to trigger report execution, which will be leveraged in this example.</p>
+</div>
+<div class="paragraph">
+<p>In this case the report instance is selected programmatically (through the <code>system code</code> attribute) and directly passed into the reports API in order to execute the report and download the resulting document.</p>
+</div>
+<div class="paragraph">
+<p>The complete listing for the triggering of the <code>recent-visits</code> report shows the main steps of:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>identifying the last month (externalized logic of relative date)</p>
+</li>
+<li>
+<p>loading the report instance to execute</p>
+</li>
+<li>
+<p>triggering the report execution and passing in the last month as a parameter</p>
+</li>
+</ol>
 </div>
 <div class="listingblock">
 <div class="title">VisitBrowse.java</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Inject</span>
-<span class="directive">private</span> ScreenBuilders screenBuilders;
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VisitBrowse</span> <span class="directive">extends</span> StandardLookup&lt;Visit&gt; {
 
-<span class="annotation">@Inject</span>
-<span class="directive">private</span> MessageBundle messageBundle;
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> ReportGuiManager reportGuiManager;
 
-<span class="annotation">@Inject</span>
-<span class="directive">private</span> GroupTable&lt;Visit&gt; visitsTable;
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> DataManager dataManager;
 
-<span class="comment">// ...</span>
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> TimeSource timeSource;
 
+    <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">visitsTable.lastMonthReport</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">protected</span> <span class="type">void</span> onVisitsTableLastMonthReport(
+            <span class="predefined-type">Action</span>.ActionPerformedEvent event
+    ) {
 
-<span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">visitsTable.createRegularCheckup</span><span class="delimiter">&quot;</span></span>)
-<span class="directive">public</span> <span class="type">void</span> createForPet(<span class="predefined-type">Action</span>.ActionPerformedEvent event) {
-    screenBuilders.lookup(Pet.class, <span class="local-variable">this</span>)
-            .withSelectHandler(pets -&gt; {
-                createVisitForPet(pets.iterator().next());
-            })
-            .withLaunchMode(OpenMode.DIALOG)
-            .build()
-            .show();
-}
+        TimeRange visitDateTimeRange =
+                MonthYearValue
+                        .fromDate(today())
+                        .minusMonths(<span class="integer">1</span>); <i class="conum" data-value="1"></i><b>(1)</b>
 
-<span class="directive">private</span> <span class="type">void</span> createVisitForPet(Pet pet) {
-    screenBuilders.editor(visitsTable) <i class="conum" data-value="1"></i><b>(1)</b>
-        .newEntity() <i class="conum" data-value="2"></i><b>(2)</b>
-        .withInitializer(visit -&gt; { <i class="conum" data-value="3"></i><b>(3)</b>
-            visit.setPaid(<span class="predefined-constant">true</span>);
-            visit.setDescription(regularCheckupDescriptionContent(pet));
-            visit.setPet(pet);
-        })
-        .withScreenClass(RegularCheckup.class)
-        .withLaunchMode(OpenMode.DIALOG)
-        .build()
-        .show();
+        reportGuiManager.printReport( <i class="conum" data-value="2"></i><b>(2)</b>
+                loadReportByCode(<span class="string"><span class="delimiter">&quot;</span><span class="content">visits-by-period</span><span class="delimiter">&quot;</span></span>), <i class="conum" data-value="3"></i><b>(3)</b>
+                ParamsMap.of( <i class="conum" data-value="4"></i><b>(4)</b>
+                        <span class="string"><span class="delimiter">&quot;</span><span class="content">visitDateRangeStart</span><span class="delimiter">&quot;</span></span>, visitDateTimeRange.getStart(),
+                        <span class="string"><span class="delimiter">&quot;</span><span class="content">visitDateRangeEnd</span><span class="delimiter">&quot;</span></span>, visitDateTimeRange.getEnd()
+                        )
+        );
+    }
+
+    <span class="directive">private</span> LocalDate today() {
+        <span class="keyword">return</span> timeSource.now().toLocalDate();
+    }
+
+    <span class="directive">private</span> Report loadReportByCode(<span class="predefined-type">String</span> reportCode) {
+        <span class="keyword">return</span> dataManager.load(Report.class)
+                .query(<span class="string"><span class="delimiter">&quot;</span><span class="content">select e from report$Report e where e.code = :reportCode</span><span class="delimiter">&quot;</span></span>)
+                .parameter(<span class="string"><span class="delimiter">&quot;</span><span class="content">reportCode</span><span class="delimiter">&quot;</span></span>, reportCode)
+                .one();
+    }
+
 }</code></pre>
 </div>
 </div>
@@ -427,192 +830,37 @@
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>An <code>EditorBuilder</code> will be created using the <code>screenBuilders</code> bean</td>
+<td>the last month based on today&#8217;s date is identified</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The mode of the <code>EditorBuilder</code> is set to create mode</td>
+<td><code>reportGuiManager.printReport</code> is the API for starting the execution of a report and downloading it immediately</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>The <code>withInitializer</code> method takes a <code>Consumer&lt;Visit&gt;</code> that gets a new visit instance as a parameter, which then can be adjusted accordingly</td>
+<td>the correct report instance needs to be loaded from the database. Here it is fetched by relying on the <code>code</code> attribute value</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>a parameter map is passed in containing the start and end date range parameter of the report through the <code>MonthYearValue</code> object</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>With the ScreenBuilder API and the external initialization it is possible to create default values much more dynamically. As it is shown in the above example, in the first step the pet is selected. Based on this selection a description gets generated and put into the to-be-created visit entity.</p>
+<p>The main part for passing in the external parameters is the definition of the last month:</p>
 </div>
 <div class="paragraph">
-<p>The downside of this approach is that it is a little less invasive in terms of source code. It is also not possible to reuse the default actions (create / edit) as is without further modifications.</p>
+<p><code>TimeRange visitDateTimeRange = MonthYearValue.fromDate(today()).minusMonths(1);</code>.</p>
 </div>
 <div class="paragraph">
-<p>As it is shown in this example, it is also possible to combine the two approaches and use them in the different use-cases. The pet and the description of the visit are initialized externally, but the paid status is set internally.</p>
+<p>The <code>TimeRange</code> class is a custom abstraction of the example
+application that provides an API to define a Time Range (either a MonthYear range or a Quarter range) and has methods to get the border values of the range.</p>
 </div>
 <div class="paragraph">
-<p>The corresponding UI screens look like this:</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<a class="image" href="initial-entity-values/regular-checkup-1-select-pet.png"><img src="/guides/images/initial-entity-values/regular-checkup-1-select-pet.png" alt="Step 1: Pet selection"></a>
-</div>
-</div>
-<div class="imageblock">
-<div class="content">
-<a class="image" href="initial-entity-values/regular-checkup-2-prefilled-visit.png"><img src="/guides/images/initial-entity-values/regular-checkup-2-prefilled-visit.png" alt="Step 2: Prefilled visit screen"></a>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="dependent_attribute_initialization"><a class="anchor" href="#dependent_attribute_initialization"></a><a class="link" href="#dependent_attribute_initialization">Dependent Attribute Initialization</a></h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Another related type of initialization is when an attribute gets set / initialized based on data entered by user for another field. In this case it is also possible to initialize the attribute during the process of storing the entity.</p>
-</div>
-<div class="sect2">
-<h3 id="attribute_initialization_on_change"><a class="anchor" href="#attribute_initialization_on_change"></a><a class="link" href="#attribute_initialization_on_change">Attribute Initialization on Change</a></h3>
-<div class="paragraph">
-<p>In the first case an attribute that is dependent on another attribute of an entity should be calculated / initialized when a change in the original attribute occurs. The change of the derived attribute should be immediately visible in the UI.</p>
+<p>After the definition of the parameters' values, the <code>reportGuiManager.printReport</code> has the ability to pass in a Map of parameters.</p>
 </div>
 <div class="paragraph">
-<p>In the petclinic example, the Visit has an attribute <code>VisitType</code>. This type categorizes the visit into <code>VISIT</code>, <code>REGULAR_CHECKUP</code> or <code>SURGERY</code>. The type of the visit also indicates if the visit has to be paid upfront or if it is paid via an invoice. But it is more like a proposal. It is still possible to be changed by the user for a particular visit.</p>
-</div>
-<div class="paragraph">
-<p>In order to achieve this kind of behavior, it is possible to register a hook method, that subscribes to the <code>ItemPropertyChangeEvent</code> of the instance container within the editor.</p>
-</div>
-<div class="listingblock">
-<div class="title">VisitEdit.java</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VisitEdit</span> <span class="directive">extends</span> StandardEditor&lt;Visit&gt; {
-
-    <span class="annotation">@Subscribe</span>(id = <span class="string"><span class="delimiter">&quot;</span><span class="content">visitDc</span><span class="delimiter">&quot;</span></span>, target = <span class="predefined-type">Target</span>.DATA_CONTAINER)
-    <span class="directive">protected</span> <span class="type">void</span> onVisitDcItemPropertyChange(
-        InstanceContainer.ItemPropertyChangeEvent&lt;Visit&gt; event) { <i class="conum" data-value="1"></i><b>(1)</b>
-
-        <span class="keyword">if</span> (visitTypeChanged(event)) {
-            updateHasToBePayedUpfrontValue(event);
-        }
-    }
-
-    <span class="directive">private</span> <span class="type">boolean</span> visitTypeChanged(
-        InstanceContainer.ItemPropertyChangeEvent&lt;Visit&gt; event) {
-        <span class="keyword">return</span> event.getProperty().equals(<span class="string"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>);
-    }
-
-    <span class="directive">private</span> <span class="type">void</span> updateHasToBePayedUpfrontValue(
-        InstanceContainer.ItemPropertyChangeEvent&lt;Visit&gt; event) {
-
-        VisitType selectedVisitType = (VisitType) event.getValue(); <i class="conum" data-value="2"></i><b>(2)</b>
-
-        <span class="keyword">if</span> (selectedVisitType != <span class="predefined-constant">null</span>) {
-            event.getItem().setPaid(selectedVisitType.isToBePayedUpfront()); <i class="conum" data-value="3"></i><b>(3)</b>
-        }
-    }
-
-}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Subscription to the <code>ItemPropertyChangeEvent</code> of the instance container</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td><code>event.getValue()</code> returns the selected value of type <code>VisitType</code></td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>The "paid" flag can be adjusted depending on the <code>selectedVisitType</code></td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="attribute_initialization_via_datacontext_precommitevent"><a class="anchor" href="#attribute_initialization_via_datacontext_precommitevent"></a><a class="link" href="#attribute_initialization_via_datacontext_precommitevent">Attribute Initialization via DataContext PreCommitEvent</a></h3>
-<div class="paragraph">
-<p>The second case is that during the save operation, an attribute of the entity needs to be computed - but it does not need to be visible while the user sees the UI screen.</p>
-</div>
-<div class="paragraph">
-<p>In the petclinic example there is an attribute called <code>visitNumber</code> for the Visit entity, which represents a unique number of the visit that shall be generated out of the information specified by the user. The Visit Number should  be constructed out of the year of the visit, the name of the visit type and a 6-digit number.</p>
-</div>
-<div class="paragraph">
-<p>This number only needs to be generated when the visit is saved. Therefore it is possible to use the available mechanisms of the data context in the UI controller. There are several options in this area. In CUBA 7 the data context lifecycle events allow to intercept the storage operation in order to execute some logic that happens during the storage of the edited entity.</p>
-</div>
-<div class="paragraph">
-<p>For the petclinic example, the use case as described above is to generate a <code>visitNumber</code> directly before the visit entity is stored. The <code>VisitNumberGenerator</code> bean acts as the logic that will generate the visit number creation.</p>
-</div>
-<div class="listingblock">
-<div class="title">VisitNumberGenerator.java</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Component</span>(VisitNumberGenerator.NAME)
-<span class="directive">public</span> <span class="type">class</span> <span class="class">VisitNumberGenerator</span> {
-
-    <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">String</span> NAME = <span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_VisitNumberGenerator</span><span class="delimiter">&quot;</span></span>;
-
-    <span class="annotation">@Inject</span>
-    UniqueNumbersService uniqueNumbersService;
-
-    <span class="directive">public</span> <span class="predefined-type">String</span> generateVisitNumber(Visit entity) {
-        <span class="type">int</span> visitType = entity.getType().getCode();
-        <span class="type">int</span> visitYear = localDate(entity.getVisitDate()).getYear();
-
-        <span class="type">long</span> nextVisitNumber = uniqueNumbersService.getNextNumber(
-            <span class="predefined-type">String</span>.format(<span class="string"><span class="delimiter">&quot;</span><span class="content">VISIT_%d_%d</span><span class="delimiter">&quot;</span></span>, visitYear, visitType)
-        ); <i class="conum" data-value="1"></i><b>(1)</b>
-
-        <span class="keyword">return</span> <span class="predefined-type">String</span>.format(<span class="string"><span class="delimiter">&quot;</span><span class="content">%4d%02d%06d</span><span class="delimiter">&quot;</span></span>, visitYear, visitType, nextVisitNumber);
-    }
-
-    <span class="comment">// ...</span>
-}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>A unique number will be generated for each <code>visitYear</code> and <code>visitType</code> attribute of the visit</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>The usage of the bean can be found in both Visit editor controller classes. The <code>DataContext.PreCommitEvent</code> is used to register the associated logic to call the <code>VisitNumberGenerator</code> in case there is no number created for this visit:</p>
-</div>
-<div class="listingblock">
-<div class="title">VisitEdit.java</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VisitEdit</span> <span class="directive">extends</span> StandardEditor&lt;Visit&gt; {
-
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> VisitNumberGenerator visitNumberGenerator;
-
-    <span class="comment">// ...</span>
-
-    <span class="annotation">@Subscribe</span>(target = <span class="predefined-type">Target</span>.DATA_CONTEXT)
-    <span class="directive">protected</span> <span class="type">void</span> onPreCommit(DataContext.PreCommitEvent event) { <i class="conum" data-value="1"></i><b>(1)</b>
-        Visit visit = getEditedEntity();
-        <span class="keyword">if</span> (visit.getVisitNumber() == <span class="predefined-constant">null</span>) {
-            visit.setVisitNumber(visitNumberGenerator.generateVisitNumber(visit)); <i class="conum" data-value="2"></i><b>(2)</b>
-        }
-    }
-
-}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Registering to the Data context <code>PreCommitEvent</code></td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td><code>VisitNumberGenetator</code> is used to generate the unique visit number</td>
-</tr>
-</table>
+<p>The keys of the Map have to match the <code>parameterAlias</code> value of the parameter as configured in the Report Entity.</p>
 </div>
 </div>
 </div>
@@ -621,19 +869,22 @@
 <h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this guide different options on how to set initial values for entity instances were shown. It is possible to define certain initial values directly within the Entity class via direct attribute allocation or the <code>@PostConstruct</code> annotation.</p>
+<p>In this introduction to reports and documents generation, the building blocks of the CUBA add-on <code>Reporting</code> were explained. A report is the concept that allows merging a document template with data from data sources to produce an output document.</p>
 </div>
 <div class="paragraph">
-<p>This kind of initialization will be executed in all scenarios and, therefore, is oftentimes the preferred way of doing attribute initialization. But sometimes it is required to have more information on the context of the execution, e.g. prior selections of the user on the UI.</p>
+<p>Both building blocks, the document template as well as the data sources, can be of various kinds. With that it provides a high degree of flexibility when configuring reports to generate output documents.</p>
 </div>
 <div class="paragraph">
-<p>Therefore, it is also possible to initialize attributes on the UI layer. There are multiple ways to do it as shown above. It allows the developer to react more flexibly on the UI selection, etc.</p>
+<p>All this configuration is hold in the main entity: <code>Report</code>, which can be created through a UI wizard or manually through the configuration UI. With that differentiation it supports users with different levels of technical capabilities.</p>
 </div>
 <div class="paragraph">
-<p>The main difference is that these kinds of initializations are only applied when the user uses this particular UI to interact with the system. Oftentimes there are other use cases, like the REST API, Bulk Editor functionality, data import scenarios, etc. If it is required to initialize an attribute for all those use cases, the Entity Field initialization should be preferred.</p>
+<p>A report can be run directly through a generic user interface, or programmatically through the code of the application. It is possible to define external parameters, that get passed into the report. With that, reports can be configured in a more generic manner to support multiple use-cases.</p>
 </div>
 <div class="paragraph">
-<p>Furthermore, two different dependent attribute initializations were shown, as their use case is oftentimes quite similar to the normal attribute initialization. It is possible to initialize a dependent attribute either directly on change of a Form field or before storing the entity with the help of the data context lifecycle events.</p>
+<p>In this guide two reports were created. The first report uses the PDF generation in order to create a patient record for a pet. The report uses the screens configuration to declaratively configure in which screens the report should be offered.</p>
+</div>
+<div class="paragraph">
+<p>The second report generates an excel sheet containing the visits of the last month. In this case external parameters were leveraged to dynamically pass in a specific date range for the report to work on.</p>
 </div>
 </div>
 </div>
@@ -643,10 +894,10 @@
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://doc.cuba-platform.com/manual-7.0/opening_screens.html#screenBuilders">Screen Builders reference documentation</a></p>
+<p><a href="https://doc.cuba-platform.com/reporting-7.0/index.html">CUBA docs: Reporting</a></p>
 </li>
 <li>
-<p><a href="https://www.cuba-platform.com/guides/decouple-business-logic-with-app-events">Guide: Decouple Business Logic with Application Events</a></p>
+<p><a href="https://doc.cuba-platform.com/reporting-7.1/open_office.html">CUBA docs: Reporting - Appendix A: Installing and Configuring OpenOffice</a></p>
 </li>
 </ul>
 </div>
@@ -674,17 +925,35 @@
 </ul>
 </li>
 <li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
-<li><a href="#entity_fields_initialization">Entity Fields Initialization</a></li>
-<li><a href="#ui_layer_initialization">UI Layer Initialization</a>
+<li><a href="#overview">Overview</a>
 <ul class="sectlevel2">
-<li><a href="#internal_initialization_via_initentityevent">Internal Initialization via InitEntityEvent</a></li>
-<li><a href="#external_initialization_via_screen_builders">External Initialization via Screen Builders</a></li>
+<li><a href="#example_use_cases">Example Use Cases</a></li>
 </ul>
 </li>
-<li><a href="#dependent_attribute_initialization">Dependent Attribute Initialization</a>
+<li><a href="#templates_data_document">Templates + Data = Document</a>
 <ul class="sectlevel2">
-<li><a href="#attribute_initialization_on_change">Attribute Initialization on Change</a></li>
-<li><a href="#attribute_initialization_via_datacontext_precommitevent">Attribute Initialization via DataContext PreCommitEvent</a></li>
+<li><a href="#the_document_template">The Document Template</a></li>
+<li><a href="#data_sources">Data Sources</a></li>
+</ul>
+</li>
+<li><a href="#report_configuration">Report Configuration</a>
+<ul class="sectlevel2">
+<li><a href="#the_report_wizard">The Report Wizard</a></li>
+<li><a href="#external_parameters">External Parameters</a></li>
+</ul>
+</li>
+<li><a href="#patient_record">Patient Record</a>
+<ul class="sectlevel2">
+<li><a href="#defining_the_attributes">Defining the Attributes</a></li>
+<li><a href="#configuring_the_output_document">Configuring the Output document</a></li>
+<li><a href="#libreoffice_for_accurate_word_to_pdf_conversion">LibreOffice for accurate Word to PDF conversion</a></li>
+<li><a href="#running_the_report_from_the_pet_detail_screen">Running the Report from the Pet Detail Screen</a></li>
+</ul>
+</li>
+<li><a href="#recent_visits_report">Recent Visits Report</a>
+<ul class="sectlevel2">
+<li><a href="#selecting_entity_attributes_of_the_visit_entity">Selecting Entity Attributes of the Visit Entity</a></li>
+<li><a href="#providing_external_parameters_programmatically">Providing External Parameters Programmatically</a></li>
 </ul>
 </li>
 <li><a href="#summary">Summary</a></li>
@@ -694,7 +963,7 @@
 
                         <div class="sidebar-razd"></div>
                         <div class="guide-panel download">
-                            <a href="https://github.com/cuba-guides/cuba-petclinic-initial-entity-values" class="github-link" target="_blank">Example code on Github</a>
+                            <a href="https://github.com/cuba-guides/cuba-petclinic-intro-to-reporting" class="github-link" target="_blank">Example code on Github</a>
                         </div>
                         <div class="guide-panel cuba-version">Supported versions: CUBA 7.0+; Java 8+</div>
 

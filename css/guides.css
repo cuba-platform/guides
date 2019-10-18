@@ -477,43 +477,25 @@ pre.CodeRay {
     color: #979797;
     padding: 0 20px 30px 30px!important;
 }
-@media screen and (max-width: 1160px) {
+@media screen and (max-width: 1100px) {
     .blog .region-content {
         width: 100% !important;
-        float: none!important;
-        margin-left: 0!important;
-        margin-right: 0!important;
-        max-width: 100% !important;
     }
     .blog #blog-sidebar {
        display: none;
     }
 }
-@media screen and (min-width: 1160px) and (max-width: 1220px) {
-    .blog .region-content {
-        width: 100% !important;
-        margin-left: 1%!important;
-    }
-    .blog .guide-panel {
-        padding: 0.5em 15px 0.5em 15px;
-    }
-
-    .blog .region-sidebar > section,
-    .blog #blog-sidebar {
-        width: 330px!important;
-    }
-}
 .footer {
-position: relative;
+    position: relative;
 }
 .footer_columns {
-padding-top: 30px!important;
+    padding-top: 30px!important;
 }
 .footer_bottom {
-padding-top: 15px!important;
-padding-bottom: 17px!important;
+    padding-top: 15px!important;
+    padding-bottom: 17px!important;
 }
 .footer-menu {
-font-size: 13px;
-line-height: 18px;
+    font-size: 13px;
+    line-height: 18px;
 }
