@@ -1,0 +1,42 @@
+.service-booking .content-wrapper {
+  background: #ffffff;
+}
+
+.content-wrapper ul {
+  padding-left: 0;
+}
+
+.service-booking .content-wrapper .accordion-webinars .item .item-head a span {
+  color: #4990e2;
+  font: bold 18px/1.2 "Lato", -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.service-booking .content-wrapper .accordion-webinars .item .item-head.collapsed i {
+  background: url(/guides/images/icon-arrow-down.svg) no-repeat;
+  transform: none;
+}
+
+.service-booking .content-wrapper .accordion-webinars .item .item-head a i {
+  background: url(/guides/images/icon-arrow-down.svg) no-repeat;
+  top: 30px;
+  width: 15px;
+  height: 15px;
+  right: 25px;
+  transform: rotate(180deg);
+}
+
+.service-booking .content-wrapper .accordion-webinars .item .item-body .descr .main {
+  color: #2c3436;
+  font-size: 16px;
+}
+
+.guide-item_button {
+  margin: 0;
+  font-size: 15px;
+}
+
+.service-booking .content-wrapper .accordion-webinars .item {
+  margin-bottom: 10px;
+  border: 1px solid #e7eaee;
+  border-radius: 3px;
+}

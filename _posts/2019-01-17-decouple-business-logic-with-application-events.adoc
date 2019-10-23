@@ -8,8 +8,10 @@ permalink: decouple-business-logic-with-app-events
 :showtitle:
 :sectlinks:
 :sectanchors:
-:page-navtitle: Decouple business logic with application events
+:page-navtitle: Decouple Business Logic with Application Events
 :page-excerpt: Overview on how application events can be used in a CUBA application to decouple business logic
+:page-icone: images/decouple-business-logic-with-application-events/guide_icone.svg
+:page-url-first-image: https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-application-events/master/img/login-screen.png
 :page-root: ../../../
 :project_id: cuba-petclinic-intro-to-application-events
 :java_version: 1.8
@@ -18,7 +20,7 @@ permalink: decouple-business-logic-with-app-events
 In CUBA 7 events are the predominant mechanism to react to different kinds of changes of the application. Furthermore, events are a common pattern within an application to decouple one part of the business logic from another. This guide gives an overview on how events can be used in a CUBA application and what the benefits are.
 
 
-== What Will Be Build
+== What Will Be Built
 
 This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show different use cases of application events. In particular, the following use cases will be covered:
 
@@ -77,7 +79,7 @@ CUBA fires such an Event for entities, that have an annotation `@PublishEntityCh
 
 To register an Event listener for this event, a new Spring bean in the core module of the application has to be defined. In order to register to a specific kind of event, the method that should be called once an `EntityChangedEvent` has been sent has to be annotated with `@TransactionalEventListener`.
 
-TIP: There are two different kinds of annotations to register for as an event listener: `@TransactionalEventListener` and `@EventListener`. They differ regarding the transaction behavior. In this guide `@TransactionalEventListener` is used. More details can be found in the https://doc.cuba-platform.com/manual-7.0/events.html[CUBA documentation]
+TIP: There are two different kinds of annotations to register for as an event listener: `@TransactionalEventListener` and `@EventListener`. They differ regarding the transaction behavior. In this guide `@TransactionalEventListener` is used. More details can be found in the https://doc.cuba-platform.com/manual-7.0/entityChangedEvent.html[CUBA documentation]
 
 
 .RoomKeycodeToOwnerSender.java
@@ -141,7 +143,7 @@ public class RoomSystemNotifier {
     private DataManager dataManager;
 
     @Inject
-    RoomSystemGateway roomSystemGateway;
+    private RoomSystemGateway roomSystemGateway;
 
     @TransactionalEventListener
     public void notifyRoomSystem(EntityChangedEvent<Visit, UUID> event) {

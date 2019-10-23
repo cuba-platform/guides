@@ -1,0 +1,46 @@
+.header-submenu {
+  flex: none;
+  font-size: 16px;
+  background: #fbfeff url('/guides/images/background-stripped.png') repeat 50% 0;
+
+  &:empty {
+    display: none;
+  }
+}
+
+.header-submenu_link {
+  position: relative;
+  display: inline-block;
+  padding: 16px 0;
+  font-size: 16px;
+
+  &:hover {
+    color: $color-text;
+    text-decoration: none;
+  }
+
+  &::after {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    background: $color-primary;
+    opacity: 0;
+    transition: opacity $transition;
+    content: '';
+  }
+
+  &.nuxt-link-active,
+  &.nuxt-link-exact-active {
+    color: $color-text;
+
+    &::after {
+      opacity: 1;
+    }
+  }
+
+  &:not(:last-child) {
+    margin-right: 30px;
+  }
+}

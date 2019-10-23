@@ -17,9 +17,11 @@
     <link rel="stylesheet" href="https://www.cuba-platform.com/sites/all/themes/cuba_adaptive/css/animate.css">
     <link rel="stylesheet" href="{{ '/css/extra.css' | prepend: site.baseurl }}">
     <link rel="stylesheet" href="{{ '/css/extra2.css' | prepend: site.baseurl }}">
+    <link rel="stylesheet" href="{{ '/css/cuba-new.css' | prepend: site.baseurl }}">
     <link rel="stylesheet" href="{{ '/css/guides.css' | prepend: site.baseurl }}">
     <script src="{{ '/js/vendor/modernizr.js' | prepend: site.baseurl }}"></script>
     <script src="{{ '/js/jquery_v2.1.min.js' | prepend: site.baseurl }}"></script>
+    <link rel="stylesheet" href="{{ '/css/main.css' | relative_url }}" />
 </head>
 <body class="cuba-website-styles html not-front not-logged-in no-sidebars page-webinars service-booking i18n-en">
 
@@ -32,46 +34,29 @@
             <div class="region region-content">
                 <section id="block-system-main" class="block block-system clearfix">
                     <div class="panel-display panel-1col clearfix" id="webinars-page">
-                        <div class="panel-panel panel-col">
+                        <div class="container layout-main_container">
                             <div>
                                 <!-- Title -->
-                                <div class="panel-pane pane-custom pane-1">
-                                    <div class="pane-content">
-                                        <div class="sb-block sb-head">
-                                            <h2>Guides</h2>
-                                            <span>Comprehensive articles about CUBA Platform specifics (version 7.0+)</span>
-                                        </div>
-                                    </div>
+                                <div class="page-header">
+                                    <h1 class="page-header_title">Guides</h1>
+                                    <p class="page-header_description">Comprehensive articles about CUBA Platform specifics (version 7.0+)</p>
                                 </div>
 
-                                <!-- Accordion -->
-                                <div class="panel-pane pane-custom pane-2 cuba-container">
+                                <!-- List Grid -->
+                                <div class="">
                                     <div class="pane-content">
-                                        <div class="accordion-webinars">
+                                        <div class="guides-list">
                                             {% for post in site.posts reversed %}
-                                            <div class="item">
-                                                <a name="tr1"></a>
-                                                <div class="item-head collapsed" data-toggle="collapse" data-target="#{{ post.permalink }}" href="#{{ post.permalink }}" aria-expanded="false">
-                                                    <a>
-                                                        <span>{{ post.navtitle }}</span>
-                                                        <i></i>
-                                                    </a>
+                                            <a href="{{ post.url | prepend: site.baseurl }}" class="guides-list_item">
+                                                <div class="guides-list_icone_wrapper"><img src="{{ post.icone }}"></div>
+                                                <div class="guides-list_wrapper">
+                                                    <div class="guides-list_title">{{ post.navtitle }}</div>
+                                                    <span class="guides-list_description">{{ post.excerpt }}</span>
                                                 </div>
-                                                <div class="item-body collapse" id="{{ post.permalink }}" aria-expanded="false" style="height: 0px;">
-                                                    <div class="descr">
-                                                        <div class="main">
-                                                            {{ post.excerpt }}
-                                                        </div>
-                                                        <div class="btn-wrapper">
-                                                            <a href="{{ post.url | prepend: site.baseurl }}" class="button join-webinar">Read now</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            </a>
                                             {% endfor %}
                                         </div>
                                     </div>
-                                    <!-- End of accordion -->
                                 </div>
                             </div>
                         </div>
@@ -86,12 +71,12 @@
     {% include footer.html %}
 </section>
 
-
 <script src="{{ '/js/toc.js' | prepend: site.baseurl }}"></script>
 <script src="{{'/js/foundation.min.js' | prepend: site.baseurl }}"></script>
 <script src="{{ '/js/navigation.js' | prepend: site.baseurl }}"></script>
 <script src="{{ '/js/extra.js' | prepend: site.baseurl }}"></script>
 <script src="{{ '/js/extra2.js' | prepend: site.baseurl }}"></script>
+<script src="{{ '/js/cuba-new.js' | prepend: site.baseurl }}"></script>
 <script>
 $(document).foundation();
 var doc = document.documentElement;

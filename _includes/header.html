@@ -1,96 +1,110 @@
-<!-- BEGIN HEADER -->
-<header id="header">
-    <div class="upper-header">
-        <div class="upper-header-wrapper cuba-container">
-            <div class="header-logo">
-                <a href="/"></a>
+
+<header role="banner" fragment="14269c1b298" class="header">
+    <nav class="header_nav">
+        <input id="mobile-menu-open" type="checkbox" class="header_checkbox">
+        <div class="container header_container">
+            <div class="header_toggle">
+                <label for="mobile-menu-open"
+                       class="header_toggle-label toggle-label">
+                    <span>CUBA.platform</span>
+                </label>
             </div>
-            <div class="header-options"></div>
-            <div class="header-menu" role="navigation">
-                <div class="region region-nav-main">
-                    <section id="block-menu-menu-nav" class="block block-menu clearfix">
-                        <ul class="menu nav">
-                            <li class="first expanded dropdown">
-                                <a href="/framework" data-target="#" class="dropdown-toggle" data-toggle="dropdown">Platform <span class="caret"></span></a>
-                                <ul class="dropdown-menu">
-                                    <li class="first leaf"><a href="/framework">The Framework</a></li>
-                                    <li class="leaf"><a href="/development-tools">Development Tools</a></li>
-                                    <li class="last leaf"><a href="/marketplace">Marketplace</a></li>
-                                </ul>
-                            </li>
-                            <li class="leaf"><a href="/download">Download</a></li>
-                            <li class="expanded active-trail active dropdown">
-                                <a href="/online-demo" class="active-trail dropdown-toggle" data-target="#" data-toggle="dropdown">Learn <span class="caret"></span></a>
-                                <ul class="dropdown-menu">
-                                    <li class="first leaf"><a href="/online-demo">Online Demo</a></li>
-                                    <li class="leaf"><a href="/quickstart">Quick Start</a></li>
-                                    <li class="leaf"><a href="/documentation">Documentation</a></li>
-                                    <li class="leaf"><a href="/guides">Guides</a></li>
-                                    <li class="leaf"><a href="/webinars">Webinars</a></li>
-                                    <li class="last leaf"><a href="/faq">FAQ</a></li>
-                                </ul>
-                            </li>
-                            <li class="expanded dropdown">
-                                <a href="https://www.cuba-platform.com/discuss/" data-target="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    Community
-                                    <span class="caret"></span>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li class="first leaf"><a href="https://www.cuba-platform.com/discuss/">Forum</a></li>
-                                    <li class="collapsed"><a href="/testimonials">Customer stories</a></li>
-                                    <li class="last leaf"><a href="/blog">Blog</a></li>
-                                </ul>
-                            </li>
-                            <li class="expanded dropdown">
-                                <a href="/training" data-target="#" class="dropdown-toggle" data-toggle="dropdown">Services <span class="caret"></span></a>
-                                <ul class="dropdown-menu">
-                                    <li class="first leaf"><a href="/training">Training</a></li>
-                                    <li class="leaf"><a href="/support-options">Support</a></li>
-                                    <li class="last leaf"><a href="/development">Development</a></li>
-                                </ul>
-                            </li>
-                            <li class="leaf"><a href="/store">Store</a></li>
-                            <li class="last leaf"><a href="/contacts">Contacts</a></li>
-                        </ul>
-                    </section>
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
-
-<!-- BEGIN LOWER HEADER -->
-<div class="lower-header std">
-    <div class="submenu">
-        <div class="submenu-title-wrapper">
-            <div class="cuba-container">
-                <div class="region region-lower-header-submenu">
-                    <section id="block-menu-block-1" class="block block-menu-block clearfix">
-
-                        <h2 class="block-title">Learn</h2>
-
-                        <div class="menu-block-wrapper menu-block-1 menu-name-menu-nav parent-mlid-0 menu-level-2">
-                            <ul class="menu nav">
-                                <li class="first leaf menu-mlid-1329"><a href="/online-demo">Online Demo</a></li>
-                                <li class="leaf menu-mlid-1327"><a href="/quickstart">Quick Start</a></li>
-                                <li class="leaf menu-mlid-1328"><a href="/documentation">Documentation</a></li>
-                                <li class="leaf menu-mlid-3012 active-trail active active"><a href="/guides/" class="active-trail active-trail active">Guides</a></li>
-                                <li class="leaf"><a href="/webinars">Webinars</a></li>
-                                <li class="last leaf menu-mlid-1591"><a href="/faq">FAQ</a></li>
+            <a href="/" class="header_logo nuxt-link-active"></a>
+            <ul class="header_menu">
+                <li class="header_menu_item"><a href="/framework/" class="header_menu_link">Framework</a></li>
+                <li class="header_menu_item"><a href="/learn/" class="header_menu_link nuxt-link-active">Learn</a></li>
+                <li class="header_menu_item"><a href="/documentation/" class="header_menu_link">Documentation</a></li>
+                <li class="header_menu_item"><a href="/discuss/" class="header_menu_link">Forum</a></li>
+                <li class="header_menu_item"><a href="/blog/" class="header_menu_link">Blog</a></li>
+            </ul>
+            <div class="header-support">
+                <button class="header-support_toggle">
+                <img src="images/users.svg" class="header-support_toggle_icon">
+                <span class="header-support_toggle_text">Services</span></button>
+                <div class="header-support_popup">
+                    <div class="support-popup">
+                        <div class="support-popup_services">
+                            <h3 class="support-popup_services_title">Commercial services for your project</h3>
+                            <ul class="services-list">
+                                <li class="services-list_item"><a href="/support-options/"><strong
+                                        class="services-list_title">Consultancy &amp; Support</strong>
+                                    <div class="services-list_text">
+                                        <div><p>Commercial consulting requests have a guaranteed response
+                                            time.</p>
+                                        </div>
+                                    </div>
+                                </a></li>
+                                <li class="services-list_item"><a href="/development/"><strong
+                                        class="services-list_title">Custom Development</strong>
+                                    <div class="services-list_text">
+                                        <div><p>We can deliver a turn key solution or contribute to your
+                                            project</p>
+                                        </div>
+                                    </div>
+                                </a></li>
+                                <li class="services-list_item"><a href="/training/"><strong
+                                        class="services-list_title">Training</strong>
+                                    <div class="services-list_text">
+                                        <div><p>For fast and deep dive into framework features to shift your
+                                            team productivity.</p>
+                                        </div>
+                                    </div>
+                                </a></li>
                             </ul>
                         </div>
-
-                    </section>
+                        <div class="support-popup_haulmont">
+                            <div class="support-popup_haulmont_header"><h3 class="support-popup_haulmont_title">
+                                Haulmont</h3>
+                                <div class="support-popup_haulmont_subtitle">we develop modern enterprise
+                                    solutions
+                                </div>
+                            </div>
+                            <ul class="haulmont-list">
+                                <li class="haulmont-list_item">
+                                    <div><p>Experts in Enterprise software</p>
+                                    </div>
+                                </li>
+                                <li class="haulmont-list_item">
+                                    <div><p>Creators of the CUBA Platform</p>
+                                    </div>
+                                </li>
+                                <li class="haulmont-list_item">
+                                    <div><p>Established in 2008</p>
+                                    </div>
+                                </li>
+                            </ul>
+                            <ul class="numbers-list">
+                                <li class="numbers-list_item"><strong class="numbers-list_number">300+</strong>
+                                    <div class="numbers-list_text">developers</div>
+                                </li>
+                                <li class="numbers-list_item"><strong class="numbers-list_number">400+</strong>
+                                    <div class="numbers-list_text">projects</div>
+                                </li>
+                                <li class="numbers-list_item">
+                                    <div class="numbers-list_text">Customers in</div>
+                                    <strong class="numbers-list_number">60+</strong>
+                                    <div class="numbers-list_text">countries</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
+            <a href="/user/" class="header_profile">
+                <svg xmlns="http://www.w3.org/2000/svg" id="i-profile" class="icon header_profile_src" viewBox="0 0 563.43 563.43" width="100%" height="100%">
+                    <path d="M280.79 314.559c83.266 0 150.803-67.538 150.803-150.803S364.055 13.415 280.79 13.415 129.987 80.953 129.987 163.756s67.537 150.803 150.803 150.803zm0-261.824c61.061 0 111.021 49.959 111.021 111.021s-49.96 111.02-111.021 111.02-111.021-49.959-111.021-111.021 49.959-111.02 111.021-111.02zM19.891 550.015h523.648c11.102 0 19.891-8.789 19.891-19.891 0-104.082-84.653-189.198-189.198-189.198H189.198C85.116 340.926 0 425.579 0 530.124c0 11.102 8.789 19.891 19.891 19.891zm169.307-169.307h185.034c75.864 0 138.313 56.436 148.028 129.524H41.17c9.714-72.625 72.164-129.524 148.028-129.524z"></path>
+                </svg>
+            </a>
         </div>
-
-        <!-- WILL BE SHOWN UPON CONDITION -->
-
-        <!-- WILL BE SHOWN UPON CONDITION -->
-
-    </div>
-</div>
+    </nav>
+    <nav class="header-submenu">
+        <div class="container header-submenu_container">
+            <a href="/learn/quickstart/" class="header-submenu_link">Quick Start</a>
+            <a href="/learn/live-demo/" class="header-submenu_link">Live Demo</a>
+            <a href="/guides/" class="header-submenu_link nuxt-link-exact-active nuxt-link-active">Guides</a>
+        </div>
+    </nav>
+</header>
 
 <style>
     .upper-header .header-options {

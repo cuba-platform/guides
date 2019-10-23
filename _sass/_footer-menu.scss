@@ -1,0 +1,48 @@
+.footer-menu_label {
+  margin: 0;
+  font-weight: bold;
+  font-size: 13px;
+
+  @include media-breakpoint-down(sm) {
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.8;
+    }
+
+    &::after {
+      display: inline-block;
+      float: right;
+      font-weight: 400;
+      font-size: 10px;
+      content: '↓';
+
+      .footer-menu.-expanded & {
+        content: '↑';
+      }
+    }
+
+  }
+}
+
+.footer-menu_nav {
+  margin: 0;
+  padding: 0;
+
+  li {
+    margin-top: 5px;
+    list-style: none;
+  }
+
+  a {
+    color: $color-text;
+  }
+
+  @include media-breakpoint-down(sm) {
+    display: none;
+
+    .footer-menu.-expanded & {
+      display: block;
+    }
+  }
+}

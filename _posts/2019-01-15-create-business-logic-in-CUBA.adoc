@@ -1,27 +1,28 @@
 ---
 compatible_cuba_versions: 7.0+
 compatible_java_versions: 8+
-project_id: cuba-petclinic-guide-business-logic
+project_id: cuba-petclinic-business-logic
 permalink: create-business-logic-in-cuba
 ---
 = Create Business Logic in CUBA
 :showtitle:
 :sectlinks:
 :sectanchors:
-:page-navtitle: Create business logic in CUBA
+:page-navtitle: Create Business Logic in CUBA
 :page-excerpt: Guide on what options are available for putting business logic into a CUBA application
+:page-icone: images/creating-business-logic-in-cuba/guide_icone.svg
 :page-root: ../../../
-:project_id: cuba-petclinic-guide-business-logic
+:project_id: cuba-petclinic-business-logic
 :java_version: 1.8
 :cuba_version: 7.0
-
+:page-url-first-image: https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/login-screen.png
 :proj_business_logic: https://github.com/cuba-guides/cuba-petclinic-business-logic
 
 
 
 One of the first questions when developing a CUBA application is: _Where should I put my business logic?_ This guide will explain the options available and their pros and cons.
 
-== What Will Be Build
+== What Will Be Built
 
 This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show where business logic can be placed in a CUBA application. Mainly discounts are calculated for Pets based on the total amount of their visits in the Petclinic.
 
@@ -58,11 +59,14 @@ See the *Calculate discount* button in the petclinic application and the screen 
 @LoadDataBeforeShow
 public class PetBrowse extends StandardLookup<Pet> {
 
-    @Inject protected Notifications notifications;
+    @Inject
+    private Notifications notifications;
 
-    @Inject protected Metadata metadata;
+    @Inject
+    private Metadata metadata;
 
-    @Inject protected GroupTable<Pet> petsTable;
+    @Inject
+    private GroupTable<Pet> petsTable;
 
     @Subscribe("petsTable.calculateDiscount")
     public void calculateDiscount(Action.ActionPerformedEvent actionPerformedEvent) {
@@ -93,9 +97,9 @@ public class PetBrowse extends StandardLookup<Pet> {
         String discountMessage = "Discount for " + petName + ": " + discount + "%";
 
         notifications.create()
-            .setCaption(discountMessage)
-            .setType(Notifications.NotificationType.TRAY)
-            .show();
+                .setCaption(discountMessage)
+                .setType(Notifications.NotificationType.TRAY)
+                .show();
     }
 }
 ----
@@ -129,15 +133,14 @@ For this there are two Spring beans:
 .PetContactFetcherBean.java
 [source,java]
 ----
-
 @Component(PetContactFetcher.NAME)
 public class PetContactFetcherBean implements PetContactFetcher {
 
     @Inject
-    DataManager dataManager;
+    private DataManager dataManager;
 
     @Inject
-    Messages messages;
+    private Messages messages;
 
     @Override
     public Optional<Contact> findContact(Pet pet) {
@@ -184,10 +187,10 @@ https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules
 public class PetEdit extends StandardEditor<Pet> {
 
     @Inject
-    PetContactFetcher petContactFetcher;
+    private PetContactFetcher petContactFetcher;
 
     @Inject
-    PetContactDisplay petContactDisplay;
+    private PetContactDisplay petContactDisplay;
 
     @Subscribe("fetchContact")
     public void fetchContact() {
@@ -244,29 +247,28 @@ The implementation of a service looks like this in case of `DiseaseWarningMailin
 .DiseaseWarningMailingServiceBean.java
 [source,java]
 ----
-
 @Service(DiseaseWarningMailingService.NAME) // <1>
 public class DiseaseWarningMailingServiceBean implements DiseaseWarningMailingService {
 
-  @Inject
-  protected DataManager dataManager;
+    @Inject
+    private DataManager dataManager;
 
-  @Inject
-  protected EmailerAPI emailerAPI;
+    @Inject
+    private EmailerAPI emailerAPI;
 
-  @Override
-  public int warnAboutDisease(PetType petType, String disease, String city) { // <2>
+    @Override
+    public int warnAboutDisease(PetType petType, String disease, String city) { // <2>
 
-    List<Pet> petsInDiseaseCity = findPetsInDiseaseCity(petType, city);
+        List<Pet> petsInDiseaseCity = findPetsInDiseaseCity(petType, city);
 
-    List<Pet> petsWithEmail = filterPetsWithValidOwnersEmail(petsInDiseaseCity);
+        List<Pet> petsWithEmail = filterPetsWithValidOwnersEmail(petsInDiseaseCity);
 
-    petsWithEmail.forEach(pet -> sendEmailToPetsOwner(pet, disease, city));
+        petsWithEmail.forEach(pet -> sendEmailToPetsOwner(pet, disease, city));
 
-    return petsWithEmail.size();
-  }
+        return petsWithEmail.size();
+    }
 
-  // ...
+    // ...
 
 }
 ----
@@ -284,23 +286,26 @@ The UI controller usage is very similar to the invocation of a client tier bean.
 @UiDescriptor("create-disease-warning-mailing.xml")
 public class CreateDiseaseWarningMailing extends Screen {
 
-    @Inject protected DiseaseWarningMailingService diseaseWarningMailingService; // <1>
+    @Inject
+    private DiseaseWarningMailingService diseaseWarningMailingService; // <1>
 
-    @Inject protected Notifications notifications;
+    @Inject
+    private Notifications notifications;
 
     @Subscribe("createDiseaseWarningMailing")
     protected void createDiseaseWarningMailing(Action.ActionPerformedEvent event) {
 
         int endangeredPets = diseaseWarningMailingService.warnAboutDisease(petType.getValue(),
-            disease.getValue(), city.getValue()); // <2>
+                disease.getValue(), city.getValue()); // <2>
 
         closeWithCommit().then(() ->
-            notifications.create()
-                .setCaption(endangeredPets + " Owner(s) of endangered Pets have been notified")
-                .setType(Notifications.NotificationType.TRAY)
-                .show()
+                notifications.create()
+                        .setCaption(endangeredPets + " Owner(s) of endangered Pets have been notified")
+                        .setType(Notifications.NotificationType.TRAY)
+                        .show()
         );
     }
+}
 ----
 <1> Injection of the middleware service via its interface definition
 <2> Invocation of the business logic in the controller action
