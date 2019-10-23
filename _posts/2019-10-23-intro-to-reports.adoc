@@ -14,7 +14,7 @@ permalink: introduction-to-reporting
 :project_id: cuba-petclinic-intro-to-reporting
 :java_version: 1.8
 :cuba_version: 7.0
-
+:page-icone: images/intro-to-reports/guide_icone.svg
 
 CUBA applications can be enhanced to have a comprehensive report / document generation capability directly embedded into the application. The CUBA add-on `Reporting` supports various file formats like `DOCX`, `XLSX`, `PDF`, `HTML` for templating as well as output file formats. Furthermore, it contains management screens and provides APIs to interact with the report / document generation process programmatically.
 
