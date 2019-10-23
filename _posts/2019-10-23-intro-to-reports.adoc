@@ -1,7 +1,7 @@
 ---
 compatible_cuba_versions: 7.0+
 compatible_java_versions: 8+
-project_id: cuba-petclinic-intro-to-reporting
+project_id: cuba-petclinic-intro-to-reports
 permalink: introduction-to-reporting
 ---
 = Introduction to Reporting and Document generation
