@@ -15,15 +15,14 @@ permalink: anonymous-access-and-social-login
 :java_version: 1.8
 :cuba_version: 7.1
 
-Applications such as an online store provide users the ability
+Applications such as an online stores provide users the ability
 to view a list of available products, read their description, or compare
-with each other without logging in. But in order to make a purchase,
-the user must register, and often he can do this using social network account.
+with each other without logging in. But in order to make a purchase the users usually have to register, and using a social network account is the most convenient way to do it.
 
 == What Will be Built
 
 This guide enhances the CUBA Petclinic example to demonstrate how to enable
-application public access and allow users to login and register via social services.
+application public access and allow users to register via social services.
 
 In particular, the following topics will be covered:
 
@@ -51,7 +50,7 @@ Oftentimes CRM like applications have an info or features that should be availab
 both authenticated and anonymous users - products, services, etc.
 This scenario is also relevant for dashboards, contacts or support pages.
 In this guide we will provide an ability to view a list of veterinarians working
-in clinic and animals that can be brought for treatment without logging in
+in clinic and pets that can be brought for treatment without logging in
 to the application, i.e. work in app as anonymous.
 
 Since version 7.1 CUBA provides more flexible approach to create publicly
@@ -90,9 +89,9 @@ image::anonymous-access-and-social-login/initial-screen.png[align="center"]
 Main screen with empty side menu is opened. But it’s not very interesting
 to see a blank page - let’s set up permissions for anonymous users.
 
-=== Anonymous user permissions
+=== Anonymous permissions
 
-Click the right button in menu to proceed to login screen and enter the system as administrator.
+Click the right button in side menu to proceed to login screen and enter the system as administrator.
 Open “Role” browser and edit “Anonymous” role.
 
 Permit all required menu items and screens:
@@ -145,18 +144,18 @@ they will be redirected to the login screen.
 == Login Dialog
 
 Default login process in CUBA application requires redirecting to a separate screen.
-In this section, we'll implement login using a modal dialog.
+In this section, we'll demonstrate how to implement login using a modal dialog to add social buttons later.
 
 === Extended Main Screen
 
 Let’s begin with extending default Main Screen. Open “New Screen” dialog in CUBA Studio
 and choose a template named “Main screen with side menu”. You may notice that the screen layout
-has a new component - `<userActionsButton/>`. It combines “log in” action for anonymous users
+has a new component - `UserActionsButton`. It combines “log in” action for anonymous users
 and allows logged in users to open the "Settings" screen or to log out.
 
 The `UserActionsButton` component has a few extension points to override default behavior
 for login and logout actions. It allows us to define our custom logic to open
-dialog - install custom login handler via `@Install` annotation:
+dialog - add custom login handler via `@Install` annotation:
 
 .ExtMainScreen.java
 [source,java]
@@ -175,8 +174,7 @@ public class ExtMainScreen extends MainScreen {
 === Login Dialog
 
 New login dialog will be simplified version of default login screen, so start
-with creating new blank screen. To avoid re-implementing login process logic
-we’ll just make `LoginDialog` extend `LoginScreen`:
+with creating new blank screen. Make `LoginDialog` extend `LoginScreen` to re-use login process logic:
 
 .LoginDialog.java
 [source,java]
@@ -187,7 +185,7 @@ public class LoginDialog extends LoginScreen {
 }
 ----
 
-Dialog layout is just a login form copied from default screen:
+Dialog layout is just a login form copied from default login screen:
 
 .login-dialog.xml
 [source,xml]
@@ -263,7 +261,7 @@ Dialog layout is just a login form copied from default screen:
 </window>
 ----
 
-Fix dialog width and perform login on button click:
+Set dialog width and add login button click listener:
 
 .LoginDialog.java
 [source,java]
@@ -277,7 +275,10 @@ public class LoginDialog extends LoginScreen {
     @Subscribe("loginButton")
     private void onLoginButtonClick(Button.ClickEvent event) {
         login();
-        close(WINDOW_CLOSE_ACTION);
+
+        if (connection.isAuthenticated()) {
+            close(WINDOW_CLOSE_ACTION);
+        }
     }
 }
 ----
@@ -304,7 +305,7 @@ And append this config to default permissions in `app.properties` file:
 cuba.defaultPermissionValuesConfig = +com/haulmont/sample/petclinic/default-permission-values.xml
 ----
 
-Now we can open our new dialog:
+Now we can open our new dialog in `UserActionsButton` login handler:
 
 .ExtMainScreen.java
 [source,java]
@@ -327,26 +328,6 @@ public class ExtMainScreen extends MainScreen {
 Restart an app and try to log in:
 
 image::anonymous-access-and-social-login/login-dialog-init.png[align="center"]
-
-The last step is to check whether login performed successfully and close dialog:
-
-.LoginDialog.java
-[source,java]
-----
-public class LoginDialog extends LoginScreen {
-
-    @Inject
-    private Screens screens;
-
-    public void performLogin() {
-        login();
-
-        if (connection.isAuthenticated()) {
-            close(WINDOW_CLOSE_ACTION);
-        }
-    }
-}
-----
 
 == Social Login
 
@@ -372,8 +353,7 @@ Popular social services like Facebook provide API endpoints to access this infor
 The common way to secure these endpoints is to use https://oauth.net[OAuth] tokens, or
 “access tokens”.
 
-First of all to be able to authenticate your app you should register it
-in the social service:
+First of all you should register your app in the social service:
 
 * https://cloud.google.com/cloud-console/[Google Cloud Console]
 * https://developers.facebook.com/apps[Facebook Apps]
@@ -383,9 +363,9 @@ You’ll get so-called `client id` and `client secret` credentials that are used
 in the authentication process:
 
 1. Application sends a request with client id to the auth service endpoint
-2. The service sends a response with a temporary code
+2. The service returns a response with a temporary code
 3. Application sends a request with client id, client secret and the given code to the service
-4. The service sends a response with an access token
+4. The service returns a response with an access token if all credentials are correct
 
 image::anonymous-access-and-social-login/web-auth-flow.png[align="center"]
 
@@ -396,8 +376,7 @@ in the registration dialog, for example, Pinterest:
 
 image::anonymous-access-and-social-login/pinterest-login.png[align="center"]
 
-The easiest way to add social buttons into the Login Dialog
-is to use few `LinkButton` components placed into horizontal box layout:
+Add social buttons into the Login Dialog using few `LinkButton` components placed into horizontal box layout:
 
 .login-dialog.xml
 [source, xml]
@@ -418,8 +397,7 @@ is to use few `LinkButton` components placed into horizontal box layout:
 </hbox>
 ----
 
-We’re using custom style name to make buttons bigger. Open `hover-ext.scss`
-file and add the following rule:
+We’re using custom style name to make buttons bigger. Open `hover-ext.scss` file and add the following rule:
 
 .hover-ext.scss
 [source,text]
@@ -437,8 +415,7 @@ We'll use these buttons later to trigger social login process.
 
 === Preliminary preparation
 
-Not all services support `localhost` as application host. The easiest solution
-is to add a host alias to the operating system hosts file
+Not all services support `localhost` as application host. You can add a host alias to the operating system hosts file
 and use it in application properties:
 
 .app.properties
@@ -610,7 +587,7 @@ public final class SocialLoginHelper {
 }
 ----
 
-Now we can subscribe to social button clicks and redirect a user to a social service login page:
+Add social button click listeners and redirect a user to a social service login page:
 
 .LoginDialog.java
 [source, java]
@@ -635,11 +612,11 @@ After logging in, the service will redirect us back and we should handle a respo
 
 === Handling social service response
 
-To handle a response with the temporary code we will use Vaadin Request Handlers mechanism -
-it allows us to add “request callbacks” using simple functional interface.
+To handle a response with the temporary code we will use Vaadin https://vaadin.com/docs/v8/framework/advanced/advanced-requesthandler.html[Request Handlers] mechanism -
+it allows us to add request callbacks using simple functional interface.
 
 Our callback handler will use `SocialLoginService` to fetch user data,
-so it should be implemented as a bean. Request handlers should be added
+so it should be a bean. Request handlers should be added
 to the current session before request and removed from it in the end.
 It means that we can implement the handler as a prototype bean:
 
@@ -671,14 +648,11 @@ public class SocialServiceCallbackHandler implements RequestHandler {
 
 Let’s highlight the main responsibilities of the handler:
 
-* Extract auth code and fetch user data via `SocialLoginService`
+* Extract auth code from response and fetch user data via `SocialLoginService`
 * Create `Credentials` instance based on user data
-* Trigger login and redirect the user back to app
+* Trigger login process and redirect user back to app
 
-We’re using injection via setters approach here to obtain required components.
-The handler also implements `InitializingBean` interface to finish initialization
-when all beans are injected. Firstly, we use the `UIAccessor` instance to lock
-the UI until the login request is processed:
+Firstly, we use the `UIAccessor` instance to lock the UI until the login request is processed:
 
 .SocialServiceCallbackHandler.java
 [source, java]
@@ -691,6 +665,7 @@ public class SocialServiceCallbackHandler implements RequestHandler, Initializin
         if (request.getParameter("code") == null) {
             return false;
         }
+
         uiAccessor.accessSynchronously(() -> {
             try {
                 Credentials credentials = getCredentials(request.getParameter("code"),
@@ -702,7 +677,8 @@ public class SocialServiceCallbackHandler implements RequestHandler, Initializin
                 session.removeRequestHandler(this);
             }
         });
-         ((VaadinServletResponse) response).getHttpServletResponse().
+
+        ((VaadinServletResponse) response).getHttpServletResponse().
                 sendRedirect(ControllerUtils.getLocationWithoutParams(redirectUri));
 
         return true;
@@ -719,7 +695,7 @@ public class SocialServiceCallbackHandler implements RequestHandler, Initializin
 }
 ----
 
-Get back to `LoginDialog` and add our handler:
+Get back to `LoginDialog` and use the callback handler:
 
 .LoginDialog.java
 [source, java]
@@ -747,7 +723,7 @@ public class LoginDialog extends LoginScreen {
 
 === Exchanging an auth code for access token
 
-When the auth code is available, we can use it to get an access token:
+When the auth code is available, we can use it to get an access token. Form a request with required params depending on social service:
 
 .SocialLoginServiceBean.java
 [source, java]
@@ -884,6 +860,40 @@ register new account and login the user.
 
 === Fetching User Data
 
+Oftentimes social service API endpoints enable you to specify a set of fields
+to fetch. Let’s add one more setting to our config interfaces:
+
+.SocialServiceConfig.java
+[source, java]
+----
+public interface SocialServiceConfig {
+
+    String getUserDataFields();
+
+    // ...
+}
+----
+
+For example, `GoogleConfig`:
+
+.GoogleConfig.java
+[source, java]
+----
+@Source(type = SourceType.APP)
+public interface GoogleConfig extends Config, SocialServiceConfig {
+
+    @Property("google.clientId")
+    String getClientId();
+
+    @Property("google.clientSecret")
+    String getClientSecret();
+
+    @Default("id,name,email")
+    @Property("google.userDataFields")
+    String getUserDataFields();
+}
+----
+
 Create a simple immutable POJO to store loaded profile info:
 
 .SocialUserData.java
@@ -944,41 +954,7 @@ The method will do the following:
 * Fetch user data using access token
 * Parse a response to create `SocialUserData` instance
 
-Oftentimes social service API endpoints enable you to specify a set of fields
-to fetch. Let’s add one more setting to our config interfaces:
-
-.SocialServiceConfig.java
-[source, java]
-----
-public interface SocialServiceConfig {
-
-    String getUserDataFields();
-
-    // ...
-}
-----
-
-For example, `GoogleConfig`:
-
-.GoogleConfig.java
-[source, java]
-----
-@Source(type = SourceType.APP)
-public interface GoogleConfig extends Config, SocialServiceConfig {
-
-    @Property("google.clientId")
-    String getClientId();
-
-    @Property("google.clientSecret")
-    String getClientSecret();
-
-    @Default("id,name,email")
-    @Property("google.userDataFields")
-    String getUserDataFields();
-}
-----
-
-Form a new URL and perform a request using `HttpClient` library:
+Since exchanging an auth code for an access token is already described, we can proceed to fetching user data:
 
 .SocialLoginServiceBean.java
 [source, java]
@@ -993,7 +969,7 @@ public class SocialLoginServiceBean implements SocialLoginService {
                 getUserDataFields(socialService));
         String url = userDataEndpoint + params;
 
-         return requestUserData(url);
+        return requestUserData(url);
     }
 
     private String requestUserData(String url) {
@@ -1010,18 +986,18 @@ public class SocialLoginServiceBean implements SocialLoginService {
                         httpResponse.getStatusLine().getStatusCode());
             }
             return EntityUtils.toString(httpResponse.getEntity());
-            } catch (IOException e) {
-                throw new RuntimeException(e.getMessage());
-            } finally {
-                getRequest.releaseConnection();
-            }
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        } finally {
+            getRequest.releaseConnection();
+        }
     }
 
     // ...
 }
 ----
 
-The final step is to parse user data from the response into `SocialUserData` POJO:
+Parse user data from the response into `SocialUserData` POJO:
 
 .SocialLoginServiceBean.java
 [source, java]
@@ -1065,10 +1041,9 @@ Now we can log in user via CUBA Security Subsystem. The general workflow is the 
 it supports passed credentials
 3. When suitable provider is found `Connection` delegates invocation to it
 
-To implement custom login you should create your own `Credentials` and `LoginProvider`
-that supports such credentials.
+To support custom login you should create your own `Credentials` and `LoginProvider`
+that supports such type of credentials.
 
-Let’s go back to `SocialServiceCallbackHandler` to finish its implementation.
 Create a new class `SocialCredentials` in web module:
 
 .SocialCredentials.java
@@ -1096,8 +1071,7 @@ public class SocialCredentials extends AbstractClientCredentials {
 }
 ----
 
-It’s designed to pass general user profile info and specify a service that is used to login.
-Use this method to form new credentials in callback handler:
+Let’s go back to `SocialServiceCallbackHandler` to finish its implementation:
 
 .SocialServiceCallbackHandler.java
 [source, java]
@@ -1120,47 +1094,7 @@ public class SocialServiceCallbackHandler implements RequestHandler, Initializin
 
 === Login Provider
 
-When we have social credentials login process can be triggered:
-
-.SocialServiceCallbackHandler.java
-[source, java]
-----
-public class SocialServiceCallbackHandler implements RequestHandler, InitializingBean {
-
-    @Override
-    public boolean handleRequest(VaadinSession session,
-                                 VaadinRequest request,
-                                 VaadinResponse response) throws IOException {
-        if (request.getParameter("code") == null) {
-            return false;
-        }
-
-        uiAccessor.accessSynchronously(() -> {
-            try {
-                Credentials credentials = getCredentials(request.getParameter("code"),
-                        service);
-
-                app.getConnection()
-                        .login(credentials);
-            } catch (Exception e) {
-                log.error("Unable to login using service: " + service, e);
-            } finally {
-                session.removeRequestHandler(this);
-            }
-        });
-
-        ((VaadinServletResponse) response).getHttpServletResponse().
-                sendRedirect(ControllerUtils.getLocationWithoutParams(redirectUri));
-
-        return true;
-    }
-}
-----
-
-Default implementation of `Connection` uses all available `LoginProviders`
-to get new authentication info. `LoginProviders` mechanism enables you
-to use ordered Spring beans to authenticate a user for different types
-of credentials. We will use this extension point to login:
+The `Connection` component uses all available `LoginProviders` to get new authentication info. `LoginProviders` mechanism enables you to use ordered Spring beans to authenticate a user for different types of credentials. We will use this extension point to create social login provider:
 
 .SocialLoginProvider.java
 [source, java]
@@ -1188,9 +1122,8 @@ public class SocialLoginProvider implements LoginProvider {
 }
 ----
 
-To avoid re-implementation of the authentication procedure, we will extend
-built-in `ExternalUserLoginProvider` and pass new `ExternalUserCredentials`
-based on the available info to the super method:
+We will extend built-in `ExternalUserLoginProvider` to re-use its logic.
+Create new `ExternalUserCredentials` based on the available info and pass it to the super method:
 
 .SocialLoginProvider.java
 [source, java]
@@ -1210,25 +1143,23 @@ public class SocialLoginProvider extends ExternalUserLoginProvider implements Lo
 
         SocialLoginService.SocialUserData userData = socialCredentials.getUserData();
 
-        User user; // to be implemented;
+        // to be implemented;
+        User user = null;
 
         Locale defaultLocale = socialCredentials.getLocale();
 
         return super.login(new ExternalUserCredentials(user.getLogin(), defaultLocale));
     }
 
-    @Override
-    public boolean supports(Class<?> credentialsClass) {
-        return SocialCredentials.class.isAssignableFrom(credentialsClass);
-    }
+    // ...
 }
 ----
 
+To form credentials we have to find existing or register new user.
+
 === User Registration
 
-The final step is to register a new user considering social profile info.
-First of all, create a new entity `SocialUser` extending `User`
-and add three fields to it:
+Create a new entity `SocialUser` extending `User` and add three fields to it:
 
 * `googleId`
 * `facebookId`
@@ -1250,7 +1181,7 @@ public interface SocialRegistrationConfig extends Config {
 }
 ----
 
-Create a new service `SocialRegistrationService`:
+Create a new service `SocialRegistrationService` intended to find existing or register a new user:
 
 .SocialRegistrationService.java
 [source, java]
@@ -1266,7 +1197,7 @@ public interface SocialRegistrationService {
 }
 ----
 
-It’s implementation:
+Its implementation is quite straightforward:
 
 .SocialRegistrationServiceBean.java
 [source, java]
@@ -1286,17 +1217,16 @@ public class SocialRegistrationServiceBean implements SocialRegistrationService 
     public User findOrRegisterUser(String socialServiceId, String login, String name,
                                    SocialService socialService) {
         TypedQuery<SocialUser> query = getUserQuery(socialService, socialServiceId);
-
         SocialUser existingUser = query.getFirstResult();
         if (existingUser != null) {
             return existingUser;
         }
 
-        SocialRegistrationConfig config = configuration
+        SocialRegistrationConfig registrationConfig = configuration
                 .getConfig(SocialRegistrationConfig.class);
 
         EntityManager em = persistence.getEntityManager();
-        Group defaultGroup = em.find(Group.class, config.getDefaultGroupId(),
+        Group defaultGroup = em.find(Group.class, registrationConfig.getDefaultGroupId(),
                 View.MINIMAL);
 
         SocialUser user = metadata.create(SocialUser.class);
@@ -1304,7 +1234,6 @@ public class SocialRegistrationServiceBean implements SocialRegistrationService 
         user.setName(name);
         user.setGroup(defaultGroup);
         user.setActive(true);
-
         if (isEmail(login)) {
             user.setEmail(login);
         }
@@ -1320,7 +1249,9 @@ public class SocialRegistrationServiceBean implements SocialRegistrationService 
                 user.setGithubId(socialServiceId);
                 break;
         }
+
         em.persist(user);
+
         return user;
     }
 
@@ -1356,6 +1287,36 @@ public class SocialRegistrationServiceBean implements SocialRegistrationService 
     private boolean isEmail(String s) {
         return EMAIL_PATTERN.matcher(s).matches();
     }
+}
+----
+
+Get back to `SocialLoginProvider` and use `SocialRegistrationService` to get user:
+
+.SocialLoginProvider
+[source, java]
+----
+@Component(SocialLoginProvider.NAME)
+public class SocialLoginProvider extends ExternalUserLoginProvider implements LoginProvider {
+
+    @Nullable
+    @Override
+    public AuthenticationDetails login(Credentials credentials) throws LoginException {
+        SocialCredentials socialCredentials = (SocialCredentials) credentials;
+
+        SocialLoginService.SocialUserData userData = socialCredentials.getUserData();
+
+        User user = socialRegistrationService.findOrRegisterUser(
+                userData.getId(),
+                userData.getLogin(),
+                userData.getName(),
+                socialCredentials.getSocialService());
+
+        Locale defaultLocale = socialCredentials.getLocale();
+
+        return super.login(new ExternalUserCredentials(user.getLogin(), defaultLocale));
+    }
+
+    // ...
 }
 ----
 
