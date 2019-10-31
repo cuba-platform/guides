@@ -4,12 +4,12 @@ compatible_java_versions: 8+
 project_id: cuba-petclinic-data-model-composition
 permalink: data-modelling-composition
 ---
-= Data Modelling: Composition
+= 数据建模： 组合
 :showtitle:
 :sectlinks:
 :sectanchors:
-:page-navtitle: Data Modelling: Composition
-:page-excerpt: Data modelling guide: What are Compositions and when to use them over Associations
+:page-navtitle: 数据建模: 组合
+:page-excerpt: 数据建模指南: 什么是组件及什么时候应该在实体关系中使用组合
 :page-icone: images/data-model-composition/guide_icone.svg
 :page-root: ../../../
 :project_id: cuba-petclinic-data-model-composition
@@ -17,18 +17,18 @@ permalink: data-modelling-composition
 :java_version: 1.8
 :cuba_version: 7.0
 
-In this guide the Composition relationship between entities will be covered. It will be shown where are the differences between Associations and Compositions. The two different kinds of Compositions: One-to-Many Compositions as well as One-to-One Compositions will be explored with different examples.
+本指南将覆盖实体间的组合关系。将会演示关联(Association) 和组合(Composition)之间的不同。会使用示例探究两种不同的组合：一对多组合和一对一组合。
 
-== What Will be Built
+== 将要构建的内容
 
-This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show various examples of a composition relationship between entities. In particular, the following use cases will be covered:
+本指南对 https://github.com/cuba-platform/cuba-petclinic[CUBA 宠物诊所] 进行了增强，以演示实体间组合关系的各种示例。特别是会覆盖以下用例：
 
-* The `Owner` entity gets a relationship to an `Address`
-* A `Pet` can contain multiple `HealthRecord` instances, each of them can contain multiple `HealthRecordAttachment` instances
-* The `Owner` entity `Pet` can contain multiple `HealthRecord` instances, each of them can contain multiple `HealthRecordAttachment` instances
+*  `Owner` 实体与  `Address` 建立关联
+* `Pet` 包含多个 `HealthRecord` 实例，每个 `HealthRecord` 包含多个 `HealthRecordAttachment`。
 * The `Employee` entity has a detail entity for storing the employee record: `EmployeeRecord` which will be entered during the creation process of the `Employee`
+* `Employee` 实体有一个用于存储雇员记录的详情实体：`EmployeeRecord` ，这实体是在雇员的创建过程中输入。 ????
 
-=== Final Application
+=== 最终应用程序
 
 ++++
 <a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-data-model-composition/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-data-model-composition/master/img/login-screen.png"/></a>
@@ -39,14 +39,17 @@ include::includes/guide_requirements.adoc[]
 
 include::includes/petclinic_introduction.adoc[]
 
-== Composition vs. Association
+== 组合 vs. 关联
 
-CUBA platform supports two types of relationship between entities:  `ASSOCIATION` and `COMPOSITION`. Association is a relationship between the objects that can exist separately from each other. Composition, on the other hand, is used for "master-detail" relations, when the detail instances can exist only as part of the master entity.
+CUBA 平台支持两种类型的实体间关系： `关联(ASSOCIATION)` 和 `组合(COMPOSITION)` 。 关联是对象间可以独立存在的关系。而组合，换句话说就是用于 “主-从”关系，这种关系中明细实例不能脱离主实体而存在。
 
-In the Petclinic example the relationship between an `Owner` and its `Addresses` may be considered as an example of composition: an `Address` that does not belong to any `Owner` does not make sense (in the domain of this application).
-
+在宠物诊所示例中，`Owner` 和 `Addresses` 之间的关系可以看作是组合：一个不属于任何 `Owner` 的 `Addresses` 没有任何意义 （在这个应用程序范围内）
 
 Typically, the entities belonging to a composition are edited together since it is most natural to do so. A user opens the `Owner` editing screen and sees the list of `addresses`, so the user can create and edit them, but all changes both for the `Owner` and the `Address` are saved to the database together in one transaction, and only after the user confirms saving of the master entity (the `Owner`).
+
+典型情况下，组合关系的实体总是一起被编辑，因为这样很自然、合理。用户打开  `Owner` 编辑界面看到 `addresses` 列表，
+
+
 
 == One-to-Many Composition
 
