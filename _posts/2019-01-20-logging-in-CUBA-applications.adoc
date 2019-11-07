@@ -13,7 +13,7 @@ permalink: logging-in-cuba-applications
 :page-icone: images/application-logging-in-cuba/guide_icone.svg
 :page-root: ../../../
 :project_id: cuba-petclinic-application-logging
-:java_version: 1.8
+:java_version: 8
 :cuba_version: 7.0
 :page-url-first-image: https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-application-logging/master/img/cuba-server-log-messages.png
 

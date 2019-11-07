@@ -10,7 +10,7 @@ permalink: guide-template-url
 :page-excerpt: CUBA Guide that can be used as a CUBA guide template
 :page-root: ../../../
 :project_id: cuba-petclinic-my-guide
-:java_version: 1.8
+:java_version: 8
 :cuba_version: 7.0+
 
 

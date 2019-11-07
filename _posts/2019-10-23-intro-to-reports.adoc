@@ -12,7 +12,7 @@ permalink: introduction-to-reporting
 :page-excerpt: In this guide the Reporting add-on will be introduced and different ways to interact with it through the UI and programmatically will be shown
 :page-root: ../../../
 :project_id: cuba-petclinic-intro-to-reports
-:java_version: 1.8
+:java_version: 8
 :cuba_version: 7.0
 :page-icone: images/intro-to-reports/guide_icone.svg
 

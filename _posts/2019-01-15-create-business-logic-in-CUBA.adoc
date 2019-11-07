@@ -13,7 +13,7 @@ permalink: create-business-logic-in-cuba
 :page-icone: images/creating-business-logic-in-cuba/guide_icone.svg
 :page-root: ../../../
 :project_id: cuba-petclinic-business-logic
-:java_version: 1.8
+:java_version: 8
 :cuba_version: 7.0
 :page-url-first-image: https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/login-screen.png
 :proj_business_logic: https://github.com/cuba-guides/cuba-petclinic-business-logic
