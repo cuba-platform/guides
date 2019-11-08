@@ -91,7 +91,7 @@ to see a blank page - let’s set up permissions for anonymous users.
 
 === Anonymous permissions
 
-Click the right button in side menu to proceed to login screen and enter the system as administrator.
+Click the Login button in side menu to proceed to login screen and enter the system as administrator.
 Open “Role” browser and edit “Anonymous” role.
 
 Permit all required menu items and screens:
@@ -128,7 +128,7 @@ Add routes for other screens in the same way:
 * `@Route("pet-types")` for `PetTypeBrowse`
 * `@Route("specs")` for `SpecialtyBrowse`
 
-Restart the app and try to open Vets screen by the following link:
+Restart the app and try to open Vets screen using the following link:
 
 ++++
 <a href="http://localhost:8080/petclinic/#main/vets">http://localhost:8080/petclinic/#main/vets</a>
@@ -144,7 +144,7 @@ they will be redirected to the login screen.
 == Login Dialog
 
 Default login process in CUBA application requires redirecting to a separate screen.
-In this section, we'll demonstrate how to implement login using a modal dialog to add social buttons later.
+In this section, we'll demonstrate how to implement login using a modal dialog. Later we will place social buttons on this dialog.
 
 === Extended Main Screen
 
@@ -325,7 +325,7 @@ public class ExtMainScreen extends MainScreen {
 }
 ----
 
-Restart an app and try to log in:
+Restart the app and try to log in:
 
 image::anonymous-access-and-social-login/login-dialog-init.png[align="center"]
 
@@ -342,7 +342,7 @@ they are redirected back to the application.
 Since application automatically registers user account, it eliminates the need
 to fill in the fields and reduces the access time to the services it needs.
 
-This approach is called "Auth Web Flow" and we will use it to integrate social
+This approach is called "OAuth Web Flow" and we will use it to integrate social
 login into Petclinic application.
 
 === OAuth Web Flow
@@ -369,7 +369,7 @@ in the authentication process:
 
 image::anonymous-access-and-social-login/web-auth-flow.png[align="center"]
 
-=== Social buttons
+=== Social Buttons
 
 One of the most common ways to integrate social login in UI is the buttons
 in the registration dialog, for example, Pinterest:
