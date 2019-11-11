@@ -149,6 +149,7 @@
 
 pre.CodeRay {
     padding: 40px 20px 20px;
+    width: 1100px;
 }
 
 .listingblock .title {
@@ -159,7 +160,12 @@ pre.CodeRay {
 
 .blog img,
 .blog .listingblock {
-    padding: 1em 0;
+   padding: 1em 0;
+}
+
+.blog .listingblock {
+    overflow-x: auto;
+    padding: 0;
 }
 
 .blog .admonitionblock {
@@ -222,10 +228,19 @@ pre.CodeRay {
 /* Right panel */
 .blog #blog-sidebar {
     position: relative;
+    width: 373px !important;
+    max-width: 373px !important;
+    background-color: #f7f7f7 !important;
+    padding-top: 0!important;
+   /* overflow: scroll;
+    overflow-x: hidden!important;*/
 }
-
 .blog .region-sidebar > section {
     top: 20px;
+    width: 373px!important;
+    overflow: scroll;
+    overflow-x: hidden!important;
+    background-color: #f7f7f7 !important;
     /*width: 280px;*/
 }
 
@@ -374,6 +389,8 @@ pre.CodeRay {
 }
 .guides-list_title {
     font-size: 14px !important;
+    line-height: 20px!important;
+    margin-bottom: 4px;
 }
 .guides-list_item {
     flex-direction: row !important;
@@ -393,6 +410,7 @@ pre.CodeRay {
 .guides-list_icone_wrapper {
     display: block;
     height: 61px!important;
+    width: 70px;
 }
 .conum {
     position: relative;
@@ -432,9 +450,10 @@ pre.CodeRay {
 }
 #blog-sidebar a:hover {
     text-decoration: none;
+    color: #0784E3;
 }
 #blog-sidebar a:focus {
-    color: #0784E3;
+    font-weight: 400;
     text-decoration: none;
 }
 #blog-sidebar ul {
@@ -445,28 +464,11 @@ pre.CodeRay {
     margin-bottom: 7px;
     margin-top: 7px;
 }
-.region-sidebar {
-   overflow: hidden;
-    width: 373px!important;
-    background-color: #f7f7f7!important;
+#blog-sidebar ul > li.active > a {
+    color: #0784E3;
+    text-decoration: none;
 }
-#block-block-29 {
-    width: 373px!important;
-    background-color: #f7f7f7;
-    overflow: scroll;
-    overflow-x: hidden!important;
-    text-align: left;
-    height: 60%;
-    margin-top: 110px!important;
-    position: fixed!important;
-}
-.blog #blog-sidebar {
-    width: 373px!important;
-    max-width: 373px!important;
-    background-color: #f7f7f7;
-    overflow: hidden;
-    padding-top: 0;
-}
+
 #node-962 h1 {
     padding-top: 0!important;
 }
@@ -482,23 +484,45 @@ pre.CodeRay {
 }
 .guide-panel.cuba-version {
     color: #979797;
-    padding: 0 20px 15px 30px!important;
+    padding: 0 20px 30px 30px!important;
 }
-@media screen and (max-width: 1100px) {
+@media screen and (max-width: 1160px) {
     .blog .region-content {
         width: 100% !important;
+        float: none!important;
+        margin-left: 0!important;
+        margin-right: 0!important;
+        max-width: 100% !important;
     }
     .blog #blog-sidebar {
        display: none;
     }
 }
+@media screen and (min-width: 1160px) and (max-width: 1220px) {
+    .blog .region-content {
+        width: 100% !important;
+        margin-left: 1%!important;
+    }
+    .blog .guide-panel {
+        padding: 0.5em 15px 0.5em 15px;
+    }
+
+    .blog .region-sidebar > section,
+    .blog #blog-sidebar {
+        width: 330px!important;
+    }
+}
 .footer {
-    position: relative;
+position: relative;
 }
 .footer_columns {
-    padding-top: 30px!important;
+padding-top: 30px!important;
 }
 .footer_bottom {
-    padding-top: 15px!important;
-    padding-bottom: 17px!important;
+padding-top: 15px!important;
+padding-bottom: 17px!important;
+}
+.footer-menu {
+font-size: 13px;
+line-height: 18px;
 }
