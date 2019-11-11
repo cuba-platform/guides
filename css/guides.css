@@ -149,6 +149,7 @@
 
 pre.CodeRay {
     padding: 40px 20px 20px;
+    width: 1100px;
 }
 
 .listingblock .title {
@@ -159,7 +160,12 @@ pre.CodeRay {
 
 .blog img,
 .blog .listingblock {
-    padding: 1em 0;
+   padding: 1em 0;
+}
+
+.blog .listingblock {
+    overflow-x: auto;
+    padding: 0;
 }
 
 .blog .admonitionblock {
