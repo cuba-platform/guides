@@ -68,8 +68,8 @@ private Pet savePet(Pet pet) {
 
 在 Java 生态系统（也包括其它生态系统）中日志扮演着一个重要的角色。在 Java 生态系统中有各种各样的关于与应用程序所运行的平台的日志机制进行交互的机制和概念。
 
+这些主要是 JVM 的API和各种日志库，这些库封装了“写日志消息”这个抽象中包含的记录到文件或数据库的技术细节。
 
-Mainly these are various APIs of the JVM and different logging libraries that encapsulate the technical concern of logging to a file / database from the abstraction of "writing a log message".
 
 在最近几年，一个常用的组合被 Java 生态采纳，成为一个事实标准。
 
@@ -241,9 +241,7 @@ CUBA 默认配置多个日志输出通道(appender)。 一个输出通道描述�
 
 一旦应用程序有了一定量的日志信息，就会出现大量重复出现的信息。在宠物诊所示例中，许多日志消息会包含宠物 ID ，以便快速获取上下文信息。 对于这些类型的信息，Logback 中有一个上下文(context)，称为 _MDC_。
 
-MDC allows setting certain values into a context, that gets logged every time alongside with the actual logging message. This way the context can be set once and the developer writing the actual logging statement does not need to include it into the log message anymore.
-
-MDC 允许将某些值设置到上下文中，每次都会记录实际的日志消息。 这样，上下文可以设置一次，编写实际日志语句的开发人员不再需要将其包含在日志消息中。
+MDC 允许将某些值设置到上下文中， 这些值每次都会和实际的日志消息一起输出。 使用上下文的方式，这些值只需要设置一次，编写输出日志语句的开发人员将不再需要将其包含在日志消息中。
 
 
 CUBA 本身也使用了 MDC 将不同的上下文值附加到日志消息中。这些值主要是当前用户及当前应用程序，这意味着最终的日志消息可以根据用户来过滤。
@@ -349,13 +347,11 @@ public class PetContactFetcherBean implements PetContactFetcher {
 日志条目现在包含以下消息片断：`[Pet: 205]`。上下文条目也被用于 CUBA 内部日志消息，比如 `RdbmsStore` 的日志消息。
 
 
-MDC has the following advantages over putting context values directly into the log message:
-
-MDC 与直接将上下文值写入日志相比具有以下优势：
+与直接将上下文值写入日志相比，MDC 具有以下优势：
 
 - log messages are homogeneous for all logging messages ????
 - 日志消息是结构化的，允许精确搜索
-- 上下文的定义可以被提取到一个源码中的单独位置  ????
+- 上下文的定义可以被提取为源码中的一个独立实现
 
 
 ==  日志集中化方案
@@ -419,10 +415,8 @@ MDC 与直接将上下文值写入日志相比具有以下优势：
 </configuration>
 ----
 
-<1> 为应用程序注册了一个类库为 `ElasticsearchAppender`  的输出通道： `elasticsearch` 。
-
+<1> 为应用程序注册了一个类型为 `ElasticsearchAppender`  的输出通道： `elasticsearch` 。
 <2> elasticsearch 集群的 URL 从环境变量中提取。
-
 <3> 应用程序日志的 elasticsearch 索引是 `cuba-petclinic-logs-%date{yyyy-MM-dd}` ，按天生成 ????
 
 进行了这些配置，应用程序将获取日志消息并将其发送给  elasticsearch，Kibana  是一个可以访问 elasticsearch 中的数据的用户界面，它可以以适当的方式展示日志信息。通过结构化和全文索引功能，日志信息可以非常容易地被访问，这种方式给直接访问日志文件要方便和高效许多。
@@ -433,7 +427,7 @@ image::application-logging-in-cuba/elasticsearch-kibana-ui-logging.png[Elasticse
 
 == 总结
 
-日志记录是开发人员和管理员为运行中的应用程序查找问题原因的重要部分。 它使开发人员能够打开“黑盒子”并获得有价值的信息。The use cases go from debugging over performance analysis to observing user behavior。????
+日志记录是开发人员和管理员为运行中的应用程序查找问题原因的重要部分。 它使开发人员能够打开“黑盒子”并获得有价值的信息。它的用途涵盖从性能分析到用户行为分析。
 
 Java 和 CUBA 生态系统中的日志记录工具非常成熟，可以毫无障碍地使用。 但由于日志 API 非常通用且可以多种方式使用，能否在应用程序中获得高质量的日志信息，很大程度上取决于对于日志 API 的使用约定。 有多种机制可以避免在巨量的日志信息中迷失自我，比如对日志进行恰当的配置、使用诊断上下文(MDC) 和日志级别。
 
