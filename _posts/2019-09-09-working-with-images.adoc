@@ -222,15 +222,12 @@ image::working-with-images/vet-avatar-example.png[width=300]
 * `VetPreviewComponentFactory` 负责使用合适的布局创建上面显示的组件，并且绑定到  `InstanceContainer`  的指定字段
 
 
-TIP: A dedicated factory class that defines how the component is created is just one possible option to structure the implementation. It has certain advantages to extract the creating of the component into a dedicated class like encapsulation, separation of concerns and the ability to re-use in other screens. +
+TIP:  使用专门的工厂类来定义创建组件的方式只是一个对实现进行结构化的可能选项。将组件的创建提取到专门的类有几点好处，比如可以做到封装、关注点分离及在其它界面重用。 +
  +
-However, it is also possible to include the component creation logic directly into the controller. This variant can be seen as an example on how to structure business logic in the UI layer. More information about this topic can be found in https://www.cuba-platform.com/guides/create-business-logic-in-cuba[Create business logic in CUBA] guide.
+但是也可以将组件的创建逻辑直接写在控制器中。这种方式可以在一个关于如何在UI层结构化应用程序逻辑的示例中看到。关于这个主题的详细信息可以参考这个指南：https://www.cuba-platform.cn/guides/create-business-logic-in-cuba[在 CUBA 中创建应用程序逻辑]。
 
 
-
-
-
-The orchestration within the `VetEdit` controller looks like this:
+在 `VetEdit` 控制器中创建组件的代码看起来是这样：
 
 .VisitEdit.java
 [source,java]
@@ -265,9 +262,12 @@ public class VisitEdit extends StandardEditor<Visit> {
     }
 }
 ----
-<1> a new `VetPreviewComponentFactory` instance is created with all the required dependencies passed to it
-<2> `create` creates an instance of the desired Vet avatar image component
-<3> the created component is attached to the `treatingVetForm` to render the vet avatar image
+
+<1> 使用必须依赖创建 `VetPreviewComponentFactory` 实例
+<2> `create` 方法创建一个显示 Vet 头像的 image 组件
+<3> 创建的组件附加到 `treatingVetForm` 来渲染头像图片
+
+
 
 
 The `VetPreviewComponentFactory` code contains a little bit more code for correct positioning of the elements within the layout. The key points are listed below (the complete class can be found in the example project: https://github.com/cuba-guides/{project_id}/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/visit/visit/VetPreviewComponentFactory.java[VetPreviewComponentFactory.java]).
@@ -331,24 +331,30 @@ public class VetPreviewComponentFactory {
     }
 }
 ----
-<1> a vertical layout containing the image, a horizontal layout containing the name and an "Edit" button is created
-<2> the `ValueSource` references the `image` attribute of the associated `treatingVet` for the data container
-<3> the handler for the "Edit" button triggers the provided `vetSelectionHandler`, so the associated actions can be controlled from the outside of this factory method
 
-With this, the final usage of the custom Vet display & selection for the Vet looks like this:
+<1> 使用一个 vertical 布局包含 image，一个 horizontal 布局包含名称和创建的 "Edit" 按钮
+<2> `ValueSource`  引用了数据容器中关联的 `treatingVet` 实体的 `image` 属性
+<3>  "Edit" 按钮的处理器（handler） 触发提供的 `vetSelectionHandler` ，所以相关的操作可以在工厂方法外部控制
+
+
+完成这些后，自定义的兽医（Vet）展示选择界面看起来是这样：
 
 image::working-with-images/vet-selection-in-visit-edit.png[align="center", link="/guides/images/working-with-images/vet-selection-in-visit-edit.png"]
 
 
-== X-Ray Images for Visits
+== 诊疗过程的 X光照片
 
-The second use case covered in this guide is the ability to attach X-Ray images to a particular visit. Those X-Ray images should be displayed when selected on the Table. Further it should be possible to upload and download those images.
+本指南中涉及到的第二个用例给特定的诊疗记录附加 X光照片。选中表格行时应该显示X光照片。更进一步，也应该可以上传和下载这些照片。
 
-The precondition is another change in the data model. As before, for the `Vet` entity the `Visit` also needs a reference to the `FileDescriptor`, but this time it is a `MANY-TO-MANY` association. With this domain model change as well as the corresponding view adjustment in place, the three parts of uploading, previewing and downloading the X-Ray images can be tackled.
 
-=== Upload X-Ray Images
+我们需要对数据模型进行一点调整。像前面的 `Vet` 实体， `Visit` 实体也需要引用 `FileDescriptor` ， 但是这次是需要使用 `MANY-TO-MANY` 关系。对领域模型调整后，相应的视图也需要调整来处理X光照片的上传、预览和下载。
 
-The first step is to upload the X-Ray image to a particular `Visit` instance. For this the following `<upload />` component will be placed in the `<buttonsPanel />` component of the `xRayImagesTable`. Compared to the first use case, this time the `fileStoragePutMode` will be set to `MANUAL`. This gives more freedom in defining the persistence behavior which is required in this scenario.
+
+
+=== 上传 X光照片
+
+
+第一步是上传X光照片到特定的 `Visit` 实例。这需要将下面的 `<upload />` 组件放到 `xRayImagesTable` 表格的 `<buttonsPanel />` 组件中。相较于第一个用例， 这次 `fileStoragePutMode` 将被设置为 `MANUAL` ，这会给特定场景下的持久化行为带来更大的自由度。
 
 .visit-edit.xml
 [source,xml]
@@ -362,11 +368,14 @@ The first step is to upload the X-Ray image to a particular `Visit` instance. Fo
         dropZone="contentHBox" // <3>
         showFileName="false"/>
 ----
-<1> the persistence operation will be handled manually by the controller in order to correctly display the image preview
-<2> either images or PDF files are allowed to be uploaded
-<3> the additional drop zone allows users to drag & drop files onto the table / preview component
 
-The corresponding `VisitEdit` controller subscribes to the `FileUploadSucceedEvent` of the `upload` component, persists the file and adds the `FileDescriptor` to the `M:N` association of the visit instance.
+<1> 持久化操作在控制器中手动处理，以正确地显示图片预览
+<2> 允许上传PDF文件或图片
+<3> 额外的拖放区允许用户拖放文件到表格或预览组件上
+
+
+相应的 `VisitEdit` 控制器订阅 `upload` 组件的 `FileUploadSucceedEvent`  事件。
+
 
 .VisitEdit.java
 [source,java]
@@ -405,17 +414,20 @@ public class VisitEdit extends StandardEditor<Visit> {
     }
 }
 ----
-<1> the newly created `FileDescriptor` instance of the uploaded file is needed to persist the instance
-<2> the uploaded file is transferred to the backend and persisted in the FileStorage
-<3> the `FileDescriptor` instance for the already persisted file is assigned to the X-Ray images `M:N` association to display it in the table
 
-WARNING: Besides the code in the listing, there is a little bit more relevant code in the example. It handles the case when the edit operation of the visit is cancelled by the user after uploading an image. In this case the images have to be removed again. For more information see the example: https://github.com/cuba-guides/cuba-petclinic-working-with-images/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/visit/visit/VisitEdit.java[VisitEdit.java].
+<1> 为上传的文件创建的  `FileDescriptor` 实例需要被持久化
+<2> 上传的文件被传送到后端并持久化到文件存储(FileStorage)
+<3> 已经持久化的文件的 `FileDescriptor` 实例被分配给X光 images  `M:N` 关系，以显示在表格中 ???
 
-With that subscription code in place, the X-Ray image upload is implemented and can be used to fulfil the next step: preview of the uploaded images.
 
-=== X-Ray Image Preview
+WARNING: 除了列出的代码以外， 在示例项目中还有一些相关的代码。 这些代码用于处理用户上传照片后又取消诊疗记录的编辑操作的情况。在这种情况下，上传的图片需要被移除。详细信息请参考示例代码： https://github.com/cuba-guides/cuba-petclinic-working-with-images/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/visit/visit/VisitEdit.java[VisitEdit.java].
 
-In order to render an image preview of the uploaded X-Ray image, the `visit-edit.xml` needs to be adjusted so that it can display information next to the X-Ray images M:N table.
+通过以上代码实现了X光照片的上传功能，可以进行下一步：预览上传的图片
+
+
+=== X光照片预览
+
+要预览上传的X光图片，`visit-edit.xml` 需要调整一下，以让它能在 X光照片表格的旁边显示预览图。
 
 .visit-edit.xml
 [source,xml]
@@ -443,8 +455,7 @@ In order to render an image preview of the uploaded X-Ray image, the `visit-edit
 </hbox>
 ----
 
-The most relevant part for this case is the `xrayImageWrapperLayout` component, which acts as a placeholder that will contain the image later. Currently it contains no child components, instead it will be dynamically filled at the time a selection is made for the `xRayImagesTable`.
-
+这个用例中最重要的部分是 `xrayImageWrapperLayout` 组件，它作为一个占位符将在后续用于显示图片。当前它不包含任何子组件，而是在 `xRayImagesTable` 表格的选中行变化后被动态填充。
 
 .VisitEdit.java
 [source,java]
@@ -479,17 +490,20 @@ public class VisitEdit extends StandardEditor<Visit> {
     }
 }
 ----
-<1> the table selection event is used to fetch the selected `FileDescriptor` instance (X-Ray image)
-<2> an X-Ray component is placed within the `xrayImageWrapperLayout` as a child component for the selected X-Ray image
-<3> the logic to create the X-Ray image preview component is delegated to the `XrayPreviewComponentFactory` class
+<1> 在表格的 selection  事件中获取选中的 `FileDescriptor` 实体 (X光照片)
+<2> 一个 X-Ray 组件被填充为 `xrayImageWrapperLayout` 的子组件，用于显示选中的 X光照片
+<3> 创建 X-Ray 图片预览组件的逻辑在 `XrayPreviewComponentFactory` 类中实现
 
-Since the X-Ray image preview is also a composition of multiple elements, this logic was once again extracted into a dedicated `Factory` class. The resulting UI layout consists of a `GroupBox` which has the filename as the caption and the image preview as the content:
+由于 X光图片预览也是一个多元素的组合，这个逻被提取到一个专门的 `工厂` 类。 最终UI布局由一个 `GroupBox`  和 `Image` 组件组成。文件显示显示在 `GroupBox` 的标题上， `Image` 组件作为 `GroupBox` 的内容显示。
+
 
 
 image::working-with-images/x-ray-image-component.png[align="center", width="600"]
 
 
-The listing for the `XrayPreviewComponentFactory` contains only the most relevant parts. One important part of the functionality is that it should be able to render either Images or PDF files directly in the browser. This requires a branching logic within the implementation to use the correct UI component based on the file type.
+列出的 `XrayPreviewComponentFactory` 类只包含了最主要的部分。预览功能中一个重要的部分是能同时支持图片和PDF文件的预览。这需要另外一个分支判断去基于文件类型使用正确的UI组件来实现，
+
+
 
 .XrayPreviewComponentFactory.java
 [source,java]
@@ -535,20 +549,24 @@ public class XrayPreviewComponentFactory {
     }
 }
 ----
-<1> GroupBox specific styles will be applied to the wrapper component
-<2> in case of an image, the `Image` component will be used and the `FileDescriptor` will be assigned as a source
-<3> in case of a PDF file, the correct mime type has to be set in order to render the file in the browser inline
 
-With those two parts in place, the preview functionality of the X-Ray Images is complete:
+<1> GroupBox specific styles will be applied to the wrapper component ???? 测试
+<2> 如果是图片, 则使用  `Image` 组件， 源将被设置为 `FileDescriptor`
+<3> 如果是 PDF 文件， 正确的 MIME 类型会被设置以在浏览器中渲染PDF文件
+
+
+实现了以上两部分，X光照片的预览功能就完成了：
 
 image::working-with-images/x-ray-image-preview.png[align="center", link="/guides/images/working-with-images/x-ray-image-preview.png"]
 
 
-=== Download X-Ray Images
+=== 下载 X光照片
 
-The last part of the X-Ray Image preview functionality use case is that it should be possible to download the image files.
+X光照片预览用例的最后一部分是图片文件的下载功能。
 
-To achieve this an additional `download` button and action are placed on top of the `xRayImagesTable`. The controller code uses the `ExportDisplay` bean from CUBA to trigger the download of a FileDescriptor in the browser.
+
+为了实现这个功能，一个额外的 `download` 按钮被在 `xRayImagesTable` 表格的上边。控制器代码中使用了 CUBA 框架提供的 `ExportDisplay` Bean 去触发浏览器中对 FileDescriptor 的下载。
+
 
 .VisitEdit.java
 [source,java]
@@ -569,17 +587,16 @@ public class VisitEdit extends StandardEditor<Visit> {
 }
 ----
 
-The `exportDisplay` bean has multiple options to download a file. The one that is used here takes a `FileDescriptor` instance. `ExportFormat.OCTET_STREAM` indicates that the browser should force the file to be downloaded and not to try to render it within the browser.
+`exportDisplay` bean 对于文件下载有多个选项。这里使用的是接受  `FileDescriptor` 的用法 。`ExportFormat.OCTET_STREAM` 指示浏览器应该强制下载文件而不是将文件渲染在页面中。
 
-== Summary
+== 总结
 
-Image rendering within CUBA applications as well as custom composition of components will enrich the CRUD experience for users immediately. The main building block is the `FileDescriptor` abstraction that all UI components seamlessly integrate with.
+CUBA 应用程序中的图片渲染和自定义元素组件可以有效地提高用户体验。主要的构建块(building block )是 `FileDescriptor` 抽象，所以的UI组件都可以与 `FileDescriptor` 平滑地集成。 ???? 改进
 
-In this guide two use cases were shown. The first one with the Vet avatar image used the standard upload functionality within a `<form />` component and rendered the result as a generated column within a table. Additionally a custom image-aware "PickerField" was created. The second use case used the APIs more directly to upload, preview and download X-Ray images for visits.
+本指南中展示了两个用例。第一个用例中在  `<form />` 组件中使用了标准的上传功能上传兽医头像，并且将头像显示在一个表格的生成列中。 另外创建了一个可以显示图片的 "PickerField"。 第二个用例中更直接地使用了 API 来上传、预览和下载 X光照片。
 
+== 扩展信息
 
-== Further Information
-
-* https://doc.cuba-platform.com/manual-{cuba_version}/gui_FileUploadField.html[CUBA docs: File Upload UI component]
-* https://doc.cuba-platform.com/manual-{cuba_version}/gui_Image.html[CUBA docs: Image UI component]
-* https://www.cuba-platform.com/guides/create-business-logic-in-cuba[CUBA guide: Create business logic in CUBA]
+* https://doc.cuba-platform.com/manual-{cuba_version}/gui_FileUploadField.html[CUBA 文档: 文件上传UI组件]
+* https://doc.cuba-platform.com/manual-{cuba_version}/gui_Image.html[CUBA 文档：Image UI 组件]
+* https://www.cuba-platform.com/guides/create-business-logic-in-cuba[CUBA 指南：在 CUBA 应用程序中创建业务逻辑]
