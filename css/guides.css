@@ -166,6 +166,7 @@ pre.CodeRay {
 .blog .listingblock {
     overflow-x: auto;
     padding: 0;
+    margin-bottom: 1em;
 }
 
 .blog .admonitionblock {
