@@ -122,14 +122,14 @@ CUBA  有一个内置的用于处理 `FileDescriptor`  实例的 UI 组件。这
 
 有几个控制上传组件行为的选项，可在这里找到： https://doc.cuba-platform.com/manual-{cuba_version}/gui_FileUploadField.html[参考文档] 。在当前案例中，使用默认行为就可以了。它允许用户上传、下载、移除和重新上传文件，并且直接将文件附加到编辑界面上的 Vet 实例。
 
-最终用户界面看下来像这样：
+最终用户界面看下来是这样：
 
 image::working-with-images/vet-entity-file-descriptor-reference-ui.png[align="center"]
 
 `fileStoragePutMode` 属性设置为 `IMMEDIAT`  时，文件上传完成后会被持久化并且直接创建一个 `FileDescriptor` 实体实例。这种方式的好处是 Vet 实例会和图片直接关联起来，不需要额外的编程处理。
 
 
-但是，这种方式有一个副作用： 在 Vet 实例没有保存的情况下，文件仍然会被保存到文件系统。这个文件也可以通过 `Administration > External Files` 功能查到。  如果这不期望的行为， 可以将 `fileStoragePutMode` 设置为 `MANUAL` ，这时就需要手动管理文件的持久化。 接下来的用例会描述这种行为的更多细节。
+但是，这种方式有一个副作用： 在 Vet 实例没有保存的情况下，文件仍然会被保存到文件系统。这个文件也可以通过 `Administration > External Files` 功能查到。  如果这不是想要行为， 可以将 `fileStoragePutMode` 设置为 `MANUAL` ，这时就需要手动管理文件的持久化。 接下来的用例会描述这种行为的更多细节。
 
 
 === 在浏览表格中显示兽医的头像
@@ -147,7 +147,7 @@ image::working-with-images/vet-entity-file-descriptor-reference-ui.png[align="ce
 
 在这种情况下，由于 `Vet` 通过 `image` 属性实例持有 `FileDescriptor` 的引用，所以可以直接渲染文件引用的图片。
 
-目标 UI 看起来是这样：
+最终 UI 看起来是这样：
 
 image::working-with-images/vet-avatar-browse-screen.png[align="center", link="/guides/images/working-with-images/vet-avatar-browse-screen.png"]
 
@@ -204,7 +204,7 @@ public class VetBrowse extends StandardLookup<Vet> {
 <3>  UI 基础设施 `uiComponents` bean 是编程方式创建 UI 组件的入口点
 <4> Image 组件通过 `FileDescriptorResource`  变体类型绑定到 `FileDescriptor`
 
-有了这些代码，就可以创建一个 Image 组件、配置好并绑定到 `FileDescriptor` 实例。使用对应的样式名称 `avatar-icon-small`，图片被渲染成上面展示的效果。
+有了这些代码，就可以创建一个 Image 组件、配置好并绑定到 `FileDescriptor` 实例。使用 CSS 类 `avatar-icon-small`，图片就可以渲染成上面展示的效果。
 
 
 === 创建包含头像的兽医 Lookup 组件
@@ -213,18 +213,19 @@ public class VetBrowse extends StandardLookup<Vet> {
 
 image::working-with-images/vet-avatar-example.png[width=300]
 
-This requires to apply the image component in a different way as this component is now a part of the Visit editor inside the `<form />` component.
+在这里需要以另外一种方式应用 image 组件，即将其作为 Visit 编辑界面的一部分放在 `<form />` 组件中。
 
 
-提供这个功能的源码分由两部分组成：
+实现这个功能的源码分由两部分组成：
 
 * `VetEdit` 控制器协调自定义组件的创建和绑定
-* `VetPreviewComponentFactory` 负责使用正确的布局创建上面显示的组件，并且绑定到  `InstanceContainer`  的正确字段
+* `VetPreviewComponentFactory` 负责使用合适的布局创建上面显示的组件，并且绑定到  `InstanceContainer`  的指定字段
 
 
 TIP: A dedicated factory class that defines how the component is created is just one possible option to structure the implementation. It has certain advantages to extract the creating of the component into a dedicated class like encapsulation, separation of concerns and the ability to re-use in other screens. +
  +
 However, it is also possible to include the component creation logic directly into the controller. This variant can be seen as an example on how to structure business logic in the UI layer. More information about this topic can be found in https://www.cuba-platform.com/guides/create-business-logic-in-cuba[Create business logic in CUBA] guide.
+
 
 
 

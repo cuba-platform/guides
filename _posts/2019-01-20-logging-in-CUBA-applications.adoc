@@ -433,7 +433,7 @@ image::application-logging-in-cuba/elasticsearch-kibana-ui-logging.png[Elasticse
 
 == 总结
 
-日志记录是开发人员和管理员为运行中的应用程序查找问题原因的重要部分。 它使开发人员能够通过打开“黑盒子”并获得有价值的信息。The use cases go from debugging over performance analysis to observing user behavior。????
+日志记录是开发人员和管理员为运行中的应用程序查找问题原因的重要部分。 它使开发人员能够打开“黑盒子”并获得有价值的信息。The use cases go from debugging over performance analysis to observing user behavior。????
 
 Java 和 CUBA 生态系统中的日志记录工具非常成熟，可以毫无障碍地使用。 但由于日志 API 非常通用且可以多种方式使用，能否在应用程序中获得高质量的日志信息，很大程度上取决于对于日志 API 的使用约定。 有多种机制可以避免在巨量的日志信息中迷失自我，比如对日志进行恰当的配置、使用诊断上下文(MDC) 和日志级别。
 
