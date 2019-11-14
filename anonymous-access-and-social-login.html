@@ -1,0 +1,2066 @@
+<!doctype html>
+<!--[if IE 9]>
+<html class="lt-ie10" lang="en"> <![endif]-->
+<html class="no-js" lang="en" data-useragent="Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anonymous Access &amp; Social Login</title>
+    <meta name="description" content="The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.">
+    <meta name="author" content="Haulmont">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@CubaPlatform">
+    <meta name="twitter:creator" content="@CubaPlatform">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Anonymous Access &amp; Social Login">
+    <meta property="og:description" content="In this guide the anonymous access feature and social login implementation are explained">
+    <meta property="og:url" content="https://www.cuba-platform.com/guides/anonymous-access-and-social-login">
+    <meta property="og:image" content="">
+
+    <link rel="shortcut icon" href="/guides/images/favicon.png" type="image/png" />
+    <link rel="stylesheet" href="/guides/css/foundation.css">
+    <link rel="stylesheet" href="/guides/css/font-awesome.css">
+    <link rel="stylesheet" href="/guides/css/coderay.css">
+    <link rel="stylesheet" href="/guides/css/bootstrap.css">
+    <link rel="stylesheet" href="https://www.cuba-platform.com/sites/all/themes/cuba_adaptive/css/reset.css">
+    <link rel="stylesheet" href="https://www.cuba-platform.com/sites/all/themes/cuba_adaptive/css/animate.css">
+    <link rel="stylesheet" href="/guides/css/extra.css">
+    <link rel="stylesheet" href="/guides/css/extra2.css">
+    <link rel="stylesheet" href="/guides/css/cuba-new.css">
+    <link rel="stylesheet" href="/guides/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/guides/css/guides.css">
+    <script src="/guides/js/jquery_v2.1.min.js"></script>
+    <link rel="stylesheet" href="/guides/css/main.css" />
+</head>
+<body class="html not-front not-logged-in no-sidebars page-node page-node- page-node-962 node-type-blog-post i18n-en">
+
+<section id="wrapper">
+    
+<header role="banner" fragment="14269c1b298" class="header">
+    <nav class="header_nav">
+        <input id="mobile-menu-open" type="checkbox" class="header_checkbox">
+        <div class="container header_container">
+            <div class="header_toggle">
+                <label for="mobile-menu-open"
+                       class="header_toggle-label toggle-label">
+                    <span>CUBA.platform</span>
+                </label>
+            </div>
+            <a href="/" class="header_logo nuxt-link-active">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon -logo header_logo_src">
+                    <g fill-rule="nonzero" fill="none"><path d="M54.873 26.004a6.52 6.52 0 0 1-.843.189c-.341.059-.72.105-1.134.145-.41.046-.838.078-1.285.096a25.86 25.86 0 0 1-1.302.036 18.548 18.548 0 0 1-2.961-.204c-.897-.147-1.699-.388-2.396-.738a5.162 5.162 0 0 1-1.772-1.435c-.483-.611-.852-1.385-1.102-2.319-.25-.93-.379-2.055-.379-3.366v-3.99c0-1.312.128-2.437.379-3.367.25-.934.62-1.708 1.102-2.318a5.166 5.166 0 0 1 1.772-1.435c.697-.351 1.499-.597 2.396-.739.893-.14 1.881-.209 2.96-.205a26.346 26.346 0 0 1 2.587.127c.415.041.794.092 1.135.151.337.054.62.118.843.186v3.471c-.223-.022-.519-.04-.883-.063-.36-.023-.752-.046-1.175-.064-.42-.019-.825-.037-1.226-.046a29.918 29.918 0 0 0-1.034-.018c-.524-.004-.998.009-1.421.045a3.493 3.493 0 0 0-1.116.269c-.324.141-.588.37-.807.679-.214.305-.373.728-.482 1.27-.11.538-.164 1.221-.164 2.055v3.99c0 .829.054 1.517.164 2.055.11.537.268.96.482 1.27.22.31.483.538.807.68.319.14.692.227 1.116.268.423.036.897.05 1.42.046.607-.005 1.28-.032 2.014-.083.738-.05 1.507-.104 2.305-.164v3.526zm17.864-6.833c0 1.39-.178 2.556-.524 3.504-.35.952-.865 1.707-1.548 2.277-.683.57-1.526.98-2.528 1.23s-2.155.373-3.462.369c-1.308.004-2.46-.119-3.466-.37-1.002-.25-1.85-.66-2.538-1.229-.683-.57-1.202-1.325-1.557-2.277-.351-.948-.529-2.114-.529-3.504V6.681h4.837V19.09c-.004.869.087 1.567.283 2.095.196.524.533.906 1.011 1.138.474.238 1.126.351 1.959.347.834.004 1.485-.11 1.963-.347.474-.232.811-.614 1.007-1.138.196-.528.292-1.226.282-2.095V6.682h4.81v12.49zm18.056 1.477c0 .97-.109 1.78-.322 2.44-.214.661-.542 1.194-.975 1.604-.438.41-.984.72-1.64.933-.66.214-1.43.36-2.314.433-.888.078-1.886.114-3.002.11h-7.297V6.68h7.57c.938-.004 1.808.024 2.61.087.797.064 1.521.187 2.159.374.642.186 1.189.464 1.644.833.451.364.797.852 1.039 1.458.241.6.364 1.352.364 2.25v.656a5.916 5.916 0 0 1-.178 1.526 3.311 3.311 0 0 1-.655 1.285c-.314.382-.756.7-1.326.96.633.22 1.116.507 1.453.857.337.355.57.766.692 1.235.128.473.187.997.178 1.571v.875zm-4.755 0v-.875c.01-.57-.087-1.011-.273-1.326-.192-.314-.52-.533-.98-.656-.464-.122-1.102-.182-1.917-.177h-2.897v5.22h2.787c.807.005 1.449-.05 1.932-.164.482-.119.828-.337 1.038-.656.21-.314.314-.77.31-1.366zm-.083-8.117v-.656c.005-.346-.032-.638-.114-.87a1.039 1.039 0 0 0-.442-.556c-.218-.136-.528-.232-.929-.291-.405-.06-.929-.087-1.576-.087H79.97v4.646h2.924c.624 0 1.14-.041 1.54-.127.4-.082.71-.214.934-.392.223-.178.378-.405.465-.679.086-.277.127-.605.122-.988zm23.768 13.637h-5.11l-1.23-4.701h-5.465l-1.257 4.701h-5.139l5.275-19.486h7.625l5.301 19.486zm-7.024-8.253l-1.366-5.384a25.385 25.385 0 0 1-.36-1.608c-.105-.542-.201-1.066-.296-1.562h-.11c-.091.496-.186 1.02-.282 1.562a22.55 22.55 0 0 1-.346 1.608l-1.394 5.384h4.154zm-68.563-2.881a4.166 4.166 0 0 1 0 5.891l-7.502 7.504.012-.04L30.67 13.37a3.407 3.407 0 0 0-.015-1.817l3.481 3.48zM5.001 22.59a3.413 3.413 0 0 0 .015 1.817l-3.481-3.481a4.165 4.165 0 0 1 0-5.892L9.038 7.53l-.013.04-4.024 15.02zm8.225-17.444a3.406 3.406 0 0 0-1.818.015L14.89 1.68a4.166 4.166 0 0 1 5.892 0l7.503 7.503c-.014-.004-.026-.009-.04-.012L13.226 5.146zm9.22 25.669a3.407 3.407 0 0 0 1.816-.015l-3.48 3.481a4.166 4.166 0 0 1-5.892 0l-7.503-7.503c.013.003.026.01.04.013l15.018 4.024z" fill="#605D5C"/><path d="M14.467 27.358a2.506 2.506 0 0 1-3.07-1.772L8.457 14.61a2.507 2.507 0 0 1 1.772-3.07L21.204 8.6a2.506 2.506 0 0 1 3.07 1.773l2.94 10.974a2.507 2.507 0 0 1-1.771 3.07l-10.976 2.94zm101.2-1.19v-3.663h-2.596v3.663h2.596zm13.176-5.575V16.93c0-1.034-.09-1.913-.273-2.629-.182-.715-.465-1.293-.843-1.73a3.26 3.26 0 0 0-1.453-.953c-.592-.196-1.294-.296-2.104-.291-.42 0-.884.054-1.394.155-.514.1-1.035.246-1.558.428a9.6 9.6 0 0 0-1.449.647v-.902h-2.296v20.087l2.514-.41v-5.028c.416.068.875.118 1.376.146.502.031 1.012.045 1.522.045.72.005 1.385-.04 1.994-.141a5.576 5.576 0 0 0 1.65-.51 3.657 3.657 0 0 0 1.248-1.039c.345-.441.606-1.012.788-1.7.182-.692.278-1.53.278-2.513zm-2.54-.055c0 .833-.088 1.512-.252 2.027-.164.52-.4.916-.705 1.19a2.45 2.45 0 0 1-1.093.555 6.278 6.278 0 0 1-1.421.136 25.165 25.165 0 0 1-1.709-.059c-.337-.028-.727-.059-1.16-.105V14.28c.36-.173.755-.328 1.18-.464.427-.137.855-.241 1.284-.319.427-.077.829-.118 1.198-.118.72-.005 1.275.114 1.667.36.387.245.656.65.801 1.22.151.565.219 1.321.21 2.273v3.307zm6.644 5.63V5.67l-2.514.41v20.088h2.514zm12.41 0v-9.811a11.766 11.766 0 0 0-.118-1.836 4.243 4.243 0 0 0-.45-1.412 2.668 2.668 0 0 0-.92-.994c-.397-.264-.907-.464-1.531-.592-.624-.132-1.384-.196-2.281-.196-.525 0-1.03.028-1.518.073-.487.046-.942.1-1.357.169-.415.068-.77.136-1.075.21a7.16 7.16 0 0 0-.67.177v1.64c.142-.023.365-.046.665-.077.296-.032.648-.06 1.053-.091.4-.027.82-.055 1.266-.073.441-.023.879-.032 1.308-.032.678-.005 1.225.041 1.639.132.414.09.729.246.943.474.214.223.355.533.433.929.073.391.104.892.1 1.499v1.093l-2.406.273c-.97.11-1.825.237-2.572.388-.744.15-1.368.364-1.873.647-.51.282-.893.674-1.147 1.175-.26.501-.392 1.161-.392 1.972v1.038c.004.834.154 1.517.45 2.041.3.52.738.907 1.312 1.148.57.246 1.271.37 2.09.365a8.018 8.018 0 0 0 2.424-.396c.806-.26 1.59-.61 2.36-1.052v1.12h2.268v-.001zm-2.459-2.57c-.168.1-.392.21-.679.333-.282.123-.606.242-.96.36-.356.114-.725.21-1.104.282-.382.078-.75.114-1.11.118a3.565 3.565 0 0 1-1.111-.14c-.32-.1-.57-.287-.748-.556-.178-.27-.27-.656-.273-1.162v-.847c-.004-.492.054-.888.173-1.188.119-.297.323-.529.607-.693.28-.164.668-.292 1.156-.383.492-.09 1.102-.173 1.836-.25l2.213-.246V23.6zm11.839 2.543v-1.695c-.151.019-.347.036-.588.055-.242.013-.502.027-.775.037-.269.013-.528.017-.769.017-.452.005-.783-.04-1.002-.14-.224-.101-.37-.284-.438-.548-.068-.264-.096-.646-.091-1.143v-9.046h3.69l.601-2.023h-4.291V7.94l-2.515.437v3.28h-2.76v2.022h2.76v9.155c-.004.939.106 1.677.333 2.214.227.533.606.911 1.13 1.13.524.219 1.23.328 2.118.319.378 0 .738-.023 1.08-.064.342-.036.647-.086.911-.136.264-.055.464-.11.606-.155zm9.131-14.486h-4.018V9.961c-.004-.437.01-.815.041-1.13.032-.318.101-.578.209-.784a.99.99 0 0 1 .502-.455c.224-.1.528-.146.916-.146.277 0 .56 0 .851.01.292.004.57.013.83.027.258.009.483.027.669.045V5.916a9.17 9.17 0 0 0-.738-.155c-.3-.055-.633-.1-.993-.142a11.03 11.03 0 0 0-1.083-.059c-.82.005-1.481.11-1.983.328-.496.214-.873.514-1.13.906a3.564 3.564 0 0 0-.514 1.394 10.668 10.668 0 0 0-.118 1.772v1.694h-2.597v2.023h2.597v12.49h2.541v-12.49h3.471l.547-2.022zm11.618 9.102v-3.69c-.004-1.371-.24-2.477-.71-3.32a4.141 4.141 0 0 0-2.04-1.85c-.898-.383-1.982-.574-3.262-.569-1.289-.005-2.378.186-3.27.57a4.144 4.144 0 0 0-2.041 1.849c-.465.843-.697 1.949-.701 3.32v3.69c.004 1.37.236 2.477.7 3.32a4.142 4.142 0 0 0 2.042 1.85c.892.382 1.981.574 3.27.569 1.28.005 2.364-.187 3.261-.57a4.135 4.135 0 0 0 2.04-1.849c.47-.843.707-1.95.711-3.32zm-2.514-.164c0 .788-.086 1.435-.254 1.936-.169.501-.405.893-.716 1.166-.309.274-.679.464-1.107.574a5.692 5.692 0 0 1-1.42.15 5.769 5.769 0 0 1-1.427-.15c-.432-.109-.801-.3-1.115-.574-.315-.274-.557-.665-.724-1.166-.175-.501-.26-1.148-.26-1.936V17.23c0-.783.085-1.42.26-1.922.167-.506.41-.893.724-1.17.314-.278.683-.47 1.115-.579.429-.11.907-.16 1.426-.155.52-.004.998.046 1.42.155.43.11.799.3 1.108.579.31.278.547.665.716 1.17.168.501.254 1.139.254 1.922v3.362zm11.4-6.833v-2.432a7.554 7.554 0 0 0-.674.027 8.754 8.754 0 0 0-1.193.187c-.47.105-.975.273-1.518.51a7.904 7.904 0 0 0-1.644.998v-1.393h-2.322v14.512h2.514V14.963a6.418 6.418 0 0 1 1.435-.697 9.426 9.426 0 0 1 1.444-.355 11.854 11.854 0 0 1 1.959-.151zm19.271 12.408v-10.03c.01-.747-.032-1.417-.122-2.01-.087-.591-.265-1.097-.53-1.511-.264-.42-.66-.738-1.179-.957-.523-.218-1.215-.333-2.077-.333a6.518 6.518 0 0 0-2.377.47 8.71 8.71 0 0 0-2.132 1.225c-.297-.61-.706-1.043-1.23-1.307-.523-.264-1.179-.392-1.967-.387-.501 0-1.015.069-1.536.2-.519.128-1.029.31-1.53.547a9.467 9.467 0 0 0-1.444.839v-1.257h-2.377v14.512h2.514V14.69c.387-.186.793-.368 1.22-.547.429-.181.857-.328 1.275-.446a4.49 4.49 0 0 1 1.167-.182c.405-.005.733.041.974.127a1 1 0 0 1 .542.437c.119.201.201.47.237.807.036.337.055.756.05 1.252v10.03h2.514v-10.03c0-.21 0-.437-.004-.679 0-.246-.01-.496-.022-.742.359-.205.737-.396 1.138-.578.4-.182.806-.333 1.212-.446a4.524 4.524 0 0 1 1.174-.178c.552-.005.971.068 1.258.227.291.155.488.428.591.82.105.392.155.934.147 1.631v9.976h2.514v-.001z" fill="#006BAC"/></g></symbol>
+                </svg>
+            </a>
+            <ul class="header_menu">
+                <li class="header_menu_item"><a href="/framework/" class="header_menu_link">Framework</a></li>
+                <li class="header_menu_item"><a href="/learn/" class="header_menu_link nuxt-link-active">Learn</a></li>
+                <li class="header_menu_item"><a href="/documentation/" class="header_menu_link">Documentation</a></li>
+                <li class="header_menu_item"><a href="/discuss/" class="header_menu_link">Forum</a></li>
+                <li class="header_menu_item"><a href="/blog/" class="header_menu_link">Blog</a></li>
+            </ul>
+            <div class="header-support">
+                <button class="header-support_toggle">
+                <svg xmlns="http://www.w3.org/2000/svg" id="i-users" viewBox="0 0 22 18" width="100%" height="100%" class="icon -support header-support_toggle_icon">
+                    <path d="M3.3 7.875c1.212 0 2.2-1.008 2.2-2.25s-.988-2.25-2.2-2.25c-1.214 0-2.198 1.008-2.198 2.25s.984 2.25 2.199 2.25zm15.4 0c1.214 0 2.198-1.008 2.198-2.25s-.984-2.25-2.199-2.25c-1.21 0-2.199 1.008-2.199 2.25s.988 2.25 2.2 2.25zM19.8 9h-2.198c-.606 0-1.153.25-1.551.652a5.156 5.156 0 0 1 2.582 3.848h2.265c.61 0 1.102-.504 1.102-1.125V11.25C22 10.008 21.012 9 19.8 9zM11 9c2.129 0 3.852-1.762 3.852-3.938 0-2.175-1.723-3.937-3.852-3.937-2.129 0-3.852 1.762-3.852 3.938C7.148 7.237 8.871 9 11 9zm2.64 1.125h-.285a5.325 5.325 0 0 1-2.355.563c-.844 0-1.637-.211-2.355-.563h-.286c-2.187 0-3.96 1.813-3.96 4.05v1.012c0 .93.742 1.688 1.652 1.688h9.898c.91 0 1.653-.758 1.653-1.688v-1.011c0-2.239-1.774-4.051-3.961-4.051zm-7.69-.473A2.175 2.175 0 0 0 4.397 9H2.2C.99 9 0 10.008 0 11.25v1.125c0 .621.492 1.125 1.102 1.125h2.265A5.156 5.156 0 0 1 5.95 9.652zm0 0"></path>
+                </svg>
+                <span class="header-support_toggle_text">Services</span></button>
+                <div class="header-support_popup">
+                    <div class="support-popup">
+                        <div class="support-popup_services">
+                            <h3 class="support-popup_services_title">Commercial services for your project</h3>
+                            <ul class="services-list">
+                                <li class="services-list_item"><a href="/support-options/"><strong
+                                        class="services-list_title">Consultancy &amp; Support</strong>
+                                    <div class="services-list_text">
+                                        <div><p>Commercial consulting requests have a guaranteed response
+                                            time.</p>
+                                        </div>
+                                    </div>
+                                </a></li>
+                                <li class="services-list_item"><a href="/development/"><strong
+                                        class="services-list_title">Custom Development</strong>
+                                    <div class="services-list_text">
+                                        <div><p>We can deliver a turn key solution or contribute to your
+                                            project</p>
+                                        </div>
+                                    </div>
+                                </a></li>
+                                <li class="services-list_item"><a href="/training/"><strong
+                                        class="services-list_title">Training</strong>
+                                    <div class="services-list_text">
+                                        <div><p>For fast and deep dive into framework features to shift your
+                                            team productivity.</p>
+                                        </div>
+                                    </div>
+                                </a></li>
+                            </ul>
+                        </div>
+                        <div class="support-popup_haulmont">
+                            <div class="support-popup_haulmont_header"><h3 class="support-popup_haulmont_title">
+                                Haulmont</h3>
+                                <div class="support-popup_haulmont_subtitle">we develop modern enterprise
+                                    solutions
+                                </div>
+                            </div>
+                            <ul class="haulmont-list">
+                                <li class="haulmont-list_item">
+                                    <div><p>Experts in Enterprise software</p>
+                                    </div>
+                                </li>
+                                <li class="haulmont-list_item">
+                                    <div><p>Creators of the CUBA Platform</p>
+                                    </div>
+                                </li>
+                                <li class="haulmont-list_item">
+                                    <div><p>Established in 2008</p>
+                                    </div>
+                                </li>
+                            </ul>
+                            <ul class="numbers-list">
+                                <li class="numbers-list_item"><strong class="numbers-list_number">300+</strong>
+                                    <div class="numbers-list_text">developers</div>
+                                </li>
+                                <li class="numbers-list_item"><strong class="numbers-list_number">400+</strong>
+                                    <div class="numbers-list_text">projects</div>
+                                </li>
+                                <li class="numbers-list_item">
+                                    <div class="numbers-list_text">Customers in</div>
+                                    <strong class="numbers-list_number">60+</strong>
+                                    <div class="numbers-list_text">countries</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <a href="/user/" class="header_profile">
+                <svg xmlns="http://www.w3.org/2000/svg" id="i-profile" class="icon header_profile_src" viewBox="0 0 563.43 563.43" width="100%" height="100%">
+                    <path d="M280.79 314.559c83.266 0 150.803-67.538 150.803-150.803S364.055 13.415 280.79 13.415 129.987 80.953 129.987 163.756s67.537 150.803 150.803 150.803zm0-261.824c61.061 0 111.021 49.959 111.021 111.021s-49.96 111.02-111.021 111.02-111.021-49.959-111.021-111.021 49.959-111.02 111.021-111.02zM19.891 550.015h523.648c11.102 0 19.891-8.789 19.891-19.891 0-104.082-84.653-189.198-189.198-189.198H189.198C85.116 340.926 0 425.579 0 530.124c0 11.102 8.789 19.891 19.891 19.891zm169.307-169.307h185.034c75.864 0 138.313 56.436 148.028 129.524H41.17c9.714-72.625 72.164-129.524 148.028-129.524z"></path>
+                </svg>
+            </a>
+        </div>
+    </nav>
+    <nav class="header-submenu">
+        <div class="container header-submenu_container">
+            <a href="/learn/quickstart/" class="header-submenu_link">Quick Start</a>
+            <a href="/learn/live-demo/" class="header-submenu_link">Live Demo</a>
+            <a href="/guides/" class="header-submenu_link nuxt-link-exact-active nuxt-link-active">Guides</a>
+        </div>
+    </nav>
+</header>
+
+<style>
+    .upper-header .header-options {
+        display: none;
+    }
+
+    .upper-header .upper-header-wrapper .header-menu div .nav > li:last-child > a {
+        padding-right: 0;
+    }
+</style>
+
+
+    <!-- Main Page Content and Sidebar -->
+    <div class="content-wrapper">
+        <div class="cuba-container text-node blog">
+
+
+
+            <!-- Main content (left column) -->
+            <div class="region region-content">
+
+
+
+                <section id="block-system-main" class="block block-system clearfix">
+                    <div id="node-962" class="article node node-blog-post node-promoted clearfix">
+                        <div class="content">
+                            <div class="field field-name-body field-type-text-with-summary field-label-hidden">
+                                <div class="field-items">
+                                    <div class="field-item even" property="content: encoded">
+                                        <h1>Anonymous Access &amp; Social Login</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Applications such as an online stores provide users the ability
+to view a list of available products, read their description, or compare
+with each other without logging in. But in order to make a purchase the users usually have to register, and using a social network account is the most convenient way to do it.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="what_will_be_built"><a class="anchor" href="#what_will_be_built"></a><a class="link" href="#what_will_be_built">What Will Be Built</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This guide enhances the CUBA Petclinic example to demonstrate how to enable
+application public access and allow users to register via social services.</p>
+</div>
+<div class="paragraph">
+<p>In particular, the following topics will be covered:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Anonymous access</p>
+</li>
+<li>
+<p>Custom Login Dialog</p>
+</li>
+<li>
+<p>OAuth Web Flow</p>
+</li>
+<li>
+<p>Social Login</p>
+</li>
+<li>
+<p>Auto-registration</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="final_application"><a class="anchor" href="#final_application"></a><a class="link" href="#final_application">Final Application</a></h3>
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-social-login/master/img/cuba-petclinic-overview.gif">
+  <img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-social-login/master/img/login-dialog.png"/>
+</a>
+</div>
+<div class="sect2">
+<h3 id="requirements"><a class="anchor" href="#requirements"></a><a class="link" href="#requirements">Requirements</a></h3>
+<div class="paragraph">
+<p>Your development environment requires to contain the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.oracle.com/technetwork/java/javase/downloads/index.html">JDK 1.8</a></p>
+</li>
+<li>
+<p>a text editor or IDE (<a href="https://www.jetbrains.com/idea/download/">IntelliJ IDEA</a> preferred)</p>
+</li>
+<li>
+<p><a href="https://www.cuba-platform.com/download">CUBA Studio</a> as standalone IDE or as an IDEA plugin (optional)</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-platform/cuba-cli/wiki/Installation">CUBA CLI</a> (optional)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-social-login/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
+</div>
+<div class="paragraph">
+<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-social-login.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-social-login.git</a></code></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="example_cuba_petclinic"><a class="anchor" href="#example_cuba_petclinic"></a><a class="link" href="#example_cuba_petclinic">Example: CUBA petclinic</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The project that is the basis for this example is <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a>. It is based on the commonly known <a href="https://github.com/spring-projects/spring-petclinic">Spring Petclinic</a>. The CUBA Petclinic application deals with the domain of a Pet clinic and the associated business workflows to manage a pet clinic.</p>
+</div>
+<div class="paragraph">
+<p>The underlying domain model for the application looks like this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/guides/images/domain-model.png" alt="Domain model">
+</div>
+</div>
+<div class="paragraph">
+<p>The main entities are <strong>Pet</strong> and <strong>Visit</strong>. A Pet is visiting the petclinic and during this Visit a Vet is taking care of it. A Pet belongs to an Owner, which can hold multiple pets. The visit describes the act of a pet visiting the clinic with the help of its owner.</p>
+</div>
+<a href="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/login-screen.png"/></a>
+</div>
+</div>
+<div class="sect1">
+<h2 id="public_access"><a class="anchor" href="#public_access"></a><a class="link" href="#public_access">Public Access</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Oftentimes CRM like applications have an info or features that should be available for
+both authenticated and anonymous users - products, services, etc.
+This scenario is also relevant for dashboards, contacts or support pages.
+In this guide we will provide an ability to view a list of veterinarians working
+in clinic and pets that can be brought for treatment without logging in
+to the application, i.e. work in app as anonymous.</p>
+</div>
+<div class="paragraph">
+<p>Since version 7.1 CUBA provides more flexible approach to create publicly
+available screens that can be easily managed with built-in security subsystem.
+We will use it to provide access for Anonymous user.</p>
+</div>
+<div class="paragraph">
+<p>Let’s begin.</p>
+</div>
+<div class="sect2">
+<h3 id="setting_up_anonymous_access"><a class="anchor" href="#setting_up_anonymous_access"></a><a class="link" href="#setting_up_anonymous_access">Setting up Anonymous Access</a></h3>
+<div class="paragraph">
+<p>The first thing that should be done is to enable anonymous access via application properties:</p>
+</div>
+<div class="listingblock">
+<div class="title">web-app.properties</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="properties">cuba.web.allowAnonymousAccess = true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When this setting is on and the current user session is not authenticated (i.e. not logged in),
+the application will check permissions of the anonymous user to this screen instead of redirecting to the login screen.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="initial_screen"><a class="anchor" href="#initial_screen"></a><a class="link" href="#initial_screen">Initial Screen</a></h3>
+<div class="paragraph">
+<p>Next step is to configure a screen that will be opened by default:</p>
+</div>
+<div class="listingblock">
+<div class="title">web-app.properties</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="properties">cuba.web.initialScreenId = main</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And now we have a first result:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/anonymous-access-and-social-login/initial-screen.png" alt="initial screen">
+</div>
+</div>
+<div class="paragraph">
+<p>Main screen with empty side menu is opened. But it’s not very interesting
+to see a blank page - let’s set up permissions for anonymous users.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="anonymous_permissions"><a class="anchor" href="#anonymous_permissions"></a><a class="link" href="#anonymous_permissions">Anonymous Permissions</a></h3>
+<div class="paragraph">
+<p>Click the Login button in side menu to proceed to login screen and enter the system as administrator.
+Open “Role” browser and edit “Anonymous” role.</p>
+</div>
+<div class="paragraph">
+<p>Permit all required menu items and screens:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/anonymous-access-and-social-login/screen-permissions.png" alt="screen permissions">
+</div>
+</div>
+<div class="paragraph">
+<p>And give permissions to read corresponding entities:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/anonymous-access-and-social-login/entity-permissions.png" alt="entity permissions">
+</div>
+</div>
+<div class="paragraph">
+<p>And restart the app. Now anonymous users can view the list of veterinarians:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/anonymous-access-and-social-login/pemitted-screens.png" alt="pemitted screens">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="screen_routes"><a class="anchor" href="#screen_routes"></a><a class="link" href="#screen_routes">Screen Routes</a></h3>
+<div class="paragraph">
+<p>CUBA Navigation feature also supports anonymous access, so let’s register routes
+for our screens to be able to open screens directly. It can be done with <code>@Route</code> annotation:</p>
+</div>
+<div class="listingblock">
+<div class="title">VetBrowse.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Route</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">vets</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@UiController</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_Vet.browse</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">vet-browse.xml</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@LookupComponent</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">vetsTable</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@LoadDataBeforeShow</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">VetBrowse</span> <span class="directive">extends</span> StandardLookup&lt;Vet&gt; {
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Add routes for other screens in the same way:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>@Route("pet-types")</code> for <code>PetTypeBrowse</code></p>
+</li>
+<li>
+<p><code>@Route("specs")</code> for <code>SpecialtyBrowse</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Restart the app and try to open Vets screen using the following link:</p>
+</div>
+<a href="http://localhost:8080/petclinic/#main/vets">http://localhost:8080/petclinic/#main/vets</a>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/anonymous-access-and-social-login/screen-routes.png" alt="screen routes">
+</div>
+</div>
+<div class="paragraph">
+<p>Now users can view list of veterinarians without logging in to the application,
+bookmark available pages or share links with friends.
+Other public pages also can be navigated as usual, but if a user tries to open not permitted screens
+they will be redirected to the login screen.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="login_dialog"><a class="anchor" href="#login_dialog"></a><a class="link" href="#login_dialog">Login Dialog</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Default login process in CUBA application requires redirecting to a separate screen.
+In this section, we&#8217;ll demonstrate how to implement login using a modal dialog. Later we will place social buttons on this dialog.</p>
+</div>
+<div class="sect2">
+<h3 id="extended_main_screen"><a class="anchor" href="#extended_main_screen"></a><a class="link" href="#extended_main_screen">Extended Main Screen</a></h3>
+<div class="paragraph">
+<p>Let’s begin with extending default Main Screen. Open “New Screen” dialog in CUBA Studio
+and choose a template named “Main screen with side menu”. You may notice that the screen layout
+has a new component - <code>UserActionsButton</code>. It combines “log in” action for anonymous users
+and allows logged in users to open the "Settings" screen or to log out.</p>
+</div>
+<div class="paragraph">
+<p>The <code>UserActionsButton</code> component has a few extension points to override default behavior
+for login and logout actions. It allows us to define our custom logic to open
+dialog - add custom login handler via <code>@Install</code> annotation:</p>
+</div>
+<div class="listingblock">
+<div class="title">ExtMainScreen.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@UiController</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">main</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">ext-main-screen.xml</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">ExtMainScreen</span> <span class="directive">extends</span> MainScreen {
+
+    <span class="annotation">@Install</span>(to = <span class="string"><span class="delimiter">&quot;</span><span class="content">userActionsButton</span><span class="delimiter">&quot;</span></span>, subject = <span class="string"><span class="delimiter">&quot;</span><span class="content">loginHandler</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">private</span> <span class="type">void</span> loginHandler(UserActionsButton.LoginHandlerContext ctx) {
+        <span class="comment">// will open login dialog later</span>
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="login_dialog_2"><a class="anchor" href="#login_dialog_2"></a><a class="link" href="#login_dialog_2">Login Dialog</a></h3>
+<div class="paragraph">
+<p>New login dialog will be simplified version of default login screen, so start
+with creating new blank screen. Make <code>LoginDialog</code> extend <code>LoginScreen</code> to re-use login process logic:</p>
+</div>
+<div class="listingblock">
+<div class="title">LoginDialog.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">login-dialog.xml</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@UiController</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">LoginDialog</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">LoginDialog</span> <span class="directive">extends</span> LoginScreen {
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Dialog layout is just a login form copied from default login screen:</p>
+</div>
+<div class="listingblock">
+<div class="title">login-dialog.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;window</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://schemas.haulmont.com/cuba/screen/window.xsd</span><span class="delimiter">&quot;</span></span>
+        <span class="attribute-name">caption</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">mainMsg://loginWindow.loginField</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+
+    <span class="tag">&lt;actions&gt;</span>
+        <span class="tag">&lt;action</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">submit</span><span class="delimiter">&quot;</span></span>
+                <span class="attribute-name">caption</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">mainMsg://loginWindow.okButton</span><span class="delimiter">&quot;</span></span>
+                <span class="attribute-name">icon</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">app/images/login-button.png</span><span class="delimiter">&quot;</span></span>
+                <span class="attribute-name">invoke</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">performLogin</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">shortcut</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">ENTER</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;/actions&gt;</span>
+
+    <span class="tag">&lt;layout&gt;</span>
+        <span class="tag">&lt;vbox</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">loginMainBox</span><span class="delimiter">&quot;</span></span>
+              <span class="attribute-name">align</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">MIDDLE_CENTER</span><span class="delimiter">&quot;</span></span>
+              <span class="attribute-name">margin</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span>
+              <span class="attribute-name">width</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">320</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+            <span class="tag">&lt;hbox</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">loginTitleBox</span><span class="delimiter">&quot;</span></span>
+                  <span class="attribute-name">align</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">MIDDLE_CENTER</span><span class="delimiter">&quot;</span></span>
+                  <span class="attribute-name">spacing</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span>
+                  <span class="attribute-name">stylename</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">c-login-title</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+                <span class="tag">&lt;image</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">logoImage</span><span class="delimiter">&quot;</span></span>
+                       <span class="attribute-name">align</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">MIDDLE_LEFT</span><span class="delimiter">&quot;</span></span>
+                       <span class="attribute-name">height</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">AUTO</span><span class="delimiter">&quot;</span></span>
+                       <span class="attribute-name">scaleMode</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">SCALE_DOWN</span><span class="delimiter">&quot;</span></span>
+                       <span class="attribute-name">stylename</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">c-login-icon</span><span class="delimiter">&quot;</span></span>
+                       <span class="attribute-name">width</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">AUTO</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+
+                <span class="tag">&lt;label</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">welcomeLabel</span><span class="delimiter">&quot;</span></span>
+                       <span class="attribute-name">align</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">MIDDLE_LEFT</span><span class="delimiter">&quot;</span></span>
+                       <span class="attribute-name">stylename</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">c-login-caption</span><span class="delimiter">&quot;</span></span>
+                       <span class="attribute-name">value</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">mainMsg://loginDialog.label</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+            <span class="tag">&lt;/hbox&gt;</span>
+
+            <span class="tag">&lt;capsLockIndicator</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">capsLockIndicator</span><span class="delimiter">&quot;</span></span>
+                               <span class="attribute-name">align</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">MIDDLE_CENTER</span><span class="delimiter">&quot;</span></span>
+                               <span class="attribute-name">stylename</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">c-login-capslockindicator</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+            <span class="tag">&lt;vbox</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">loginForm</span><span class="delimiter">&quot;</span></span>
+                  <span class="attribute-name">spacing</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span>
+                  <span class="attribute-name">stylename</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">c-login-form</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+                <span class="tag">&lt;cssLayout</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">loginCredentials</span><span class="delimiter">&quot;</span></span>
+                           <span class="attribute-name">stylename</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">c-login-credentials</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+                    <span class="tag">&lt;textField</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">loginField</span><span class="delimiter">&quot;</span></span>
+                               <span class="attribute-name">htmlName</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">loginField</span><span class="delimiter">&quot;</span></span>
+                               <span class="attribute-name">inputPrompt</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">mainMsg://loginWindow.loginPlaceholder</span><span class="delimiter">&quot;</span></span>
+                               <span class="attribute-name">stylename</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">c-login-username</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+                    <span class="tag">&lt;passwordField</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">passwordField</span><span class="delimiter">&quot;</span></span>
+                                   <span class="attribute-name">autocomplete</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span>
+                                   <span class="attribute-name">htmlName</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">passwordField</span><span class="delimiter">&quot;</span></span>
+                                   <span class="attribute-name">inputPrompt</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">mainMsg://loginWindow.passwordPlaceholder</span><span class="delimiter">&quot;</span></span>
+                                   <span class="attribute-name">capsLockIndicator</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">capsLockIndicator</span><span class="delimiter">&quot;</span></span>
+                                   <span class="attribute-name">stylename</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">c-login-password</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+                <span class="tag">&lt;/cssLayout&gt;</span>
+                <span class="tag">&lt;hbox</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">rememberLocalesBox</span><span class="delimiter">&quot;</span></span>
+                      <span class="attribute-name">stylename</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">c-login-remember-locales</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+                    <span class="tag">&lt;checkBox</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">rememberMeCheckBox</span><span class="delimiter">&quot;</span></span>
+                              <span class="attribute-name">caption</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">mainMsg://loginWindow.rememberMe</span><span class="delimiter">&quot;</span></span>
+                              <span class="attribute-name">stylename</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">c-login-remember-me</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+                    <span class="tag">&lt;lookupField</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">localesSelect</span><span class="delimiter">&quot;</span></span>
+                                 <span class="attribute-name">nullOptionVisible</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">false</span><span class="delimiter">&quot;</span></span>
+                                 <span class="attribute-name">stylename</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">c-login-locale</span><span class="delimiter">&quot;</span></span>
+                                 <span class="attribute-name">textInputAllowed</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">false</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+                <span class="tag">&lt;/hbox&gt;</span>
+                <span class="tag">&lt;button</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">loginButton</span><span class="delimiter">&quot;</span></span>
+                        <span class="attribute-name">align</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">MIDDLE_CENTER</span><span class="delimiter">&quot;</span></span>
+                        <span class="attribute-name">action</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">submit</span><span class="delimiter">&quot;</span></span>
+                        <span class="attribute-name">stylename</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">c-login-submit-button</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+            <span class="tag">&lt;/vbox&gt;</span>
+        <span class="tag">&lt;/vbox&gt;</span>
+    <span class="tag">&lt;/layout&gt;</span>
+<span class="tag">&lt;/window&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Set dialog width and add login button click listener:</p>
+</div>
+<div class="listingblock">
+<div class="title">LoginDialog.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Route</span>
+<span class="annotation">@DialogMode</span>(width = <span class="string"><span class="delimiter">&quot;</span><span class="content">430</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">login-dialog.xml</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@UiController</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">LoginDialog</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">LoginDialog</span> <span class="directive">extends</span> LoginScreen {
+
+    <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">loginButton</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">private</span> <span class="type">void</span> onLoginButtonClick(<span class="predefined-type">Button</span>.ClickEvent event) {
+        login();
+
+        <span class="keyword">if</span> (connection.isAuthenticated()) {
+            close(WINDOW_CLOSE_ACTION);
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The new login dialog should be available to all users regardless of their roles, so we&#8217;ll use the default permissions
+mechanism to enable it. Create <code>default-permission-values.xml</code> file in the root package of the <code>core</code> module
+with the following content:</p>
+</div>
+<div class="listingblock">
+<div class="title">default-permission-values.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="tag">&lt;default-permission-values</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://schemas.haulmont.com/cuba/default-permission-values.xsd</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="comment">&lt;!-- Permit to open LoginDialog for all roles by default --&gt;</span>
+    <span class="tag">&lt;permission</span> <span class="attribute-name">target</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">LoginDialog</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">value</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">1</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">10</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+<span class="tag">&lt;/default-permission-values&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And append this config to default permissions in <code>app.properties</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="title">app.properties</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="properties">cuba.defaultPermissionValuesConfig = +com/haulmont/sample/petclinic/default-permission-values.xml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now we can open our new dialog in <code>UserActionsButton</code> login handler:</p>
+</div>
+<div class="listingblock">
+<div class="title">ExtMainScreen.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@UiController</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">main</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">ext-main-screen.xml</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">ExtMainScreen</span> <span class="directive">extends</span> MainScreen {
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">private</span> Screens screens;
+
+    <span class="annotation">@Install</span>(to = <span class="string"><span class="delimiter">&quot;</span><span class="content">userActionsButton</span><span class="delimiter">&quot;</span></span>, subject = <span class="string"><span class="delimiter">&quot;</span><span class="content">loginHandler</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">private</span> <span class="type">void</span> loginHandler(UserActionsButton.LoginHandlerContext ctx) {
+        screens.create(LoginDialog.class, OpenMode.DIALOG)
+                .show();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Restart the app and try to log in:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/anonymous-access-and-social-login/login-dialog-init.png" alt="login dialog init">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="social_login"><a class="anchor" href="#social_login"></a><a class="link" href="#social_login">Social Login</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In most cases, applications and services require to register an account to use
+their features. Registration itself often involves filling out tedious forms
+and confirming email address. One of the approaches that solves this problem
+and has become widespread is registration via social services like Google or Facebook.</p>
+</div>
+<div class="paragraph">
+<p>The flow usually looks like this: the application redirects users to the social network
+login page, and after the users have allowed the requested access,
+they are redirected back to the application.
+Since application automatically registers user account, it eliminates the need
+to fill in the fields and reduces the access time to the services it needs.</p>
+</div>
+<div class="paragraph">
+<p>This approach is called "OAuth Web Flow" and we will use it to integrate social
+login into Petclinic application.</p>
+</div>
+<div class="sect2">
+<h3 id="oauth_web_flow"><a class="anchor" href="#oauth_web_flow"></a><a class="link" href="#oauth_web_flow">OAuth Web Flow</a></h3>
+<div class="paragraph">
+<p>One of the main tasks of the application is to automatically register new account
+for user. It requires basic info like name, email, etc.
+Popular social services like Facebook provide API endpoints to access this information.
+The common way to secure these endpoints is to use <a href="https://oauth.net">OAuth</a> tokens, or
+“access tokens”.</p>
+</div>
+<div class="paragraph">
+<p>First of all you should register your app in the social service:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://cloud.google.com/cloud-console/">Google Cloud Console</a></p>
+</li>
+<li>
+<p><a href="https://developers.facebook.com/apps">Facebook Apps</a></p>
+</li>
+<li>
+<p><a href="https://github.com/settings/apps">GitHub Apps</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You’ll get so-called <code>client id</code> and <code>client secret</code> credentials that are used
+in the authentication process:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Application sends a request with client id to the auth service endpoint</p>
+</li>
+<li>
+<p>The service returns a response with a temporary code</p>
+</li>
+<li>
+<p>Application sends a request with client id, client secret and the given code to the service</p>
+</li>
+<li>
+<p>The service returns a response with an access token if all credentials are correct</p>
+</li>
+</ol>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/anonymous-access-and-social-login/web-auth-flow.png" alt="web auth flow">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="social_buttons"><a class="anchor" href="#social_buttons"></a><a class="link" href="#social_buttons">Social Buttons</a></h3>
+<div class="paragraph">
+<p>One of the most common ways to integrate social login in UI is the buttons
+in the registration dialog, for example, Pinterest:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/anonymous-access-and-social-login/pinterest-login.png" alt="pinterest login">
+</div>
+</div>
+<div class="paragraph">
+<p>Add social buttons into the Login Dialog using few <code>LinkButton</code> components placed into horizontal box layout:</p>
+</div>
+<div class="listingblock">
+<div class="title">login-dialog.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;hbox</span> <span class="attribute-name">align</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">TOP_CENTER</span><span class="delimiter">&quot;</span></span>
+      <span class="attribute-name">margin</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true;false;false;false</span><span class="delimiter">&quot;</span></span>
+      <span class="attribute-name">spacing</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span>
+      <span class="attribute-name">width</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">AUTO</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;linkButton</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">googleLogin</span><span class="delimiter">&quot;</span></span>
+                <span class="attribute-name">icon</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">GOOGLE</span><span class="delimiter">&quot;</span></span>
+                <span class="attribute-name">stylename</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">social-button</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;linkButton</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">facebookLogin</span><span class="delimiter">&quot;</span></span>
+                <span class="attribute-name">icon</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">FACEBOOK</span><span class="delimiter">&quot;</span></span>
+                <span class="attribute-name">stylename</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">social-button</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;linkButton</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">githubLogin</span><span class="delimiter">&quot;</span></span>
+                <span class="attribute-name">icon</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">GITHUB</span><span class="delimiter">&quot;</span></span>
+                <span class="attribute-name">stylename</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">social-button</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+<span class="tag">&lt;/hbox&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We’re using custom style name to make buttons bigger. Open <code>hover-ext.scss</code> file and add the following rule:</p>
+</div>
+<div class="listingblock">
+<div class="title">hover-ext.scss</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="text">.v-button-link.social-button {
+  font-size: round($v-unit-size * 0.8);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Result:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/anonymous-access-and-social-login/social-buttons.png" alt="social buttons">
+</div>
+</div>
+<div class="paragraph">
+<p>We&#8217;ll use these buttons later to trigger social login process.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="preliminary_preparation"><a class="anchor" href="#preliminary_preparation"></a><a class="link" href="#preliminary_preparation">Preliminary Preparation</a></h3>
+<div class="paragraph">
+<p>Not all services support <code>localhost</code> as application host. You can add a host alias to the operating system hosts file
+and use it in application properties:</p>
+</div>
+<div class="listingblock">
+<div class="title">app.properties</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="properties">cuba.webAppUrl = https://petclinic.com:8080/petclinic</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Moreover, the majority of social services require to use HTTPS -
+you can find detailed guide on how to enable SSL for Tomcat container
+at <a href="https://tomcat.apache.org/tomcat-9.0-doc/ssl-howto.html" class="bare">https://tomcat.apache.org/tomcat-9.0-doc/ssl-howto.html</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="social_services_configuration"><a class="anchor" href="#social_services_configuration"></a><a class="link" href="#social_services_configuration">Social Services Configuration</a></h3>
+<div class="paragraph">
+<p>It’s assumed that app is already registered in social services and required credentials
+(client id and client secret) are available.</p>
+</div>
+<div class="paragraph">
+<p>To store service credentials we’ll use configuration interfaces mechanism.
+Let&#8217;s introduce the following configs:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>GoogleConfig</code></p>
+</li>
+<li>
+<p><code>FacebookConfig</code></p>
+</li>
+<li>
+<p><code>GitHubConfig</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Since a set of credentials is the same for all the services we can create
+a common interface <code>SocialServiceConfig</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">SocialServiceConfig.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">interface</span> <span class="class">SocialServiceConfig</span> {
+
+    <span class="predefined-type">String</span> getClientId();
+
+    <span class="predefined-type">String</span> getClientSecret();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>So, for example, <code>GoogleConfig</code> will be:</p>
+</div>
+<div class="listingblock">
+<div class="title">GoogleConfig.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Source</span>(type = SourceType.APP)
+<span class="directive">public</span> <span class="type">interface</span> <span class="class">GoogleConfig</span> <span class="directive">extends</span> Config, SocialServiceConfig {
+
+    <span class="annotation">@Property</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">google.clientId</span><span class="delimiter">&quot;</span></span>)
+    <span class="predefined-type">String</span> getClientId();
+
+    <span class="annotation">@Property</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">google.clientSecret</span><span class="delimiter">&quot;</span></span>)
+    <span class="predefined-type">String</span> getClientSecret();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After getting <code>client id</code> and <code>client secret</code> from social service,
+write them down to <code>app.properties</code> and restart the application:</p>
+</div>
+<div class="listingblock">
+<div class="title">app.properties</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="properties">google.clientId = &lt;APP_CLIENT_ID&gt;
+google.clientSecret = &lt;APP_CLIENT_SECRET&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="getting_an_auth_code"><a class="anchor" href="#getting_an_auth_code"></a><a class="link" href="#getting_an_auth_code">Getting an Auth Code</a></h3>
+<div class="paragraph">
+<p>The first step of authentication is to get an auth code - a temporary code
+that will be exchanged for access token. To get a code we should redirect
+a user to the service authentication endpoint and handle a response.</p>
+</div>
+<div class="paragraph">
+<p>Authentication process is almost the same for all social services,
+so we can write generic code. The main difference is related
+to auth endpoint URLs, params, etc, so in the beginning,
+we introduce the following enum:</p>
+</div>
+<div class="listingblock">
+<div class="title">SocialService.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">enum</span> SocialService {
+
+    GOOGLE,
+    FACEBOOK,
+    GITHUB
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Let’s create a service that will generate an address of authentication endpoint:</p>
+</div>
+<div class="listingblock">
+<div class="title">SocialLoginService.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">interface</span> <span class="class">SocialLoginService</span> {
+
+    <span class="predefined-type">String</span> NAME = <span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_SocialLoginService</span><span class="delimiter">&quot;</span></span>;
+
+    <span class="predefined-type">String</span> getLoginUrl(SocialService socialService);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To form a login address we should combine the endpoint URL and required parameters:</p>
+</div>
+<div class="listingblock">
+<div class="title">SocialLoginServiceBean.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">SocialLoginServiceBean</span> <span class="directive">implements</span> SocialLoginService {
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="predefined-type">String</span> getLoginUrl(SocialService socialService) {
+        <span class="predefined-type">String</span> authEndpoint = SocialLoginHelper.getAuthEndpoint(socialService);
+        <span class="predefined-type">String</span> params = SocialLoginHelper.getAuthParams(
+                socialService,
+                getClientId(socialService),
+                getRedirectUri());
+        <span class="keyword">return</span> authEndpoint + params;
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">String</span> getClientId(SocialService socialService) {
+        <span class="keyword">return</span> getSocialServiceConfig(socialService).getClientId();
+    }
+
+    <span class="directive">private</span> SocialServiceConfig getSocialServiceConfig(SocialService socialService) {
+        <span class="keyword">switch</span> (socialService) {
+            <span class="keyword">case</span> GOOGLE:
+                <span class="keyword">return</span> configuration.getConfig(GoogleConfig.class);
+            <span class="keyword">case</span> FACEBOOK:
+                <span class="keyword">return</span> configuration.getConfig(FacebookConfig.class);
+            <span class="keyword">case</span> GITHUB:
+                <span class="keyword">return</span> configuration.getConfig(GitHubConfig.class);
+            <span class="keyword">default</span>:
+                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">IllegalArgumentException</span>(
+                        <span class="string"><span class="delimiter">&quot;</span><span class="content">No config found for service: </span><span class="delimiter">&quot;</span></span> + socialService);
+            }
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">String</span> getRedirectUri() {
+        <span class="keyword">return</span> configuration.getConfig(GlobalConfig.class).getWebAppUrl();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>SocialLoginHelper</code> is a utility class that contains auth URLs and generates parameters part:</p>
+</div>
+<div class="listingblock">
+<div class="title">SocialLoginHelper.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="directive">final</span> <span class="type">class</span> <span class="class">SocialLoginHelper</span> {
+
+    <span class="directive">private</span> <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">String</span> GOOGLE_AUTH_ENDPOINT =
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">https://accounts.google.com/o/oauth2/v2/auth?</span><span class="delimiter">&quot;</span></span>;
+    <span class="directive">private</span> <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">String</span> FACEBOOK_AUTH_ENDPOINT =
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">https://www.facebook.com/v3.3/dialog/oauth?</span><span class="delimiter">&quot;</span></span>;
+    <span class="directive">private</span> <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">String</span> GITHUB_AUTH_ENDPOINT =
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">https://github.com/login/oauth/authorize?</span><span class="delimiter">&quot;</span></span>;
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="predefined-type">String</span> getAuthEndpoint(SocialService socialService) {
+        <span class="keyword">switch</span> (socialService) {
+            <span class="keyword">case</span> GOOGLE:
+                <span class="keyword">return</span> GOOGLE_AUTH_ENDPOINT;
+            <span class="keyword">case</span> FACEBOOK:
+                <span class="keyword">return</span> FACEBOOK_AUTH_ENDPOINT;
+            <span class="keyword">case</span> GITHUB:
+                <span class="keyword">return</span> GITHUB_AUTH_ENDPOINT;
+        }
+        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">IllegalArgumentException</span>(
+                <span class="string"><span class="delimiter">&quot;</span><span class="content">No auth endpoint found for service: </span><span class="delimiter">&quot;</span></span> + socialService);
+    }
+
+    <span class="comment">// ...</span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Add social button click listeners and redirect a user to a social service login page:</p>
+</div>
+<div class="listingblock">
+<div class="title">LoginDialog.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">LoginDialog</span> <span class="directive">extends</span> LoginScreen {
+
+    <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">googleLogin</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">private</span> <span class="type">void</span> onGoogleLoginClick(<span class="predefined-type">Button</span>.ClickEvent event) {
+        performSocialLogin(SocialService.GOOGLE);
+    }
+
+    <span class="directive">private</span> <span class="type">void</span> performSocialLogin(SocialService socialService) {
+        <span class="predefined-type">String</span> loginUrl = socialLoginService.getLoginUrl(socialService);
+
+        Page.getCurrent()
+                .setLocation(loginUrl);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After logging in, the service will redirect us back and we should handle a response.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="handling_social_service_response"><a class="anchor" href="#handling_social_service_response"></a><a class="link" href="#handling_social_service_response">Handling Social Service Response</a></h3>
+<div class="paragraph">
+<p>To handle a response with the temporary code we will use Vaadin <a href="https://vaadin.com/docs/v8/framework/advanced/advanced-requesthandler.html">Request Handlers</a> mechanism -
+it allows us to add request callbacks using simple functional interface.</p>
+</div>
+<div class="paragraph">
+<p>Our callback handler will use <code>SocialLoginService</code> to fetch user data,
+so it should be a bean. Request handlers should be added
+to the current session before request and removed from it in the end.
+It means that we can implement the handler as a prototype bean:</p>
+</div>
+<div class="listingblock">
+<div class="title">SocialServiceCallbackHandler.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Scope</span>(BeanDefinition.SCOPE_PROTOTYPE)
+<span class="annotation">@Component</span>(SocialServiceCallbackHandler.NAME)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">SocialServiceCallbackHandler</span> <span class="directive">implements</span> RequestHandler {
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">String</span> NAME = <span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_SocialServiceCallbackHandler</span><span class="delimiter">&quot;</span></span>;
+
+    <span class="directive">private</span> <span class="directive">final</span> SocialService service;
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">URI</span> redirectUri;
+
+    <span class="directive">public</span> SocialServiceCallbackHandler(SocialService service) {
+        <span class="local-variable">this</span>.service = service;
+        redirectUri = Page.getCurrent().getLocation();
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">boolean</span> handleRequest(VaadinSession session,
+                                 VaadinRequest request,
+                                 VaadinResponse response) <span class="directive">throws</span> <span class="exception">IOException</span> {
+        <span class="keyword">return</span> <span class="predefined-constant">true</span>; <span class="comment">// to be implemented</span>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Let’s highlight the main responsibilities of the handler:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Extract auth code from response and fetch user data via <code>SocialLoginService</code></p>
+</li>
+<li>
+<p>Create <code>Credentials</code> instance based on user data</p>
+</li>
+<li>
+<p>Trigger login process and redirect user back to app</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Firstly, we use the <code>UIAccessor</code> instance to lock the UI until the login request is processed:</p>
+</div>
+<div class="listingblock">
+<div class="title">SocialServiceCallbackHandler.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">SocialServiceCallbackHandler</span> <span class="directive">implements</span> RequestHandler, InitializingBean {
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">boolean</span> handleRequest(VaadinSession session, VaadinRequest request,
+                                 VaadinResponse response) <span class="directive">throws</span> <span class="exception">IOException</span> {
+        <span class="keyword">if</span> (request.getParameter(<span class="string"><span class="delimiter">&quot;</span><span class="content">code</span><span class="delimiter">&quot;</span></span>) == <span class="predefined-constant">null</span>) {
+            <span class="keyword">return</span> <span class="predefined-constant">false</span>;
+        }
+
+        uiAccessor.accessSynchronously(() -&gt; {
+            <span class="keyword">try</span> {
+                Credentials credentials = getCredentials(request.getParameter(<span class="string"><span class="delimiter">&quot;</span><span class="content">code</span><span class="delimiter">&quot;</span></span>),
+                        service);
+                app.getConnection().login(credentials);
+            } <span class="keyword">catch</span> (<span class="exception">Exception</span> e) {
+                log.error(<span class="string"><span class="delimiter">&quot;</span><span class="content">Unable to login using service: </span><span class="delimiter">&quot;</span></span> + service, e);
+            } <span class="keyword">finally</span> {
+                session.removeRequestHandler(<span class="local-variable">this</span>);
+            }
+        });
+
+        ((VaadinServletResponse) response).getHttpServletResponse().
+                sendRedirect(ControllerUtils.getLocationWithoutParams(redirectUri));
+
+        <span class="keyword">return</span> <span class="predefined-constant">true</span>;
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> afterPropertiesSet() {
+        uiAccessor = backgroundWorker.getUIAccessor();
+    }
+
+    <span class="directive">private</span> Credentials getCredentials(<span class="predefined-type">String</span> authCode, SocialService socialService) {
+        <span class="keyword">return</span> <span class="predefined-constant">null</span>; <span class="comment">// to be implemented</span>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Get back to <code>LoginDialog</code> and use the callback handler:</p>
+</div>
+<div class="listingblock">
+<div class="title">LoginDialog.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">LoginDialog</span> <span class="directive">extends</span> LoginScreen {
+
+    <span class="directive">private</span> <span class="type">void</span> performSocialLogin(SocialService socialService) {
+        <span class="predefined-type">String</span> loginUrl = socialLoginService.getLoginUrl(socialService);
+
+        VaadinSession.getCurrent()
+                .addRequestHandler(getCallbackHandler(socialService));
+
+        close(WINDOW_CLOSE_ACTION);
+
+        Page.getCurrent()
+                .setLocation(loginUrl);
+    }
+
+    <span class="directive">private</span> RequestHandler getCallbackHandler(SocialService socialService) {
+        <span class="keyword">return</span> getBeanLocator()
+                .getPrototype(SocialServiceCallbackHandler.NAME, socialService);
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="exchanging_an_auth_code_for_access_token"><a class="anchor" href="#exchanging_an_auth_code_for_access_token"></a><a class="link" href="#exchanging_an_auth_code_for_access_token">Exchanging an Auth Code for Access Token</a></h3>
+<div class="paragraph">
+<p>When the auth code is available, we can use it to get an access token. Form a request with required params depending on social service:</p>
+</div>
+<div class="listingblock">
+<div class="title">SocialLoginServiceBean.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">SocialLoginServiceBean</span> <span class="directive">implements</span> SocialLoginService {
+
+    <span class="directive">private</span> HttpRequestBase getAccessTokenRequest(SocialService socialService,
+            <span class="predefined-type">String</span> authCode) {
+        <span class="keyword">switch</span> (socialService) {
+            <span class="keyword">case</span> GOOGLE: {
+                HttpPost tokenRequest = <span class="keyword">new</span> HttpPost(
+                        getAccessTokenPath(socialService, authCode));
+                tokenRequest.setEntity(getGoogleAccessTokenParams(authCode));
+                <span class="keyword">return</span> tokenRequest;
+            }
+            <span class="keyword">case</span> FACEBOOK:
+            <span class="keyword">case</span> GITHUB: {
+                HttpGet tokenRequest = <span class="keyword">new</span> HttpGet(
+                        getAccessTokenPath(socialService, authCode));
+                tokenRequest.setHeader(HttpHeaders.ACCEPT,
+                MediaType.APPLICATION_JSON_VALUE);
+                <span class="keyword">return</span> tokenRequest;
+            }
+            <span class="keyword">default</span>:
+                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">IllegalArgumentException</span>(
+                        <span class="string"><span class="delimiter">&quot;</span><span class="content">Unable to create request for social service: </span><span class="delimiter">&quot;</span></span> + socialService);
+        }
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">String</span> getAccessTokenPath(SocialService socialService, <span class="predefined-type">String</span> authCode) {
+        <span class="predefined-type">String</span> clientId = getClientId(socialService);
+        <span class="predefined-type">String</span> clientSecret = getClientSecret(socialService);
+        <span class="predefined-type">String</span> redirectUri = getRedirectUri();
+        <span class="keyword">return</span> SocialLoginHelper.getAccessTokenPath(socialService, clientId,
+                clientSecret, redirectUri, authCode);
+    }
+
+    <span class="directive">private</span> UrlEncodedFormEntity getGoogleAccessTokenParams(<span class="predefined-type">String</span> authCode) {
+        <span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">String</span>&gt; params = SocialLoginHelper.getGoogleAccessTokenParams(
+                getClientId(SocialService.GOOGLE),
+                getClientSecret(SocialService.GOOGLE),
+                getRedirectUri(),
+                authCode);
+
+        <span class="predefined-type">List</span>&lt;BasicNameValuePair&gt; requestParams = params.entrySet().stream()
+                .map(entry -&gt; <span class="keyword">new</span> BasicNameValuePair(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
+
+        <span class="keyword">return</span> <span class="keyword">new</span> UrlEncodedFormEntity(requestParams, StandardCharsets.UTF_8);
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">String</span> getClientSecret(SocialService socialService) {
+        <span class="keyword">return</span> getSocialServiceConfig(socialService).getClientSecret();
+    }
+
+    <span class="comment">// ...</span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then use <a href="https://search.maven.org/artifact/org.apache.httpcomponents/httpclient/4.5.10/jar">Apache HttpClient</a>
+library to perform request:</p>
+</div>
+<div class="listingblock">
+<div class="title">SocialLoginServiceBean.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">SocialLoginServiceBean</span> <span class="directive">implements</span> SocialLoginService {
+
+    <span class="directive">private</span> <span class="predefined-type">String</span> requestAccessToken(HttpRequestBase accessTokenRequest) {
+        HttpClientConnectionManager cm = <span class="keyword">new</span> BasicHttpClientConnectionManager();
+        HttpClient httpClient = HttpClientBuilder.create().setConnectionManager(cm)
+                .build();
+
+        <span class="keyword">try</span> {
+            HttpResponse httpResponse = httpClient.execute(accessTokenRequest);
+            <span class="keyword">if</span> (httpResponse.getStatusLine().getStatusCode() != <span class="integer">200</span>) {
+                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">RuntimeException</span>(
+                        <span class="string"><span class="delimiter">&quot;</span><span class="content">Unable to get access token. Response HTTP status: </span><span class="delimiter">&quot;</span></span> +
+                        httpResponse.getStatusLine().getStatusCode());
+            }
+            <span class="keyword">return</span> EntityUtils.toString(httpResponse.getEntity());
+            } <span class="keyword">catch</span> (<span class="exception">IOException</span> e) {
+                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">RuntimeException</span>(e.getMessage());
+            } <span class="keyword">finally</span> {
+                accessTokenRequest.releaseConnection();
+            }
+    }
+
+    <span class="comment">// ...</span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And parse access token using
+<a href="https://search.maven.org/artifact/com.google.code.gson/gson/2.8.5/jar">Google Gson</a>:</p>
+</div>
+<div class="listingblock">
+<div class="title">SocialLoginServiceBean.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">SocialLoginServiceBean</span> <span class="directive">implements</span> SocialLoginService {
+
+    <span class="directive">private</span> <span class="predefined-type">String</span> extractAccessToken(<span class="predefined-type">String</span> response) {
+        JsonParser parser = <span class="keyword">new</span> JsonParser();
+        JsonObject asJsonObject = parser.parse(response)
+                .getAsJsonObject();
+
+        <span class="keyword">return</span> asJsonObject.get(<span class="string"><span class="delimiter">&quot;</span><span class="content">access_token</span><span class="delimiter">&quot;</span></span>).getAsString();
+    }
+
+    <span class="comment">// ...</span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>All in one:</p>
+</div>
+<div class="listingblock">
+<div class="title">SocialLoginServiceBean.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">SocialLoginServiceBean</span> <span class="directive">implements</span> SocialLoginService {
+
+    <span class="directive">private</span> <span class="predefined-type">String</span> getAccessToken(SocialService socialService, <span class="predefined-type">String</span> authCode) {
+        HttpRequestBase accessTokenRequest = getAccessTokenRequest(socialService,
+                authCode);
+        <span class="predefined-type">String</span> response = requestAccessToken(accessTokenRequest);
+        <span class="keyword">return</span> extractAccessToken(response);
+    }
+
+    <span class="comment">// ...</span>
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="auto_registration"><a class="anchor" href="#auto_registration"></a><a class="link" href="#auto_registration">Auto-Registration</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The final part of the guide describes how to use access token to get profile info,
+register new account and login the user.</p>
+</div>
+<div class="sect2">
+<h3 id="fetching_user_data"><a class="anchor" href="#fetching_user_data"></a><a class="link" href="#fetching_user_data">Fetching User Data</a></h3>
+<div class="paragraph">
+<p>Oftentimes social service API endpoints enable you to specify a set of fields
+to fetch. Let’s add one more setting to our config interfaces:</p>
+</div>
+<div class="listingblock">
+<div class="title">SocialServiceConfig.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">interface</span> <span class="class">SocialServiceConfig</span> {
+
+    <span class="predefined-type">String</span> getUserDataFields();
+
+    <span class="comment">// ...</span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For example, <code>GoogleConfig</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">GoogleConfig.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Source</span>(type = SourceType.APP)
+<span class="directive">public</span> <span class="type">interface</span> <span class="class">GoogleConfig</span> <span class="directive">extends</span> Config, SocialServiceConfig {
+
+    <span class="annotation">@Property</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">google.clientId</span><span class="delimiter">&quot;</span></span>)
+    <span class="predefined-type">String</span> getClientId();
+
+    <span class="annotation">@Property</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">google.clientSecret</span><span class="delimiter">&quot;</span></span>)
+    <span class="predefined-type">String</span> getClientSecret();
+
+    <span class="annotation">@Default</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">id,name,email</span><span class="delimiter">&quot;</span></span>)
+    <span class="annotation">@Property</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">google.userDataFields</span><span class="delimiter">&quot;</span></span>)
+    <span class="predefined-type">String</span> getUserDataFields();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Create a simple immutable POJO to store loaded profile info:</p>
+</div>
+<div class="listingblock">
+<div class="title">SocialUserData.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="type">class</span> <span class="class">SocialUserData</span> <span class="directive">implements</span> <span class="predefined-type">Serializable</span> {
+
+    <span class="directive">private</span> <span class="predefined-type">String</span> id;
+    <span class="directive">private</span> <span class="predefined-type">String</span> login;
+    <span class="directive">private</span> <span class="predefined-type">String</span> name;
+
+    <span class="directive">public</span> SocialUserData(<span class="predefined-type">String</span> id, <span class="predefined-type">String</span> login, <span class="predefined-type">String</span> name) {
+        <span class="local-variable">this</span>.id = id;
+        <span class="local-variable">this</span>.login = login;
+        <span class="local-variable">this</span>.name = name;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">String</span> getId() {
+        <span class="keyword">return</span> id;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">String</span> getLogin() {
+        <span class="keyword">return</span> login;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">String</span> getName() {
+        <span class="keyword">return</span> name;
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="predefined-type">String</span> toString() {
+        <span class="keyword">return</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">SocialUserData{</span><span class="delimiter">&quot;</span></span> +
+                <span class="string"><span class="delimiter">&quot;</span><span class="content">id='</span><span class="delimiter">&quot;</span></span> + id + <span class="string"><span class="delimiter">'</span><span class="char">\'</span><span class="delimiter">'</span></span> +
+                <span class="string"><span class="delimiter">&quot;</span><span class="content">, login='</span><span class="delimiter">&quot;</span></span> + login + <span class="string"><span class="delimiter">'</span><span class="char">\'</span><span class="delimiter">'</span></span> +
+                <span class="string"><span class="delimiter">&quot;</span><span class="content">, name='</span><span class="delimiter">&quot;</span></span> + name + <span class="string"><span class="delimiter">'</span><span class="char">\'</span><span class="delimiter">'</span></span> +
+                <span class="string"><span class="delimiter">'</span><span class="content">}</span><span class="delimiter">'</span></span>;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Let’s add a new <code>SocialLoginService</code> method that will accept the auth code
+and return corresponding user data.</p>
+</div>
+<div class="listingblock">
+<div class="title">SocialLoginService.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">interface</span> <span class="class">SocialLoginService</span> {
+
+    SocialUserData getUserData(SocialService socialService, <span class="predefined-type">String</span> authCode);
+
+    <span class="comment">// ...</span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The method will do the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Fetch an access token using auth code</p>
+</li>
+<li>
+<p>Fetch user data using access token</p>
+</li>
+<li>
+<p>Parse a response to create <code>SocialUserData</code> instance</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Since exchanging an auth code for an access token is already described, we can proceed to fetching user data:</p>
+</div>
+<div class="listingblock">
+<div class="title">SocialLoginServiceBean.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">SocialLoginServiceBean</span> <span class="directive">implements</span> SocialLoginService {
+
+    <span class="directive">private</span> <span class="predefined-type">String</span> getUserDataAsJson(SocialService socialService, <span class="predefined-type">String</span> accessToken) {
+        <span class="predefined-type">String</span> userDataEndpoint = SocialLoginHelper.getUserDataEndpoint(socialService);
+        <span class="predefined-type">String</span> params = SocialLoginHelper.getUserDataEndpointParams(
+                socialService,
+                accessToken,
+                getUserDataFields(socialService));
+        <span class="predefined-type">String</span> url = userDataEndpoint + params;
+
+        <span class="keyword">return</span> requestUserData(url);
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">String</span> requestUserData(<span class="predefined-type">String</span> url) {
+        HttpClientConnectionManager cm = <span class="keyword">new</span> BasicHttpClientConnectionManager();
+        HttpClient httpClient = HttpClientBuilder.create().setConnectionManager(cm)
+                .build();
+
+        HttpGet getRequest = <span class="keyword">new</span> HttpGet(url);
+        <span class="keyword">try</span> {
+            HttpResponse httpResponse = httpClient.execute(getRequest);
+            <span class="keyword">if</span> (httpResponse.getStatusLine().getStatusCode() != <span class="integer">200</span>) {
+                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">RuntimeException</span>(
+                        <span class="string"><span class="delimiter">&quot;</span><span class="content">Unable to access Google API. Response HTTP status: </span><span class="delimiter">&quot;</span></span> +
+                        httpResponse.getStatusLine().getStatusCode());
+            }
+            <span class="keyword">return</span> EntityUtils.toString(httpResponse.getEntity());
+        } <span class="keyword">catch</span> (<span class="exception">IOException</span> e) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">RuntimeException</span>(e.getMessage());
+        } <span class="keyword">finally</span> {
+            getRequest.releaseConnection();
+        }
+    }
+
+    <span class="comment">// ...</span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Parse user data from the response into <code>SocialUserData</code> POJO:</p>
+</div>
+<div class="listingblock">
+<div class="title">SocialLoginServiceBean.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">SocialLoginServiceBean</span> <span class="directive">implements</span> SocialLoginService {
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> SocialUserData getUserData(SocialService socialService, <span class="predefined-type">String</span> authCode) {
+        <span class="predefined-type">String</span> accessToken = getAccessToken(socialService, authCode);
+        <span class="predefined-type">String</span> userDataJson = getUserDataAsJson(socialService, accessToken);
+        <span class="keyword">return</span> parseUserData(userDataJson);
+    }
+
+    <span class="directive">private</span> SocialUserData parseUserData(<span class="predefined-type">String</span> userDataJson) {
+        JsonParser parser = <span class="keyword">new</span> JsonParser();
+
+        JsonObject response = parser.parse(userDataJson)
+                .getAsJsonObject();
+
+        <span class="predefined-type">String</span> id = Strings.nullToEmpty(response.get(<span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>).getAsString());
+        <span class="predefined-type">String</span> name = Strings.nullToEmpty(response.get(<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>).getAsString());
+
+        <span class="predefined-type">String</span> login = Strings.nullToEmpty(response.get(<span class="string"><span class="delimiter">&quot;</span><span class="content">email</span><span class="delimiter">&quot;</span></span>).getAsString());
+        <span class="keyword">if</span> (StringUtils.isEmpty(login)) {
+            login = Strings.nullToEmpty(response.get(<span class="string"><span class="delimiter">&quot;</span><span class="content">login</span><span class="delimiter">&quot;</span></span>).getAsString());
+        }
+
+        <span class="keyword">return</span> <span class="keyword">new</span> SocialUserData(id, login, name);
+    }
+
+    <span class="comment">// ...</span>
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="social_credentials"><a class="anchor" href="#social_credentials"></a><a class="link" href="#social_credentials">Social Credentials</a></h3>
+<div class="paragraph">
+<p>Now we can log in user via CUBA Security Subsystem. The general workflow is the following:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><code>Credentials</code> instance is passed into <code>Connection</code></p>
+</li>
+<li>
+<p><code>Connection</code> iterates over available <code>LoginProviders</code> and checks whether
+it supports passed credentials</p>
+</li>
+<li>
+<p>When suitable provider is found <code>Connection</code> delegates invocation to it</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>To support custom login you should create your own <code>Credentials</code> and <code>LoginProvider</code>
+that supports such type of credentials.</p>
+</div>
+<div class="paragraph">
+<p>Create a new class <code>SocialCredentials</code> in web module:</p>
+</div>
+<div class="listingblock">
+<div class="title">SocialCredentials.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">SocialCredentials</span> <span class="directive">extends</span> AbstractClientCredentials {
+
+    <span class="directive">private</span> <span class="directive">final</span> SocialUserData userData;
+    <span class="directive">private</span> <span class="directive">final</span> SocialService socialService;
+
+    <span class="directive">public</span> SocialCredentials(SocialUserData userData,
+                             SocialService socialService,
+                             <span class="predefined-type">Locale</span> locale) {
+        <span class="local-variable">super</span>(locale, <span class="predefined-type">Collections</span>.emptyMap());
+        <span class="local-variable">this</span>.userData = userData;
+        <span class="local-variable">this</span>.socialService = socialService;
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="predefined-type">String</span> getUserIdentifier() {
+        <span class="keyword">return</span> userData.getId();
+    }
+
+    <span class="comment">// ...</span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Let’s go back to <code>SocialServiceCallbackHandler</code> to finish its implementation:</p>
+</div>
+<div class="listingblock">
+<div class="title">SocialServiceCallbackHandler.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">SocialServiceCallbackHandler</span> <span class="directive">implements</span> RequestHandler, InitializingBean {
+
+    <span class="directive">private</span> Credentials getCredentials(<span class="predefined-type">String</span> authCode, SocialService socialService) {
+        SocialLoginService.SocialUserData userData = socialLoginService
+                .getUserData(socialService, authCode);
+
+        <span class="predefined-type">Locale</span> defaultLocale = messages.getTools()
+                .getDefaultLocale();
+
+         <span class="keyword">return</span> <span class="keyword">new</span> SocialCredentials(userData, socialService, defaultLocale);
+    }
+
+    <span class="comment">// ...</span>
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="login_provider"><a class="anchor" href="#login_provider"></a><a class="link" href="#login_provider">Login Provider</a></h3>
+<div class="paragraph">
+<p>The <code>Connection</code> component uses all available <code>LoginProviders</code> to get new authentication info. <code>LoginProviders</code> mechanism enables you to use ordered Spring beans to authenticate a user for different types of credentials. We will use this extension point to create social login provider:</p>
+</div>
+<div class="listingblock">
+<div class="title">SocialLoginProvider.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Component</span>(SocialLoginProvider.NAME)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">SocialLoginProvider</span> <span class="directive">implements</span> LoginProvider {
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">String</span> NAME = <span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_SocialLoginProvider</span><span class="delimiter">&quot;</span></span>;
+
+    <span class="annotation">@Nullable</span>
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> AuthenticationDetails login(Credentials credentials) <span class="directive">throws</span> <span class="exception">LoginException</span> {
+        SocialCredentials socialCredentials = (SocialCredentials) credentials;
+        SocialLoginService.SocialUserData userData = socialCredentials.getUserData();
+
+        <span class="comment">// to be implemented</span>
+
+        <span class="keyword">return</span> <span class="predefined-constant">null</span>;
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">boolean</span> supports(<span class="predefined-type">Class</span>&lt;?&gt; credentialsClass) {
+        <span class="keyword">return</span> SocialCredentials.class.isAssignableFrom(credentialsClass);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We will extend built-in <code>ExternalUserLoginProvider</code> to re-use its logic.
+Create new <code>ExternalUserCredentials</code> based on the available info and pass it to the super method:</p>
+</div>
+<div class="listingblock">
+<div class="title">SocialLoginProvider.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Component</span>(SocialLoginProvider.NAME)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">SocialLoginProvider</span> <span class="directive">extends</span> ExternalUserLoginProvider <span class="directive">implements</span> LoginProvider {
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">String</span> NAME = <span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_SocialLoginProvider</span><span class="delimiter">&quot;</span></span>;
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">private</span> SocialRegistrationService socialRegistrationService;
+
+    <span class="annotation">@Nullable</span>
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> AuthenticationDetails login(Credentials credentials) <span class="directive">throws</span> <span class="exception">LoginException</span> {
+        SocialCredentials socialCredentials = (SocialCredentials) credentials;
+
+        SocialLoginService.SocialUserData userData = socialCredentials.getUserData();
+
+        <span class="comment">// to be implemented;</span>
+        User user = <span class="predefined-constant">null</span>;
+
+        <span class="predefined-type">Locale</span> defaultLocale = socialCredentials.getLocale();
+
+        <span class="keyword">return</span> <span class="local-variable">super</span>.login(<span class="keyword">new</span> ExternalUserCredentials(user.getLogin(), defaultLocale));
+    }
+
+    <span class="comment">// ...</span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To form credentials we have to find existing or register new user.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="user_registration"><a class="anchor" href="#user_registration"></a><a class="link" href="#user_registration">User Registration</a></h3>
+<div class="paragraph">
+<p>Create a new entity <code>SocialUser</code> extending <code>User</code> and add three fields to it:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>googleId</code></p>
+</li>
+<li>
+<p><code>facebookId</code></p>
+</li>
+<li>
+<p><code>githubId</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>These fields are required to bind social profile with system user to be able to find it later.
+We should also assign a default group to a new user - create a new configuration interface:</p>
+</div>
+<div class="listingblock">
+<div class="title">SocialRegistrationConfig.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Source</span>(type = SourceType.APP)
+<span class="directive">public</span> <span class="type">interface</span> <span class="class">SocialRegistrationConfig</span> <span class="directive">extends</span> Config {
+
+    <span class="annotation">@Default</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">0fa2b1a5-1d68-4d69-9fbd-dff348347f93</span><span class="delimiter">&quot;</span></span>)
+    <span class="annotation">@Property</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">social.defaultGroupId</span><span class="delimiter">&quot;</span></span>)
+    <span class="annotation">@Factory</span>(factory = UuidTypeFactory.class)
+    <span class="predefined-type">UUID</span> getDefaultGroupId();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Create a new service <code>SocialRegistrationService</code> intended to find existing or register a new user:</p>
+</div>
+<div class="listingblock">
+<div class="title">SocialRegistrationService.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">interface</span> <span class="class">SocialRegistrationService</span> {
+
+    <span class="predefined-type">String</span> NAME = <span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_SocialRegistrationService</span><span class="delimiter">&quot;</span></span>;
+
+    User findOrRegisterUser(<span class="predefined-type">String</span> socialServiceId, <span class="predefined-type">String</span> login, <span class="predefined-type">String</span> name,
+                            SocialService socialService);
+
+    <span class="comment">// ...</span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Its implementation is quite straightforward:</p>
+</div>
+<div class="listingblock">
+<div class="title">SocialRegistrationServiceBean.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">SocialRegistrationServiceBean</span> <span class="directive">implements</span> SocialRegistrationService {
+    <span class="directive">private</span> <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">Pattern</span> EMAIL_PATTERN = <span class="predefined-type">Pattern</span>.compile(<span class="string"><span class="delimiter">&quot;</span><span class="content">[^@]+@[^.]+</span><span class="char">\\</span><span class="content">..+</span><span class="delimiter">&quot;</span></span>);
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">private</span> Metadata metadata;
+    <span class="annotation">@Inject</span>
+    <span class="directive">private</span> Persistence persistence;
+    <span class="annotation">@Inject</span>
+    <span class="directive">private</span> <span class="predefined-type">Configuration</span> configuration;
+
+    <span class="annotation">@Override</span>
+    <span class="annotation">@Transactional</span>
+    <span class="directive">public</span> User findOrRegisterUser(<span class="predefined-type">String</span> socialServiceId, <span class="predefined-type">String</span> login, <span class="predefined-type">String</span> name,
+                                   SocialService socialService) {
+        TypedQuery&lt;SocialUser&gt; query = getUserQuery(socialService, socialServiceId);
+        SocialUser existingUser = query.getFirstResult();
+        <span class="keyword">if</span> (existingUser != <span class="predefined-constant">null</span>) {
+            <span class="keyword">return</span> existingUser;
+        }
+
+        SocialRegistrationConfig registrationConfig = configuration
+                .getConfig(SocialRegistrationConfig.class);
+
+        EntityManager em = persistence.getEntityManager();
+        <span class="predefined-type">Group</span> defaultGroup = em.find(<span class="predefined-type">Group</span>.class, registrationConfig.getDefaultGroupId(),
+                <span class="predefined-type">View</span>.MINIMAL);
+
+        SocialUser user = metadata.create(SocialUser.class);
+        user.setLogin(login);
+        user.setName(name);
+        user.setGroup(defaultGroup);
+        user.setActive(<span class="predefined-constant">true</span>);
+        <span class="keyword">if</span> (isEmail(login)) {
+            user.setEmail(login);
+        }
+
+        <span class="keyword">switch</span> (socialService) {
+            <span class="keyword">case</span> GOOGLE:
+                user.setGoogleId(socialServiceId);
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> FACEBOOK:
+                user.setFacebookId(socialServiceId);
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> GITHUB:
+                user.setGithubId(socialServiceId);
+                <span class="keyword">break</span>;
+        }
+
+        em.persist(user);
+
+        <span class="keyword">return</span> user;
+    }
+
+    <span class="directive">private</span> TypedQuery&lt;SocialUser&gt; getUserQuery(SocialService socialService,
+                                                <span class="predefined-type">String</span> socialServiceId) {
+        EntityManager em = persistence.getEntityManager();
+
+        <span class="predefined-type">String</span> socialIdParam = getSocialIdParamName(socialService);
+
+        TypedQuery&lt;SocialUser&gt; query = em.createQuery(
+                <span class="string"><span class="delimiter">&quot;</span><span class="content">select u from sec$User u where </span><span class="delimiter">&quot;</span></span> +
+                <span class="predefined-type">String</span>.format(<span class="string"><span class="delimiter">&quot;</span><span class="content">u.%s = :%s</span><span class="delimiter">&quot;</span></span>, socialIdParam, socialIdParam),
+                SocialUser.class);
+        query.setParameter(socialIdParam, socialServiceId);
+        query.setViewName(<span class="predefined-type">View</span>.LOCAL);
+
+        <span class="keyword">return</span> query;
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">String</span> getSocialIdParamName(SocialService socialService) {
+        <span class="keyword">switch</span> (socialService) {
+            <span class="keyword">case</span> GOOGLE:
+                <span class="keyword">return</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">googleId</span><span class="delimiter">&quot;</span></span>;
+            <span class="keyword">case</span> FACEBOOK:
+                <span class="keyword">return</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">facebookId</span><span class="delimiter">&quot;</span></span>;
+            <span class="keyword">case</span> GITHUB:
+                <span class="keyword">return</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">githubId</span><span class="delimiter">&quot;</span></span>;
+            }
+        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">IllegalArgumentException</span>(
+                <span class="string"><span class="delimiter">&quot;</span><span class="content">No social id param found for service: </span><span class="delimiter">&quot;</span></span> + socialService);
+    }
+
+    <span class="directive">private</span> <span class="type">boolean</span> isEmail(<span class="predefined-type">String</span> s) {
+        <span class="keyword">return</span> EMAIL_PATTERN.matcher(s).matches();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Get back to <code>SocialLoginProvider</code> and use <code>SocialRegistrationService</code> to get user:</p>
+</div>
+<div class="listingblock">
+<div class="title">SocialLoginProvider</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Component</span>(SocialLoginProvider.NAME)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">SocialLoginProvider</span> <span class="directive">extends</span> ExternalUserLoginProvider <span class="directive">implements</span> LoginProvider {
+
+    <span class="annotation">@Nullable</span>
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> AuthenticationDetails login(Credentials credentials) <span class="directive">throws</span> <span class="exception">LoginException</span> {
+        SocialCredentials socialCredentials = (SocialCredentials) credentials;
+
+        SocialLoginService.SocialUserData userData = socialCredentials.getUserData();
+
+        User user = socialRegistrationService.findOrRegisterUser(
+                userData.getId(),
+                userData.getLogin(),
+                userData.getName(),
+                socialCredentials.getSocialService());
+
+        <span class="predefined-type">Locale</span> defaultLocale = socialCredentials.getLocale();
+
+        <span class="keyword">return</span> <span class="local-variable">super</span>.login(<span class="keyword">new</span> ExternalUserCredentials(user.getLogin(), defaultLocale));
+    }
+
+    <span class="comment">// ...</span>
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Anonymous access allows you to provide some publicly available functionality
+from your application, like dashboards, news, or feedback page.
+But in case when some features are available only for logged in users,
+social login is a convenient way to avoid filling registration forms.
+In this guide we&#8217;ve described how to support these use cases for CUBA based
+applications.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="further_information"><a class="anchor" href="#further_information"></a><a class="link" href="#further_information">Further Information</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://doc.cuba-platform.com/manual-7.1/gui_anonymous_access.html">Anonymous Access reference documentation</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!-- Sidebar (right column) -->
+            <div id="blog-sidebar">
+                <div class="region region-sidebar ">
+                    <section id="block-block-29" class="block block-block clearfix">
+
+                        <div class="guide-panel">
+                            <h3 class="header-table-content">Table of contents</h3>
+                            <ul class="sectlevel1">
+<li><a href="#what_will_be_built">What Will Be Built</a>
+<ul class="sectlevel2">
+<li><a href="#final_application">Final Application</a></li>
+<li><a href="#requirements">Requirements</a></li>
+</ul>
+</li>
+<li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
+<li><a href="#public_access">Public Access</a>
+<ul class="sectlevel2">
+<li><a href="#setting_up_anonymous_access">Setting up Anonymous Access</a></li>
+<li><a href="#initial_screen">Initial Screen</a></li>
+<li><a href="#anonymous_permissions">Anonymous Permissions</a></li>
+<li><a href="#screen_routes">Screen Routes</a></li>
+</ul>
+</li>
+<li><a href="#login_dialog">Login Dialog</a>
+<ul class="sectlevel2">
+<li><a href="#extended_main_screen">Extended Main Screen</a></li>
+<li><a href="#login_dialog_2">Login Dialog</a></li>
+</ul>
+</li>
+<li><a href="#social_login">Social Login</a>
+<ul class="sectlevel2">
+<li><a href="#oauth_web_flow">OAuth Web Flow</a></li>
+<li><a href="#social_buttons">Social Buttons</a></li>
+<li><a href="#preliminary_preparation">Preliminary Preparation</a></li>
+<li><a href="#social_services_configuration">Social Services Configuration</a></li>
+<li><a href="#getting_an_auth_code">Getting an Auth Code</a></li>
+<li><a href="#handling_social_service_response">Handling Social Service Response</a></li>
+<li><a href="#exchanging_an_auth_code_for_access_token">Exchanging an Auth Code for Access Token</a></li>
+</ul>
+</li>
+<li><a href="#auto_registration">Auto-Registration</a>
+<ul class="sectlevel2">
+<li><a href="#fetching_user_data">Fetching User Data</a></li>
+<li><a href="#social_credentials">Social Credentials</a></li>
+<li><a href="#login_provider">Login Provider</a></li>
+<li><a href="#user_registration">User Registration</a></li>
+</ul>
+</li>
+<li><a href="#summary">Summary</a></li>
+<li><a href="#further_information">Further Information</a></li>
+</ul>
+                        </div>
+
+                        <div class="sidebar-razd"></div>
+                        <div class="guide-panel download">
+                            <a href="https://github.com/cuba-guides/cuba-petclinic-social-login" class="github-link" target="_blank">Example code on Github</a>
+                        </div>
+                        <div class="guide-panel cuba-version">Supported versions: CUBA 7.1+; Java 8+</div>
+
+                    </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer fragment="14269c1b298" class="footer">
+    <div class="container footer_container">
+        <div class="footer_columns">
+            <div class="footer_column">
+                <div class="footer-menu"><h4 class="footer-menu_label">Framework</h4>
+                    <ul class="footer-menu_nav">
+                        <li><a href="/framework/">Framework</a></li>
+                        <li><a href="/tools/">Tools</a></li>
+                        <li><a href="/marketplace/">Addons</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer_column">
+                <div class="footer-menu"><h4 class="footer-menu_label">Learn</h4>
+                    <ul class="footer-menu_nav">
+                        <li><a href="/learn/" class="nuxt-link-active">Learn</a></li>
+                        <li><a href="/learn/quickstart/">Quick Start</a></li>
+                        <li><a href="/learn/live-demo/">Live Demo</a></li>
+                        <li><a href="/learn/videos/" class="nuxt-link-exact-active nuxt-link-active">Videos</a></li>
+                        <li><a href="/guides/">Guides</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer_column">
+                <div class="footer-menu"><h4 class="footer-menu_label">Documentation</h4>
+                    <ul class="footer-menu_nav">
+                        <li><a href="/documentation/">Documentation</a></li>
+                        <li><a href="/api-reference/">API References</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer_column">
+                <div class="footer-menu"><h4 class="footer-menu_label">Community</h4>
+                    <ul class="footer-menu_nav">
+                        <li><a href="/discuss/">Forum</a></li>
+                        <li><a href="/blog/">Blog</a></li>
+                        <li><a href="/contacts/">Contacts</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer_bottom">
+            <div class="footer_copyright">
+                Developed and sponsored by Haulmont
+                <a href="/learn/videos/#" class="footer_terms">Terms of Use</a></div>
+            <ul class="social footer_social">
+                <li class="social_item">
+                    <a href="https://github.com/cuba-platform/cuba" target="_blank" class="social_link">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon -github social_icon">
+                        <path d="M3.047 3.188C5.109 1.062 7.594 0 10.5 0c2.906 0 5.383 1.055 7.43 3.164C19.977 5.274 21 7.812 21 10.781c0 2.344-.672 4.453-2.016 6.328-1.343 1.875-3.062 3.172-5.156 3.891h-.187c-.375 0-.563-.187-.563-.563l.024-1.054c.015-.672.023-1.29.023-1.852 0-.906-.25-1.578-.75-2.015 1.438-.188 2.602-.649 3.492-1.383.89-.735 1.336-2.04 1.336-3.914 0-1.125-.36-2.094-1.078-2.906.313-.907.281-1.86-.094-2.86h-.234c-.719 0-1.61.375-2.672 1.125a9.858 9.858 0 0 0-2.625-.375c-.844 0-1.719.125-2.625.375-1.063-.75-1.953-1.125-2.672-1.125H4.97c-.375 1-.407 1.953-.094 2.86-.719.812-1.078 1.78-1.078 2.906 0 1.875.437 3.18 1.312 3.914s2.032 1.195 3.47 1.383c-.345.343-.563.828-.657 1.453a2.687 2.687 0 0 1-1.219.281c-.781 0-1.39-.39-1.828-1.172-.406-.687-.953-1.062-1.64-1.125-.657 0-.673.219-.047.656.468.25.859.782 1.171 1.594.032.125.094.274.188.445.094.172.351.399.773.68.422.281.93.422 1.524.422.437 0 .781-.031 1.031-.094v1.828c0 .344-.172.516-.516.516h-.187c-2.125-.719-3.852-2.008-5.18-3.867C.664 15.273 0 13.156 0 10.78c0-2.969 1.016-5.5 3.047-7.594z" fill="currentColor" fill-rule="evenodd"></path>
+                    </svg>
+                </a></li>
+                <li class="social_item">
+                    <a href="https://www.linkedin.com/company/cuba-platform" target="_blank" class="social_link">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon -linkedin social_icon">
+                        <path d="M19.305 0c.474 0 .875.155 1.203.465.328.31.492.702.492 1.176v17.554c0 .474-.164.894-.492 1.258-.328.365-.73.547-1.203.547h-17.5c-.474 0-.894-.182-1.258-.547C.182 20.09 0 19.67 0 19.195V1.641C0 1.167.173.775.52.465.866.155 1.294 0 1.805 0h17.5zM6.775 17.613V8.129h-2.71v9.484h2.71zM4.431 6.407c.245.245.566.367.964.367s.728-.13.988-.39.39-.574.39-.942c0-.398-.122-.727-.367-.987s-.567-.39-.965-.39-.727.13-.987.39-.39.59-.39.987c0 .368.122.69.367.965zm13.18 11.206v-5.42c0-1.336-.305-2.348-.916-3.034-.612-.687-1.407-1.03-2.386-1.03-1.048 0-1.922.506-2.62 1.517v-1.3H8.806v9.267h2.884v-5.257c0-.361.034-.614.104-.759.28-.722.77-1.083 1.468-1.083.979 0 1.468.668 1.468 2.005v5.094h2.883z" fill="currentColor" fill-rule="evenodd"></path>
+                    </svg>
+                </a></li>
+                <li class="social_item">
+                    <a href="https://www.facebook.com/CUBAplatform" target="_blank" class="social_link">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon -facebook social_icon">
+                        <path d="M17.063 0A3.939 3.939 0 0 1 21 3.938v13.124A3.939 3.939 0 0 1 17.062 21h-2.57v-8.135h2.72l.411-3.172h-3.13V7.67c0-.916.245-1.531 1.571-1.531l1.668-.014v-2.83c-.287-.041-1.285-.123-2.433-.123-2.42 0-4.088 1.476-4.088 4.183v2.338H8.477v3.172h2.734V21H3.937A3.939 3.939 0 0 1 0 17.062V3.938A3.939 3.939 0 0 1 3.938 0h13.124z" fill="currentColor" fill-rule="evenodd"></path>
+                    </svg>
+                </a></li>
+                <li class="social_item">
+                    <a href="https://twitter.com/CubaPlatform" target="_blank" class="social_link">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon -twitter social_icon">
+                            <path d="M17.5 6.59a6.058 6.058 0 0 1-1.654.465 2.903 2.903 0 0 0 1.271-1.6 5.717 5.717 0 0 1-1.832.697 2.847 2.847 0 0 0-2.092-.902 2.87 2.87 0 0 0-2.87 2.871c0 .219.013.451.068.656A8.158 8.158 0 0 1 4.457 5.77c-.246.423-.396.93-.396 1.449 0 .998.464 1.873 1.244 2.392-.479-.013-.93-.15-1.367-.355v.027c0 1.395 1.052 2.557 2.365 2.817-.246.068-.438.109-.698.109-.177 0-.355-.027-.533-.055a2.889 2.889 0 0 0 2.68 1.996A5.782 5.782 0 0 1 3.5 15.34a8.183 8.183 0 0 0 4.402 1.285c5.278 0 8.176-4.375 8.176-8.176 0-.123 0-.246-.014-.369A5.521 5.521 0 0 0 17.5 6.59zM21 3.938v13.124A3.939 3.939 0 0 1 17.062 21H3.938A3.939 3.939 0 0 1 0 17.062V3.938A3.939 3.939 0 0 1 3.938 0h13.124A3.939 3.939 0 0 1 21 3.938z" fill="currentColor" fill-rule="evenodd"></path>
+                        </svg>
+                    </a>
+                </li>
+                <li class="social_item">
+                    <a href="https://www.youtube.com/c/CubaPlatform" target="_blank" class="social_link">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon -youtube social_icon">
+                        <path d="M27.836 4.648c.11 1.97.164 3.92.164 5.852 0 1.932-.055 3.883-.164 5.852 0 1.24-.392 2.287-1.176 3.144-.784.857-1.74 1.285-2.87 1.285-2.808.146-6.071.219-9.79.219-3.719 0-6.982-.073-9.79-.219-1.13 0-2.086-.428-2.87-1.285C.556 18.64.164 17.591.164 16.352.054 14.382 0 12.432 0 10.5c0-1.276.073-3.227.219-5.852 0-1.24.383-2.287 1.148-3.144C2.133.647 3.081.219 4.211.219 6.872.073 9.97 0 13.508 0h.984c3.537 0 6.636.073 9.297.219 1.13 0 2.087.428 2.871 1.285.784.857 1.176 1.905 1.176 3.144zM11.32 15.86l7.93-5.359-7.93-5.414v10.773z" fill="currentColor" fill-rule="evenodd"></path>
+                    </svg>
+                </a></li>
+                <li class="social_item">
+                    <a href="/rss.xml" class="social_link">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon -rss social_icon">
+                            <path d="M.857 15.91C1.464 15.305 2.18 15 3 15c.821 0 1.527.295 2.116.884.59.59.884 1.295.884 2.116 0 .821-.295 1.527-.884 2.116-.59.59-1.295.884-2.116.884-.821 0-1.527-.295-2.116-.884C.294 19.526 0 18.821 0 18c0-.821.286-1.518.857-2.09zM0 7c3.828 0 7.118 1.376 9.871 4.129C12.624 13.882 14 17.172 14 21H9.625c0-2.917-.875-5.25-2.625-7s-4.083-2.625-7-2.625V7zm0-7c5.797 0 10.746 2.05 14.848 6.152C18.949 10.254 21 15.203 21 21h-4.375c0-4.667-1.604-8.604-4.813-11.813C8.604 5.98 4.668 4.375 0 4.375V0z" fill="currentColor" fill-rule="evenodd"></path>
+                        </svg>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</footer>
+<!--<script src="https://cuba-nuxt.demo.haulmont.com/_nuxt/83f852ef4b5c91802566.js" defer></script>
+<script src="https://cuba-nuxt.demo.haulmont.com/_nuxt/d3a40ea16eeb2e16777d.js" defer></script>
+<script src="https://cuba-nuxt.demo.haulmont.com/_nuxt/9bd7e05c04e06e762b47.js" defer></script>
+<script src="https://cuba-nuxt.demo.haulmont.com/_nuxt/70ff0a2e2f971caf4892.js" defer></script>
+<script src="https://cuba-nuxt.demo.haulmont.com/_nuxt/cf082d0abe0e606c10b9.js" defer></script>-->
+<style>
+    [class*="column"] + [class*="column"]:last-child {
+        float: none;
+    }
+</style>
+
+
+<!-- BEGIN FOOTER -->
+<!--<footer id="footer">
+    <div class="footer-wrapper cuba-container">
+        <div class="region region-footer-sitemap">
+            <section id="block-footer-sitemap-footer-sitemap" class="block block-footer-sitemap clearfix">
+                <div id="footer-sitemap" class="clearfix">
+                    <div class="fs-block-content">
+                        <div class="menu-footer-sitemap">
+                            <ul class="footer_links_menu-footer-sitemap total-items-5 parent-items-0 single-items-0">
+                                <li class="menu-1466 depth-1 total-children-4 parent-children-0 single-children-4  first">
+                                    <a href="/framework" class="fs-root-link">Platform</a>
+                                    <ul class="footer_links_menu-footer-sitemap total-items-4 parent-items-0 single-items-0">
+                                        <li class="menu-2770 depth-2 fs-no-children  first"><a href="/framework">The Framework</a></li>
+                                        <li class="menu-1473 depth-2 fs-no-children"><a href="/development-tools">Development Tools</a></li>
+                                        <li class="menu-2838 depth-2 fs-no-children last"><a href="/marketplace">Marketplace</a></li>
+                                    </ul>
+                                </li>
+                                <li class="menu-1469 depth-1 total-children-7 parent-children-0 single-children-7">
+                                    <a href="/online-demo" class="fs-root-link">Learn</a>
+                                    <ul class="footer_links_menu-footer-sitemap total-items-7 parent-items-0 single-items-0">
+                                        <li class="menu-1479 depth-2 fs-no-children first"><a href="/online-demo">Online demo</a></li>
+                                        <li class="menu-1477 depth-2 fs-no-children"><a href="/quickstart">Quick start</a></li>
+                                        <li class="menu-1478 depth-2 fs-no-children"><a href="/documentation">Documentation</a></li>
+                                        <li class="menu-1731 depth-2 fs-no-children"><a href="/guides">Guides</a></li>
+                                        <li class="menu-1773 depth-2 fs-no-children"><a href="/webinars">Webinars</a></li>
+                                        <li class="menu-1602 depth-2 fs-no-children last"><a href="/faq">FAQ</a></li>
+                                    </ul>
+                                </li>
+                                <li class="menu-1603 depth-1 total-children-3 parent-children-0 single-children-3"><a
+                                        href="https://www.cuba-platform.com/discuss/" class="fs-root-link">Community</a>
+                                    <ul class="footer_links_menu-footer-sitemap total-items-3 parent-items-0 single-items-0">
+                                        <li class="menu-1604 depth-2 fs-no-children first"><a href="https://www.cuba-platform.com/discuss/">Forum</a></li>
+                                        <li class="menu-1692 depth-2 fs-no-children"><a href="/testimonials">Customer stories</a></li>
+                                        <li class="menu-1615 depth-2 fs-no-children last"><a href="/blog">Blog</a></li>
+                                    </ul>
+                                </li>
+                                <li class="menu-1663 depth-1 total-children-3 parent-children-0 single-children-3"><a
+                                        href="/training" class="fs-root-link">Services</a>
+                                    <ul class="footer_links_menu-footer-sitemap total-items-3 parent-items-0 single-items-0">
+                                        <li class="menu-1756 depth-2 fs-no-children first"><a href="/training">Training</a></li>
+                                        <li class="menu-1757 depth-2 fs-no-children"><a href="/support-options">Support</a></li>
+                                        <li class="menu-1758 depth-2 fs-no-children last"><a href="/deployment">Development</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="menu-1612 depth-1 total-children-3 parent-children-0 single-children-3  last">
+                                    <a href="/download" class="fs-root-link">More</a>
+                                    <ul class="footer_links_menu-footer-sitemap total-items-3 parent-items-0 single-items-0">
+                                        <li class="menu-2773 depth-2 fs-no-children first"><a href="/download">Download</a></li>
+                                        <li class="menu-2775 depth-2 fs-no-children"><a href="/store">Store</a></li>
+                                        <li class="menu-1480 depth-2 fs-no-children last"><a href="/contacts">Contacts</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+        </div>
+        <div class="region region-footer-copyright">
+            <section id="block-block-14" class="block block-block clearfix">
+                <div class="footer-copyright">
+                    <div class="copyright">Copyright &copy; 2008-2018 Haulmont</div>
+                    <div class="licences"><a href="/terms-of-use">Terms of Use</a></div>
+                    <div class="socials">
+                        <ul>
+                            <li><a href="https://github.com/cuba-platform/cuba" class="socials-icon github"></a></li>
+                            <li><a href="https://www.youtube.com/c/CubaPlatform" class="socials-icon youtube"></a></li>
+                            <li><a href="https://www.facebook.com/CUBAplatform" class="socials-icon facebook"></a></li>
+                            <li><a href="https://twitter.com/CubaPlatform" class="socials-icon twitter"></a></li>
+                            <li><a href="https://www.linkedin.com/company/cuba-platform" class="socials-icon linkedin"></a></li>
+                            <li><a href="https://www.cuba-platform.com/rss.xml" class="socials-icon rss"></a></li>
+                        </ul>
+                    </div>
+                </div>
+                <script async defer src="https://buttons.github.io/buttons.js"></script>
+            </section>
+        </div>
+    </div>
+</footer>-->
+<!-- END FOOTER -->
+<div class="scrollTop"></div>
+
+</section>
+
+<script src="/guides/js/foundation.min.js"></script>
+<script src="https://unpkg.com/isotope-layout@3.0/dist/isotope.pkgd.js"></script>
+<script src="/guides/js/vendor/modernizr.js"></script>
+<script src="/guides/js/toc.js"></script>
+<script src="/guides/js/navigation.js"></script>
+<script src="/guides/js/navbar.js"></script>
+<script src="/guides/js/extra.js"></script>
+<script src="/guides/js/extra2.js"></script>
+<script src="/guides/js/cuba-new.js"></script>
+<script>
+(function ($) {
+  $(document).foundation();
+  var doc = document.documentElement;
+  doc.setAttribute('data-useragent', navigator.userAgent)
+
+  /* Issue #24 */
+  $(".blog .content img").each(function() {
+    var imgMarkup = $(this)[0].outerHTML;
+    console.log(imgMarkup);
+    $(this).replaceWith('<div class="img-center">' + imgMarkup + '</div>');
+  });
+})(jQuery); 
+</script>
+</body>
+</html>
