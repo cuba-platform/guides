@@ -19,7 +19,7 @@ Applications such as an online stores provide users the ability
 to view a list of available products, read their description, or compare
 with each other without logging in. But in order to make a purchase the users usually have to register, and using a social network account is the most convenient way to do it.
 
-== What Will be Built
+== What Will Be Built
 
 This guide enhances the CUBA Petclinic example to demonstrate how to enable
 application public access and allow users to register via social services.
@@ -59,7 +59,7 @@ We will use it to provide access for Anonymous user.
 
 Let’s begin.
 
-=== Setting up anonymous access
+=== Setting up Anonymous Access
 
 The first thing that should be done is to enable anonymous access via application properties:
 
@@ -72,7 +72,7 @@ cuba.web.allowAnonymousAccess = true
 When this setting is on and the current user session is not authenticated (i.e. not logged in),
 the application will check permissions of the anonymous user to this screen instead of redirecting to the login screen.
 
-=== Initial screen
+=== Initial Screen
 
 Next step is to configure a screen that will be opened by default:
 
@@ -89,7 +89,7 @@ image::anonymous-access-and-social-login/initial-screen.png[align="center"]
 Main screen with empty side menu is opened. But it’s not very interesting
 to see a blank page - let’s set up permissions for anonymous users.
 
-=== Anonymous permissions
+=== Anonymous Permissions
 
 Click the Login button in side menu to proceed to login screen and enter the system as administrator.
 Open “Role” browser and edit “Anonymous” role.
@@ -106,7 +106,7 @@ And restart the app. Now anonymous users can view the list of veterinarians:
 
 image::anonymous-access-and-social-login/pemitted-screens.png[align="center"]
 
-=== Screen routes
+=== Screen Routes
 
 CUBA Navigation feature also supports anonymous access, so let’s register routes
 for our screens to be able to open screens directly. It can be done with `@Route` annotation:
@@ -413,7 +413,7 @@ image::anonymous-access-and-social-login/social-buttons.png[align="center"]
 
 We'll use these buttons later to trigger social login process.
 
-=== Preliminary preparation
+=== Preliminary Preparation
 
 Not all services support `localhost` as application host. You can add a host alias to the operating system hosts file
 and use it in application properties:
@@ -480,7 +480,7 @@ google.clientId = <APP_CLIENT_ID>
 google.clientSecret = <APP_CLIENT_SECRET>
 ----
 
-=== Getting an auth code
+=== Getting an Auth Code
 
 The first step of authentication is to get an auth code - a temporary code
 that will be exchanged for access token. To get a code we should redirect
@@ -610,7 +610,7 @@ public class LoginDialog extends LoginScreen {
 
 After logging in, the service will redirect us back and we should handle a response.
 
-=== Handling social service response
+=== Handling Social Service Response
 
 To handle a response with the temporary code we will use Vaadin https://vaadin.com/docs/v8/framework/advanced/advanced-requesthandler.html[Request Handlers] mechanism -
 it allows us to add request callbacks using simple functional interface.
@@ -721,7 +721,7 @@ public class LoginDialog extends LoginScreen {
 }
 ----
 
-=== Exchanging an auth code for access token
+=== Exchanging an Auth Code for Access Token
 
 When the auth code is available, we can use it to get an access token. Form a request with required params depending on social service:
 
@@ -853,7 +853,7 @@ public class SocialLoginServiceBean implements SocialLoginService {
 }
 ----
 
-== Auto-registration
+== Auto-Registration
 
 The final part of the guide describes how to use access token to get profile info,
 register new account and login the user.
