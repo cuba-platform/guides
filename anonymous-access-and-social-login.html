@@ -182,9 +182,7 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Applications such as an online stores provide users the ability
-to view a list of available products, read their description, or compare
-with each other without logging in. But in order to make a purchase the users usually have to register, and using a social network account is the most convenient way to do it.</p>
+<p>Applications such as online stores provide users the ability to view a list of available products, read their description, or compare with each other without logging in. But in order to make a purchase, users usually have to register, and using a social network account is the most convenient way to do it.</p>
 </div>
 </div>
 </div>
@@ -192,8 +190,7 @@ with each other without logging in. But in order to make a purchase the users us
 <h2 id="what_will_be_built"><a class="anchor" href="#what_will_be_built"></a><a class="link" href="#what_will_be_built">What Will Be Built</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This guide enhances the CUBA Petclinic example to demonstrate how to enable
-application public access and allow users to register via social services.</p>
+<p>This guide enhances the CUBA Petclinic example to demonstrate how to enable application public access and allow users to register via social services.</p>
 </div>
 <div class="paragraph">
 <p>In particular, the following topics will be covered:</p>
@@ -277,17 +274,10 @@ application public access and allow users to register via social services.</p>
 <h2 id="public_access"><a class="anchor" href="#public_access"></a><a class="link" href="#public_access">Public Access</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Oftentimes CRM like applications have an info or features that should be available for
-both authenticated and anonymous users - products, services, etc.
-This scenario is also relevant for dashboards, contacts or support pages.
-In this guide we will provide an ability to view a list of veterinarians working
-in clinic and pets that can be brought for treatment without logging in
-to the application, i.e. work in app as anonymous.</p>
+<p>Oftentimes CRM-like applications have info or features that should be available for both authenticated and anonymous users - products, services, etc. This scenario is also relevant for dashboards, contacts or support pages. In this guide we will provide an ability to view the list of veterinarians working in the clinic and pets that can be brought for treatment without logging in to the application, i.e. working in app anonymously.</p>
 </div>
 <div class="paragraph">
-<p>Since version 7.1 CUBA provides more flexible approach to create publicly
-available screens that can be easily managed with built-in security subsystem.
-We will use it to provide access for Anonymous user.</p>
+<p>Since version 7.1 CUBA provides more flexible approach to create publicly available screens that can be easily managed with a built-in security subsystem. We will use it to provide access for Anonymous users.</p>
 </div>
 <div class="paragraph">
 <p>Let’s begin.</p>
@@ -295,7 +285,7 @@ We will use it to provide access for Anonymous user.</p>
 <div class="sect2">
 <h3 id="setting_up_anonymous_access"><a class="anchor" href="#setting_up_anonymous_access"></a><a class="link" href="#setting_up_anonymous_access">Setting up Anonymous Access</a></h3>
 <div class="paragraph">
-<p>The first thing that should be done is to enable anonymous access via application properties:</p>
+<p>The first thing that should be done is enabling anonymous access via application properties:</p>
 </div>
 <div class="listingblock">
 <div class="title">web-app.properties</div>
@@ -304,14 +294,13 @@ We will use it to provide access for Anonymous user.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>When this setting is on and the current user session is not authenticated (i.e. not logged in),
-the application will check permissions of the anonymous user to this screen instead of redirecting to the login screen.</p>
+<p>When this setting is on and the current user session is not authenticated (i.e. not logged in), the application will check permissions of the anonymous user to this screen instead of redirecting to the login screen.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="initial_screen"><a class="anchor" href="#initial_screen"></a><a class="link" href="#initial_screen">Initial Screen</a></h3>
 <div class="paragraph">
-<p>Next step is to configure a screen that will be opened by default:</p>
+<p>The next step is to configure the screen that will be opened by default:</p>
 </div>
 <div class="listingblock">
 <div class="title">web-app.properties</div>
@@ -320,7 +309,7 @@ the application will check permissions of the anonymous user to this screen inst
 </div>
 </div>
 <div class="paragraph">
-<p>And now we have a first result:</p>
+<p>And now we have the first result:</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -328,15 +317,13 @@ the application will check permissions of the anonymous user to this screen inst
 </div>
 </div>
 <div class="paragraph">
-<p>Main screen with empty side menu is opened. But it’s not very interesting
-to see a blank page - let’s set up permissions for anonymous users.</p>
+<p>The main screen with an empty side menu is opened. But it’s not very interesting to see a blank page - let’s set up permissions for anonymous users.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="anonymous_permissions"><a class="anchor" href="#anonymous_permissions"></a><a class="link" href="#anonymous_permissions">Anonymous Permissions</a></h3>
 <div class="paragraph">
-<p>Click the Login button in side menu to proceed to login screen and enter the system as administrator.
-Open “Role” browser and edit “Anonymous” role.</p>
+<p>Click the Login button in the side menu to proceed to login screen and enter the system as an administrator. Open “Role” browser and edit “Anonymous” role.</p>
 </div>
 <div class="paragraph">
 <p>Permit all required menu items and screens:</p>
@@ -366,8 +353,7 @@ Open “Role” browser and edit “Anonymous” role.</p>
 <div class="sect2">
 <h3 id="screen_routes"><a class="anchor" href="#screen_routes"></a><a class="link" href="#screen_routes">Screen Routes</a></h3>
 <div class="paragraph">
-<p>CUBA Navigation feature also supports anonymous access, so let’s register routes
-for our screens to be able to open screens directly. It can be done with <code>@Route</code> annotation:</p>
+<p>CUBA Navigation feature also supports anonymous access, so let’s register routes for our screens to be able to open screens directly. It can be done with <code>@Route</code> annotation:</p>
 </div>
 <div class="listingblock">
 <div class="title">VetBrowse.java</div>
@@ -395,7 +381,7 @@ for our screens to be able to open screens directly. It can be done with <code>@
 </ul>
 </div>
 <div class="paragraph">
-<p>Restart the app and try to open Vets screen using the following link:</p>
+<p>Restart the app and try to open the Vets screen using the following link:</p>
 </div>
 <a href="http://localhost:8080/petclinic/#main/vets">http://localhost:8080/petclinic/#main/vets</a>
 <div class="imageblock text-center">
@@ -404,10 +390,7 @@ for our screens to be able to open screens directly. It can be done with <code>@
 </div>
 </div>
 <div class="paragraph">
-<p>Now users can view list of veterinarians without logging in to the application,
-bookmark available pages or share links with friends.
-Other public pages also can be navigated as usual, but if a user tries to open not permitted screens
-they will be redirected to the login screen.</p>
+<p>Now users can view the list of veterinarians, bookmark available pages or share links with friends without logging in to the application. Other public pages also can be navigated as usual, but if a user tries to open not permitted screens they will be redirected to the login screen.</p>
 </div>
 </div>
 </div>
@@ -416,21 +399,15 @@ they will be redirected to the login screen.</p>
 <h2 id="login_dialog"><a class="anchor" href="#login_dialog"></a><a class="link" href="#login_dialog">Login Dialog</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Default login process in CUBA application requires redirecting to a separate screen.
-In this section, we&#8217;ll demonstrate how to implement login using a modal dialog. Later we will place social buttons on this dialog.</p>
+<p>Default login process in CUBA application requires redirecting to a separate screen. In this section, we’ll demonstrate how to implement login using a modal dialog. Later we will place social networks buttons on this dialog.</p>
 </div>
 <div class="sect2">
 <h3 id="extended_main_screen"><a class="anchor" href="#extended_main_screen"></a><a class="link" href="#extended_main_screen">Extended Main Screen</a></h3>
 <div class="paragraph">
-<p>Let’s begin with extending default Main Screen. Open “New Screen” dialog in CUBA Studio
-and choose a template named “Main screen with side menu”. You may notice that the screen layout
-has a new component - <code>UserActionsButton</code>. It combines “log in” action for anonymous users
-and allows logged in users to open the "Settings" screen or to log out.</p>
+<p>Let’s begin with extending the default Main Screen. Open “New Screen” dialog in CUBA Studio and choose a template named “Main screen with side menu”. You may notice that the screen layout has a new component - <code>UserActionsButton</code>. It combines “log in” action for anonymous users and allows logged in users to open the "Settings" screen or to log out.</p>
 </div>
 <div class="paragraph">
-<p>The <code>UserActionsButton</code> component has a few extension points to override default behavior
-for login and logout actions. It allows us to define our custom logic to open
-dialog - add custom login handler via <code>@Install</code> annotation:</p>
+<p>The <code>UserActionsButton</code> component has a few extension points to override the default behavior for login and logout actions. It allows us to define our custom logic to open the dialog - add custom login handler via <code>@Install</code> annotation:</p>
 </div>
 <div class="listingblock">
 <div class="title">ExtMainScreen.java</div>
@@ -450,8 +427,7 @@ dialog - add custom login handler via <code>@Install</code> annotation:</p>
 <div class="sect2">
 <h3 id="login_dialog_2"><a class="anchor" href="#login_dialog_2"></a><a class="link" href="#login_dialog_2">Login Dialog</a></h3>
 <div class="paragraph">
-<p>New login dialog will be simplified version of default login screen, so start
-with creating new blank screen. Make <code>LoginDialog</code> extend <code>LoginScreen</code> to re-use login process logic:</p>
+<p>The new login dialog will be a simplified version of the default login screen, so start with creating a new blank screen. Make <code>LoginDialog</code> extend <code>LoginScreen</code> to re-use login process logic:</p>
 </div>
 <div class="listingblock">
 <div class="title">LoginDialog.java</div>
@@ -463,7 +439,7 @@ with creating new blank screen. Make <code>LoginDialog</code> extend <code>Login
 </div>
 </div>
 <div class="paragraph">
-<p>Dialog layout is just a login form copied from default login screen:</p>
+<p>The dialog layout is just a login form copied from the default login screen:</p>
 </div>
 <div class="listingblock">
 <div class="title">login-dialog.xml</div>
@@ -540,7 +516,7 @@ with creating new blank screen. Make <code>LoginDialog</code> extend <code>Login
 </div>
 </div>
 <div class="paragraph">
-<p>Set dialog width and add login button click listener:</p>
+<p>Set the dialog width and add a login button click listener:</p>
 </div>
 <div class="listingblock">
 <div class="title">LoginDialog.java</div>
@@ -563,9 +539,7 @@ with creating new blank screen. Make <code>LoginDialog</code> extend <code>Login
 </div>
 </div>
 <div class="paragraph">
-<p>The new login dialog should be available to all users regardless of their roles, so we&#8217;ll use the default permissions
-mechanism to enable it. Create <code>default-permission-values.xml</code> file in the root package of the <code>core</code> module
-with the following content:</p>
+<p>The new login dialog should be available to all users regardless of their roles, so we’ll use the default permissions mechanism to enable it. Create <code>default-permission-values.xml</code> file in the root package of the <code>core</code> module with the following content:</p>
 </div>
 <div class="listingblock">
 <div class="title">default-permission-values.xml</div>
@@ -622,30 +596,18 @@ with the following content:</p>
 <h2 id="social_login"><a class="anchor" href="#social_login"></a><a class="link" href="#social_login">Social Login</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In most cases, applications and services require to register an account to use
-their features. Registration itself often involves filling out tedious forms
-and confirming email address. One of the approaches that solves this problem
-and has become widespread is registration via social services like Google or Facebook.</p>
+<p>In most cases, applications and services require to register an account to use their features. Registration itself often involves filling out tedious forms and confirming an email address. One of the approaches that solves this problem and has become widespread is registration via social services like Google or Facebook.</p>
 </div>
 <div class="paragraph">
-<p>The flow usually looks like this: the application redirects users to the social network
-login page, and after the users have allowed the requested access,
-they are redirected back to the application.
-Since application automatically registers user account, it eliminates the need
-to fill in the fields and reduces the access time to the services it needs.</p>
+<p>The flow usually looks like this: the application redirects users to the social network login page, and after the users have allowed the requested access, they are redirected back to the application. Since application automatically registers a user account, it eliminates the need to fill in the fields and reduces the access time to the services it needs.</p>
 </div>
 <div class="paragraph">
-<p>This approach is called "OAuth Web Flow" and we will use it to integrate social
-login into Petclinic application.</p>
+<p>This approach is called "OAuth Web Flow" and we will use it to integrate the social login into Petclinic application.</p>
 </div>
 <div class="sect2">
 <h3 id="oauth_web_flow"><a class="anchor" href="#oauth_web_flow"></a><a class="link" href="#oauth_web_flow">OAuth Web Flow</a></h3>
 <div class="paragraph">
-<p>One of the main tasks of the application is to automatically register new account
-for user. It requires basic info like name, email, etc.
-Popular social services like Facebook provide API endpoints to access this information.
-The common way to secure these endpoints is to use <a href="https://oauth.net">OAuth</a> tokens, or
-“access tokens”.</p>
+<p>One of the main tasks of the application is to automatically register a new account for user. It requires basic info like name, email, etc. Popular social network services like Facebook provide API endpoints to access this information. The common way to secure these endpoints is to use <a href="https://oauth.net">OAuth</a> tokens, or “access tokens”.</p>
 </div>
 <div class="paragraph">
 <p>First of all you should register your app in the social service:</p>
@@ -664,22 +626,21 @@ The common way to secure these endpoints is to use <a href="https://oauth.net">O
 </ul>
 </div>
 <div class="paragraph">
-<p>You’ll get so-called <code>client id</code> and <code>client secret</code> credentials that are used
-in the authentication process:</p>
+<p>You’ll get a so-called <code>client id</code> and <code>client secret</code> credentials that are used in the authentication process:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Application sends a request with client id to the auth service endpoint</p>
+<p>The application sends a request with a client id to the auth service endpoint.</p>
 </li>
 <li>
-<p>The service returns a response with a temporary code</p>
+<p>The service returns a response with a temporary code.</p>
 </li>
 <li>
-<p>Application sends a request with client id, client secret and the given code to the service</p>
+<p>The application sends a request with a client id, client secret and the given code to the service.</p>
 </li>
 <li>
-<p>The service returns a response with an access token if all credentials are correct</p>
+<p>The service returns a response with an access token if all credentials are correct.</p>
 </li>
 </ol>
 </div>
@@ -692,8 +653,7 @@ in the authentication process:</p>
 <div class="sect2">
 <h3 id="social_buttons"><a class="anchor" href="#social_buttons"></a><a class="link" href="#social_buttons">Social Buttons</a></h3>
 <div class="paragraph">
-<p>One of the most common ways to integrate social login in UI is the buttons
-in the registration dialog, for example, Pinterest:</p>
+<p>One of the most common ways to integrate social login in the UI is buttons in the registration dialog, for example, Pinterest:</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -701,7 +661,7 @@ in the registration dialog, for example, Pinterest:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Add social buttons into the Login Dialog using few <code>LinkButton</code> components placed into horizontal box layout:</p>
+<p>Add social buttons into the Login Dialog using <code>LinkButton</code> components placed into a horizontal box layout:</p>
 </div>
 <div class="listingblock">
 <div class="title">login-dialog.xml</div>
@@ -723,7 +683,7 @@ in the registration dialog, for example, Pinterest:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>We’re using custom style name to make buttons bigger. Open <code>hover-ext.scss</code> file and add the following rule:</p>
+<p>We’re using a custom style name to make buttons bigger. Open <code>hover-ext.scss</code> file and add the following rule:</p>
 </div>
 <div class="listingblock">
 <div class="title">hover-ext.scss</div>
@@ -748,8 +708,7 @@ in the registration dialog, for example, Pinterest:</p>
 <div class="sect2">
 <h3 id="preliminary_preparation"><a class="anchor" href="#preliminary_preparation"></a><a class="link" href="#preliminary_preparation">Preliminary Preparation</a></h3>
 <div class="paragraph">
-<p>Not all services support <code>localhost</code> as application host. You can add a host alias to the operating system hosts file
-and use it in application properties:</p>
+<p>Not all services support <code>localhost</code> as application host. You can add a host alias to the operating system hosts file and use it in the application properties:</p>
 </div>
 <div class="listingblock">
 <div class="title">app.properties</div>
@@ -758,20 +717,16 @@ and use it in application properties:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Moreover, the majority of social services require to use HTTPS -
-you can find detailed guide on how to enable SSL for Tomcat container
-at <a href="https://tomcat.apache.org/tomcat-9.0-doc/ssl-howto.html" class="bare">https://tomcat.apache.org/tomcat-9.0-doc/ssl-howto.html</a>.</p>
+<p>Moreover, the majority of social services require to use HTTPS - you can find a detailed guide on how to enable SSL for Tomcat container at <a href="https://tomcat.apache.org/tomcat-9.0-doc/ssl-howto.html" class="bare">https://tomcat.apache.org/tomcat-9.0-doc/ssl-howto.html</a>.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="social_services_configuration"><a class="anchor" href="#social_services_configuration"></a><a class="link" href="#social_services_configuration">Social Services Configuration</a></h3>
 <div class="paragraph">
-<p>It’s assumed that app is already registered in social services and required credentials
-(client id and client secret) are available.</p>
+<p>It’s assumed that the app is already registered in social services and the required credentials (<code>client id</code> and <code>client secret</code>) are available.</p>
 </div>
 <div class="paragraph">
-<p>To store service credentials we’ll use configuration interfaces mechanism.
-Let&#8217;s introduce the following configs:</p>
+<p>To store service credentials we’ll use the configuration interfaces mechanism. Let’s introduce the following configs:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -787,8 +742,7 @@ Let&#8217;s introduce the following configs:</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>Since a set of credentials is the same for all the services we can create
-a common interface <code>SocialServiceConfig</code>:</p>
+<p>Since a set of credentials is the same for all the services we can create a common interface <code>SocialServiceConfig</code>:</p>
 </div>
 <div class="listingblock">
 <div class="title">SocialServiceConfig.java</div>
@@ -819,8 +773,7 @@ a common interface <code>SocialServiceConfig</code>:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>After getting <code>client id</code> and <code>client secret</code> from social service,
-write them down to <code>app.properties</code> and restart the application:</p>
+<p>After getting the <code>client id</code> and <code>client secret</code> from a social service, write them down to <code>app.properties</code> and restart the application:</p>
 </div>
 <div class="listingblock">
 <div class="title">app.properties</div>
@@ -833,15 +786,10 @@ google.clientSecret = &lt;APP_CLIENT_SECRET&gt;</code></pre>
 <div class="sect2">
 <h3 id="getting_an_auth_code"><a class="anchor" href="#getting_an_auth_code"></a><a class="link" href="#getting_an_auth_code">Getting an Auth Code</a></h3>
 <div class="paragraph">
-<p>The first step of authentication is to get an auth code - a temporary code
-that will be exchanged for access token. To get a code we should redirect
-a user to the service authentication endpoint and handle a response.</p>
+<p>The first step of authentication is to get an auth code - a temporary code that will be exchanged for an access token. To get a code we should redirect a user to the service authentication endpoint and handle a response.</p>
 </div>
 <div class="paragraph">
-<p>Authentication process is almost the same for all social services,
-so we can write generic code. The main difference is related
-to auth endpoint URLs, params, etc, so in the beginning,
-we introduce the following enum:</p>
+<p>Authentication process is almost the same for all social services, so we can write generic code. The main difference is connected with auth endpoint URLs, params, etc, so in the beginning, we introduce the following enum:</p>
 </div>
 <div class="listingblock">
 <div class="title">SocialService.java</div>
@@ -869,7 +817,7 @@ we introduce the following enum:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>To form a login address we should combine the endpoint URL and required parameters:</p>
+<p>To form a login address we should combine the endpoint URL and the required parameters:</p>
 </div>
 <div class="listingblock">
 <div class="title">SocialLoginServiceBean.java</div>
@@ -975,10 +923,7 @@ we introduce the following enum:</p>
 it allows us to add request callbacks using simple functional interface.</p>
 </div>
 <div class="paragraph">
-<p>Our callback handler will use <code>SocialLoginService</code> to fetch user data,
-so it should be a bean. Request handlers should be added
-to the current session before request and removed from it in the end.
-It means that we can implement the handler as a prototype bean:</p>
+<p>Our callback handler will use <code>SocialLoginService</code> to fetch user data, so it should be a bean. Request handlers should be added to the current session before the request and removed from it in the end. It means that we can implement the handler as a prototype bean:</p>
 </div>
 <div class="listingblock">
 <div class="title">SocialServiceCallbackHandler.java</div>
@@ -1018,12 +963,12 @@ It means that we can implement the handler as a prototype bean:</p>
 <p>Create <code>Credentials</code> instance based on user data</p>
 </li>
 <li>
-<p>Trigger login process and redirect user back to app</p>
+<p>Trigger login process and redirect user back to the app</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>Firstly, we use the <code>UIAccessor</code> instance to lock the UI until the login request is processed:</p>
+<p>First, we use the <code>UIAccessor</code> instance to lock the UI until the login request is processed:</p>
 </div>
 <div class="listingblock">
 <div class="title">SocialServiceCallbackHandler.java</div>
@@ -1097,7 +1042,7 @@ It means that we can implement the handler as a prototype bean:</p>
 <div class="sect2">
 <h3 id="exchanging_an_auth_code_for_access_token"><a class="anchor" href="#exchanging_an_auth_code_for_access_token"></a><a class="link" href="#exchanging_an_auth_code_for_access_token">Exchanging an Auth Code for Access Token</a></h3>
 <div class="paragraph">
-<p>When the auth code is available, we can use it to get an access token. Form a request with required params depending on social service:</p>
+<p>When the auth code is available, we can use it to get an access token. Form a request with the required params depending on the social network service:</p>
 </div>
 <div class="listingblock">
 <div class="title">SocialLoginServiceBean.java</div>
@@ -1237,14 +1182,12 @@ library to perform request:</p>
 <h2 id="auto_registration"><a class="anchor" href="#auto_registration"></a><a class="link" href="#auto_registration">Auto-Registration</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The final part of the guide describes how to use access token to get profile info,
-register new account and login the user.</p>
+<p>The final part of the guide describes how to use the access token to get profile info, register a new account and login the user.</p>
 </div>
 <div class="sect2">
 <h3 id="fetching_user_data"><a class="anchor" href="#fetching_user_data"></a><a class="link" href="#fetching_user_data">Fetching User Data</a></h3>
 <div class="paragraph">
-<p>Oftentimes social service API endpoints enable you to specify a set of fields
-to fetch. Let’s add one more setting to our config interfaces:</p>
+<p>Oftentimes social network service API endpoints enable you to specify a set of fields to fetch. Let’s add one more setting to our config interfaces:</p>
 </div>
 <div class="listingblock">
 <div class="title">SocialServiceConfig.java</div>
@@ -1279,7 +1222,7 @@ to fetch. Let’s add one more setting to our config interfaces:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Create a simple immutable POJO to store loaded profile info:</p>
+<p>Create a simple immutable POJO to store the loaded profile info:</p>
 </div>
 <div class="listingblock">
 <div class="title">SocialUserData.java</div>
@@ -1320,8 +1263,7 @@ to fetch. Let’s add one more setting to our config interfaces:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Let’s add a new <code>SocialLoginService</code> method that will accept the auth code
-and return corresponding user data.</p>
+<p>Let’s add a new <code>SocialLoginService</code> method that will accept the auth code and return corresponding user data.</p>
 </div>
 <div class="listingblock">
 <div class="title">SocialLoginService.java</div>
@@ -1340,7 +1282,7 @@ and return corresponding user data.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Fetch an access token using auth code</p>
+<p>Fetch an access token using the auth code</p>
 </li>
 <li>
 <p>Fetch user data using access token</p>
@@ -1351,7 +1293,7 @@ and return corresponding user data.</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>Since exchanging an auth code for an access token is already described, we can proceed to fetching user data:</p>
+<p>Since exchanging the auth code for the access token is already described, we can proceed to fetching user data:</p>
 </div>
 <div class="listingblock">
 <div class="title">SocialLoginServiceBean.java</div>
@@ -1442,8 +1384,7 @@ and return corresponding user data.</p>
 <p><code>Credentials</code> instance is passed into <code>Connection</code></p>
 </li>
 <li>
-<p><code>Connection</code> iterates over available <code>LoginProviders</code> and checks whether
-it supports passed credentials</p>
+<p><code>Connection</code> iterates over available <code>LoginProviders</code> and checks whether it supports the passed credentials</p>
 </li>
 <li>
 <p>When suitable provider is found <code>Connection</code> delegates invocation to it</p>
@@ -1455,7 +1396,7 @@ it supports passed credentials</p>
 that supports such type of credentials.</p>
 </div>
 <div class="paragraph">
-<p>Create a new class <code>SocialCredentials</code> in web module:</p>
+<p>Create a new class <code>SocialCredentials</code> in the <code>web</code> module:</p>
 </div>
 <div class="listingblock">
 <div class="title">SocialCredentials.java</div>
@@ -1508,7 +1449,7 @@ that supports such type of credentials.</p>
 <div class="sect2">
 <h3 id="login_provider"><a class="anchor" href="#login_provider"></a><a class="link" href="#login_provider">Login Provider</a></h3>
 <div class="paragraph">
-<p>The <code>Connection</code> component uses all available <code>LoginProviders</code> to get new authentication info. <code>LoginProviders</code> mechanism enables you to use ordered Spring beans to authenticate a user for different types of credentials. We will use this extension point to create social login provider:</p>
+<p>The <code>Connection</code> component uses all available <code>LoginProviders</code> to get new authentication info. <code>LoginProviders</code> mechanism enables you to use ordered Spring beans to authenticate a user for different types of credentials. We will use this extension point to create a social login provider:</p>
 </div>
 <div class="listingblock">
 <div class="title">SocialLoginProvider.java</div>
@@ -1537,8 +1478,7 @@ that supports such type of credentials.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>We will extend built-in <code>ExternalUserLoginProvider</code> to re-use its logic.
-Create new <code>ExternalUserCredentials</code> based on the available info and pass it to the super method:</p>
+<p>We will extend the built-in <code>ExternalUserLoginProvider</code> to re-use its logic. Create a new <code>ExternalUserCredentials</code> based on the available info and pass it to the super method:</p>
 </div>
 <div class="listingblock">
 <div class="title">SocialLoginProvider.java</div>
@@ -1571,7 +1511,7 @@ Create new <code>ExternalUserCredentials</code> based on the available info and 
 </div>
 </div>
 <div class="paragraph">
-<p>To form credentials we have to find existing or register new user.</p>
+<p>To form credentials we have to find an existing or register a new user.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1593,8 +1533,7 @@ Create new <code>ExternalUserCredentials</code> based on the available info and 
 </ul>
 </div>
 <div class="paragraph">
-<p>These fields are required to bind social profile with system user to be able to find it later.
-We should also assign a default group to a new user - create a new configuration interface:</p>
+<p>These fields are required to bind the social network profile with the system user to be able to find it later. We should also assign a default group to a new user - create a new configuration interface:</p>
 </div>
 <div class="listingblock">
 <div class="title">SocialRegistrationConfig.java</div>
@@ -1721,7 +1660,7 @@ We should also assign a default group to a new user - create a new configuration
 </div>
 </div>
 <div class="paragraph">
-<p>Get back to <code>SocialLoginProvider</code> and use <code>SocialRegistrationService</code> to get user:</p>
+<p>Get back to <code>SocialLoginProvider</code> and use <code>SocialRegistrationService</code> to get the user:</p>
 </div>
 <div class="listingblock">
 <div class="title">SocialLoginProvider</div>
@@ -1758,12 +1697,7 @@ We should also assign a default group to a new user - create a new configuration
 <h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Anonymous access allows you to provide some publicly available functionality
-from your application, like dashboards, news, or feedback page.
-But in case when some features are available only for logged in users,
-social login is a convenient way to avoid filling registration forms.
-In this guide we&#8217;ve described how to support these use cases for CUBA based
-applications.</p>
+<p>Anonymous access allows you to provide some publicly available functionality in your application, like dashboards, news, or feedback page. But in case when some features are available only for logged in users, social login is a convenient way to avoid filling a registration form. In this guide we’ve described how to support these use cases for CUBA based applications.</p>
 </div>
 </div>
 </div>
