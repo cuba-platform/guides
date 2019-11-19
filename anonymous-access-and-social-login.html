@@ -1572,37 +1572,49 @@ that supports such type of credentials.</p>
 <div class="title">SocialRegistrationServiceBean.java</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">SocialRegistrationServiceBean</span> <span class="directive">implements</span> SocialRegistrationService {
+
     <span class="directive">private</span> <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">Pattern</span> EMAIL_PATTERN = <span class="predefined-type">Pattern</span>.compile(<span class="string"><span class="delimiter">&quot;</span><span class="content">[^@]+@[^.]+</span><span class="char">\\</span><span class="content">..+</span><span class="delimiter">&quot;</span></span>);
 
     <span class="annotation">@Inject</span>
-    <span class="directive">private</span> Metadata metadata;
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> Persistence persistence;
+    <span class="directive">private</span> DataManager dataManager;
     <span class="annotation">@Inject</span>
     <span class="directive">private</span> <span class="predefined-type">Configuration</span> configuration;
 
     <span class="annotation">@Override</span>
-    <span class="annotation">@Transactional</span>
     <span class="directive">public</span> User findOrRegisterUser(<span class="predefined-type">String</span> socialServiceId, <span class="predefined-type">String</span> login, <span class="predefined-type">String</span> name,
                                    SocialService socialService) {
-        TypedQuery&lt;SocialUser&gt; query = getUserQuery(socialService, socialServiceId);
-        SocialUser existingUser = query.getFirstResult();
+        User existingUser = findExistingUser(socialService, socialServiceId);
         <span class="keyword">if</span> (existingUser != <span class="predefined-constant">null</span>) {
             <span class="keyword">return</span> existingUser;
         }
 
-        SocialRegistrationConfig registrationConfig = configuration
-                .getConfig(SocialRegistrationConfig.class);
+        SocialUser user = createNewUser(socialServiceId, login, name, socialService);
 
-        EntityManager em = persistence.getEntityManager();
-        <span class="predefined-type">Group</span> defaultGroup = em.find(<span class="predefined-type">Group</span>.class, registrationConfig.getDefaultGroupId(),
-                <span class="predefined-type">View</span>.MINIMAL);
+        <span class="keyword">return</span> dataManager.commit(user);
+    }
 
-        SocialUser user = metadata.create(SocialUser.class);
+    <span class="annotation">@Nullable</span>
+    <span class="directive">private</span> User findExistingUser(SocialService socialService, <span class="predefined-type">String</span> socialServiceId) {
+        <span class="predefined-type">String</span> socialServiceField = getSocialIdParamName(socialService);
+
+        LoadContext&lt;User&gt; ctx = <span class="keyword">new</span> LoadContext&lt;&gt;(User.class);
+        ctx.setView(<span class="predefined-type">View</span>.LOCAL);
+        ctx.setQueryString(<span class="string"><span class="delimiter">&quot;</span><span class="content">select u from sec$User u where </span><span class="delimiter">&quot;</span></span> +
+                <span class="predefined-type">String</span>.format(<span class="string"><span class="delimiter">&quot;</span><span class="content">u.%s = :socialServiceId</span><span class="delimiter">&quot;</span></span>, socialServiceField))
+                .setParameter(<span class="string"><span class="delimiter">&quot;</span><span class="content">socialServiceId</span><span class="delimiter">&quot;</span></span>, socialServiceId);
+
+        <span class="keyword">return</span> dataManager.load(ctx);
+    }
+
+    <span class="directive">private</span> SocialUser createNewUser(<span class="predefined-type">String</span> socialServiceId, <span class="predefined-type">String</span> login,
+                                     <span class="predefined-type">String</span> name, SocialService socialService) {
+        SocialUser user = dataManager.create(SocialUser.class);
+
         user.setLogin(login);
         user.setName(name);
-        user.setGroup(defaultGroup);
+        user.setGroup(getDefaultGroup());
         user.setActive(<span class="predefined-constant">true</span>);
+
         <span class="keyword">if</span> (isEmail(login)) {
             user.setEmail(login);
         }
@@ -1619,25 +1631,18 @@ that supports such type of credentials.</p>
                 <span class="keyword">break</span>;
         }
 
-        em.persist(user);
-
         <span class="keyword">return</span> user;
     }
 
-    <span class="directive">private</span> TypedQuery&lt;SocialUser&gt; getUserQuery(SocialService socialService,
-                                                <span class="predefined-type">String</span> socialServiceId) {
-        EntityManager em = persistence.getEntityManager();
+    <span class="directive">private</span> <span class="predefined-type">Group</span> getDefaultGroup() {
+        SocialRegistrationConfig config = configuration.getConfig(SocialRegistrationConfig.class);
 
-        <span class="predefined-type">String</span> socialIdParam = getSocialIdParamName(socialService);
+        LoadContext&lt;<span class="predefined-type">Group</span>&gt; ctx = <span class="keyword">new</span> LoadContext&lt;&gt;(<span class="predefined-type">Group</span>.class);
+        ctx.setQueryString(<span class="string"><span class="delimiter">&quot;</span><span class="content">select g from sec$Group g where g.id = :defaultGroupId</span><span class="delimiter">&quot;</span></span>)
+                .setParameter(<span class="string"><span class="delimiter">&quot;</span><span class="content">defaultGroupId</span><span class="delimiter">&quot;</span></span>, config.getDefaultGroupId());
+        ctx.setView(<span class="predefined-type">View</span>.MINIMAL);
 
-        TypedQuery&lt;SocialUser&gt; query = em.createQuery(
-                <span class="string"><span class="delimiter">&quot;</span><span class="content">select u from sec$User u where </span><span class="delimiter">&quot;</span></span> +
-                <span class="predefined-type">String</span>.format(<span class="string"><span class="delimiter">&quot;</span><span class="content">u.%s = :%s</span><span class="delimiter">&quot;</span></span>, socialIdParam, socialIdParam),
-                SocialUser.class);
-        query.setParameter(socialIdParam, socialServiceId);
-        query.setViewName(<span class="predefined-type">View</span>.LOCAL);
-
-        <span class="keyword">return</span> query;
+        <span class="keyword">return</span> dataManager.load(ctx);
     }
 
     <span class="directive">private</span> <span class="predefined-type">String</span> getSocialIdParamName(SocialService socialService) {
@@ -1648,7 +1653,7 @@ that supports such type of credentials.</p>
                 <span class="keyword">return</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">facebookId</span><span class="delimiter">&quot;</span></span>;
             <span class="keyword">case</span> GITHUB:
                 <span class="keyword">return</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">githubId</span><span class="delimiter">&quot;</span></span>;
-            }
+        }
         <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">IllegalArgumentException</span>(
                 <span class="string"><span class="delimiter">&quot;</span><span class="content">No social id param found for service: </span><span class="delimiter">&quot;</span></span> + socialService);
     }
