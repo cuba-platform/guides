@@ -1144,37 +1144,49 @@ Its implementation is quite straightforward:
 [source, java]
 ----
 public class SocialRegistrationServiceBean implements SocialRegistrationService {
+
     private static final Pattern EMAIL_PATTERN = Pattern.compile("[^@]+@[^.]+\\..+");
 
     @Inject
-    private Metadata metadata;
-    @Inject
-    private Persistence persistence;
+    private DataManager dataManager;
     @Inject
     private Configuration configuration;
 
     @Override
-    @Transactional
     public User findOrRegisterUser(String socialServiceId, String login, String name,
                                    SocialService socialService) {
-        TypedQuery<SocialUser> query = getUserQuery(socialService, socialServiceId);
-        SocialUser existingUser = query.getFirstResult();
+        User existingUser = findExistingUser(socialService, socialServiceId);
         if (existingUser != null) {
             return existingUser;
         }
 
-        SocialRegistrationConfig registrationConfig = configuration
-                .getConfig(SocialRegistrationConfig.class);
+        SocialUser user = createNewUser(socialServiceId, login, name, socialService);
 
-        EntityManager em = persistence.getEntityManager();
-        Group defaultGroup = em.find(Group.class, registrationConfig.getDefaultGroupId(),
-                View.MINIMAL);
+        return dataManager.commit(user);
+    }
 
-        SocialUser user = metadata.create(SocialUser.class);
+    @Nullable
+    private User findExistingUser(SocialService socialService, String socialServiceId) {
+        String socialServiceField = getSocialIdParamName(socialService);
+
+        LoadContext<User> ctx = new LoadContext<>(User.class);
+        ctx.setView(View.LOCAL);
+        ctx.setQueryString("select u from sec$User u where " +
+                String.format("u.%s = :socialServiceId", socialServiceField))
+                .setParameter("socialServiceId", socialServiceId);
+
+        return dataManager.load(ctx);
+    }
+
+    private SocialUser createNewUser(String socialServiceId, String login,
+                                     String name, SocialService socialService) {
+        SocialUser user = dataManager.create(SocialUser.class);
+
         user.setLogin(login);
         user.setName(name);
-        user.setGroup(defaultGroup);
+        user.setGroup(getDefaultGroup());
         user.setActive(true);
+
         if (isEmail(login)) {
             user.setEmail(login);
         }
@@ -1191,25 +1203,18 @@ public class SocialRegistrationServiceBean implements SocialRegistrationService 
                 break;
         }
 
-        em.persist(user);
-
         return user;
     }
 
-    private TypedQuery<SocialUser> getUserQuery(SocialService socialService,
-                                                String socialServiceId) {
-        EntityManager em = persistence.getEntityManager();
+    private Group getDefaultGroup() {
+        SocialRegistrationConfig config = configuration.getConfig(SocialRegistrationConfig.class);
 
-        String socialIdParam = getSocialIdParamName(socialService);
+        LoadContext<Group> ctx = new LoadContext<>(Group.class);
+        ctx.setQueryString("select g from sec$Group g where g.id = :defaultGroupId")
+                .setParameter("defaultGroupId", config.getDefaultGroupId());
+        ctx.setView(View.MINIMAL);
 
-        TypedQuery<SocialUser> query = em.createQuery(
-                "select u from sec$User u where " +
-                String.format("u.%s = :%s", socialIdParam, socialIdParam),
-                SocialUser.class);
-        query.setParameter(socialIdParam, socialServiceId);
-        query.setViewName(View.LOCAL);
-
-        return query;
+        return dataManager.load(ctx);
     }
 
     private String getSocialIdParamName(SocialService socialService) {
@@ -1220,7 +1225,7 @@ public class SocialRegistrationServiceBean implements SocialRegistrationService 
                 return "facebookId";
             case GITHUB:
                 return "githubId";
-            }
+        }
         throw new IllegalArgumentException(
                 "No social id param found for service: " + socialService);
     }
