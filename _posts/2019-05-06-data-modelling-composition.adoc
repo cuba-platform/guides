@@ -93,48 +93,51 @@ image::data-model-composition/one-level-owner-editor-address-composition.png[ali
 
 === 一对多：两层嵌套
 
-Composition can also be multiple-level. The next example shows a Composition of two levels. In the Petclinic there is a need to store health records of the pets. The `Pet` -> `HealthRecord` relationship is another composition. However, the `HealthRecord` also has another composition since there can be multiple `Attachment` instances created for a given health record.
+
+组合也可以有多级。下面的示例展示一个两级组合的示例。在宠物诊应用中有存储宠物健康记录的需求。`Pet` -> `HealthRecord` 关系是另外一个组合， `HealthRecord` 也一个组合属性用于存储健康记录的附件信息。
 
 image::data-model-composition/composition_domain_model_two_levels.png[align="center"]
 
-* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/pet/Pet.java[Pet.java] - the `healthRecord` attribute of the `Pet` class is marked as `@Composition` and `@OnDelete`.
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/pet/Pet.java[Pet.java] - `Pet` 类的 `healthRecord` 属性被标记为   `@Composition` 和  `@OnDelete` 。
 
-* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/pet/HealthRecord.java[HealthRecord.java] - the `attachments` attribute of the `HealthRecord` class is marked as `@Composition` and `@OnDelete` similarly to the `healthRecords` attribute of the `Pet` class.
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/pet/HealthRecord.java[HealthRecord.java] - `HealthRecord` 类的 `attachments` 属性被标记为 `@Composition` 和 `@OnDelete` ，与 `Pet` 类的 `healthRecords` 属性类似。
 
-* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/views.xml[views.xml] - the `health-record-with-attachments` view of the `HealthRecord` class contains the `attachments` collection attribute. This view is used in the `pet-with-owner-and-type-and-health-records` view of the `Pet` entity which acts as the root view of the edit screen.
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/views.xml[views.xml] - `HealthRecord` 类的 `health-record-with-attachments` 视图包含了 `attachments`  集合属性。 这个视图被用于 `Pet` 实体的 `pet-with-owner-and-type-and-health-records` 视图， 这个视图被作为编辑界面的根视图。
 
-* https://github.com/cuba-guides/{project_id}/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/pet/pet/pet-edit.xml[pet-edit.xml] - the XML descriptor of the `Pet` editor screen defines a data container for the `Pet` instance and a nested collection data container for its `healthRecords`. It also contains a table for managing the `HealthRecord` instances. The screen uses the `pet-with-owner-and-type-and-health-records` view as a root view for this edit screen.
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/pet/pet/pet-edit.xml[pet-edit.xml] -`Pet` 编辑界面的 XML描述定义了一个 `Pet` 实例的数据容器，和它的 `healthRecords` 属性的集合数据容器。 界面上也一个用于管理  `HealthRecord` 实例的表格。这个界面使用  `pet-with-owner-and-type-and-health-records` 视图作为编辑界面的根视图。
 
 +
 [TIP]
 ====
-CUBA 7+ removed the previous need to define datasources for the second level of nested compositions in the editor of the top level entity with the release of data containers. In CUBA 7+ this definition is *not* required anymore.
+CUBA 7+ 之前需要在顶级实体的编辑界面中为第二级嵌套的组合定义数据源，现在已经不需要了。
 ====
 
-* https://github.com/cuba-guides/{project_id}/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/pet/healthrecord/healthrecord/health-record-edit.xml[health-record-edit.xml] - the XML descriptor of the `HealthRecord` editor screen defines a data container for the `HealthRecord` instance and a nested collection data container for its `attachments`. It also contains a table for managing the `HealthRecordAttachment` instances.
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/pet/healthrecord/healthrecord/health-record-edit.xml[health-record-edit.xml] - `HealthRecord` 编辑界面的 XML 描述中为 `HealthRecord` 实例定义了一个数据容器，也为 `attachments` 定义了一人嵌套的集合数据容器。 有一个表格用于管理 `HealthRecordAttachment` 实例。
 
 
-As a result, the updated instances of the `HealthRecordAttachment`, as well as the `HealthRecord` instances, will be saved to the database only with the `Pet` instance in the same transaction.
+最终， `HealthRecordAttachment` 实例和 `HealthRecord` 实例的更新会与 `Pet` 实例在同一个事务中保存到数据库。
 
-==== Health Record Composition within the Pet Editor
+==== 宠物编辑界面上的健康记录组合
 image::data-model-composition/two-levels-pet-editor-health-records-composition.png[align="center",link="images/data-model-composition/two-levels-pet-editor-health-records-composition.png"]
 
-==== Health Record Attachment Composition within the Health Record Editor
+==== 健康记录编辑界面的附件组合
 image::data-model-composition/two-levels-healthRecord-editor-health-record-attachments-composition.png[align="center",link="images/data-model-composition/two-levels-healthRecord-editor-health-record-attachments-composition.png"]
 
 
-=== More Levels of Nesting
+=== 多级嵌套
 
-As stated above, CUBA 7+ does not have the restriction of maximal two levels of nesting for composition anymore. This means that three (or more) levels of nesting are possible. The example for two levels of nesting can be extended towards: `Owner` -> `Pet` -> `Health Record` -> `Health Record Attachment` and in fact it has been done within the demo application. It is also possible to combine the usage of One-to-Many and One-to-One compositions within a Composition chain.
+如上所述， CUBA7+ 不再限制组合关系的嵌套层数，这意味着可以使用三级（或更多）级的嵌套。示例中的两级嵌套可以继续扩展：  `Owner` -> `Pet` -> `Health Record` -> `Health Record Attachment` ，事实中示例程序中已经这样做了。 也可以在一个组合链中联合使用一对多和一对一组合。
 
-Having too many levels of composition has to be treated with caution, though. It requires an additional burden on the user, to understand at which point which data is stored.
+要谨慎使用多级组合，因为它会为用户带来一些困惑，用户常常会分辨不出当前在嵌套层次的哪一级。
 
 
-== One-to-One Composition
+== 一对一组合
 
-Besides the above explained Composition of type `ONE-TO-MANY`, there is also the possibility to define Composition of type `ONE-TO-ONE`. This type of Composition is useful when it is only possible to have one item of the child entity. An example in the petclinic is the following scenario:
+除了上面介绍的 `一对多` 组合，CUBA 平台中也允许定义 `一对一` 组合。 在一个实体仅有一个对应的子实体时这种类型的组合就很有用。宠物诊所中的示例场景：
 
-The employees of the Petclinic have to be managed (like Vets, Nurses etc.). Therefore an `Employee` entity is defined. For each `Employee` instance there is an associated `EmployeeRecord` entity which stores information about the work related information of this employee.
+宠物谁的的雇员需要管理。因此定义了一个 `Employee` 实体。每个 `Employee` 实例有一个关联的 `EmployeeRecord` 实体，用于存储这个雇员工作相关的信息。
+
+
 
 
 image::data-model-composition/composition-one-to-one.png[align="center"]
