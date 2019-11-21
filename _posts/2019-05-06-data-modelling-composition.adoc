@@ -126,7 +126,7 @@ image::data-model-composition/two-levels-healthRecord-editor-health-record-attac
 
 === 多级嵌套
 
-如上所述， CUBA7+ 不再限制组合关系的嵌套层数，这意味着可以使用三级（或更多）级的嵌套。示例中的两级嵌套可以继续扩展：  `Owner` -> `Pet` -> `Health Record` -> `Health Record Attachment` ，事实中示例程序中已经这样做了。 也可以在一个组合链中联合使用一对多和一对一组合。
+如上所述，CUBA7+ 不再限制组合关系的嵌套层数，这意味着可以使用三级（或更多）级的嵌套。示例中的两级嵌套可以继续扩展：  `Owner` -> `Pet` -> `Health Record` -> `Health Record Attachment` ，事实中示例程序中已经这样做了。 也可以在一个组合链中联合使用一对多和一对一组合。
 
 要谨慎使用多级组合，因为它会为用户带来一些困惑，用户常常会分辨不出当前在嵌套层次的哪一级。
 
@@ -143,18 +143,20 @@ image::data-model-composition/two-levels-healthRecord-editor-health-record-attac
 image::data-model-composition/composition-one-to-one.png[align="center"]
 
 
-* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/employee/Employee.java[Employee.java] - the `Employee` entity contains an optional link to `EmployeeRecord` annotated with `@Composition`.
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/employee/Employee.java[Employee.java] - `Employee` 实体与 `EmployeeRecord`  包含一个可选的一对一组合关系。
 
-* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/employee/EmployeeRecord.java[EmployeeRecord.java] - the `EmployeeRecord` entity.
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/haulmont/sample/petclinic/entity/employee/EmployeeRecord.java[EmployeeRecord.java] - `EmployeeRecord` 实体。
 
 On a UI level it is possible to deal with One-to-One composition in two different ways. Normally, One-to-One compositions are displayed as a single entry in the form of the master entity. The details of the child entity are entered in a dedicated edit screen for this entity. But it is also possible to enter values for both entites in the same edit screen. Below both options will be shown.
+在 UI 层面，有两种可能的方式处理一对一组合。通常，一对一组合在主实体的表单中显示为一个单一入口。通过这个入口打开一个独立的界面来编辑子实体的详细信息。但是也可以将主、子实体的信息显示在一个界面，并在一个界面中进行编辑。
 
 
-=== One-to-One with a Details Screen
+=== 使用详细界面的的一对一关系
+* https://github.com/cuba-guides/{project_id}/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/employee/employee/employee-edit.xml[employee-edit.xml] -  雇员实体编辑界面描述。为了加载嵌套的实例，根数据容器使用了 `Employee` 实体的  `employee-with-employee-record-view` 视图。
 
-* https://github.com/cuba-guides/{project_id}/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/employee/employee/employee-edit.xml[employee-edit.xml] - the employee edit screen descriptor. It contains a nested data container for the `EmployeeRecord` instance. In order to load the nested instance, the root data container uses the `employee-with-employee-record-view` view of the `Employee` entity that includes the `employeeRecord` attribute.
 
-The definition of the `employeeRecord` property in the `employee-edit.xml` is defined as a `pickerField` component which contains the actions `OpenAction` (with special type `picker_open_composition`) and `ClearAction`:
+在 `employee-edit.xml` 中 `employeeRecord` 属性被定义为 `pickerField` 组件，这个组件包含了 `OpenAction` 操作（使用特定类型：`picker_open_composition`）和  `ClearAction` 操作：
+
 
 [source, xml]
 ----
@@ -166,28 +168,28 @@ The definition of the `employeeRecord` property in the `employee-edit.xml` is de
 </pickerField>
 ----
 
-As a result, employee editing works as follows:
-
+最终，雇员编辑界面的操作流程如下：
 
 image::data-model-composition/composition-one-to-one-editor-open-action.png[align="center",width="600"]
 
-When the open action is invoked, a new instance of `EmployeeRecord` is created and its edit screen is shown. When *OK* is clicked in the employee record editor, the employee record instance is not saved to the database, but only to the `employeeRecordDc` data container of the employee edit screen.
+在点击了 `pickerField` 组件的"open"按钮后， 创建了一个 `EmployeeRecord` 实例，同时打开了相应的编辑界面。点击了 `EmployeeRecord` 编辑界面的 *OK* 按钮的一，`EmployeeRecord` 实例并没有马上保存到数据数据库，而是提交到了雇员编辑界面的 `employeeRecordDc` 数据容器。
 
-The picker field displays the instance name of the `EmployeeRecord` entity:
+选择器控件上显示了 `EmployeeRecord` 实体的实例名：
 
 image::data-model-composition/composition-one-to-one-editor-open-action-instance-name.png[align="center",width="600"]
 
-When a user clicks *OK* in the employee edit screen, the updated `Employee` instance together with the `EmployeeRecord` instance is submitted to the `DataManager.commit()` method and saved to the database within a single transaction.
-
-If the user invokes the clear action of the picker field, the `EmployeeRecord` instance is deleted and the reference to it is cleared in the same transaction after the user commits the employee editor.
+当用户点击雇员编辑界面上的 *OK* 按钮，修改过的 `Employee`  实例和 `EmployeeRecord` 实例一起被提交给 `DataManager.commit()` 方法，然后在同一个事务中保存到数据库。
 
 
-=== One-to-One Composition with a Single Editor
+如果用户点击选择器控件上的清除按钮， `EmployeeRecord` 实例会被删除，同时对此实例的引用会在雇员编辑界面提交后被清除。
 
 
-It is often convenient to edit the One-to-One composition in a single editor. The following example shows how the `EmployeeRecord` can be edited within the `Employee` editor screen.
+=== 在一个编辑界面中的一对一组合
 
-The https://github.com/cuba-guides/{project_id}/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/employee/employee/employee-single-editor-edit.xml[employee-single-editor-edit.xml] descriptor contains the main `employeeDc` and the nested `employeeRecordDc` data containers:
+
+在同一个编辑界面中编辑一对一组合比较方便。下面的示例演示如何在 `Employee` 编辑界面中编辑  `EmployeeRecord` 。
+
+The https://github.com/cuba-guides/{project_id}/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/employee/employee/employee-single-editor-edit.xml[employee-single-editor-edit.xml] 界面描述中包含了 `employeeDc` 和嵌套的 `employeeRecordDc` 数据容器：
 
 [source, xml]
 ----
@@ -201,7 +203,7 @@ The https://github.com/cuba-guides/{project_id}/blob/master/modules/web/src/com/
 </data>
 ----
 
-Fields for editing both entities are defined in the same editor either a single form or multiple forms:
+两个实体中的字段可以定义在一个表单里，也可以定义在多个表单里：
 
 [source, xml]
 ----
@@ -216,7 +218,7 @@ Fields for editing both entities are defined in the same editor either a single 
 </form>
 ----
 
-In the https://github.com/cuba-guides/{project_id}/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/employee/employee/EmployeeSingleEditorEdit.java[EmployeeSingleEditorEdit.java] controller an `EmployeeRecord` instance will be created and linked to the new `Employee` instance when the latter is just created:
+在 https://github.com/cuba-guides/{project_id}/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/employee/employee/EmployeeSingleEditorEdit.java[EmployeeSingleEditorEdit.java] 界面控制器中，会创建一个新的 `EmployeeRecord` 实例，并且与新建的 `Employee` 实例关联起来:
 
 .EmployeeSingleEditorEdit.java
 [source, java]
@@ -235,17 +237,16 @@ private EmployeeRecord createEmployeeRecord() {
     return dataContext.merge(metadata.create(EmployeeRecord.class)); // <2>
 }
 ----
-<1> the initialization of the `EmployeeRecord` can be defined when the `InitEntityEvent` is fired
-<2> an instance of `EmployeeRecord` is created and merged in the current `dataContext`
+<1> 对 `EmployeeRecord` 的初始化操作可以在 `InitEntityEvent` 事件中执行
+<2> 创建了一个 `EmployeeRecord` 实例并且被合并到当前 `dataContext`
 
-Now, both linked entities can be created and edited in one editor screen.
-
+现在，可以创建两个关联的实体并且在同一个界面中对其进行编辑。
 
 image::data-model-composition/composition-one-to-one-single-editor.png[align="center"]
 
 
-== Summary
+== 总结
 
-In this data modelling guide the Composition relationship was described. Compositions are valuable if a master-detail relationship between two entities should be modelled, where the detail entities can only exist if the corresponding master entity exists.
+本指南描述了数据建模中的组合关系。组合对具有主从关系的两个实体很有价值，组合关系表示子实体不能脱离主实体独立存在。
 
-Composition structures can exist in 1:1 and 1:N form. Furthermore, nested composition can be created with multiple levels. The corresponding UI screens treat Composition relationships in a special way. Detail entities are only stored during the creation process of the master entity at the point in time when the master entity is stored.
+组合结构存在两种模式： 1:1和1:N。更进一步， 组合可以嵌套多级。对应的UI界面会以特殊的方式来处理组合关系。组合关系中的子实体总是与主实体一起保存。
