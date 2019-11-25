@@ -1597,13 +1597,11 @@ that supports such type of credentials.</p>
     <span class="directive">private</span> User findExistingUser(SocialService socialService, <span class="predefined-type">String</span> socialServiceId) {
         <span class="predefined-type">String</span> socialServiceField = getSocialIdParamName(socialService);
 
-        LoadContext&lt;User&gt; ctx = <span class="keyword">new</span> LoadContext&lt;&gt;(User.class);
-        ctx.setView(<span class="predefined-type">View</span>.LOCAL);
-        ctx.setQueryString(<span class="string"><span class="delimiter">&quot;</span><span class="content">select u from sec$User u where </span><span class="delimiter">&quot;</span></span> +
-                <span class="predefined-type">String</span>.format(<span class="string"><span class="delimiter">&quot;</span><span class="content">u.%s = :socialServiceId</span><span class="delimiter">&quot;</span></span>, socialServiceField))
-                .setParameter(<span class="string"><span class="delimiter">&quot;</span><span class="content">socialServiceId</span><span class="delimiter">&quot;</span></span>, socialServiceId);
-
-        <span class="keyword">return</span> dataManager.load(ctx);
+        <span class="keyword">return</span> dataManager.load(User.class)
+                .query(<span class="string"><span class="delimiter">&quot;</span><span class="content">select u from sec$User u where </span><span class="delimiter">&quot;</span></span> +
+                        <span class="predefined-type">String</span>.format(<span class="string"><span class="delimiter">&quot;</span><span class="content">u.%s = :socialServiceId</span><span class="delimiter">&quot;</span></span>, socialServiceField))
+                .parameter(<span class="string"><span class="delimiter">&quot;</span><span class="content">socialServiceId</span><span class="delimiter">&quot;</span></span>, socialServiceId)
+                .one();
     }
 
     <span class="directive">private</span> SocialUser createNewUser(<span class="predefined-type">String</span> socialServiceId, <span class="predefined-type">String</span> login,
@@ -1637,12 +1635,10 @@ that supports such type of credentials.</p>
     <span class="directive">private</span> <span class="predefined-type">Group</span> getDefaultGroup() {
         SocialRegistrationConfig config = configuration.getConfig(SocialRegistrationConfig.class);
 
-        LoadContext&lt;<span class="predefined-type">Group</span>&gt; ctx = <span class="keyword">new</span> LoadContext&lt;&gt;(<span class="predefined-type">Group</span>.class);
-        ctx.setQueryString(<span class="string"><span class="delimiter">&quot;</span><span class="content">select g from sec$Group g where g.id = :defaultGroupId</span><span class="delimiter">&quot;</span></span>)
-                .setParameter(<span class="string"><span class="delimiter">&quot;</span><span class="content">defaultGroupId</span><span class="delimiter">&quot;</span></span>, config.getDefaultGroupId());
-        ctx.setView(<span class="predefined-type">View</span>.MINIMAL);
-
-        <span class="keyword">return</span> dataManager.load(ctx);
+        <span class="keyword">return</span> dataManager.load(<span class="predefined-type">Group</span>.class)
+                .query(<span class="string"><span class="delimiter">&quot;</span><span class="content">select g from sec$Group g where g.id = :defaultGroupId</span><span class="delimiter">&quot;</span></span>)
+                .parameter(<span class="string"><span class="delimiter">&quot;</span><span class="content">defaultGroupId</span><span class="delimiter">&quot;</span></span>, config.getDefaultGroupId())
+                .one();
     }
 
     <span class="directive">private</span> <span class="predefined-type">String</span> getSocialIdParamName(SocialService socialService) {
