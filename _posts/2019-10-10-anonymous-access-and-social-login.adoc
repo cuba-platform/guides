@@ -1169,13 +1169,11 @@ public class SocialRegistrationServiceBean implements SocialRegistrationService 
     private User findExistingUser(SocialService socialService, String socialServiceId) {
         String socialServiceField = getSocialIdParamName(socialService);
 
-        LoadContext<User> ctx = new LoadContext<>(User.class);
-        ctx.setView(View.LOCAL);
-        ctx.setQueryString("select u from sec$User u where " +
-                String.format("u.%s = :socialServiceId", socialServiceField))
-                .setParameter("socialServiceId", socialServiceId);
-
-        return dataManager.load(ctx);
+        return dataManager.load(User.class)
+                .query("select u from sec$User u where " +
+                        String.format("u.%s = :socialServiceId", socialServiceField))
+                .parameter("socialServiceId", socialServiceId)
+                .one();
     }
 
     private SocialUser createNewUser(String socialServiceId, String login,
@@ -1209,12 +1207,10 @@ public class SocialRegistrationServiceBean implements SocialRegistrationService 
     private Group getDefaultGroup() {
         SocialRegistrationConfig config = configuration.getConfig(SocialRegistrationConfig.class);
 
-        LoadContext<Group> ctx = new LoadContext<>(Group.class);
-        ctx.setQueryString("select g from sec$Group g where g.id = :defaultGroupId")
-                .setParameter("defaultGroupId", config.getDefaultGroupId());
-        ctx.setView(View.MINIMAL);
-
-        return dataManager.load(ctx);
+        return dataManager.load(Group.class)
+                .query("select g from sec$Group g where g.id = :defaultGroupId")
+                .parameter("defaultGroupId", config.getDefaultGroupId())
+                .one();
     }
 
     private String getSocialIdParamName(SocialService socialService) {
