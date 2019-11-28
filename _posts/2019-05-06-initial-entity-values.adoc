@@ -9,7 +9,7 @@ permalink: initial-entity-values
 :sectlinks:
 :sectanchors:
 :page-navtitle:  实体实例初始值
-:page-excerpt:  这个指南演示为实体实例设置初始值的几种方式
+:page-excerpt:  本指南演示为实体实例设置初始值的几种方式
 :page-icone: images/initial-entity-values/guide_icone.svg
 :page-root: ../../../
 :project_id: cuba-petclinic-initial-entity-values
@@ -17,18 +17,18 @@ permalink: initial-entity-values
 :java_version: 1.8
 :cuba_version: 7.0
 
-这个指南演示为实体实例设置初始值的几种方式。
+本指南演示为实体实例设置初始值的几种方式。
 
 在宠物诊所示例中有一些用例，在这些用例中的有的实体默认值应该全局设置，而有的需要针对每个用例设置。
 
 == 将要构建的内容
 
-这个指南对 https://github.com/cuba-platform/cuba-petclinic[CUBA 宠物诊所] 示例进行了增强，以演示为实体设置初始值的不同方式。 特别是会覆盖到以下用例：
+本指南对 https://github.com/cuba-platform/cuba-petclinic[CUBA 宠物诊所] 示例进行了增强，以演示为实体设置初始值的不同方式。 特别是会覆盖到以下用例：
 
 * 对 `Visit` 实体的 `paid` 属性进行全局默认值设置
 * 定期检查（regular checkup ）是一个特定类型的就诊活动，应该使用一个特定的描述进行初始化
 * `Visit` 的 `paid` 属性应该在选择了 `type` 属性后自动填充
-* 自动生成的就诊编号来源于 `Visit` 实体的属性 ????
+* 自动生成的就诊编号中使用了 `Visit` 实例的属性
 
 === 最终应用程序
 
@@ -187,7 +187,7 @@ private void createVisitForPet(Pet pet) {
 
 <1> 使用 `screenBuilders` bean 创建一个  `EditorBuilder`
  <2> `EditorBuilder`  被设置为创建模式
-<3> `withInitializer` 方法接受一个  `Consumer<Visit>` 接口，接口实现使用 Visit 实例作为参数，可以在 `Consumer<Visit>` 接口实现中对 Visit 实例进行调整 ????
+<3> `withInitializer` 方法接受一个  `Consumer<Visit>` 接口，接口实现使用 Visit 实例作为参数，可以在 `Consumer<Visit>` 接口实现中对 Visit 实例进行调整
 
 
 使用 ScreenBuilder API  和外部信息，就可以以更加动态地方式创建初始值。如上面的示例所示，在第一步选择了宠物，根据这个选择动态生成了一段描述， 并且这段描述被设置给了新建的 Visit 实体。
@@ -319,7 +319,7 @@ public class VisitEdit extends StandardEditor<Visit> {
 
 == 总结
 
-这个指南展示了关于初始化实体值的几种方式。一种方式是在实体上使用 `@PostConstruct` 注解直接进行属性值的分配。
+本指南展示了关于初始化实体值的几种方式。一种方式是在实体上使用 `@PostConstruct` 注解直接进行属性值的分配。
 
 这种初始化方式在所有场景下都可用，因此这是一种最常用的属性初始化方式。但是有时候初始化属性时需要更多的上下文信息，比如用户在界面上的选择。
 
@@ -327,7 +327,7 @@ public class VisitEdit extends StandardEditor<Visit> {
 
 UI 层的属性初始化方式只在用户使用特定与系统交互时才起作用。经常会有其它的场景，比如 REST API 、批量编辑器功能、数据导入场景等。如果需要满足所有场景的实体属性初始化，应该优先选择 <<实体字段初始化>> 。
 
-此外，演示了两种不同的依赖属性的初始化，as their use case is oftentimes quite similar to the normal attribute initialization 。可以通过表单字段的 change  事件初始化属性，或者通过数据上下文事件在实体保存前初始化属性。 ????
+此外，演示了两种不同方式的依赖属性初始化，这两种依赖属性初始化方式会被经常用到。可以通过表单字段的 change  事件初始化属性，或者通过数据上下文事件在实体保存前初始化属性。
 
 == 更多信息
 

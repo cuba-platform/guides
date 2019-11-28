@@ -17,12 +17,12 @@ permalink: intro-working-with-data-in-cuba
 :cuba_version: 7.0
 :page-url-first-image: https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-visit-for-pet.png
 
-这个指南将向你介绍一些 CUBA 的API，了解了这些API后你可以使用 DataManager API以编程方式与数据库进行交互。
+本指南将向你介绍一些 CUBA 在数据访问方面的API，了解了这些API后,你可以使用 DataManager API 以编程方式与数据库进行交互。
 
 
 == 将要构建什么
 
-这个指南对 https://github.com/cuba-platform/cuba-petclinic[CUBA 宠物医院]示例进行了改进，以便演示出使用DataManager API 进行编程式数据访问的各种场景。特别是我们会涉及到以下场景：
+本指南对 https://github.com/cuba-platform/cuba-petclinic[CUBA 宠物医院]示例进行了改进，以便演示出使用 DataManager API 进行编程式数据访问的各种场景。特别是我们会涉及到以下场景：
 
 * 根据给定的宠物身份号码自动创建一个到访(Visit)信息
 * 对于有生命有危险的宠物发会自动发送 "疾病警告邮件"
@@ -41,9 +41,9 @@ include::includes/petclinic_introduction.adoc[]
 
 ==  编程式数据访问交互
 
-通常，以编程方式与数据库进行交互是必要的。在基于CUBA的应用程序中，由于可以以声明的方式对UI进行数据绑定，所以编程式数据访问不会像其它框架那么多，但仍有很多情况我们必须在业务逻辑代码中读写数据库。
+以编程方式使用数据库是很常见。在基于CUBA的应用程序中，由于可以以声明的方式对UI进行数据绑定，所以编程式数据访问不会像其它框架那么多，但仍有很多情况我们必须在业务逻辑代码中读写数据库。
 
-CUBA 提供的主要数据交互点是 https://doc.cuba-platform.com/manual-{cuba_version}/dataManager.html[DataManager] API。这个API允许 CUBA 应用程序开发人员通过对实体的一般抽象来加载和存储数据库中的数据。????
+CUBA 提供的主要数据交互点是 https://doc.cuba-platform.com/manual-{cuba_version}/dataManager.html[DataManager] API。这个API允许 CUBA 应用程序开发人员通过常规的实体抽象层来加载和存储数据库中的数据。
 
 
 DataManager 是在 Java Persistence API (JPA) 之上的一个抽象。它隐藏掉了一些在日常操作不需要的细节。
@@ -53,7 +53,7 @@ DataManager 是在 Java Persistence API (JPA) 之上的一个抽象。它隐藏�
 
 == 使用 Datamanager 加载数据
 
-DataManager 有多种方式从数据库加载数据。在这个指南中，介绍两个主要方式：基于查询加载单条数据和多条数据。
+DataManager 有多种方式从数据库加载数据。在本指南中，介绍两个主要方式：基于查询加载单条数据和多条数据。
 
 === 单条数据
 
@@ -170,7 +170,7 @@ private Visit createVisitForPet(Pet pet) {
 
 创建实体实例后，必须使用相应的 setter 方法来为该实体设置数据。 在这个示例中，为新的Visit实例设置了pet属性以及 将当前日期设置为访问日期。
 
-存储实体实例的过程包含几个步骤，如安全检查、执行实体监听器等。 commit 方法的返回值是存储的实例，这个实例包含了所有在存储阶段添加的属性。????
+存储实体实例的过程包含几个步骤，如安全检查、执行实体监听器等。 commit 方法的返回值是保存的实例，这个实例包含了所有在保存阶段添加的属性。
 
 TIP: 平台包含一些用于存储实体的便捷 API。 关于这些 API 的详细信息请参阅：http://files.cuba-platform.com/javadoc/cuba/{cuba_version}/com/haulmont/cuba/core/global/DataManager.html[DataManager API 参考]。
 

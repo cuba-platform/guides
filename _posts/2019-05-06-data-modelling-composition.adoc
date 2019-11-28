@@ -26,7 +26,7 @@ permalink: data-modelling-composition
 *  `Owner` 实体与  `Address` 建立关联
 * `Pet` 包含多个 `HealthRecord` 实例，每个 `HealthRecord` 包含多个 `HealthRecordAttachment`。
 * The `Employee` entity has a detail entity for storing the employee record: `EmployeeRecord` which will be entered during the creation process of the `Employee`
-* `Employee` 实体有一个用于存储雇员记录的详情实体：`EmployeeRecord` ，这实体是在雇员的创建过程中输入。 ????
+* `Employee` 实体有一个用于存储雇员详细信息实体：`EmployeeRecord` ，该实体信息是在雇员的创建过程中录入的。
 
 === 最终应用程序
 

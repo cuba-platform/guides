@@ -21,7 +21,7 @@ permalink: decouple-business-logic-with-app-events
 
 == 将要构建的内容
 
-这个指南对 https://github.com/cuba-platform/cuba-petclinic[CUBA 宠物医院]示例进行了改进，以演示应用程序事件的各种用例。特别是我们会涉及到以下用例：
+本指南对 https://github.com/cuba-platform/cuba-petclinic[CUBA 宠物医院]示例进行了改进，以演示应用程序事件的各种用例。特别是我们会涉及到以下用例：
 
 * 在创建一个新的到访记录(Visit)时生成一个房间序列号(a room keycode )
 * 为预订的到访发送房间码(room keycode)
@@ -79,7 +79,7 @@ CUBA 会被具有 `@PublishEntityChangedEvents` 注解的实体触发这个事�
 要为此事件注册事件监听器，需要在应用程序的 core 模块定义一个 Spring bean。要注册特定类型的事件，一旦 `EntityChangedEvent`  事件触发后要执行的方法需要使用  `@TransactionalEventListener` 进行注解。
 
 
-TIP: 有两种不同类型的注解可用于注册一个事件监听器： `@TransactionalEventListener` 和 `@EventListener` 。 它们在事务行为方面有所不同。在这个指南中使用的是 `@TransactionalEventListener`  注解。可以在这里找到更我细节： https://doc.cuba-platform.com/manual-7.0/entityChangedEvent.html[CUBA 文档]。
+TIP: 有两种不同类型的注解可用于注册一个事件监听器： `@TransactionalEventListener` 和 `@EventListener` 。 它们在事务行为方面有所不同。在本指南中使用的是 `@TransactionalEventListener`  注解。可以在这里找到更我细节： https://doc.cuba-platform.com/manual-7.0/entityChangedEvent.html[CUBA 文档]。
 
 
 

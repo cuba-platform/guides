@@ -17,14 +17,14 @@ permalink: data-modelling-entity-inheritance
 :java_version: 1.8
 :cuba_version: 7.0
 
-这个指南演示了在 CUBA 应用程序中如何使用实体继承。
+本指南演示了在 CUBA 应用程序中如何使用实体继承。
 
 宠物诊所示例中，有各种宠物在诊疗期间需要被照看，像猫、鸟及鼠类。应用程序应该在一个表里存储所有宠物的公共属性，使用独立的关联表去存储每种宠物特定的属性。
 
 
 == 将要构建的内容
 
-这个指南对 https://github.com/cuba-platform/cuba-petclinic[CUBA 宠物诊所] 示例进行了增强，以演示实体继承机制。特别是会覆盖以下用例：
+本指南对 https://github.com/cuba-platform/cuba-petclinic[CUBA 宠物诊所] 示例进行了增强，以演示实体继承机制。特别是会覆盖以下用例：
 
 * `Pet` 实体成为所有宠物类型的超类
 * `Cat` 、  `Bird` 和 `Rat` 被创建为具体的宠物类型实体

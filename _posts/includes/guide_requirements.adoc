@@ -10,6 +10,6 @@
 * https://github.com/cuba-platform/cuba-cli/wiki/Installation[CUBA CLI] (可选)
 
 
-https://github.com/cuba-guides/{project_id}/archive/master.zip[下载] 并解压这个指南的源码，或者使用 git 克隆下来：
+https://github.com/cuba-guides/{project_id}/archive/master.zip[下载] 并解压本指南的源码，或者使用 git 克隆下来：
 
 `git clone https://github.com/cuba-guides/{project_id}.git`

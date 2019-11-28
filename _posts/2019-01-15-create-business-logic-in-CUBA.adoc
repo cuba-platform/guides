@@ -20,12 +20,12 @@ permalink: create-business-logic-in-cuba
 
 
 
-开发 CUBA 应用程序时的首要问题之一是： _我的业务逻辑应该放到哪？_  这个指南将介绍几种选项和各自的优缺点。
+开发 CUBA 应用程序时的首要问题之一是： _我的业务逻辑应该放到哪？_  本指南将介绍几种选项和各自的优缺点。
 
 == 将要构建的内容
 
 
-这个指南对  https://github.com/cuba-platform/cuba-petclinic[CUBA 宠物诊所] 示例进行增强，以演示在 CUBA 应用程序中把业务逻辑写在哪。在这个指南中展示了一个计算折扣的业务逻辑， 折扣主要根据宠物在诊所中的到访次数来计算的。
+本指南对  https://github.com/cuba-platform/cuba-petclinic[CUBA 宠物诊所] 示例进行增强，以演示在 CUBA 应用程序中把业务逻辑写在哪。在本指南中展示了一个计算折扣的业务逻辑， 折扣主要根据宠物在诊所中的到访次数来计算的。
 
 
 === 最终应用程序
@@ -322,4 +322,4 @@ public class CreateDiseaseWarningMailing extends Screen {
 
 CUBA 应用程序中涉及到业务逻辑的放置位置时，有几种选择。 控制器是一个不错且简单开端，虽然它在共享代码时有一些缺点。 客户端 bean 在一定程度上解决了这个问题。 中间件服务允许跨不同客户端（例如，Polymer Client）共享业务逻辑，这种方式也是放置业务逻辑的最佳方式。
 
-另外，有几种高级技术，比如 https://doc.cuba-platform.com/manual-6.10/jmx_beans.html[JMX Beans] 或 https://doc.cuba-platform.com/manual-6.10/entity_listeners.html[实体监听器] 也允许创建在特定场景下要执行的业务逻辑。对于特定案例，在什么位置放置业务逻辑应视具体情况而定。但是前面提到的的几个主要位置：界面控制器、客户端Spring Bean及 中间件服务是一个不错的起点。????
+另外，有几种高级技术，比如 https://doc.cuba-platform.com/manual-6.10/jmx_beans.html[JMX Beans] 或 https://doc.cuba-platform.com/manual-6.10/entity_listeners.html[实体监听器] 也允许创建在特定场景下要执行的业务逻辑。对于特定场景，在什么位置放置业务逻辑应视具体情况而定。但是前面提到的的几个主要位置：界面控制器、客户端Spring Bean及 中间件服务是一个不错的起点。

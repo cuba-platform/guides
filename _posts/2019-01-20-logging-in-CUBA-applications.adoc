@@ -17,11 +17,11 @@ permalink: logging-in-cuba-applications
 :cuba_version: 7.0
 :page-url-first-image: https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-application-logging/master/img/cuba-server-log-messages.png
 
-要深入了解运行中的CUBA应用程序，记录日志是一种重要的手段。 Java生态系统具有非常成熟的应用程序日志记录机制。这个指南介绍了如何在CUBA应用程序中利用这个生态系统。
+要深入了解运行中的CUBA应用程序，记录日志是一种重要的手段。 Java生态系统具有非常成熟的应用程序日志记录机制。本指南介绍了如何在CUBA应用程序中利用这个生态系统。
 
 ==  将要构建的内容
 
-这个指南对 https://github.com/cuba-platform/cuba-petclinic[CUBA 宠物医院]示例进行了增强，以演示如何在 CUBA 应用程序中集成、配置日志功能，也演示了如何在CUBA 应用程序中查看日志或使用外部工具查看日志。
+本指南对 https://github.com/cuba-platform/cuba-petclinic[CUBA 宠物医院]示例进行了增强，以演示如何在 CUBA 应用程序中集成、配置日志功能，也演示了如何在CUBA 应用程序中查看日志或使用外部工具查看日志。
 
 
 
@@ -349,7 +349,7 @@ public class PetContactFetcherBean implements PetContactFetcher {
 
 与直接将上下文值写入日志相比，MDC 具有以下优势：
 
-- log messages are homogeneous for all logging messages ????
+- 日志输出格式会比较统一
 - 日志消息是结构化的，允许精确搜索
 - 上下文的定义可以被提取为源码中的一个独立实现
 
@@ -362,7 +362,7 @@ public class PetContactFetcherBean implements PetContactFetcher {
 
 基于输出通道(appender)的概念，Logback 可以很容易地与中心化日志方案集成起来。在配置文件中，已经配置为应用程序配置了两个输出通道：`ConsoleAppender` 和 `FileAppender`。
 
-对于 Elasticsearch，有一个Logback 输出通道(Appender)，它将直接将日志记录信息发送到 elasticsearch 集群，而不是将日志消息放入文件中。  有一些关于如何配置日志记录到 Elasticsearch（也称为 ELK-Stack）的选项。 由于这个指南主要涉及在应用程序中与Logback的集成，因此关于如何配置 Elasticsearch 服务器不在本指南讨论的范围。
+对于 Elasticsearch，有一个Logback 输出通道(Appender)，它将直接将日志记录信息发送到 elasticsearch 集群，而不是将日志消息放入文件中。  有一些关于如何配置日志记录到 Elasticsearch（也称为 ELK-Stack）的选项。 由于本指南主要涉及在应用程序中与Logback的集成，因此关于如何配置 Elasticsearch 服务器不在本指南讨论的范围。
 
 
 要使用 Elasticsearch 作为以日志存储后端，需要给 CUBA 应用程序添加一个依赖。在 `build.gradle`  中给 _所有_ 模块添加以下依赖：  `runtime "com.internetitem:logback-elasticsearch-appender:1.6"` 。
@@ -417,7 +417,7 @@ public class PetContactFetcherBean implements PetContactFetcher {
 
 <1> 为应用程序注册了一个类型为 `ElasticsearchAppender`  的输出通道： `elasticsearch` 。
 <2> elasticsearch 集群的 URL 从环境变量中提取。
-<3> 应用程序日志的 elasticsearch 索引是 `cuba-petclinic-logs-%date{yyyy-MM-dd}` ，按天生成 ????
+<3> 应用程序日志的 elasticsearch 索引是 `cuba-petclinic-logs-%date{yyyy-MM-dd}` ，按天生成
 
 进行了这些配置，应用程序将获取日志消息并将其发送给  elasticsearch，Kibana  是一个可以访问 elasticsearch 中的数据的用户界面，它可以以适当的方式展示日志信息。通过结构化和全文索引功能，日志信息可以非常容易地被访问，这种方式给直接访问日志文件要方便和高效许多。
 

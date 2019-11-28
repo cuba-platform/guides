@@ -28,7 +28,7 @@ permalink: data-modelling-many-to-many-association
 
 * `Vet` <--> `Specialty` 被建模为多对多关系，相应的UI也做了更新
 
-* `Pet` <--> `InsuranceCompany` 被建模为间接的多对多关系，用了一个明确定义的实体来将两个实现建立关联，同时在这个实体中存储“有效范围” ????
+* `Pet` <--> `InsuranceCompany` 被建模为间接的多对多关系，用了一个明确定义的实体来将两个实现建立关联，同时在这个实体中存储保险的 “有效期” 信息。
 
 
 

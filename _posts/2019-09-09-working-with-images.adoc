@@ -9,7 +9,7 @@ permalink: working-with-images
 :sectlinks:
 :sectanchors:
 :page-navtitle: 在 CUBA 应用程序中使用图片
-:page-excerpt: 这个指南将探究 CUBA 应用程序中图片的几种使用方式
+:page-excerpt: 本指南将探究 CUBA 应用程序中图片的几种使用方式
 :page-icone: images/working-with-images/guide_icone.svg
 :page-root: ../../../
 :project_id: cuba-petclinic-working-with-images
@@ -18,7 +18,7 @@ permalink: working-with-images
 :cuba_version: 7.0
 
 
-在 CUBA 应用程序中有几种使用图片的方式。在这个指南中会演示如何上传和显示图片。也演示了如何将图片附加到实体同时允许用户从应用程序中下载图片文件。
+在 CUBA 应用程序中有几种使用图片的方式。在本指南中会演示如何上传和显示图片。也演示了如何将图片附加到实体同时允许用户从应用程序中下载图片文件。
 
 == 将要构建的内容
 
@@ -27,7 +27,7 @@ permalink: working-with-images
 
 * 允许给兽医上传头像
 * 在兽医浏览界面显示兽医的头像
-* 创建了类似 lookup 的自定义组件，使用这个组件显示将兽医头像显示在姓名旁边 ????
+* 创建了类似 lookup 的自定义组件，使用这个组件显示将兽医头像显示在姓名旁边
 * 允许给就诊记录附加 X-光照片，也可以查看这些照片
 
 === 最终应用程序
@@ -224,7 +224,7 @@ image::working-with-images/vet-avatar-example.png[width=300]
 
 TIP:  使用专门的工厂类来定义创建组件的方式只是一个对实现进行结构化的可能选项。将组件的创建提取到专门的类有几点好处，比如可以做到封装、关注点分离及在其它界面重用。 +
  +
-但是也可以将组件的创建逻辑直接写在控制器中。这种方式可以在一个关于如何在UI层结构化应用程序逻辑的示例中看到。关于这个主题的详细信息可以参考这个指南：https://www.cuba-platform.cn/guides/create-business-logic-in-cuba[在 CUBA 中创建应用程序逻辑]。
+但是也可以将组件的创建逻辑直接写在控制器中。这种方式可以在一个关于如何在UI层结构化应用程序逻辑的示例中看到。关于这个主题的详细信息可以参考本指南：https://www.cuba-platform.cn/guides/create-business-logic-in-cuba[在 CUBA 中创建应用程序逻辑]。
 
 
 在 `VetEdit` 控制器中创建组件的代码看起来是这样：
@@ -417,7 +417,7 @@ public class VisitEdit extends StandardEditor<Visit> {
 
 <1> 为上传的文件创建的  `FileDescriptor` 实例需要被持久化
 <2> 上传的文件被传送到后端并持久化到文件存储(FileStorage)
-<3> 已经持久化的文件的 `FileDescriptor` 实例被分配给X光 images  `M:N` 关系，以显示在表格中 ???
+<3> 已经持久化的文件的 `FileDescriptor` 实例被分配给 X-Ray images  `M:N` 关系，以显示在表格中
 
 
 WARNING: 除了列出的代码以外， 在示例项目中还有一些相关的代码。 这些代码用于处理用户上传照片后又取消诊疗记录的编辑操作的情况。在这种情况下，上传的图片需要被移除。详细信息请参考示例代码： https://github.com/cuba-guides/cuba-petclinic-working-with-images/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/visit/visit/VisitEdit.java[VisitEdit.java].
@@ -550,7 +550,7 @@ public class XrayPreviewComponentFactory {
 }
 ----
 
-<1> GroupBox specific styles will be applied to the wrapper component ???? 测试
+<1> 将组件外观设置 Vaadin Panel 外观
 <2> 如果是图片, 则使用  `Image` 组件， 源将被设置为 `FileDescriptor`
 <3> 如果是 PDF 文件， 正确的 MIME 类型会被设置以在浏览器中渲染PDF文件
 
@@ -591,7 +591,7 @@ public class VisitEdit extends StandardEditor<Visit> {
 
 == 总结
 
-CUBA 应用程序中的图片渲染和自定义元素组件可以有效地提高用户体验。主要的构建块(building block )是 `FileDescriptor` 抽象，所以的UI组件都可以与 `FileDescriptor` 平滑地集成。 ???? 改进
+CUBA 应用程序中的图片渲染和自定义元素组件可以显著地提高用户体验。主要的构成要素是 `FileDescriptor` 抽象，所有的UI组件都可以与 `FileDescriptor` 平滑地集成。
 
 本指南中展示了两个用例。第一个用例中在  `<form />` 组件中使用了标准的上传功能上传兽医头像，并且将头像显示在一个表格的生成列中。 另外创建了一个可以显示图片的 "PickerField"。 第二个用例中更直接地使用了 API 来上传、预览和下载 X光照片。
 
