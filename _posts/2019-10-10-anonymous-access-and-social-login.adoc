@@ -13,6 +13,7 @@ permalink: anonymous-access-and-social-login
 :page-icone: images/anonymous-access-and-social-login/guide_icone.svg
 :page-root: ../../../
 :project_id: cuba-petclinic-social-login
+:page-url-first-image: https://www.cuba-platform.com/guides/images/anonymous-access-and-social-login/initial-screen.png
 :java_version: 8
 :cuba_version: 7.1
 
