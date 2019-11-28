@@ -13,7 +13,7 @@ permalink: anonymous-access-and-social-login
 :page-icone: images/anonymous-access-and-social-login/guide_icone.svg
 :page-root: ../../../
 :project_id: cuba-petclinic-social-login
-:java_version: 1.8
+:java_version: 8
 :cuba_version: 7.1
 
 Applications such as online stores provide users the ability to view a list of available products, read their description, or compare with each other without logging in. But in order to make a purchase, users usually have to register, and using a social network account is the most convenient way to do it.
