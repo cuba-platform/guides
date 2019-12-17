@@ -1,0 +1,76 @@
+---
+compatible_cuba_versions: 7.0+
+compatible_java_versions: 8+
+project_id: cuba-petclinic-testing-middleware
+permalink: testing-middleware
+---
+= Middleware Testing in CUBA applications
+:showtitle:
+:sectlinks:
+:sectanchors:
+:page-navtitle: Middleware Testing in CUBA applications
+:page-excerpt: In this guide you will learn how automated testing in a CUBA application works. In particular this guide deals with middleware layer of a CUBA application and how tests can be executed there.
+:page-root: ../../../
+:project_id: cuba-petclinic-testing-middleware
+:java_version: 1.8
+:cuba_version: 7.0
+:page-icone: images/intro-to-reports/guide_icone.svg
+
+Test automation is key to every successful application development effort since it gives a high positive return on investment for QA efforts. CUBA applications are build on the Java ecosystem, which has a very powerful and mature test automation capabilities. In this guide you will learn how to leverage those capabilities.
+
+First you will understand how testing in general works in a CUBA application. Afterwards this guide will concentrate on the area of unit & integration testing on the middleware layer.
+
+== What Will be Built
+
+This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA Petclinic] example to show how existing features can be automatically tested:
+
+* automatic creation of a Visit for a given Pet Identification Number
+* automatic "Disease Warning Mailing" for endangered pets
+
+=== Final Application
+
+++++
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-reports/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-reports/master/img/login-screen.png"/></a>
+++++
+
+include::includes/guide_requirements.adoc[]
+
+include::includes/petclinic_introduction.adoc[]
+
+== Overview
+
+Test automation is a commonly known best practice in the industry of software development since multiple decades. It allows to write a small test application, that executes a particular sub part of the production application and verifies its correct behavior.
+
+In the Java ecosystem test automation has a long track-record. One famous example of this is the testing framework JUnit, which was one of the very first testing frameworks out in the market.
+
+In a CUBA application, just like any other Java application, it is possible and recommended to write tests, that exercise parts of the target application. In a test case (which is expressed as another Java class in a special test source directory) instances of production classes are instantiated and methods are executed. Afterwards the results are verified through programmatic comparison of an expected result and the actual result. Depending on this comparison, the test case is either treated as "success" or "failure".
+
+== Test Environments
+Depending on how production code is executed in a test environment, this environment needs to fulfil certain criteria. E.g. if testing a production class that interacts with a database, this database has to be up and running in tht environment and the production code needs to have a proper connection to it.
+
+If on the other hand a computation like a sum building over a couple of order items is exercised in a test case the execution environment can be much simpler and does not need to have dependencies on other parts.
+
+=== Middleware Unit Testing
+
+==== Mocking
+
+=== Middleware Integration Testing
+
+==== In Memory Database
+
+==== Test Container
+
+
+== Tests for Petclinic Functionality
+
+=== Automatic Visit Creation
+
+=== Disease Warning Mailing
+
+== Summary
+
+
+== Further Information
+
+* https://doc.cuba-platform.com/reporting-7.0/index.html[CUBA docs: Reporting]
+* https://doc.cuba-platform.com/reporting-7.1/open_office.html[CUBA docs: Reporting - Appendix A: Installing and Configuring OpenOffice]
