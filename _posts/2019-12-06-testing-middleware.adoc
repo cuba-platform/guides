@@ -41,24 +41,55 @@ include::includes/petclinic_introduction.adoc[]
 
 Test automation is a commonly known best practice in the industry of software development since multiple decades. It allows to write a small test application, that executes a particular sub part of the production application and verifies its correct behavior.
 
-In the Java ecosystem test automation has a long track-record. One famous example of this is the testing framework JUnit, which was one of the very first testing frameworks out in the market.
+In the Java ecosystem test automation has a long tradition. One famous example of this is the testing framework JUnit, which was one of the very first testing frameworks out in the market.
 
-In a CUBA application, just like any other Java application, it is possible and recommended to write tests, that exercise parts of the target application. In a test case (which is expressed as another Java class in a special test source directory) instances of production classes are instantiated and methods are executed. Afterwards the results are verified through programmatic comparison of an expected result and the actual result. Depending on this comparison, the test case is either treated as "success" or "failure".
+In a CUBA application, just like any other Java application, it is possible and recommended to write tests, that exercise parts of the target application.
+
+In a test case (which is expressed as another Java class in a special test source directory) instances of production classes are instantiated and methods are executed. Afterwards the results are verified through programmatic comparison of an expected result against the actual result. Depending on this comparison, the test case is either treated as "success" or "failure".
+
+
+A CUBA application is divided into two parts: the middleware part and the frontend part. The middleware consists of a combination of the `core` and the `global` module in the source code. It normally contains the majority of the business logic, integrations to other systems and the database related interactions.
+
+This guide is only about testing the middleware part of a CUBA application, since for the frontend different patterns and testing strategies apply and therefore is covered in a dedicated guide.
 
 == Test Environments
-Depending on how production code is executed in a test environment, this environment needs to fulfil certain criteria. E.g. if testing a production class that interacts with a database, this database has to be up and running in tht environment and the production code needs to have a proper connection to it.
+Depending on how production code is executed in a test environment, this environment needs to fulfil certain criteria. E.g. if testing a production class that interacts with a database, this database has to be up and running in that environment and the production code needs to have a proper connection to it.
 
 If on the other hand a computation like a sum building over a couple of order items is exercised in a test case the execution environment can be much simpler and does not need to have dependencies on other parts.
+
+When it comes to the CUBA middleware both of those environment scenarios can be instantiated in order to execute test classes. The first variant with running dependencies like a database is normally referred to as an `integration test`. For the scenario where the production class is instantiated without any surrounding environment support is called a `unit test`.
+
+In the next section you will learn about the differences of those two environment types. Afterwards those environments are put in place with testing the two scenarios for the petclinic application.
+
+=== Middleware Integration Testing
+
+The integration test environment for a CUBA middleware is oftentimes the more common way of running a test case. In this environment the production application is started partially. This means that all the CUBA platform classes work the way you would expect them to work.
+
+The `DataManager` interface for example, when invoking `dataManager.load(Customer.class).id(123).one()` will actually go against the database and fetch the customer with the ID 123. The same is true for the production code that was written in your application: `CustomerCreationService` will when interacting try to create a Customer in the database.
+
+The integration testing environment has the following characteristics available:
+
+* Spring application context
+* Connection to external database
+* Platform APIs work as in production codes
+
+In order to make that environment available to the test case it take a couple of seconds to execute the test case.
+
+==== Database Connection
+
+CUBA uses the same database connection, that is established when running the production application. In the case of HSQLDB CUBA Studio takes care of having the database running when executing the test case.
+
+By default the database instance is `shared` between the test environment and the situation when you run the application locally. This means that data that is defined locally when running the application is also available in the test case execution. Furthermore, if the test case changes data in the database, it is also changed the next time when you start the application.
+
+WARNING: Sharing data between the two environments is convenient and can often be helpful but also can cause some level of non-determinism. In case you are facing the situation of having problems expressing the correct assertions in the test case, because you cannot reliably determine how much / which data is in the database or you accidentally change data through the test case, it is also possible to split the databases of the two environments to avoid this behavior.
+
+
+==== Test Container
+
 
 === Middleware Unit Testing
 
 ==== Mocking
-
-=== Middleware Integration Testing
-
-==== In Memory Database
-
-==== Test Container
 
 
 == Tests for Petclinic Functionality
