@@ -43,7 +43,7 @@ Test automation is a commonly known best practice in the industry of software de
 
 In the Java ecosystem test automation has a long tradition. One famous example of this is the testing framework JUnit, which was one of the very first testing frameworks out in the market.
 
-In a CUBA application, just like any other Java application, it is possible and recommended to write tests, that exercise parts of the target application.
+In a CUBA application, just like any other Java application, it is possible and recommended to write automated tests, that exercise parts of the target application.
 
 In a test case (which is expressed as another Java class in a special test source directory) instances of production classes are instantiated and methods are executed. Afterwards the results are verified through programmatic comparison of an expected result against the actual result. Depending on this comparison, the test case is either treated as "success" or "failure".
 
@@ -55,9 +55,9 @@ This guide is only about testing the middleware part of a CUBA application, sinc
 == Test Environments
 Depending on how production code is executed in a test environment, this environment needs to fulfil certain criteria. E.g. if testing a production class that interacts with a database, this database has to be up and running in that environment and the production code needs to have a proper connection to it.
 
-If on the other hand a computation like a sum building over a couple of order items is exercised in a test case the execution environment can be much simpler and does not need to have dependencies on other parts.
+If on the other hand a business logic in the application like a sum building over a couple of order items is exercised in a test case the execution environment can be much simpler and does not need to have dependencies on other parts.
 
-When it comes to the CUBA middleware both of those environment scenarios can be instantiated in order to execute test classes. The first variant with running dependencies like a database is normally referred to as an `integration test`. For the scenario where the production class is instantiated without any surrounding environment support is called a `unit test`.
+When it comes to the CUBA middleware both of those environment scenarios can be instantiated in order to execute test classes. The first variant with running dependencies like a database is normally referred to as an `Integration test`. For the scenario where the production class is instantiated without any surrounding environment support is called a `Unit test`.
 
 In the next section you will learn about the differences of those two environment types. Afterwards those environments are put in place with testing the two scenarios for the petclinic application.
 
