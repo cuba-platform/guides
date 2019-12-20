@@ -50,7 +50,8 @@ In a test case (which is expressed as another Java class in a special test sourc
 
 A CUBA application is divided into two parts: the middleware part and the frontend part. The middleware consists of a combination of the `core` and the `global` module in the source code. It normally contains the majority of the business logic, integrations to other systems and the database related interactions.
 
-This guide is only about testing the middleware part of a CUBA application, since for the frontend different patterns and testing strategies apply and therefore is covered in a dedicated guide.
+
+TIP: This guide is only about testing the middleware part of a CUBA application, since for the frontend different patterns and testing strategies apply and therefore is covered in a dedicated guide.
 
 == Test Environments
 Depending on how production code is executed in a test environment, this environment needs to fulfil certain criteria. E.g. if testing a production class that interacts with a database, this database has to be up and running in that environment and the production code needs to have a proper connection to it.
@@ -83,11 +84,50 @@ By default the database instance is `shared` between the test environment and th
 
 WARNING: Sharing data between the two environments is convenient and can often be helpful but also can cause some level of non-determinism. In case you are facing the situation of having problems expressing the correct assertions in the test case, because you cannot reliably determine how much / which data is in the database or you accidentally change data through the test case, it is also possible to split the databases of the two environments to avoid this behavior.
 
-
 ==== Test Container
 
+The Test container is an object in the test case, that is mainly responsible for starting up and managing the integration test environment. It is supposed to be used in the test class as an object that when starting the test case will do various things to spin up the environment:
+
+* start the Spring application context
+* establishes a DB connection
+* instantiates all CUBA platform APIs
+* activates all application components and their configuration
+
+An example usage of this Test Container looks like this:
+
+.SampleIntegrationTest.java
+[source,java]
+----
+public class SampleIntegrationTest {
+
+    @ClassRule
+    public static PetclinicTestContainer testContainer =
+                        PetclinicTestContainer.Common.INSTANCE; // <1>
+
+    @Test
+    public void persistenceAPI_canBeRetrieved_fromTheTestContainer() {
+
+        Persistence persistence = testContainer.persistence(); // <2>
+
+        assertNotNull(persistence);
+    }
+}
+----
+<1> the petclinic test container is instantiated via a JUnit Class Rule annotation
+<2> in the test cases the container can be used to interact with the test environment
+
+TIP: This guide uses JUnit as the testing library for examples. CUBA supports multiple testing frameworks like Spock, but by default it ships with JUnit.
 
 === Middleware Unit Testing
+
+Besides the integration test environment it is also possible to create test cases, that do not spin up the Spring application context or any CUBA platform APIs at all. As for the above described use case, where there are no dependencies to the environment that should be leveraged in the test case, not having to start the environment is oftentimes beneficial.
+
+The two main benefits of writing unit test in an isolated fashion without an integration test environment are:
+
+* locality of the test scenario
+* test execution speed
+
+In this case the class under test is instantiated directly. Since dependency injection is not working in this scenario potential dependencies (objects that the class under test relies upon) have to be instantiated manually and passed into the class under test directly. In case those dependencies are CUBA APIs, they normally have to be mocked. Mocking is a common way in test automation that helps to emulate / control certain external parts that the system under test interacts with in order to isolate the test subject as much as possible from its outside world.
 
 ==== Mocking
 
