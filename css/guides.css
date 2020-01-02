@@ -149,7 +149,6 @@
 
 pre.CodeRay {
     padding: 40px 20px 20px;
-    width: 1100px;
 }
 
 .listingblock .title {
@@ -160,13 +159,7 @@ pre.CodeRay {
 
 .blog img,
 .blog .listingblock {
-   padding: 1em 0;
-}
-
-.blog .listingblock {
-    overflow-x: auto;
-    padding: 0;
-    margin-bottom: 1em;
+    padding: 1em 0;
 }
 
 .blog .admonitionblock {
@@ -390,8 +383,6 @@ pre.CodeRay {
 }
 .guides-list_title {
     font-size: 14px !important;
-    line-height: 20px!important;
-    margin-bottom: 4px;
 }
 .guides-list_item {
     flex-direction: row !important;
@@ -411,7 +402,6 @@ pre.CodeRay {
 .guides-list_icone_wrapper {
     display: block;
     height: 61px!important;
-    width: 70px;
 }
 .conum {
     position: relative;
