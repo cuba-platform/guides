@@ -4,7 +4,7 @@
 
 Your development environment requires to contain the following:
 
-* https://www.oracle.com/technetwork/java/javase/downloads/index.html[JDK {java_version}]
+* https://adoptopenjdk.net/[JDK {java_version}]
 * a text editor or IDE (https://www.jetbrains.com/idea/download/[IntelliJ IDEA] preferred)
 * https://www.cuba-platform.com/download[CUBA Studio] as standalone IDE or as an IDEA plugin (optional)
 * https://github.com/cuba-platform/cuba-cli/wiki/Installation[CUBA CLI] (optional)

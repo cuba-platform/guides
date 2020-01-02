@@ -14,7 +14,7 @@ permalink: data-modelling-many-to-many-association
 :page-root: ../../../
 :project_id: cuba-petclinic-data-model-many-to-many
 :page-url-first-image: https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-data-model-many-to-many/master/img/login-screen.png
-:java_version: 1.8
+:java_version: 8
 :cuba_version: 7.0
 
 The many-to-many association implies that multiple records of one table are related to multiple records of another table. The joining table will store the primary keys of both related entities. Optionally, this table may contain additional columns.

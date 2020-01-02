@@ -14,7 +14,7 @@ permalink: working-with-images
 :page-root: ../../../
 :project_id: cuba-petclinic-working-with-images
 :page-url-first-image: https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-working-with-images/master/img/login-screen.png
-:java_version: 1.8
+:java_version: 8
 :cuba_version: 7.0
 
 

@@ -14,7 +14,7 @@ permalink: data-modelling-entity-inheritance
 :page-root: ../../../
 :project_id: cuba-petclinic-data-model-entity-inheritance
 :page-url-first-image: https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-data-model-entity-inheritance/master/img/login-screen.png
-:java_version: 1.8
+:java_version: 8
 :cuba_version: 7.0
 
 This guide demonstrates how to use entity inheritance in CUBA applications.

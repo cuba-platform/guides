@@ -14,7 +14,7 @@ permalink: decouple-business-logic-with-app-events
 :page-url-first-image: https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-application-events/master/img/login-screen.png
 :page-root: ../../../
 :project_id: cuba-petclinic-intro-to-application-events
-:java_version: 1.8
+:java_version: 8
 :cuba_version: 7.0
 
 In CUBA 7 events are the predominant mechanism to react to different kinds of changes of the application. Furthermore, events are a common pattern within an application to decouple one part of the business logic from another. This guide gives an overview on how events can be used in a CUBA application and what the benefits are.
