@@ -26,6 +26,7 @@ This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA Pet
 
 * automatic creation of a Visit for a given Pet Identification Number
 * automatic "Disease Warning Mailing" for endangered pets
+* calculation of next regular checkup date proposals for a Pet
 
 === Final Application
 
@@ -64,7 +65,7 @@ In the next section you will learn about the differences of those two environmen
 
 === Middleware Integration Testing
 
-The integration test environment for a CUBA middleware is oftentimes the more common way of running a test case. In this environment the production application is started partially. This means that all the CUBA platform classes work the way you would expect them to work.
+In this environment the production application is started partially. The integration test environment for a CUBA middleware is oftentimes the more common way of running a test case. This means that all the CUBA platform classes work the way you would expect them to work.
 
 The `DataManager` interface for example, when invoking `dataManager.load(Customer.class).id(123).one()` will actually go against the database and fetch the customer with the ID 123. The same is true for the production code that was written in your application: `CustomerCreationService` will when interacting try to create a Customer in the database.
 
@@ -98,23 +99,24 @@ An example usage of this Test Container looks like this:
 .SampleIntegrationTest.java
 [source,java]
 ----
+@ExtendWith(PetclinicTestContainer.Common.class) // <1>
 public class SampleIntegrationTest {
 
-    @ClassRule
     public static PetclinicTestContainer testContainer =
-                        PetclinicTestContainer.Common.INSTANCE; // <1>
+            PetclinicTestContainer.Common.INSTANCE; // <2>
 
     @Test
     public void persistenceAPI_canBeRetrieved_fromTheTestContainer() {
 
-        Persistence persistence = testContainer.persistence(); // <2>
+        Persistence persistence = testContainer.persistence(); // <3>
 
         assertNotNull(persistence);
     }
 }
 ----
-<1> the petclinic test container is instantiated via a JUnit Class Rule annotation
-<2> in the test cases the container can be used to interact with the test environment
+<1> the JUnit integration test uses the PetclinicTestContainer Extension
+<2> the petclinic test container instance is added as a field in the test class
+<3> in the test cases the container can be used to interact with the test environment
 
 TIP: This guide uses JUnit as the testing library for examples. CUBA supports multiple testing frameworks like Spock, but by default it ships with JUnit.
 
@@ -134,9 +136,177 @@ In this case the class under test is instantiated directly. Since dependency inj
 
 == Tests for Petclinic Functionality
 
+In the next section you will learn how to put all this theory into action by implementing unit / integration test cases, that verify the correct
+behavior of features that have been introduced in the https://www.cuba-platform.com/guides/intro-working-with-data-in-cuba[Working with Data in CUBA] guide next to new functionality that you will learn about later.
+
 === Automatic Visit Creation
 
+The first test case is about the automatic visit creation functionality of the Petclinic application. In the Visit browse screen, the user
+can create a new visit by entering the Pet Identification Number as a quick action. The software will go ahead and create a visit
+for todays date for the entered Pet.
+
+Part of the implementation of the feature is a CUBA service called `VisitService` that is triggered from the UI. It contains one method `Visit createVisitForToday(String identificationNumber)` that is the subject of the test case.
+
+WARNING: Although the feature includes a UI part, this will not be part of the automated testing. It is quite common to test certain sub parts of the implementation in isolation (as you will see). That being said, there is still a need for a real end-to-end test case to verify all the parts work together correctly. But this is out of scope for this guide.
+
+Before looking into the concrete test case, here is a recap of what the `VisitService` is doing in the implementation:
+
+1. it looks up the Pet by the given Identification Number
+a. in case the Pet is found it will use it
+b. in case no Pet is found, it will not create a Visit
+2. it creates a new instance of a Visit with the correct attributes
+a. it figures out the correct Pet and assigns it to the Visit
+b. it uses `today` as the `visitDate`
+3. it stores the newly created Visit
+
+
+A general test case that exercises the implementation and verifies its behavior looks like this:
+
+.VisitServiceTest.java
+[source,java]
+----
+public class VisitServiceTest {
+    // ...
+    @Test
+    public void createVisitForToday_createsANewVisit_forTheCorrectPet() {
+        // given: verify DB contains one visit for Pikachu (precondition)
+        assertThat(db.countVisitsFor(pikachu))
+            .isEqualTo(1);
+        // when: a new visit is created for Pikachus Identification Number
+        visit = visitService.createVisitForToday(
+                pikachu.getIdentificationNumber()
+        );
+        // then: DB contains two visits for Pikachu (verification)
+        assertThat(db.countVisitsFor(pikachu))
+            .isEqualTo(2);
+    }
+}
+----
+
+This test case already lays out the general pattern of how the most test cases in this guide are defined. The pattern is called `Arrange-Act-Assert`:
+
+First there is a phase of test data setup or verification of test data (`Arrange`). This is necessary to ensure the test case has a stable set of test
+data to start from. Next the implementation is exercised with the desired input parameters (`Act`). In the last phase, the verifications
+are executed to see if the code changed the system in the desired ways (`Assert`).
+
+
+Based on that description it is possible to identify a couple of test cases, that describe the above mentioned behavior:
+
+* `createVisitForToday_createsANewVisit_forTheCorrectPet` - verifies `1.a`, `2.a` and `3.`
+* `createVisitForToday_createsANewVisit_withTheCorrectVisitInformation` - verifies `1.a`, `2.b` and `3.`
+* `createVisitForToday_createsNoVisit_forAnIncorrectIdentificationNumber` - verifies `1.b`
+
+
+==== Test class setup
+
+For this test class
+
+.VisitServiceTest.java
+[source,java]
+----
+@ExtendWith(PetclinicTestContainer.Common.class)
+public class VisitServiceTest {
+
+
+  public static PetclinicTestContainer testContainer = PetclinicTestContainer.Common.INSTANCE;
+
+  private static TimeSource timeSource;
+  private static VisitService visitService;
+
+  private static PetclinicVisitDb db;
+
+  private Visit visit;
+  private Pet pikachu;
+
+  @BeforeAll
+  public static void setupEnvironment() {
+    visitService = AppBeans.get(VisitService.class);
+
+    timeSource = AppBeans.get(TimeSource.class);
+
+    db = new PetclinicVisitDb(
+        AppBeans.get(DataManager.class),
+        testContainer
+    );
+  }
+
+  @BeforeEach
+  public void loadPikachu() {
+    pikachu = db.petWithName("Pikachu", "pet-with-owner-and-type");
+  }
+
+  @Test
+  public void createVisitForToday_createsANewVisit_forTheCorrectPet() {
+
+    // given:
+    assertThat(db.countVisitsFor(pikachu)).isEqualTo(1);
+
+    // when:
+    visit = visitService.createVisitForToday(pikachu.getIdentificationNumber());
+
+    // then:
+    assertThat(db.countVisitsFor(pikachu)).isEqualTo(2);
+  }
+
+  @Test
+  public void createVisitForToday_createsANewVisit_withTheCorrectVisitInformation() {
+
+    // given:
+    assertThat(db.countVisitsFor(pikachu)).isEqualTo(1);
+
+    // when:
+    visit = visitService.createVisitForToday(pikachu.getIdentificationNumber());
+
+    // then:
+    assertThat(visit.getPet())
+        .isEqualTo(pikachu);
+
+    // and:
+    assertThat(visit.getVisitDate())
+        .isInSameDayAs(timeSource.currentTimestamp());
+
+  }
+
+  @Test
+  public void createVisitForToday_createsNoVisit_forAnIncorrectIdentificationNumber() {
+
+    // given:
+    String incorrectIdentificationNumber = "IncorrectIdentificationNumber";
+
+    assertThat(db.petWithIdentificationNumber(incorrectIdentificationNumber))
+        .isNotPresent();
+
+    // and:
+    Long amountOfVisitsBefore = db.countVisits();
+
+    // when:
+    visit = visitService.createVisitForToday(incorrectIdentificationNumber);
+
+    // then:
+    assertThat(visit)
+        .isNull();
+
+    // and:
+    assertThat(db.countVisits())
+        .isEqualTo(amountOfVisitsBefore);
+  }
+
+  @AfterEach
+  public void cleanupVisit() {
+    db.remove(visit);
+  }
+
+}
+----
+<1> the JUnit integration test uses the PetclinicTestContainer Extension
+<2> the petclinic test container instance is added as a field in the test class
+<3> in the test cases the container can be used to interact with the test environment
+
+
+
 === Disease Warning Mailing
+
+=== Next Regular Checkup Date Proposal
 
 == Summary
 
