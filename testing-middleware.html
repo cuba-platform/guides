@@ -186,7 +186,7 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Test automation is key to every successful application development effort since it gives a high positive return on investment for QA efforts. CUBA applications are build on the Java ecosystem, which has a very powerful and mature test automation capabilities. In this guide you will learn how to leverage those capabilities.</p>
+<p>Test automation is key to every successful application development effort since it normally gives a high positive return on investment for QA efforts. CUBA applications are build on the Java ecosystem, which has a very powerful and mature test automation capabilities. In this guide you will learn how to leverage those capabilities.</p>
 </div>
 <div class="paragraph">
 <p>First you will understand how testing in general works in a CUBA application. Afterwards this guide will concentrate on the area of unit &amp; integration testing on the middleware layer.</p>
@@ -491,8 +491,129 @@ Although the feature includes a UI part, this will not be part of the automated 
 </tr>
 </table>
 </div>
+<div class="sect3">
+<h4 id="test_class_setup"><a class="anchor" href="#test_class_setup"></a><a class="link" href="#test_class_setup">Test Class Setup</a></h4>
 <div class="paragraph">
-<p>Before looking into the concrete test case, here is a recap of what the <code>VisitService</code> is doing in the implementation:</p>
+<p>In order to implement the defined test case, first let&#8217;s look at the integration test harness of the test case. It is based
+on the description of the <code>SampleIntegrationTest</code> from above. In this test there are some noteworthy additions to simplify
+the test cases.</p>
+</div>
+<div class="listingblock">
+<div class="title">VisitServiceTest.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@ExtendWith</span>(PetclinicTestContainer.Common.class)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">VisitServiceTest</span> {
+  <span class="directive">public</span> <span class="directive">static</span> PetclinicTestContainer testContainer = PetclinicTestContainer.Common.INSTANCE;
+  <span class="directive">private</span> <span class="directive">static</span> VisitService visitService; <i class="conum" data-value="1"></i><b>(1)</b>
+  <span class="directive">private</span> <span class="directive">static</span> PetclinicVisitDb db;
+
+  <span class="directive">private</span> Visit visit;
+  <span class="directive">private</span> Pet pikachu;
+
+  <span class="annotation">@BeforeAll</span>
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> setupEnvironment() {
+    visitService = AppBeans.get(VisitService.class);
+
+    db = <span class="keyword">new</span> PetclinicVisitDb( <i class="conum" data-value="2"></i><b>(2)</b>
+        AppBeans.get(DataManager.class),
+        testContainer
+    );
+  }
+
+  <span class="annotation">@BeforeEach</span>
+  <span class="directive">public</span> <span class="type">void</span> loadPikachu() { <i class="conum" data-value="3"></i><b>(3)</b>
+    pikachu = db.petWithName(<span class="string"><span class="delimiter">&quot;</span><span class="content">Pikachu</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">pet-with-owner-and-type</span><span class="delimiter">&quot;</span></span>);
+  }
+
+  <span class="comment">// different test cases...</span>
+
+  <span class="annotation">@AfterEach</span>
+  <span class="directive">public</span> <span class="type">void</span> cleanupVisit() { <i class="conum" data-value="4"></i><b>(4)</b>
+    db.remove(visit);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the <code>VisitService</code> is the system under test (SUT) in this test case</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the <code>PetclinicVisitDb</code> variable acts as an abstraction for holding all relevant interactions with the database (setup test data, data verification)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td><code>loadPikachu</code> is one example of a method that should be executed before each test case in this class</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>the <code>cleanupVisit</code> does the data cleanup in the DB after each test case</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The JUnit Annotations <code>@BeforeEach</code> and <code>@AfterEach</code> are used in order to execute certain parts of the code before / after
+each test case.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="arrange_act_assert"><a class="anchor" href="#arrange_act_assert"></a><a class="link" href="#arrange_act_assert">Arrange Act Assert</a></h4>
+<div class="paragraph">
+<p>The general pattern of how the most test cases in this guide are defined is called <code>Arrange-Act-Assert</code>:</p>
+</div>
+<div class="paragraph">
+<p>First there is a phase of test data setup or verification of test data (<code>Arrange</code>). This is necessary to ensure the test case has a stable set of test
+data to start from. Next the implementation is exercised with the desired input parameters (<code>Act</code>). In the last phase, the verifications
+are executed to see if the code changed the system in the desired ways (<code>Assert</code>).</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="test_utility_methods"><a class="anchor" href="#test_utility_methods"></a><a class="link" href="#test_utility_methods">Test Utility Methods</a></h4>
+<div class="paragraph">
+<p>One important piece here is the class <code>PetclinicVisitDb</code> and its usage via the <code>db</code> variable.
+This class encapsulated Database interactions that is tailored towards the test class <code>VisitServiceTest</code>.</p>
+</div>
+<div class="paragraph">
+<p>It has the following API:</p>
+</div>
+<div class="listingblock">
+<div class="title">PetclinicVisitDb.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">PetclinicVisitDb</span> {
+
+  <span class="directive">public</span> Pet petWithName(<span class="predefined-type">String</span> name, <span class="predefined-type">String</span> view) { <span class="comment">/* ... */</span> }
+
+  <span class="directive">public</span> <span class="type">void</span> remove(<span class="predefined-type">Entity</span>&lt;<span class="predefined-type">UUID</span>&gt; entity) { <span class="comment">/* ... */</span> }
+
+  <span class="directive">public</span> Optional&lt;Pet&gt; petWithIdentificationNumber(
+          <span class="predefined-type">String</span> identificationNumber
+  ) { <span class="comment">/* ... */</span> }
+
+  <span class="directive">public</span> <span class="predefined-type">Long</span> countVisitsFor(Pet pet) { <span class="comment">/* ... */</span> }
+
+  <span class="directive">public</span> <span class="predefined-type">Long</span> countVisits() { <span class="comment">/* ... */</span> }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Under the hood the class interacts with the <code>dataManager</code> and other various things in order to provide this specific
+API to the test cases. Also this class sits in the test sources, next to the test class. This class is a combination of
+an implementation of the <a href="http://xunitpatterns.com/Test%20Utility%20Method.html">Test Utility Method pattern</a> and the
+ <a href="http://xunitpatterns.com/Back%20Door%20Manipulation.html">Back Door Manipulation Pattern</a>.</p>
+</div>
+<div class="paragraph">
+<p>It is not strictly necessary to put this logic into a dedicated class, but it oftentimes frees up the test classes from various
+helper methods or inline code that will increase the noise in the test case itself.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="first_test_case"><a class="anchor" href="#first_test_case"></a><a class="link" href="#first_test_case">First Test Case</a></h4>
+<div class="paragraph">
+<p>Before looking into the first test case, here is a recap of what the <code>VisitService</code> is doing in the implementation:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -528,86 +649,31 @@ Although the feature includes a UI part, this will not be part of the automated 
 </ol>
 </div>
 <div class="paragraph">
-<p>A general test case that exercises the implementation and verifies its behavior looks like this:</p>
-</div>
-<div class="listingblock">
-<div class="title">VisitServiceTest.java</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VisitServiceTest</span> {
-    <span class="comment">// ...</span>
-    <span class="annotation">@Test</span>
-    <span class="directive">public</span> <span class="type">void</span> createVisitForToday_createsANewVisit_forTheCorrectPet() {
-        <span class="comment">// given: verify DB contains one visit for Pikachu (precondition)</span>
-        assertThat(db.countVisitsFor(pikachu))
-            .isEqualTo(<span class="integer">1</span>);
-        <span class="comment">// when: a new visit is created for Pikachus Identification Number</span>
-        visit = visitService.createVisitForToday(
-                pikachu.getIdentificationNumber()
-        );
-        <span class="comment">// then: DB contains two visits for Pikachu (verification)</span>
-        assertThat(db.countVisitsFor(pikachu))
-            .isEqualTo(<span class="integer">2</span>);
-    }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This test case already lays out the general pattern of how the most test cases in this guide are defined. The pattern is called <code>Arrange-Act-Assert</code>:</p>
-</div>
-<div class="paragraph">
-<p>First there is a phase of test data setup or verification of test data (<code>Arrange</code>). This is necessary to ensure the test case has a stable set of test
-data to start from. Next the implementation is exercised with the desired input parameters (<code>Act</code>). In the last phase, the verifications
-are executed to see if the code changed the system in the desired ways (<code>Assert</code>).</p>
-</div>
-<div class="paragraph">
 <p>Based on that description it is possible to identify a couple of test cases, that describe the above mentioned behavior:</p>
 </div>
-<div class="ulist">
-<ul>
+<div class="olist arabic">
+<ol class="arabic">
 <li>
-<p><code>createVisitForToday_createsANewVisit_forTheCorrectPet</code> - verifies <code>1.a</code>, <code>2.a</code> and <code>3.</code></p>
+<p><code>createsANewVisit_forTheCorrectPet</code> - verifies <code>1.a</code>, <code>2.a</code> and <code>3.</code></p>
 </li>
 <li>
-<p><code>createVisitForToday_createsANewVisit_withTheCorrectVisitInformation</code> - verifies <code>1.a</code>, <code>2.b</code> and <code>3.</code></p>
+<p><code>createsANewVisit_withTheCorrectVisitInformation</code> - verifies <code>1.a</code>, <code>2.b</code> and <code>3.</code></p>
 </li>
 <li>
-<p><code>createVisitForToday_createsNoVisit_forAnIncorrectIdentificationNumber</code> - verifies <code>1.b</code></p>
+<p><code>createsNoVisit_forAnIncorrectIdentificationNumber</code> - verifies <code>1.b</code></p>
 </li>
-</ul>
+</ol>
 </div>
-<div class="sect3">
-<h4 id="test_class_setup"><a class="anchor" href="#test_class_setup"></a><a class="link" href="#test_class_setup">Test class setup</a></h4>
 <div class="paragraph">
-<p>For this test class</p>
+<p>Let&#8217;s look into the test case which checks for the correct Pet to be associated to the new Visit:</p>
 </div>
 <div class="listingblock">
 <div class="title">VisitServiceTest.java</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@ExtendWith</span>(PetclinicTestContainer.Common.class)
-<span class="directive">public</span> <span class="type">class</span> <span class="class">VisitServiceTest</span> {
-
-
-  <span class="directive">public</span> <span class="directive">static</span> PetclinicTestContainer testContainer = PetclinicTestContainer.Common.INSTANCE;
-
-  <span class="directive">private</span> <span class="directive">static</span> TimeSource timeSource;
-  <span class="directive">private</span> <span class="directive">static</span> VisitService visitService;
-
-  <span class="directive">private</span> <span class="directive">static</span> PetclinicVisitDb db;
-
+<pre class="CodeRay highlight"><code data-lang="java"><span class="type">class</span> <span class="class">VisitServiceTest</span> {
+    <span class="comment">// ...</span>
   <span class="directive">private</span> Visit visit;
   <span class="directive">private</span> Pet pikachu;
-
-  <span class="annotation">@BeforeAll</span>
-  <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> setupEnvironment() {
-    visitService = AppBeans.get(VisitService.class);
-
-    timeSource = AppBeans.get(TimeSource.class);
-
-    db = <span class="keyword">new</span> PetclinicVisitDb(
-        AppBeans.get(DataManager.class),
-        testContainer
-    );
-  }
 
   <span class="annotation">@BeforeEach</span>
   <span class="directive">public</span> <span class="type">void</span> loadPikachu() {
@@ -615,66 +681,18 @@ are executed to see if the code changed the system in the desired ways (<code>As
   }
 
   <span class="annotation">@Test</span>
-  <span class="directive">public</span> <span class="type">void</span> createVisitForToday_createsANewVisit_forTheCorrectPet() {
-
-    <span class="comment">// given:</span>
-    assertThat(db.countVisitsFor(pikachu)).isEqualTo(<span class="integer">1</span>);
-
-    <span class="comment">// when:</span>
-    visit = visitService.createVisitForToday(pikachu.getIdentificationNumber());
-
-    <span class="comment">// then:</span>
-    assertThat(db.countVisitsFor(pikachu)).isEqualTo(<span class="integer">2</span>);
+  <span class="directive">public</span> <span class="type">void</span> createVisitForToday_createsANewVisit_forTheCorrectPet() { <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="comment">// given: there is one visit associated to pikachu</span>
+    assertThat(db.countVisitsFor(pikachu))
+        .isEqualTo(<span class="integer">1</span>);
+    <span class="comment">// when: logic is executed for the pikachus identification number</span>
+    visit = visitService.createVisitForToday(
+            pikachu.getIdentificationNumber()
+    );
+    <span class="comment">// then: there are two visits associated to pikachu</span>
+    assertThat(db.countVisitsFor(pikachu)) <i class="conum" data-value="2"></i><b>(2)</b>
+        .isEqualTo(<span class="integer">2</span>);
   }
-
-  <span class="annotation">@Test</span>
-  <span class="directive">public</span> <span class="type">void</span> createVisitForToday_createsANewVisit_withTheCorrectVisitInformation() {
-
-    <span class="comment">// given:</span>
-    assertThat(db.countVisitsFor(pikachu)).isEqualTo(<span class="integer">1</span>);
-
-    <span class="comment">// when:</span>
-    visit = visitService.createVisitForToday(pikachu.getIdentificationNumber());
-
-    <span class="comment">// then:</span>
-    assertThat(visit.getPet())
-        .isEqualTo(pikachu);
-
-    <span class="comment">// and:</span>
-    assertThat(visit.getVisitDate())
-        .isInSameDayAs(timeSource.currentTimestamp());
-
-  }
-
-  <span class="annotation">@Test</span>
-  <span class="directive">public</span> <span class="type">void</span> createVisitForToday_createsNoVisit_forAnIncorrectIdentificationNumber() {
-
-    <span class="comment">// given:</span>
-    <span class="predefined-type">String</span> incorrectIdentificationNumber = <span class="string"><span class="delimiter">&quot;</span><span class="content">IncorrectIdentificationNumber</span><span class="delimiter">&quot;</span></span>;
-
-    assertThat(db.petWithIdentificationNumber(incorrectIdentificationNumber))
-        .isNotPresent();
-
-    <span class="comment">// and:</span>
-    <span class="predefined-type">Long</span> amountOfVisitsBefore = db.countVisits();
-
-    <span class="comment">// when:</span>
-    visit = visitService.createVisitForToday(incorrectIdentificationNumber);
-
-    <span class="comment">// then:</span>
-    assertThat(visit)
-        .isNull();
-
-    <span class="comment">// and:</span>
-    assertThat(db.countVisits())
-        .isEqualTo(amountOfVisitsBefore);
-  }
-
-  <span class="annotation">@AfterEach</span>
-  <span class="directive">public</span> <span class="type">void</span> cleanupVisit() {
-    db.remove(visit);
-  }
-
 }</code></pre>
 </div>
 </div>
@@ -682,17 +700,99 @@ are executed to see if the code changed the system in the desired ways (<code>As
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>the JUnit integration test uses the PetclinicTestContainer Extension</td>
+<td>the method name of the JUnit test case describes the high level narrative of the test case</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>the petclinic test container instance is added as a field in the test class</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>in the test cases the container can be used to interact with the test environment</td>
+<td>the assertions are expressed through a corresponding AssertJ assertion</td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>As described above the test case uses the <code>Arrange-Act-Assert</code> pattern with the three steps, that are described through
+the <code>given</code>, <code>when</code> and <code>then</code> comments in the test case.</p>
+</div>
+<div class="paragraph">
+<p>With the passing in of the Identification Number of Pikachu, and then afterwards assert that the count of visits was
+increased in the DB it is safe to say, that the <code>VisitService</code> correctly did a lookup from the Identification Number to
+the correct Pet entity (<code>1.a</code>).</p>
+</div>
+<div class="paragraph">
+<p>Furthermore we can conclude that <code>2.a</code> and <code>3.</code> are also handled correctly since in the
+assertion we do another DB lookup of visits by the foreign key to the pikachu Pet instance and verify the amount was
+increased exactly by one.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="database_seed_data"><a class="anchor" href="#database_seed_data"></a><a class="link" href="#database_seed_data">Database Seed Data</a></h4>
+<div class="paragraph">
+<p>One thing to note here is that there is already data in the database. Not only Pets like <code>Pikachu</code> are already stored,
+but furthermore Visit information are already stored. This is due to the fact that in the Petclinic application
+the <code>30.create-db.sql</code> file contains seed data that is used for demonstration purposes.
+This has some upsides as well as downsides when it comes to test automation.</p>
+</div>
+<div class="paragraph">
+<p>On the one side it makes the test data setup easier, as there are already some data to rely upon.
+It is not necessary to programmatically create  the required <code>Pet</code>, <code>PetType</code> and <code>Visit</code> entities
+before any test case can be executed. This make the test creation easier and faster.</p>
+</div>
+<div class="paragraph">
+<p>On the other side, relying on test data that is defined outside the test case also comes with a maintenance cost.
+It generally makes the test cases less resilient to changes of that test data. Since this is central test data
+that all test cases share (as well as the running application), this situation can be even worse.</p>
+</div>
+<div class="paragraph">
+<p>To mitigate that situation the first test case contains the precondition assertion:
+<code>assertThat(db.countVisitsFor(pikachu)).isEqualTo(1);</code>. It ensures that the test data setup is what the test expect
+in order to function correctly. In case this precondition is not given, the test will fail immediately pointing
+to that problem. Without this precondition a downstream error would have occurred and it would be harder to determine
+the root cause of the failing test case.</p>
+</div>
+<div class="paragraph">
+<p>It is also possible to improve the situation even further but still stay with central test data setup.
+In fact for the the test case it is irrelevant of there are 1, 2 or 85 visits in the database for the pet.
+The only thing that is relevant is that the amount should have been increased exactly by one.</p>
+</div>
+<div class="paragraph">
+<p>To make the test more independent on the amount of <code>Visit</code> data, the test can capture the amount before the execution like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="type">class</span> <span class="class">VisitServiceTest</span> {
+  <span class="annotation">@Test</span>
+  <span class="directive">public</span> <span class="type">void</span> createVisitForToday_createsANewVisit_forTheCorrectPet() {
+    <span class="comment">// given: the amount of visits for pikachu is captured</span>
+    <span class="predefined-type">Long</span> visitAmountBefore = db.countVisitsFor(pikachu);
+    <span class="comment">// when: logic is executed for the pikachus identification number</span>
+    visit = visitService.createVisitForToday(
+            pikachu.getIdentificationNumber()
+    );
+    <span class="comment">// then: there is one more visit associated to pikachu</span>
+    assertThat(db.countVisitsFor(pikachu))
+        .isEqualTo(visitAmountBefore + <span class="integer">1</span>);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With that change the test will always pass independent on how many visits for pikachu are inserted by the environment.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="other_test_cases_for_createvisitfortoday"><a class="anchor" href="#other_test_cases_for_createvisitfortoday"></a><a class="link" href="#other_test_cases_for_createvisitfortoday">Other Test Cases for CreateVisitForToday</a></h4>
+<div class="paragraph">
+<p>For this example the two additional test cases will not be discussed in this guide as they are quite similar compared
+to the test case from above. Instead you can look them up in the corresponding example project:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-testing-middleware/blob/master/modules/core/test/com/haulmont/sample/petclinic/service/visit/create_visit/VisitServiceTest.java#L65">test case: createVisitForToday_createsANewVisit_withTheCorrectVisitInformation</a></p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-testing-middleware/blob/master/modules/core/test/com/haulmont/sample/petclinic/service/visit/create_visit/VisitServiceTest.java#L85">test case: createVisitForToday_createsNoVisit_forAnIncorrectIdentificationNumber</a></p>
+</li>
+</ul>
 </div>
 </div>
 </div>
