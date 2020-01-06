@@ -245,7 +245,7 @@ It is not strictly necessary to put this logic into a dedicated class, but it of
 helper methods or inline code that will increase the noise in the test case itself.
 
 
-==== First Test Case
+==== Implementation of the Functionality
 
 Before looking into the first test case, here is a recap of what the `VisitService` is doing in the implementation:
 
@@ -256,6 +256,51 @@ b. in case no Pet is found, it will not create a Visit
 a. it figures out the correct Pet and assigns it to the Visit
 b. it uses `today` as the `visitDate`
 3. it stores the newly created Visit
+
+The implementation of this functionality is shown below:
+
+.VisitServiceBean.java
+[source, java]
+----
+@Service(VisitService.NAME)
+public class VisitServiceBean implements VisitService {
+  @Inject
+  protected DataManager dataManager;
+  @Inject
+  protected TimeSource timeSource;
+  //...
+  @Override
+  public Visit createVisitForToday(String identificationNumber) {
+    return loadPetByIdentificationNumber(identificationNumber) // <1>
+            .map(this::createVisitForPet) // <2>
+            .map(this::saveVisit) // <3>
+            .orElse(null);
+  }
+
+  private Visit createVisitForPet(Pet pet) {
+    Visit visit = dataManager.create(Visit.class);
+    visit.setPet(pet);
+    visit.setVisitDate(timeSource.currentTimestamp());
+    return visit;
+  }
+
+  private Visit saveVisit(Visit visit) {
+    return dataManager.commit(visit);
+  }
+
+  private Optional<Pet> loadPetByIdentificationNumber(String identificationNumber) {
+    return dataManager.load(Pet.class)
+        .query("e.identificationNumber = ?1", identificationNumber)
+        .optional();
+  }
+  //...
+}
+----
+<1> the Pet is searched by the given Identification Number returning an `Optional<Pet>`
+<2> in case a Pet is found, a corresponding Visit will be created
+<3> the newly created Visit instance will be stored in the database
+
+==== First Test Case
 
 Based on that description it is possible to identify a couple of test cases, that describe the above mentioned behavior:
 
@@ -363,6 +408,118 @@ to the test case from above. Instead you can look them up in the corresponding e
 * https://github.com/cuba-guides/cuba-petclinic-testing-middleware/blob/master/modules/core/test/com/haulmont/sample/petclinic/service/visit/create_visit/VisitServiceTest.java#L85[test case: createVisitForToday_createsNoVisit_forAnIncorrectIdentificationNumber]
 
 === Disease Warning Mailing
+
+The next functionality that should be tested is the feature to send out an "Disease Warning Mailing" for endangered pets.
+As with the last feature, this functionality is similarly defined in a Service called `DiseaseWarningMailingService` within its method `warnAboutDisease`.
+
+The implementation of the feature contains the following parts:
+
+1. All potentially endangered Pets will be located
+a. that are of the given type
+b. live in the corresponding city
+c. have a valid Email Address through its Owner
+2. An Email will be send for each Pet containing Information about the Disease
+
+For sending out the Emails, the standard functionality from CUBA for sending out Emails: `EmailerAPI` will be leveraged.
+
+==== Test Class Setup
+
+The setup of the test cases will be very similar to the test class shown before. Next to the test case, there is a class
+containing the <<test-utility-methods>> called https://github.com/cuba-guides/cuba-petclinic-testing-middleware/blob/master/modules/core/test/com/haulmont/sample/petclinic/service/mailing/PetclinicMailingDb.java[PetclinicMailingDb].
+
+.DiseaseWarningMailingServiceTest.java
+[source,java]
+----
+@ExtendWith(PetclinicTestContainer.Common.class)
+public class DiseaseWarningMailingServiceTest {
+
+  private final String ALABASTIA = "Alabastia";
+  private final String ELECTRICAL_OVERCHARGING = "Electrical overcharging";
+// ...
+  private PetType electricType; // <1>
+  private List<Pet> electricPetsFromAlabastia;
+
+  @BeforeEach
+  public void loadTestDataAndVerifyItsCorrectness() {  // <2>
+    // given: there is an 'Electric' pet type
+    electricType = db.petTypeWithName("Electric");
+
+    assertThat(electricType)
+        .isNotNull();
+
+    // and: there is exactly one electric pet from Alabastia
+    electricPetsFromAlabastia = db.petsWithTypeFromCity(
+        electricType,
+        ALABASTIA,
+        "pet-with-owner-and-type"
+    );
+
+    assertThat(electricPetsFromAlabastia)
+        .hasSize(1);
+  }
+
+// different test cases...
+
+  private int warnAboutElectricalOverchargingIn(String city) { // <3>
+    return diseaseWarningMailingService.warnAboutDisease(
+        electricType,
+        ELECTRICAL_OVERCHARGING,
+        city
+    );
+  }
+
+  @AfterEach
+  public void clearOutgoingEmails() { // <4>
+    db.outgoingEmails()
+        .forEach(db::removeEntity);
+  }
+}
+----
+<1> `electricType` and `electricPetsFromAlabastia` are containers for common test data in this test class
+<2> the `@BeforeEach` method loads common test data and verifies its correctness
+<3> the system under test (SUT) invocation is extracted into a Test Utility Method
+<4> After each test case, the Outgoing Emails are cleaned up
+
+As seen in the last callout (4), there is a special way on how to work and verify with the Email Sending functionality.
+
+==== State Verification vs. Behavior Verification
+In the Case of the Email Sending, when you think about how it is possible to verify that a particular Email is correctly
+send out to a target Owner this is a little bit of a problematic area to verify. How can the test case assure that an Email was actually send out, because the test case itself is not directly involved in this interaction. Generally there are the following verification options:
+
+1. check for a received Email in a valid Email Account programmatically
+2. emulate a SMTP server in a test case and verify that a particular message was received from the application
+3. mock the `EmailerAPI` implementation by having a different implementation in the Spring configuration and verify it was called correctly
+
+Those three different types of verification can be categorized either into a State verification or into a Behavior verification. A behavior verification looks at the two collaborators (can be classes, modules or even systems) and based on the fact that a particular interaction took place derives the conclusion that the verification is correct.
+state verifications on the other hand do not look into how the system interacts with other collaborators, but instead look at the status after the execution happened and checks if the desired state is reached.
+
+In this regard `1.` is a State verification, where `2.` and `3.` are different kinds of behavior verifications.
+
+==== Testing CUBAs Email Functionality
+
+The `EmailerAPI` has a special method `List<SendingMessage> sendEmailAsync(EmailInfo info);` that is used in the implementation. How in particular this `async` part is handled is, that the API call stores the `EmailInfo` object into a CUBA database Table called `EmailSending` with a particular `SendingStatus`: `QUEUE`. Then an scheduled task is periodically run and will pick up those Emails and tries to send them out. As this happens independently of the thread that executed `emailerAPI.sendEmailAsync(emailInfo)` this process is asynchronous.
+
+This knowledge allows uncovers a forth option of verification:
+
+TIP: 4. Verify rows to appear in the `EmailSending` CUBA table that is used by the `EmailerAPI` to store outgoing Emails
+
+This option is also a state verification. Generally it is preferable to use State verification as those verifications tend to be more robust and therefore normally increase the maintenance costs of a test case less compared to a behavior verification.
+
+Compared to option `1.` the option `4.` requires much less infrastructure to be in-place. For `1.` the system environment requires:
+
+* a real existing Email Account with IMAP access
+* the correct SMTP Server configuration in the CUBA Email subsystem
+* a way to programmatically interact with an IMAP Inbox in the test case
+* an active internet connection
+* a mechanism to wait & retry for the Email to arrive in the Email Inbox programmatically in the test case
+
+Furthermore if you think about it, all of those points actually would test the correct behavior of the CUBA Email functionality. As this is already tested within the Framework itself, there is no point in verifying that. Given that you rely on the correct behavior of the CUBA Email functionality (which you do, since you use it in the Petclinic production code), we should try to exclude that from our testing efforts.
+
+TIP: Try to avoid double-test functionality provided by a Framework because this is already trusted & tested code _in integration tests_.
+
+Coming back to the test case at hand: Option `4.` looks most promising as it is a State verification that basically describes the contract the Petclinic application has with the `EmailerAPI`.
+
+
 
 === Next Regular Checkup Date Proposal
 
