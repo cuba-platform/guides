@@ -611,7 +611,7 @@ helper methods or inline code that will increase the noise in the test case itse
 </div>
 </div>
 <div class="sect3">
-<h4 id="first_test_case"><a class="anchor" href="#first_test_case"></a><a class="link" href="#first_test_case">First Test Case</a></h4>
+<h4 id="implementation_of_the_functionality"><a class="anchor" href="#implementation_of_the_functionality"></a><a class="link" href="#implementation_of_the_functionality">Implementation of the Functionality</a></h4>
 <div class="paragraph">
 <p>Before looking into the first test case, here is a recap of what the <code>VisitService</code> is doing in the implementation:</p>
 </div>
@@ -648,6 +648,66 @@ helper methods or inline code that will increase the noise in the test case itse
 </li>
 </ol>
 </div>
+<div class="paragraph">
+<p>The implementation of this functionality is shown below:</p>
+</div>
+<div class="listingblock">
+<div class="title">VisitServiceBean.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Service</span>(VisitService.NAME)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">VisitServiceBean</span> <span class="directive">implements</span> VisitService {
+  <span class="annotation">@Inject</span>
+  <span class="directive">protected</span> DataManager dataManager;
+  <span class="annotation">@Inject</span>
+  <span class="directive">protected</span> TimeSource timeSource;
+  <span class="comment">//...</span>
+  <span class="annotation">@Override</span>
+  <span class="directive">public</span> Visit createVisitForToday(<span class="predefined-type">String</span> identificationNumber) {
+    <span class="keyword">return</span> loadPetByIdentificationNumber(identificationNumber) <i class="conum" data-value="1"></i><b>(1)</b>
+            .map(<span class="local-variable">this</span>::createVisitForPet) <i class="conum" data-value="2"></i><b>(2)</b>
+            .map(<span class="local-variable">this</span>::saveVisit) <i class="conum" data-value="3"></i><b>(3)</b>
+            .orElse(<span class="predefined-constant">null</span>);
+  }
+
+  <span class="directive">private</span> Visit createVisitForPet(Pet pet) {
+    Visit visit = dataManager.create(Visit.class);
+    visit.setPet(pet);
+    visit.setVisitDate(timeSource.currentTimestamp());
+    <span class="keyword">return</span> visit;
+  }
+
+  <span class="directive">private</span> Visit saveVisit(Visit visit) {
+    <span class="keyword">return</span> dataManager.commit(visit);
+  }
+
+  <span class="directive">private</span> Optional&lt;Pet&gt; loadPetByIdentificationNumber(<span class="predefined-type">String</span> identificationNumber) {
+    <span class="keyword">return</span> dataManager.load(Pet.class)
+        .query(<span class="string"><span class="delimiter">&quot;</span><span class="content">e.identificationNumber = ?1</span><span class="delimiter">&quot;</span></span>, identificationNumber)
+        .optional();
+  }
+  <span class="comment">//...</span>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the Pet is searched by the given Identification Number returning an <code>Optional&lt;Pet&gt;</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>in case a Pet is found, a corresponding Visit will be created</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>the newly created Visit instance will be stored in the database</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="first_test_case"><a class="anchor" href="#first_test_case"></a><a class="link" href="#first_test_case">First Test Case</a></h4>
 <div class="paragraph">
 <p>Based on that description it is possible to identify a couple of test cases, that describe the above mentioned behavior:</p>
 </div>
@@ -798,7 +858,209 @@ to the test case from above. Instead you can look them up in the corresponding e
 </div>
 <div class="sect2">
 <h3 id="disease_warning_mailing"><a class="anchor" href="#disease_warning_mailing"></a><a class="link" href="#disease_warning_mailing">Disease Warning Mailing</a></h3>
+<div class="paragraph">
+<p>The next functionality that should be tested is the feature to send out an "Disease Warning Mailing" for endangered pets.
+As with the last feature, this functionality is similarly defined in a Service called <code>DiseaseWarningMailingService</code> within its method <code>warnAboutDisease</code>.</p>
+</div>
+<div class="paragraph">
+<p>The implementation of the feature contains the following parts:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>All potentially endangered Pets will be located</p>
+<div class="olist loweralpha">
+<ol class="loweralpha">
+<li>
+<p>that are of the given type</p>
+</li>
+<li>
+<p>live in the corresponding city</p>
+</li>
+<li>
+<p>have a valid Email Address through its Owner</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>An Email will be send for each Pet containing Information about the Disease</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>For sending out the Emails, the standard functionality from CUBA for sending out Emails: <code>EmailerAPI</code> will be leveraged.</p>
+</div>
+<div class="sect3">
+<h4 id="test_class_setup_2"><a class="anchor" href="#test_class_setup_2"></a><a class="link" href="#test_class_setup_2">Test Class Setup</a></h4>
+<div class="paragraph">
+<p>The setup of the test cases will be very similar to the test class shown before. Next to the test case, there is a class
+containing the <a href="#test-utility-methods">[test-utility-methods]</a> called <a href="https://github.com/cuba-guides/cuba-petclinic-testing-middleware/blob/master/modules/core/test/com/haulmont/sample/petclinic/service/mailing/PetclinicMailingDb.java">PetclinicMailingDb</a>.</p>
+</div>
+<div class="listingblock">
+<div class="title">DiseaseWarningMailingServiceTest.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@ExtendWith</span>(PetclinicTestContainer.Common.class)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">DiseaseWarningMailingServiceTest</span> {
 
+  <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> ALABASTIA = <span class="string"><span class="delimiter">&quot;</span><span class="content">Alabastia</span><span class="delimiter">&quot;</span></span>;
+  <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> ELECTRICAL_OVERCHARGING = <span class="string"><span class="delimiter">&quot;</span><span class="content">Electrical overcharging</span><span class="delimiter">&quot;</span></span>;
+<span class="comment">// ...</span>
+  <span class="directive">private</span> PetType electricType; <i class="conum" data-value="1"></i><b>(1)</b>
+  <span class="directive">private</span> <span class="predefined-type">List</span>&lt;Pet&gt; electricPetsFromAlabastia;
+
+  <span class="annotation">@BeforeEach</span>
+  <span class="directive">public</span> <span class="type">void</span> loadTestDataAndVerifyItsCorrectness() {  <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="comment">// given: there is an 'Electric' pet type</span>
+    electricType = db.petTypeWithName(<span class="string"><span class="delimiter">&quot;</span><span class="content">Electric</span><span class="delimiter">&quot;</span></span>);
+
+    assertThat(electricType)
+        .isNotNull();
+
+    <span class="comment">// and: there is exactly one electric pet from Alabastia</span>
+    electricPetsFromAlabastia = db.petsWithTypeFromCity(
+        electricType,
+        ALABASTIA,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">pet-with-owner-and-type</span><span class="delimiter">&quot;</span></span>
+    );
+
+    assertThat(electricPetsFromAlabastia)
+        .hasSize(<span class="integer">1</span>);
+  }
+
+<span class="comment">// different test cases...</span>
+
+  <span class="directive">private</span> <span class="type">int</span> warnAboutElectricalOverchargingIn(<span class="predefined-type">String</span> city) { <i class="conum" data-value="3"></i><b>(3)</b>
+    <span class="keyword">return</span> diseaseWarningMailingService.warnAboutDisease(
+        electricType,
+        ELECTRICAL_OVERCHARGING,
+        city
+    );
+  }
+
+  <span class="annotation">@AfterEach</span>
+  <span class="directive">public</span> <span class="type">void</span> clearOutgoingEmails() { <i class="conum" data-value="4"></i><b>(4)</b>
+    db.outgoingEmails()
+        .forEach(db::removeEntity);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>electricType</code> and <code>electricPetsFromAlabastia</code> are containers for common test data in this test class</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the <code>@BeforeEach</code> method loads common test data and verifies its correctness</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>the system under test (SUT) invocation is extracted into a Test Utility Method</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>After each test case, the Outgoing Emails are cleaned up</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>As seen in the last callout (4), there is a special way on how to work and verify with the Email Sending functionality.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="state_verification_vs_behavior_verification"><a class="anchor" href="#state_verification_vs_behavior_verification"></a><a class="link" href="#state_verification_vs_behavior_verification">State Verification vs. Behavior Verification</a></h4>
+<div class="paragraph">
+<p>In the Case of the Email Sending, when you think about how it is possible to verify that a particular Email is correctly
+send out to a target Owner this is a little bit of a problematic area to verify. How can the test case assure that an Email was actually send out, because the test case itself is not directly involved in this interaction. Generally there are the following verification options:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>check for a received Email in a valid Email Account programmatically</p>
+</li>
+<li>
+<p>emulate a SMTP server in a test case and verify that a particular message was received from the application</p>
+</li>
+<li>
+<p>mock the <code>EmailerAPI</code> implementation by having a different implementation in the Spring configuration and verify it was called correctly</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Those three different types of verification can be categorized either into a State verification or into a Behavior verification. A behavior verification looks at the two collaborators (can be classes, modules or even systems) and based on the fact that a particular interaction took place derives the conclusion that the verification is correct.
+state verifications on the other hand do not look into how the system interacts with other collaborators, but instead look at the status after the execution happened and checks if the desired state is reached.</p>
+</div>
+<div class="paragraph">
+<p>In this regard <code>1.</code> is a State verification, where <code>2.</code> and <code>3.</code> are different kinds of behavior verifications.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="testing_cubas_email_functionality"><a class="anchor" href="#testing_cubas_email_functionality"></a><a class="link" href="#testing_cubas_email_functionality">Testing CUBAs Email Functionality</a></h4>
+<div class="paragraph">
+<p>The <code>EmailerAPI</code> has a special method <code>List&lt;SendingMessage&gt; sendEmailAsync(EmailInfo info);</code> that is used in the implementation. How in particular this <code>async</code> part is handled is, that the API call stores the <code>EmailInfo</code> object into a CUBA database Table called <code>EmailSending</code> with a particular <code>SendingStatus</code>: <code>QUEUE</code>. Then an scheduled task is periodically run and will pick up those Emails and tries to send them out. As this happens independently of the thread that executed <code>emailerAPI.sendEmailAsync(emailInfo)</code> this process is asynchronous.</p>
+</div>
+<div class="paragraph">
+<p>This knowledge allows uncovers a forth option of verification:</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+4. Verify rows to appear in the <code>EmailSending</code> CUBA table that is used by the <code>EmailerAPI</code> to store outgoing Emails
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This option is also a state verification. Generally it is preferable to use State verification as those verifications tend to be more robust and therefore normally increase the maintenance costs of a test case less compared to a behavior verification.</p>
+</div>
+<div class="paragraph">
+<p>Compared to option <code>1.</code> the option <code>4.</code> requires much less infrastructure to be in-place. For <code>1.</code> the system environment requires:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>a real existing Email Account with IMAP access</p>
+</li>
+<li>
+<p>the correct SMTP Server configuration in the CUBA Email subsystem</p>
+</li>
+<li>
+<p>a way to programmatically interact with an IMAP Inbox in the test case</p>
+</li>
+<li>
+<p>an active internet connection</p>
+</li>
+<li>
+<p>a mechanism to wait &amp; retry for the Email to arrive in the Email Inbox programmatically in the test case</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Furthermore if you think about it, all of those points actually would test the correct behavior of the CUBA Email functionality. As this is already tested within the Framework itself, there is no point in verifying that. Given that you rely on the correct behavior of the CUBA Email functionality (which you do, since you use it in the Petclinic production code), we should try to exclude that from our testing efforts.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Try to avoid double-test functionality provided by a Framework because this is already trusted &amp; tested code <em>in integration tests</em>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Coming back to the test case at hand: Option <code>4.</code> looks most promising as it is a State verification that basically describes the contract the Petclinic application has with the <code>EmailerAPI</code>.</p>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="next_regular_checkup_date_proposal"><a class="anchor" href="#next_regular_checkup_date_proposal"></a><a class="link" href="#next_regular_checkup_date_proposal">Next Regular Checkup Date Proposal</a></h3>
