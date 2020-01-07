@@ -5,20 +5,20 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Middleware Testing in CUBA applications</title>
+    <title>Middleware Integration Testing in CUBA Applications</title>
     <meta name="description" content="The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.">
     <meta name="author" content="Haulmont">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@CubaPlatform">
     <meta name="twitter:creator" content="@CubaPlatform">
-    <meta name="twitter:title" content="Middleware Testing in CUBA applications">
-    <meta name="twitter:description" content="In this guide you will learn how automated testing in a CUBA application works. In particular this guide deals with middleware layer of a CUBA application and how tests can be executed there.">
+    <meta name="twitter:title" content="Middleware Integration Testing in CUBA Applications">
+    <meta name="twitter:description" content="In this guide you will learn how automated testing in a CUBA application works. In particular this guide deals with middleware layer of a CUBA application and how integration tests can be executed there.">
     <meta name="twitter:image" content="">
 
     <meta property="og:type" content="article">
-    <meta property="og:title" content="Middleware Testing in CUBA applications">
-    <meta property="og:description" content="In this guide you will learn how automated testing in a CUBA application works. In particular this guide deals with middleware layer of a CUBA application and how tests can be executed there.">
+    <meta property="og:title" content="Middleware Integration Testing in CUBA Applications">
+    <meta property="og:description" content="In this guide you will learn how automated testing in a CUBA application works. In particular this guide deals with middleware layer of a CUBA application and how integration tests can be executed there.">
     <meta property="og:url" content="https://www.cuba-platform.com/guides/testing-middleware">
     <meta property="og:image" content="">
 
@@ -182,14 +182,14 @@
                             <div class="field field-name-body field-type-text-with-summary field-label-hidden">
                                 <div class="field-items">
                                     <div class="field-item even" property="content: encoded">
-                                        <h1>Middleware Testing in CUBA applications</h1>
+                                        <h1>Middleware Integration Testing in CUBA Applications</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Test automation is key to every successful application development effort since it normally gives a high positive return on investment for QA efforts. CUBA applications are build on the Java ecosystem, which has a very powerful and mature test automation capabilities. In this guide you will learn how to leverage those capabilities.</p>
+<p>Test automation is key to every successful application development effort since it normally gives a high positive return on investment for QA efforts. CUBA applications are build on the Java ecosystem, which has very powerful and mature test automation capabilities. In this guide you will learn how to leverage those capabilities.</p>
 </div>
 <div class="paragraph">
-<p>First you will understand how testing in general works in a CUBA application. Afterwards this guide will concentrate on the area of unit &amp; integration testing on the middleware layer.</p>
+<p>First you will understand how testing in general works in a CUBA application. Afterwards this guide will concentrate on the area of integration testing in the middleware layer.</p>
 </div>
 </div>
 </div>
@@ -197,7 +197,7 @@
 <h2 id="what_will_be_built"><a class="anchor" href="#what_will_be_built"></a><a class="link" href="#what_will_be_built">What Will be Built</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a> example to show how existing features can be automatically tested:</p>
+<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a> example to show how existing features can be  tested in an automated fashion:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -205,10 +205,7 @@
 <p>automatic creation of a Visit for a given Pet Identification Number</p>
 </li>
 <li>
-<p>automatic "Disease Warning Mailing" for endangered pets</p>
-</li>
-<li>
-<p>calculation of next regular checkup date proposals for a Pet</p>
+<p>automatic "Disease Warning Mailing" for endangered Pets</p>
 </li>
 </ul>
 </div>
@@ -244,6 +241,29 @@
 <p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-testing-middleware.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-testing-middleware.git</a></code></p>
 </div>
 </div>
+<div class="sect2">
+<h3 id="additional_testing_dependencies"><a class="anchor" href="#additional_testing_dependencies"></a><a class="link" href="#additional_testing_dependencies">Additional Testing Dependencies</a></h3>
+<div class="paragraph">
+<p>This guide uses JUnit 5 as well as AssertJ in order to develop and run the automated integration test cases. Therefore the following dependencies need to be expressed in the <code>build.gradle</code> for all three modules (<code>global</code>, <code>core</code> and <code>web</code>):</p>
+</div>
+<div class="listingblock">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">configure([globalModule, coreModule, webModule]) {
+    <span class="comment">// ...</span>
+    dependencies {
+            testCompile(<span class="string"><span class="delimiter">'</span><span class="content">org.junit.jupiter:junit-jupiter-api:5.5.2</span><span class="delimiter">'</span></span>)
+            testCompile(<span class="string"><span class="delimiter">'</span><span class="content">org.junit.jupiter:junit-jupiter-engine:5.5.2</span><span class="delimiter">'</span></span>)
+            testCompile(<span class="string"><span class="delimiter">'</span><span class="content">org.junit.vintage:junit-vintage-engine:5.5.2</span><span class="delimiter">'</span></span>)
+
+            testCompile(<span class="string"><span class="delimiter">'</span><span class="content">org.assertj:assertj-core:3.11.1</span><span class="delimiter">'</span></span>)
+
+    }
+    <span class="comment">// ...</span>
+}</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -270,7 +290,10 @@
 <h2 id="overview"><a class="anchor" href="#overview"></a><a class="link" href="#overview">Overview</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Test automation is a commonly known best practice in the industry of software development since multiple decades. It allows to write a small test application, that executes a particular sub part of the production application and verifies its correct behavior.</p>
+<p>Test automation is a commonly known best practice in the industry of software development since multiple decades. It allows to write a small test application, that executes a particular sub-part of the production application and verifies its correct behavior.</p>
+</div>
+<div class="paragraph">
+<p>The term <code>production</code> as it is used in this guide refers to the application code that is inside the application, just in order to differentiate it from the code that is defining the test case (the <code>test code</code>). It does not mean production as in "the production system" that is used by your customers.</p>
 </div>
 <div class="paragraph">
 <p>In the Java ecosystem test automation has a long tradition. One famous example of this is the testing framework JUnit, which was one of the very first testing frameworks out in the market.</p>
@@ -284,17 +307,8 @@
 <div class="paragraph">
 <p>A CUBA application is divided into two parts: the middleware part and the frontend part. The middleware consists of a combination of the <code>core</code> and the <code>global</code> module in the source code. It normally contains the majority of the business logic, integrations to other systems and the database related interactions.</p>
 </div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-This guide is only about testing the middleware part of a CUBA application, since for the frontend different patterns and testing strategies apply and therefore is covered in a dedicated guide.
-</td>
-</tr>
-</table>
+<div class="paragraph">
+<p>This guide is only about testing the middleware part of a CUBA application, since for the frontend different patterns and testing strategies apply. Therefore this kind of testing is covered in another dedicated guide.</p>
 </div>
 </div>
 </div>
@@ -302,27 +316,27 @@ This guide is only about testing the middleware part of a CUBA application, sinc
 <h2 id="test_environments"><a class="anchor" href="#test_environments"></a><a class="link" href="#test_environments">Test Environments</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Depending on how production code is executed in a test environment, this environment needs to fulfil certain criteria. E.g. if testing a production class that interacts with a database, this database has to be up and running in that environment and the production code needs to have a proper connection to it.</p>
+<p>Depending on how production code is executed in a test environment, this environment needs to fulfil certain criteria. If e.g. a test exercises a production class that interacts with a database, this database has to be up and running in that environment and the production code needs to have a proper connection to it.</p>
 </div>
 <div class="paragraph">
-<p>If on the other hand a business logic in the application like a sum building over a couple of order items is exercised in a test case the execution environment can be much simpler and does not need to have dependencies on other parts.</p>
+<p>If a test case on the other had executes a production class, that contains business logic to sum up order amounts for a customer, the execution environment can be much simpler and does not have dependencies on other parts.</p>
 </div>
 <div class="paragraph">
 <p>When it comes to the CUBA middleware both of those environment scenarios can be instantiated in order to execute test classes. The first variant with running dependencies like a database is normally referred to as an <code>Integration test</code>. For the scenario where the production class is instantiated without any surrounding environment support is called a <code>Unit test</code>.</p>
 </div>
 <div class="paragraph">
-<p>In the next section you will learn about the differences of those two environment types. Afterwards those environments are put in place with testing the two scenarios for the petclinic application.</p>
+<p>In the next section you will learn about the differences of those two environment types. Afterwards this guide concentrates on the integration testing part by testing the two scenarios for the petclinic application.</p>
 </div>
 <div class="sect2">
 <h3 id="middleware_integration_testing"><a class="anchor" href="#middleware_integration_testing"></a><a class="link" href="#middleware_integration_testing">Middleware Integration Testing</a></h3>
 <div class="paragraph">
-<p>In this environment the production application is started partially. The integration test environment for a CUBA middleware is oftentimes the more common way of running a test case. This means that all the CUBA platform classes work the way you would expect them to work.</p>
+<p>In this environment the production application is started partially. The integration test environment for a CUBA middleware is oftentimes the more common way of running a test case. This means that all the CUBA platform classes work the way just as in the production code of the application.</p>
 </div>
 <div class="paragraph">
-<p>The <code>DataManager</code> interface for example, when invoking <code>dataManager.load(Customer.class).id(123).one()</code> will actually go against the database and fetch the customer with the ID 123. The same is true for the production code that was written in your application: <code>CustomerCreationService</code> will when interacting try to create a Customer in the database.</p>
+<p>The <code>DataManager</code> interface for example, when invoking <code>dataManager.load(Customer.class).id(123).one()</code> will actually go against the database and fetch the customer with the ID 123. The same is true for the production code that was written in your application: <code>CustomerCreationService</code> will try to create a Customer in the database.</p>
 </div>
 <div class="paragraph">
-<p>The integration testing environment has the following characteristics available:</p>
+<p>The integration test environment contains the following environmental parts:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -338,15 +352,15 @@ This guide is only about testing the middleware part of a CUBA application, sinc
 </ul>
 </div>
 <div class="paragraph">
-<p>In order to make that environment available to the test case it take a couple of seconds to execute the test case.</p>
+<p>In order to make that environment available to the test case it takes a couple of seconds to execute the test case.</p>
 </div>
 <div class="sect3">
 <h4 id="database_connection"><a class="anchor" href="#database_connection"></a><a class="link" href="#database_connection">Database Connection</a></h4>
 <div class="paragraph">
-<p>CUBA uses the same database connection, that is established when running the production application. In the case of HSQLDB CUBA Studio takes care of having the database running when executing the test case.</p>
+<p>CUBA uses the same database connection that is established when running the CUBA application. In the case of HSQLDB CUBA Studio takes care of having the database running when executing the test case.</p>
 </div>
 <div class="paragraph">
-<p>By default the database instance is <code>shared</code> between the test environment and the situation when you run the application locally. This means that data that is defined locally when running the application is also available in the test case execution. Furthermore, if the test case changes data in the database, it is also changed the next time when you start the application.</p>
+<p>By default the database instance is <code>shared</code> between the test environment and the local application. This means that data that is defined locally when running the application is also available in the test case execution. Furthermore, if the test case changes data in the database, it is also changed the next time when you start the application.</p>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -355,7 +369,7 @@ This guide is only about testing the middleware part of a CUBA application, sinc
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-Sharing data between the two environments is convenient and can often be helpful but also can cause some level of non-determinism. In case you are facing the situation of having problems expressing the correct assertions in the test case, because you cannot reliably determine how much / which data is in the database or you accidentally change data through the test case, it is also possible to split the databases of the two environments to avoid this behavior.
+Sharing data between the two environments is convenient and can often be helpful but also can cause some level of non-determinism. You might face the situation of having problems expressing the correct assertions in the test case, because you cannot reliably determine how much / which data is in the database or you accidentally change data through the test case. In that case it is also possible to split the databases of the two environments to avoid this behavior.
 </td>
 </tr>
 </table>
@@ -364,7 +378,7 @@ Sharing data between the two environments is convenient and can often be helpful
 <div class="sect3">
 <h4 id="test_container"><a class="anchor" href="#test_container"></a><a class="link" href="#test_container">Test Container</a></h4>
 <div class="paragraph">
-<p>The Test container is an object in the test case, that is mainly responsible for starting up and managing the integration test environment. It is supposed to be used in the test class as an object that when starting the test case will do various things to spin up the environment:</p>
+<p>The Test container is an object in the test case, that is mainly responsible for starting up and managing the integration test environment. It is supposed to be used in the test class as an object that sets up the test environment:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -383,14 +397,14 @@ Sharing data between the two environments is convenient and can often be helpful
 </ul>
 </div>
 <div class="paragraph">
-<p>An example usage of this Test Container looks like this:</p>
+<p>CUBA Studio generates the TestContainer class into the test source directory of the <code>core</code> module. Following you will see an example usage of the <code>PetclinicTestContainer</code>:</p>
 </div>
 <div class="listingblock">
 <div class="title">SampleIntegrationTest.java</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@ExtendWith</span>(PetclinicTestContainer.Common.class) <i class="conum" data-value="1"></i><b>(1)</b>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">SampleIntegrationTest</span> {
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">SampleIntegrationTest</span> {
 
+    <span class="annotation">@RegisterExtension</span> <i class="conum" data-value="1"></i><b>(1)</b>
     <span class="directive">public</span> <span class="directive">static</span> PetclinicTestContainer testContainer =
             PetclinicTestContainer.Common.INSTANCE; <i class="conum" data-value="2"></i><b>(2)</b>
 
@@ -427,7 +441,7 @@ Sharing data between the two environments is convenient and can often be helpful
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-This guide uses JUnit as the testing library for examples. CUBA supports multiple testing frameworks like Spock, but by default it ships with JUnit.
+This guide uses JUnit 5 as the testing library for examples. CUBA supports multiple testing frameworks like Spock, but by default it ships with JUnit.
 </td>
 </tr>
 </table>
@@ -437,7 +451,7 @@ This guide uses JUnit as the testing library for examples. CUBA supports multipl
 <div class="sect2">
 <h3 id="middleware_unit_testing"><a class="anchor" href="#middleware_unit_testing"></a><a class="link" href="#middleware_unit_testing">Middleware Unit Testing</a></h3>
 <div class="paragraph">
-<p>Besides the integration test environment it is also possible to create test cases, that do not spin up the Spring application context or any CUBA platform APIs at all. As for the above described use case, where there are no dependencies to the environment that should be leveraged in the test case, not having to start the environment is oftentimes beneficial.</p>
+<p>Besides the integration test environment it is also possible to create test cases, that do not spin up the Spring application context or any CUBA platform APIs at all. As for the above described use case of Sum building of order amounts not having to start the test environment can oftentimes be beneficial as well.</p>
 </div>
 <div class="paragraph">
 <p>The two main benefits of writing unit test in an isolated fashion without an integration test environment are:</p>
@@ -453,11 +467,7 @@ This guide uses JUnit as the testing library for examples. CUBA supports multipl
 </ul>
 </div>
 <div class="paragraph">
-<p>In this case the class under test is instantiated directly. Since dependency injection is not working in this scenario potential dependencies (objects that the class under test relies upon) have to be instantiated manually and passed into the class under test directly. In case those dependencies are CUBA APIs, they normally have to be mocked. Mocking is a common way in test automation that helps to emulate / control certain external parts that the system under test interacts with in order to isolate the test subject as much as possible from its outside world.</p>
-</div>
-<div class="sect3">
-<h4 id="mocking"><a class="anchor" href="#mocking"></a><a class="link" href="#mocking">Mocking</a></h4>
-
+<p>But there are also downsides or limitation when using unit tests. This whole topic is part of another dedicated testing guide and is therefore not discussed any further here.</p>
 </div>
 </div>
 </div>
@@ -466,15 +476,14 @@ This guide uses JUnit as the testing library for examples. CUBA supports multipl
 <h2 id="tests_for_petclinic_functionality"><a class="anchor" href="#tests_for_petclinic_functionality"></a><a class="link" href="#tests_for_petclinic_functionality">Tests for Petclinic Functionality</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In the next section you will learn how to put all this theory into action by implementing unit / integration test cases, that verify the correct
-behavior of features that have been introduced in the <a href="https://www.cuba-platform.com/guides/intro-working-with-data-in-cuba">Working with Data in CUBA</a> guide next to new functionality that you will learn about later.</p>
+<p>In the next section you will learn how to put all this theory into action by implementing integration test cases, that verify the correct
+behavior of features that have been introduced in the <a href="https://www.cuba-platform.com/guides/intro-working-with-data-in-cuba">Working with Data in CUBA</a> guide.</p>
 </div>
 <div class="sect2">
 <h3 id="automatic_visit_creation"><a class="anchor" href="#automatic_visit_creation"></a><a class="link" href="#automatic_visit_creation">Automatic Visit Creation</a></h3>
 <div class="paragraph">
 <p>The first test case is about the automatic visit creation functionality of the Petclinic application. In the Visit browse screen, the user
-can create a new visit by entering the Pet Identification Number as a quick action. The software will go ahead and create a visit
-for todays date for the entered Pet.</p>
+can create a new visit by entering the Pet Identification Number as a quick action. The software will go ahead and create a visit for todays date for the entered Pet.</p>
 </div>
 <div class="paragraph">
 <p>Part of the implementation of the feature is a CUBA service called <code>VisitService</code> that is triggered from the UI. It contains one method <code>Visit createVisitForToday(String identificationNumber)</code> that is the subject of the test case.</p>
@@ -494,43 +503,41 @@ Although the feature includes a UI part, this will not be part of the automated 
 <div class="sect3">
 <h4 id="test_class_setup"><a class="anchor" href="#test_class_setup"></a><a class="link" href="#test_class_setup">Test Class Setup</a></h4>
 <div class="paragraph">
-<p>In order to implement the defined test case, first let&#8217;s look at the integration test harness of the test case. It is based
-on the description of the <code>SampleIntegrationTest</code> from above. In this test there are some noteworthy additions to simplify
-the test cases.</p>
+<p>In order to implement the defined test case, first let&#8217;s look at the integration test harness of the test case. It is based on the description of the <code>SampleIntegrationTest</code> from above. In this test there are some noteworthy additions to simplify the test cases.</p>
 </div>
 <div class="listingblock">
 <div class="title">VisitServiceTest.java</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@ExtendWith</span>(PetclinicTestContainer.Common.class)
-<span class="directive">public</span> <span class="type">class</span> <span class="class">VisitServiceTest</span> {
-  <span class="directive">public</span> <span class="directive">static</span> PetclinicTestContainer testContainer = PetclinicTestContainer.Common.INSTANCE;
-  <span class="directive">private</span> <span class="directive">static</span> VisitService visitService; <i class="conum" data-value="1"></i><b>(1)</b>
-  <span class="directive">private</span> <span class="directive">static</span> PetclinicVisitDb db;
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VisitServiceTest</span> {
+    <span class="annotation">@RegisterExtension</span>
+    <span class="directive">public</span> <span class="directive">static</span> PetclinicTestContainer testContainer = PetclinicTestContainer.Common.INSTANCE;
+    <span class="directive">private</span> <span class="directive">static</span> VisitService visitService; <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="directive">private</span> <span class="directive">static</span> PetclinicVisitDb db;
 
-  <span class="directive">private</span> Visit visit;
-  <span class="directive">private</span> Pet pikachu;
+    <span class="directive">private</span> Visit visit;
+    <span class="directive">private</span> Pet pikachu;
 
-  <span class="annotation">@BeforeAll</span>
-  <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> setupEnvironment() {
-    visitService = AppBeans.get(VisitService.class);
+    <span class="annotation">@BeforeAll</span>
+    <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> setupEnvironment() {
+        visitService = AppBeans.get(VisitService.class);
 
-    db = <span class="keyword">new</span> PetclinicVisitDb( <i class="conum" data-value="2"></i><b>(2)</b>
-        AppBeans.get(DataManager.class),
-        testContainer
-    );
-  }
+        db = <span class="keyword">new</span> PetclinicVisitDb( <i class="conum" data-value="2"></i><b>(2)</b>
+            AppBeans.get(DataManager.class),
+            testContainer
+        );
+    }
 
-  <span class="annotation">@BeforeEach</span>
-  <span class="directive">public</span> <span class="type">void</span> loadPikachu() { <i class="conum" data-value="3"></i><b>(3)</b>
-    pikachu = db.petWithName(<span class="string"><span class="delimiter">&quot;</span><span class="content">Pikachu</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">pet-with-owner-and-type</span><span class="delimiter">&quot;</span></span>);
-  }
+    <span class="annotation">@BeforeEach</span>
+    <span class="directive">public</span> <span class="type">void</span> loadPikachu() { <i class="conum" data-value="3"></i><b>(3)</b>
+        pikachu = db.petWithName(<span class="string"><span class="delimiter">&quot;</span><span class="content">Pikachu</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">pet-with-owner-and-type</span><span class="delimiter">&quot;</span></span>);
+    }
 
-  <span class="comment">// different test cases...</span>
+    <span class="comment">// different test cases...</span>
 
-  <span class="annotation">@AfterEach</span>
-  <span class="directive">public</span> <span class="type">void</span> cleanupVisit() { <i class="conum" data-value="4"></i><b>(4)</b>
-    db.remove(visit);
-  }
+    <span class="annotation">@AfterEach</span>
+    <span class="directive">public</span> <span class="type">void</span> cleanupVisit() { <i class="conum" data-value="4"></i><b>(4)</b>
+        db.remove(visit);
+    }
 }</code></pre>
 </div>
 </div>
@@ -555,8 +562,7 @@ the test cases.</p>
 </table>
 </div>
 <div class="paragraph">
-<p>The JUnit Annotations <code>@BeforeEach</code> and <code>@AfterEach</code> are used in order to execute certain parts of the code before / after
-each test case.</p>
+<p>The JUnit Annotations <code>@BeforeEach</code> and <code>@AfterEach</code> are used in order to execute certain parts of the code before / after each test case.</p>
 </div>
 </div>
 <div class="sect3">
@@ -565,19 +571,14 @@ each test case.</p>
 <p>The general pattern of how the most test cases in this guide are defined is called <code>Arrange-Act-Assert</code>:</p>
 </div>
 <div class="paragraph">
-<p>First there is a phase of test data setup or verification of test data (<code>Arrange</code>). This is necessary to ensure the test case has a stable set of test
-data to start from. Next the implementation is exercised with the desired input parameters (<code>Act</code>). In the last phase, the verifications
-are executed to see if the code changed the system in the desired ways (<code>Assert</code>).</p>
+<p>First there is a phase of test data setup or verification of test data (<code>Arrange</code>). This is necessary to ensure the test case has a stable set of test data to start from. Next the implementation is exercised with the desired input parameters (<code>Act</code>). In the last phase, the verifications are executed to see if the code changed the system in the desired ways (<code>Assert</code>).</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="test_utility_methods"><a class="anchor" href="#test_utility_methods"></a><a class="link" href="#test_utility_methods">Test Utility Methods</a></h4>
 <div class="paragraph">
 <p>One important piece here is the class <code>PetclinicVisitDb</code> and its usage via the <code>db</code> variable.
-This class encapsulated Database interactions that is tailored towards the test class <code>VisitServiceTest</code>.</p>
-</div>
-<div class="paragraph">
-<p>It has the following API:</p>
+This class encapsulated Database interactions that is tailored towards the test class <code>VisitServiceTest</code>. It has the following API:</p>
 </div>
 <div class="listingblock">
 <div class="title">PetclinicVisitDb.java</div>
@@ -606,8 +607,7 @@ an implementation of the <a href="http://xunitpatterns.com/Test%20Utility%20Meth
  <a href="http://xunitpatterns.com/Back%20Door%20Manipulation.html">Back Door Manipulation Pattern</a>.</p>
 </div>
 <div class="paragraph">
-<p>It is not strictly necessary to put this logic into a dedicated class, but it oftentimes frees up the test classes from various
-helper methods or inline code that will increase the noise in the test case itself.</p>
+<p>It is not strictly necessary to put this logic into a dedicated class, but it oftentimes frees up the test classes from various helper methods or inline code that will increase the noise in the test case itself.</p>
 </div>
 </div>
 <div class="sect3">
@@ -732,27 +732,27 @@ helper methods or inline code that will increase the noise in the test case itse
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="type">class</span> <span class="class">VisitServiceTest</span> {
     <span class="comment">// ...</span>
-  <span class="directive">private</span> Visit visit;
-  <span class="directive">private</span> Pet pikachu;
+    <span class="directive">private</span> Visit visit;
+    <span class="directive">private</span> Pet pikachu;
 
-  <span class="annotation">@BeforeEach</span>
-  <span class="directive">public</span> <span class="type">void</span> loadPikachu() {
-    pikachu = db.petWithName(<span class="string"><span class="delimiter">&quot;</span><span class="content">Pikachu</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">pet-with-owner-and-type</span><span class="delimiter">&quot;</span></span>);
-  }
+    <span class="annotation">@BeforeEach</span>
+    <span class="directive">public</span> <span class="type">void</span> loadPikachu() {
+        pikachu = db.petWithName(<span class="string"><span class="delimiter">&quot;</span><span class="content">Pikachu</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">pet-with-owner-and-type</span><span class="delimiter">&quot;</span></span>);
+    }
 
-  <span class="annotation">@Test</span>
-  <span class="directive">public</span> <span class="type">void</span> createVisitForToday_createsANewVisit_forTheCorrectPet() { <i class="conum" data-value="1"></i><b>(1)</b>
-    <span class="comment">// given: there is one visit associated to pikachu</span>
-    assertThat(db.countVisitsFor(pikachu))
-        .isEqualTo(<span class="integer">1</span>);
-    <span class="comment">// when: logic is executed for the pikachus identification number</span>
-    visit = visitService.createVisitForToday(
-            pikachu.getIdentificationNumber()
-    );
-    <span class="comment">// then: there are two visits associated to pikachu</span>
-    assertThat(db.countVisitsFor(pikachu)) <i class="conum" data-value="2"></i><b>(2)</b>
-        .isEqualTo(<span class="integer">2</span>);
-  }
+    <span class="annotation">@Test</span>
+    <span class="directive">public</span> <span class="type">void</span> createVisitForToday_createsANewVisit_forTheCorrectPet() { <i class="conum" data-value="1"></i><b>(1)</b>
+        <span class="comment">// given: there is one visit associated to pikachu</span>
+        assertThat(db.countVisitsFor(pikachu))
+            .isEqualTo(<span class="integer">1</span>);
+        <span class="comment">// when: logic is executed for the pikachus identification number</span>
+        visit = visitService.createVisitForToday(
+                pikachu.getIdentificationNumber()
+        );
+        <span class="comment">// then: there are two visits associated to pikachu</span>
+        assertThat(db.countVisitsFor(pikachu)) <i class="conum" data-value="2"></i><b>(2)</b>
+            .isEqualTo(<span class="integer">2</span>);
+    }
 }</code></pre>
 </div>
 </div>
@@ -819,18 +819,18 @@ The only thing that is relevant is that the amount should have been increased ex
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="type">class</span> <span class="class">VisitServiceTest</span> {
-  <span class="annotation">@Test</span>
-  <span class="directive">public</span> <span class="type">void</span> createVisitForToday_createsANewVisit_forTheCorrectPet() {
-    <span class="comment">// given: the amount of visits for pikachu is captured</span>
-    <span class="predefined-type">Long</span> visitAmountBefore = db.countVisitsFor(pikachu);
-    <span class="comment">// when: logic is executed for the pikachus identification number</span>
-    visit = visitService.createVisitForToday(
-            pikachu.getIdentificationNumber()
-    );
-    <span class="comment">// then: there is one more visit associated to pikachu</span>
-    assertThat(db.countVisitsFor(pikachu))
-        .isEqualTo(visitAmountBefore + <span class="integer">1</span>);
-  }
+    <span class="annotation">@Test</span>
+    <span class="directive">public</span> <span class="type">void</span> createVisitForToday_createsANewVisit_forTheCorrectPet() {
+        <span class="comment">// given: the amount of visits for pikachu is captured</span>
+        <span class="predefined-type">Long</span> visitAmountBefore = db.countVisitsFor(pikachu);
+        <span class="comment">// when: logic is executed for the pikachus identification number</span>
+        visit = visitService.createVisitForToday(
+                pikachu.getIdentificationNumber()
+        );
+        <span class="comment">// then: there is one more visit associated to pikachu</span>
+        assertThat(db.countVisitsFor(pikachu))
+            .isEqualTo(visitAmountBefore + <span class="integer">1</span>);
+    }
 }</code></pre>
 </div>
 </div>
@@ -900,49 +900,48 @@ containing the <a href="#test-utility-methods">[test-utility-methods]</a> called
 <div class="listingblock">
 <div class="title">DiseaseWarningMailingServiceTest.java</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@ExtendWith</span>(PetclinicTestContainer.Common.class)
-<span class="directive">public</span> <span class="type">class</span> <span class="class">DiseaseWarningMailingServiceTest</span> {
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">DiseaseWarningMailingServiceTest</span> {
 
-  <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> ALABASTIA = <span class="string"><span class="delimiter">&quot;</span><span class="content">Alabastia</span><span class="delimiter">&quot;</span></span>;
-  <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> ELECTRICAL_OVERCHARGING = <span class="string"><span class="delimiter">&quot;</span><span class="content">Electrical overcharging</span><span class="delimiter">&quot;</span></span>;
-<span class="comment">// ...</span>
-  <span class="directive">private</span> PetType electricType; <i class="conum" data-value="1"></i><b>(1)</b>
-  <span class="directive">private</span> <span class="predefined-type">List</span>&lt;Pet&gt; electricPetsFromAlabastia;
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> ALABASTIA = <span class="string"><span class="delimiter">&quot;</span><span class="content">Alabastia</span><span class="delimiter">&quot;</span></span>;
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> ELECTRICAL_OVERCHARGING = <span class="string"><span class="delimiter">&quot;</span><span class="content">Electrical overcharging</span><span class="delimiter">&quot;</span></span>;
+    <span class="comment">// ...</span>
+    <span class="directive">private</span> PetType electricType; <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="directive">private</span> <span class="predefined-type">List</span>&lt;Pet&gt; electricPetsFromAlabastia;
 
-  <span class="annotation">@BeforeEach</span>
-  <span class="directive">public</span> <span class="type">void</span> loadTestDataAndVerifyItsCorrectness() {  <i class="conum" data-value="2"></i><b>(2)</b>
-    <span class="comment">// given: there is an 'Electric' pet type</span>
-    electricType = db.petTypeWithName(<span class="string"><span class="delimiter">&quot;</span><span class="content">Electric</span><span class="delimiter">&quot;</span></span>);
+    <span class="annotation">@BeforeEach</span>
+    <span class="directive">public</span> <span class="type">void</span> loadTestDataAndVerifyItsCorrectness() {  <i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="comment">// given: there is an 'Electric' pet type</span>
+        electricType = db.petTypeWithName(<span class="string"><span class="delimiter">&quot;</span><span class="content">Electric</span><span class="delimiter">&quot;</span></span>);
 
-    assertThat(electricType)
-        .isNotNull();
+        assertThat(electricType)
+            .isNotNull();
 
-    <span class="comment">// and: there is exactly one electric pet from Alabastia</span>
-    electricPetsFromAlabastia = db.petsWithTypeFromCity(
-        electricType,
-        ALABASTIA,
-        <span class="string"><span class="delimiter">&quot;</span><span class="content">pet-with-owner-and-type</span><span class="delimiter">&quot;</span></span>
-    );
+        <span class="comment">// and: there is exactly one electric pet from Alabastia</span>
+        electricPetsFromAlabastia = db.petsWithTypeFromCity(
+            electricType,
+            ALABASTIA,
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">pet-with-owner-and-type</span><span class="delimiter">&quot;</span></span>
+        );
 
-    assertThat(electricPetsFromAlabastia)
-        .hasSize(<span class="integer">1</span>);
-  }
+        assertThat(electricPetsFromAlabastia)
+            .hasSize(<span class="integer">1</span>);
+    }
 
-<span class="comment">// different test cases...</span>
+    <span class="comment">// different test cases...</span>
 
-  <span class="directive">private</span> <span class="type">int</span> warnAboutElectricalOverchargingIn(<span class="predefined-type">String</span> city) { <i class="conum" data-value="3"></i><b>(3)</b>
-    <span class="keyword">return</span> diseaseWarningMailingService.warnAboutDisease(
-        electricType,
-        ELECTRICAL_OVERCHARGING,
-        city
-    );
-  }
+    <span class="directive">private</span> <span class="type">int</span> warnAboutElectricalOverchargingIn(<span class="predefined-type">String</span> city) { <i class="conum" data-value="3"></i><b>(3)</b>
+        <span class="keyword">return</span> diseaseWarningMailingService.warnAboutDisease(
+            electricType,
+            ELECTRICAL_OVERCHARGING,
+            city
+        );
+    }
 
-  <span class="annotation">@AfterEach</span>
-  <span class="directive">public</span> <span class="type">void</span> clearOutgoingEmails() { <i class="conum" data-value="4"></i><b>(4)</b>
-    db.outgoingEmails()
-        .forEach(db::removeEntity);
-  }
+    <span class="annotation">@AfterEach</span>
+    <span class="directive">public</span> <span class="type">void</span> clearOutgoingEmails() { <i class="conum" data-value="4"></i><b>(4)</b>
+        db.outgoingEmails()
+            .forEach(db::removeEntity);
+    }
 }</code></pre>
 </div>
 </div>
@@ -974,12 +973,12 @@ containing the <a href="#test-utility-methods">[test-utility-methods]</a> called
 <h4 id="state_verification_vs_behavior_verification"><a class="anchor" href="#state_verification_vs_behavior_verification"></a><a class="link" href="#state_verification_vs_behavior_verification">State Verification vs. Behavior Verification</a></h4>
 <div class="paragraph">
 <p>In the Case of the Email Sending, when you think about how it is possible to verify that a particular Email is correctly
-send out to a target Owner this is a little bit of a problematic area to verify. How can the test case assure that an Email was actually send out, because the test case itself is not directly involved in this interaction. Generally there are the following verification options:</p>
+send out to a target Owner this is a little bit of a problematic area to verify. How can the test case assure that an Email was actually send out, because the test case itself is not directly involved in this interaction. Mainly there are the following verification options:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>check for a received Email in a valid Email Account programmatically</p>
+<p>check for a received Email in a real existing valid Email Account programmatically</p>
 </li>
 <li>
 <p>emulate a SMTP server in a test case and verify that a particular message was received from the application</p>
@@ -990,7 +989,7 @@ send out to a target Owner this is a little bit of a problematic area to verify.
 </ol>
 </div>
 <div class="paragraph">
-<p>Those three different types of verification can be categorized either into a State verification or into a Behavior verification. A behavior verification looks at the two collaborators (can be classes, modules or even systems) and based on the fact that a particular interaction took place derives the conclusion that the verification is correct.
+<p>Those three different approaches to verify can be categorized either as a <code>State Verification</code> or a <code>Behavior Verification</code>. A behavior verification looks at the two collaborators (can be classes, modules or even systems) and based on the fact that a particular interaction took place derives the conclusion that the verification is correct.
 state verifications on the other hand do not look into how the system interacts with other collaborators, but instead look at the status after the execution happened and checks if the desired state is reached.</p>
 </div>
 <div class="paragraph">
@@ -1052,7 +1051,7 @@ state verifications on the other hand do not look into how the system interacts 
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-Try to avoid double-test functionality provided by a Framework because this is already trusted &amp; tested code <em>in integration tests</em>.
+Try to avoid double-test functionality provided by a Framework <em>in integration tests</em>. The reason is that it is already trusted &amp; tested code by the Framework itself.
 </td>
 </tr>
 </table>
@@ -1061,10 +1060,6 @@ Try to avoid double-test functionality provided by a Framework because this is a
 <p>Coming back to the test case at hand: Option <code>4.</code> looks most promising as it is a State verification that basically describes the contract the Petclinic application has with the <code>EmailerAPI</code>.</p>
 </div>
 </div>
-</div>
-<div class="sect2">
-<h3 id="next_regular_checkup_date_proposal"><a class="anchor" href="#next_regular_checkup_date_proposal"></a><a class="link" href="#next_regular_checkup_date_proposal">Next Regular Checkup Date Proposal</a></h3>
-
 </div>
 </div>
 </div>
@@ -1108,6 +1103,7 @@ Try to avoid double-test functionality provided by a Framework because this is a
 <ul class="sectlevel2">
 <li><a href="#final_application">Final Application</a></li>
 <li><a href="#requirements">Requirements</a></li>
+<li><a href="#additional_testing_dependencies">Additional Testing Dependencies</a></li>
 </ul>
 </li>
 <li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
@@ -1122,7 +1118,6 @@ Try to avoid double-test functionality provided by a Framework because this is a
 <ul class="sectlevel2">
 <li><a href="#automatic_visit_creation">Automatic Visit Creation</a></li>
 <li><a href="#disease_warning_mailing">Disease Warning Mailing</a></li>
-<li><a href="#next_regular_checkup_date_proposal">Next Regular Checkup Date Proposal</a></li>
 </ul>
 </li>
 <li><a href="#summary">Summary</a></li>
