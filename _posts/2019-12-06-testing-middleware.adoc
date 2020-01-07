@@ -99,9 +99,9 @@ An example usage of this Test Container looks like this:
 .SampleIntegrationTest.java
 [source,java]
 ----
-@ExtendWith(PetclinicTestContainer.Common.class) // <1>
 public class SampleIntegrationTest {
 
+    @RegisterExtension
     public static PetclinicTestContainer testContainer =
             PetclinicTestContainer.Common.INSTANCE; // <2>
 
@@ -159,36 +159,36 @@ the test cases.
 .VisitServiceTest.java
 [source,java]
 ----
-@ExtendWith(PetclinicTestContainer.Common.class)
 public class VisitServiceTest {
-  public static PetclinicTestContainer testContainer = PetclinicTestContainer.Common.INSTANCE;
-  private static VisitService visitService; // <1>
-  private static PetclinicVisitDb db;
+    @RegisterExtension
+    public static PetclinicTestContainer testContainer = PetclinicTestContainer.Common.INSTANCE;
+    private static VisitService visitService; // <1>
+    private static PetclinicVisitDb db;
 
-  private Visit visit;
-  private Pet pikachu;
+    private Visit visit;
+    private Pet pikachu;
 
-  @BeforeAll
-  public static void setupEnvironment() {
+    @BeforeAll
+    public static void setupEnvironment() {
     visitService = AppBeans.get(VisitService.class);
 
     db = new PetclinicVisitDb( // <2>
         AppBeans.get(DataManager.class),
         testContainer
     );
-  }
+    }
 
-  @BeforeEach
-  public void loadPikachu() { // <3>
+    @BeforeEach
+    public void loadPikachu() { // <3>
     pikachu = db.petWithName("Pikachu", "pet-with-owner-and-type");
-  }
+    }
 
-  // different test cases...
+    // different test cases...
 
-  @AfterEach
-  public void cleanupVisit() { // <4>
+    @AfterEach
+    public void cleanupVisit() { // <4>
     db.remove(visit);
-  }
+    }
 }
 ----
 <1> the `VisitService` is the system under test (SUT) in this test case
@@ -430,7 +430,6 @@ containing the <<test-utility-methods>> called https://github.com/cuba-guides/cu
 .DiseaseWarningMailingServiceTest.java
 [source,java]
 ----
-@ExtendWith(PetclinicTestContainer.Common.class)
 public class DiseaseWarningMailingServiceTest {
 
   private final String ALABASTIA = "Alabastia";
