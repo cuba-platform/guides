@@ -482,9 +482,9 @@ behavior of features that have been introduced in the <a href="https://www.cuba-
 <div class="sect2">
 <h3 id="automatic_visit_creation"><a class="anchor" href="#automatic_visit_creation"></a><a class="link" href="#automatic_visit_creation">Automatic Visit Creation</a></h3>
 <div class="paragraph">
-<p>The first test case is about the automatic visit creation functionality of the Petclinic application. In the Visit browse screen, the user
-can create a new visit by entering the Pet Identification Number as a quick action. The software will go ahead and create a visit for todays date for the entered Pet.</p>
+<p>The first test case is about the automatic visit creation functionality of the Petclinic application. In the Visit browse screen, the user can create a new visit by entering the Pet Identification Number as a quick action. The software will go ahead and create a visit for the entered Pet.</p>
 </div>
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-visit-for-pet.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-visit-for-pet.png"/></a>
 <div class="paragraph">
 <p>Part of the implementation of the feature is a CUBA service called <code>VisitService</code> that is triggered from the UI. It contains one method <code>Visit createVisitForToday(String identificationNumber)</code> that is the subject of the test case.</p>
 </div>
@@ -499,116 +499,6 @@ Although the feature includes a UI part, this will not be part of the automated 
 </td>
 </tr>
 </table>
-</div>
-<div class="sect3">
-<h4 id="test_class_setup"><a class="anchor" href="#test_class_setup"></a><a class="link" href="#test_class_setup">Test Class Setup</a></h4>
-<div class="paragraph">
-<p>In order to implement the defined test case, first let&#8217;s look at the integration test harness of the test case. It is based on the description of the <code>SampleIntegrationTest</code> from above. In this test there are some noteworthy additions to simplify the test cases.</p>
-</div>
-<div class="listingblock">
-<div class="title">VisitServiceTest.java</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VisitServiceTest</span> {
-    <span class="annotation">@RegisterExtension</span>
-    <span class="directive">public</span> <span class="directive">static</span> PetclinicTestContainer testContainer = PetclinicTestContainer.Common.INSTANCE;
-    <span class="directive">private</span> <span class="directive">static</span> VisitService visitService; <i class="conum" data-value="1"></i><b>(1)</b>
-    <span class="directive">private</span> <span class="directive">static</span> PetclinicVisitDb db;
-
-    <span class="directive">private</span> Visit visit;
-    <span class="directive">private</span> Pet pikachu;
-
-    <span class="annotation">@BeforeAll</span>
-    <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> setupEnvironment() {
-        visitService = AppBeans.get(VisitService.class);
-
-        db = <span class="keyword">new</span> PetclinicVisitDb( <i class="conum" data-value="2"></i><b>(2)</b>
-            AppBeans.get(DataManager.class),
-            testContainer
-        );
-    }
-
-    <span class="annotation">@BeforeEach</span>
-    <span class="directive">public</span> <span class="type">void</span> loadPikachu() { <i class="conum" data-value="3"></i><b>(3)</b>
-        pikachu = db.petWithName(<span class="string"><span class="delimiter">&quot;</span><span class="content">Pikachu</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">pet-with-owner-and-type</span><span class="delimiter">&quot;</span></span>);
-    }
-
-    <span class="comment">// different test cases...</span>
-
-    <span class="annotation">@AfterEach</span>
-    <span class="directive">public</span> <span class="type">void</span> cleanupVisit() { <i class="conum" data-value="4"></i><b>(4)</b>
-        db.remove(visit);
-    }
-}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>the <code>VisitService</code> is the system under test (SUT) in this test case</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>the <code>PetclinicVisitDb</code> variable acts as an abstraction for holding all relevant interactions with the database (setup test data, data verification)</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td><code>loadPikachu</code> is one example of a method that should be executed before each test case in this class</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>the <code>cleanupVisit</code> does the data cleanup in the DB after each test case</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>The JUnit Annotations <code>@BeforeEach</code> and <code>@AfterEach</code> are used in order to execute certain parts of the code before / after each test case.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="arrange_act_assert"><a class="anchor" href="#arrange_act_assert"></a><a class="link" href="#arrange_act_assert">Arrange Act Assert</a></h4>
-<div class="paragraph">
-<p>The general pattern of how the most test cases in this guide are defined is called <code>Arrange-Act-Assert</code>:</p>
-</div>
-<div class="paragraph">
-<p>First there is a phase of test data setup or verification of test data (<code>Arrange</code>). This is necessary to ensure the test case has a stable set of test data to start from. Next the implementation is exercised with the desired input parameters (<code>Act</code>). In the last phase, the verifications are executed to see if the code changed the system in the desired ways (<code>Assert</code>).</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="test_utility_methods"><a class="anchor" href="#test_utility_methods"></a><a class="link" href="#test_utility_methods">Test Utility Methods</a></h4>
-<div class="paragraph">
-<p>One important piece here is the class <code>PetclinicVisitDb</code> and its usage via the <code>db</code> variable.
-This class encapsulated Database interactions that is tailored towards the test class <code>VisitServiceTest</code>. It has the following API:</p>
-</div>
-<div class="listingblock">
-<div class="title">PetclinicVisitDb.java</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">PetclinicVisitDb</span> {
-
-  <span class="directive">public</span> Pet petWithName(<span class="predefined-type">String</span> name, <span class="predefined-type">String</span> view) { <span class="comment">/* ... */</span> }
-
-  <span class="directive">public</span> <span class="type">void</span> remove(<span class="predefined-type">Entity</span>&lt;<span class="predefined-type">UUID</span>&gt; entity) { <span class="comment">/* ... */</span> }
-
-  <span class="directive">public</span> Optional&lt;Pet&gt; petWithIdentificationNumber(
-          <span class="predefined-type">String</span> identificationNumber
-  ) { <span class="comment">/* ... */</span> }
-
-  <span class="directive">public</span> <span class="predefined-type">Long</span> countVisitsFor(Pet pet) { <span class="comment">/* ... */</span> }
-
-  <span class="directive">public</span> <span class="predefined-type">Long</span> countVisits() { <span class="comment">/* ... */</span> }
-
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Under the hood the class interacts with the <code>dataManager</code> and other various things in order to provide this specific
-API to the test cases. Also this class sits in the test sources, next to the test class. This class is a combination of
-an implementation of the <a href="http://xunitpatterns.com/Test%20Utility%20Method.html">Test Utility Method pattern</a> and the
- <a href="http://xunitpatterns.com/Back%20Door%20Manipulation.html">Back Door Manipulation Pattern</a>.</p>
-</div>
-<div class="paragraph">
-<p>It is not strictly necessary to put this logic into a dedicated class, but it oftentimes frees up the test classes from various helper methods or inline code that will increase the noise in the test case itself.</p>
-</div>
 </div>
 <div class="sect3">
 <h4 id="implementation_of_the_functionality"><a class="anchor" href="#implementation_of_the_functionality"></a><a class="link" href="#implementation_of_the_functionality">Implementation of the Functionality</a></h4>
@@ -707,9 +597,118 @@ an implementation of the <a href="http://xunitpatterns.com/Test%20Utility%20Meth
 </div>
 </div>
 <div class="sect3">
+<h4 id="test_class_setup"><a class="anchor" href="#test_class_setup"></a><a class="link" href="#test_class_setup">Test Class Setup</a></h4>
+<div class="paragraph">
+<p>In order to implement the defined test case, first let&#8217;s look at the integration test harness of the test case. It is based on the description of the <code>SampleIntegrationTest</code> from above. In this test there are some noteworthy additions to simplify the test cases.</p>
+</div>
+<div class="listingblock">
+<div class="title">VisitServiceTest.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VisitServiceTest</span> {
+    <span class="annotation">@RegisterExtension</span>
+    <span class="directive">public</span> <span class="directive">static</span> PetclinicTestContainer testContainer = PetclinicTestContainer.Common.INSTANCE;
+    <span class="directive">private</span> <span class="directive">static</span> VisitService visitService; <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="directive">private</span> <span class="directive">static</span> PetclinicVisitDb db;
+
+    <span class="directive">private</span> Visit visit;
+    <span class="directive">private</span> Pet pikachu;
+
+    <span class="annotation">@BeforeAll</span>
+    <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> setupEnvironment() {
+        visitService = AppBeans.get(VisitService.class);
+
+        db = <span class="keyword">new</span> PetclinicVisitDb( <i class="conum" data-value="2"></i><b>(2)</b>
+            AppBeans.get(DataManager.class),
+            testContainer
+        );
+    }
+
+    <span class="annotation">@BeforeEach</span>
+    <span class="directive">public</span> <span class="type">void</span> loadPikachu() { <i class="conum" data-value="3"></i><b>(3)</b>
+        pikachu = db.petWithName(<span class="string"><span class="delimiter">&quot;</span><span class="content">Pikachu</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">pet-with-owner-and-type</span><span class="delimiter">&quot;</span></span>);
+    }
+
+    <span class="comment">// different test cases...</span>
+
+    <span class="annotation">@AfterEach</span>
+    <span class="directive">public</span> <span class="type">void</span> cleanupVisit() { <i class="conum" data-value="4"></i><b>(4)</b>
+        db.remove(visit);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the <code>VisitService</code> is the system under test (SUT) in this test case</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the <code>PetclinicVisitDb</code> class acts as a container for all relevant interactions with the database like test data and verification</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td><code>loadPikachu</code> is one example of a method that should be executed before each test case in this class</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>the <code>cleanupVisit</code> does the data cleanup in the DB after each test case execution</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The JUnit Annotations <code>@BeforeEach</code> and <code>@AfterEach</code> are used in order to execute certain parts of the code before / after each test case.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="test_utility_methods"><a class="anchor" href="#test_utility_methods"></a><a class="link" href="#test_utility_methods">Test Utility Methods</a></h4>
+<div class="paragraph">
+<p>One important piece here is the class <code>PetclinicVisitDb</code> and its usage via the <code>db</code> variable.
+This class encapsulated Database interactions that is tailored towards the test class <code>VisitServiceTest</code>. It has the following API:</p>
+</div>
+<div class="listingblock">
+<div class="title">PetclinicVisitDb.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">PetclinicVisitDb</span> {
+
+  <span class="directive">public</span> Pet petWithName(<span class="predefined-type">String</span> name, <span class="predefined-type">String</span> view) { <span class="comment">/* ... */</span> }
+
+  <span class="directive">public</span> <span class="type">void</span> remove(<span class="predefined-type">Entity</span>&lt;<span class="predefined-type">UUID</span>&gt; entity) { <span class="comment">/* ... */</span> }
+
+  <span class="directive">public</span> Optional&lt;Pet&gt; petWithIdentificationNumber(
+          <span class="predefined-type">String</span> identificationNumber
+  ) { <span class="comment">/* ... */</span> }
+
+  <span class="directive">public</span> <span class="predefined-type">Long</span> countVisitsFor(Pet pet) { <span class="comment">/* ... */</span> }
+
+  <span class="directive">public</span> <span class="predefined-type">Long</span> countVisits() { <span class="comment">/* ... */</span> }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Under the hood the class interacts with the <code>dataManager</code> and other various things in order to provide this specific
+API to the test cases. This class is a combination of an implementation of the <a href="http://xunitpatterns.com/Test%20Utility%20Method.html">Test Utility Method pattern</a> and the
+ <a href="http://xunitpatterns.com/Back%20Door%20Manipulation.html">Back Door Manipulation Pattern</a>.</p>
+</div>
+<div class="paragraph">
+<p>It is not strictly necessary to put this logic into a dedicated class, but it oftentimes frees up the test classes from various helper methods or inline code that will increase the noise in the test case itself (as you will see in the first test case).</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="arrange_act_assert"><a class="anchor" href="#arrange_act_assert"></a><a class="link" href="#arrange_act_assert">Arrange Act Assert</a></h4>
+<div class="paragraph">
+<p>The general pattern of how the most test cases in this guide are defined is called <code>Arrange-Act-Assert</code>:</p>
+</div>
+<div class="paragraph">
+<p>First there is a phase of test data setup or verification of test data (<code>Arrange</code>). This is necessary to ensure the test case has a stable set of test data to start from. Next the implementation is exercised with the desired input parameters (<code>Act</code>). In the last phase, the verifications are executed to see if the code changed the system in the desired ways (<code>Assert</code>).</p>
+</div>
+</div>
+<div class="sect3">
 <h4 id="first_test_case"><a class="anchor" href="#first_test_case"></a><a class="link" href="#first_test_case">First Test Case</a></h4>
 <div class="paragraph">
-<p>Based on that description it is possible to identify a couple of test cases, that describe the above mentioned behavior:</p>
+<p>Based on the implementation description it is possible to identify a couple of test cases, that describe the above mentioned behavior:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -745,7 +744,7 @@ an implementation of the <a href="http://xunitpatterns.com/Test%20Utility%20Meth
         <span class="comment">// given: there is one visit associated to pikachu</span>
         assertThat(db.countVisitsFor(pikachu))
             .isEqualTo(<span class="integer">1</span>);
-        <span class="comment">// when: logic is executed for the pikachus identification number</span>
+        <span class="comment">// when: logic is executed for pikachus identification number</span>
         visit = visitService.createVisitForToday(
                 pikachu.getIdentificationNumber()
         );
@@ -782,12 +781,15 @@ the correct Pet entity (<code>1.a</code>).</p>
 assertion we do another DB lookup of visits by the foreign key to the pikachu Pet instance and verify the amount was
 increased exactly by one.</p>
 </div>
+<div class="paragraph">
+<p>The <code>assertThat</code> statement compares the two values <code>db.countVisitsFor(pikachu)</code> and <code>2</code>. If the are the same, the test is treated as success, otherwise it is treated as failure.</p>
+</div>
 </div>
 <div class="sect3">
 <h4 id="database_seed_data"><a class="anchor" href="#database_seed_data"></a><a class="link" href="#database_seed_data">Database Seed Data</a></h4>
 <div class="paragraph">
 <p>One thing to note here is that there is already data in the database. Not only Pets like <code>Pikachu</code> are already stored,
-but furthermore Visit information are already stored. This is due to the fact that in the Petclinic application
+but furthermore Visit information are stored as well. This is due to the fact that in the Petclinic application
 the <code>30.create-db.sql</code> file contains seed data that is used for demonstration purposes.
 This has some upsides as well as downsides when it comes to test automation.</p>
 </div>
@@ -799,19 +801,19 @@ before any test case can be executed. This make the test creation easier and fas
 <div class="paragraph">
 <p>On the other side, relying on test data that is defined outside the test case also comes with a maintenance cost.
 It generally makes the test cases less resilient to changes of that test data. Since this is central test data
-that all test cases share (as well as the running application), this situation can be even worse.</p>
+that all test cases share (as well as the running application), this situation can be even worse. Also is makes the test a little more obscure, since it is hard to see those implicit assumptions about certain data being available.</p>
 </div>
 <div class="paragraph">
 <p>To mitigate that situation the first test case contains the precondition assertion:
 <code>assertThat(db.countVisitsFor(pikachu)).isEqualTo(1);</code>. It ensures that the test data setup is what the test expect
 in order to function correctly. In case this precondition is not given, the test will fail immediately pointing
 to that problem. Without this precondition a downstream error would have occurred and it would be harder to determine
-the root cause of the failing test case.</p>
+the root cause of the failing test case. Besides the test case, it also helps the reader of the test case to understand the test case better.</p>
 </div>
 <div class="paragraph">
-<p>It is also possible to improve the situation even further but still stay with central test data setup.
+<p>It is possible to improve the situation even further but still stay with central seed data setup.
 In fact for the the test case it is irrelevant of there are 1, 2 or 85 visits in the database for the pet.
-The only thing that is relevant is that the amount should have been increased exactly by one.</p>
+The only thing that is relevant is that the amount should have been <em>increased exactly by one</em> after the execution.</p>
 </div>
 <div class="paragraph">
 <p>To make the test more independent on the amount of <code>Visit</code> data, the test can capture the amount before the execution like this:</p>
@@ -835,7 +837,7 @@ The only thing that is relevant is that the amount should have been increased ex
 </div>
 </div>
 <div class="paragraph">
-<p>With that change the test will always pass independent on how many visits for pikachu are inserted by the environment.</p>
+<p>With that change the test will be more resilient pass independent on how many visits for pikachu are inserted by the environment. This variant is an implementation of the <a href="http://xunitpatterns.com/Delta%20Assertion.html">Delta Assertion Pattern</a>.</p>
 </div>
 </div>
 <div class="sect3">
