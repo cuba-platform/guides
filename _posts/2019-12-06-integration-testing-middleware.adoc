@@ -2,7 +2,7 @@
 compatible_cuba_versions: 7.0+
 compatible_java_versions: 8+
 project_id: cuba-petclinic-testing-middleware
-permalink: testing-middleware
+permalink: integration-testing-middleware
 ---
 = Middleware Integration Testing in CUBA Applications
 :showtitle:
