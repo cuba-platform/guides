@@ -154,10 +154,28 @@ But there are also downsides or limitation when using unit tests. This whole top
 
 == Tests for Petclinic Functionality
 
-In the next section you will learn how to put all this theory into action by implementing integration test cases, that verify the correct
-behavior of features that have been introduced in the https://www.cuba-platform.com/guides/intro-working-with-data-in-cuba[Working with Data in CUBA] guide.
+In the next section you will learn how to put all this theory into action by implementing integration test cases, that verify the correct behavior of features that have been introduced in the https://www.cuba-platform.com/guides/intro-working-with-data-in-cuba[Working with Data in CUBA] guide.
+
+
+=== Working with JUnit Tests in CUBA Studio
+
+The test cases in the Petclinic example can be executed by either Gradle or directly within CUBA Studio via its UI.
+
+The corresponding gradle task is: `./gradlew test` (Linux, Mac) or `gradlew.bat test` (Windows)
+
+In order to see test cases in the File list of the project, you need to switch from `CUBA` to `Project` in the Project Tool Window.
+
+image::integration-testing-middleware/studio-intellij-switch-project-view.png[align="center"]
+
+
+The test execution via CUBA Studio is done through creating a run configuration for the test case and executing that run configuration. A test case or class can either be executed by the shortcut `CRTL+F5` (Windows) / `CMD+R` (Mac) or alternatively by using the Run icon on the test case / test class:
+
+image::integration-testing-middleware/running-test-via-cuba-studio.png[align="center"]
+
+CUBA Studio leverages the standard IntelliJ IDEA capabilities around testing and test execution. More information can be found on the https://www.jetbrains.com/help/idea/performing-tests.html[IDEA documentation].
 
 === Automatic Visit Creation
+
 
 The first test case is about the automatic visit creation functionality of the Petclinic application. In the Visit browse screen, the user can create a new visit by entering the Pet Identification Number as a quick action. The software will go ahead and create a visit for the entered Pet.
 
@@ -376,7 +394,7 @@ On the other side, relying on test data that is defined outside the test case al
 It generally makes the test cases less resilient to changes of that test data. Since this is central test data
 that all test cases share (as well as the running application), this situation can be even worse. Also is makes the test a little more obscure, since it is hard to see those implicit assumptions about certain data being available.
 
-To mitigate that situation the first test case contains the precondition assertion:
+To mitigate that situation the first test case contains a http://xunitpatterns.com/Guard%20Assertion.html[Guard Assertion]:
 `assertThat(db.countVisitsFor(pikachu)).isEqualTo(1);`. It ensures that the test data setup is what the test expect
 in order to function correctly. In case this precondition is not given, the test will fail immediately pointing
 to that problem. Without this precondition a downstream error would have occurred and it would be harder to determine
@@ -434,7 +452,7 @@ For sending out the Emails, the standard functionality from CUBA for sending out
 ==== Test Class Setup
 
 The setup of the test cases will be very similar to the test class shown before. Next to the test case, there is a class
-containing the <<test-utility-methods>> called https://github.com/cuba-guides/cuba-petclinic-testing-middleware/blob/master/modules/core/test/com/haulmont/sample/petclinic/service/mailing/PetclinicMailingDb.java[PetclinicMailingDb].
+containing the Test Utility Methods called https://github.com/cuba-guides/cuba-petclinic-testing-middleware/blob/master/modules/core/test/com/haulmont/sample/petclinic/service/mailing/PetclinicMailingDb.java[PetclinicMailingDb]. Additionally in this case certain test data is loaded from the DB at the beginning of each test. It also contains Guard Assertions that this data is really present (as you have seen before).
 
 .DiseaseWarningMailingServiceTest.java
 [source,java]
@@ -504,13 +522,13 @@ state verifications on the other hand do not look into how the system interacts 
 
 In this regard `1.` is a State verification, where `2.` and `3.` are different kinds of behavior verifications.
 
-==== Testing CUBAs Email Functionality
+==== Verification Approach for CUBAs Email Functionality
 
 The `EmailerAPI` has a special method `List<SendingMessage> sendEmailAsync(EmailInfo info);` that is used in the implementation. How in particular this `async` part is handled is, that the API call stores the `EmailInfo` object into a CUBA database Table called `EmailSending` with a particular `SendingStatus`: `QUEUE`. Then an scheduled task is periodically run and will pick up those Emails and tries to send them out. As this happens independently of the thread that executed `emailerAPI.sendEmailAsync(emailInfo)` this process is asynchronous.
 
-This knowledge allows uncovers a forth option of verification:
+This knowledge allows to uncover a forth option of verification:
 
-TIP: 4. Verify rows to appear in the `EmailSending` CUBA table that is used by the `EmailerAPI` to store outgoing Emails
+TIP: 4. Verify database rows to appear in the `EmailSending` CUBA database table that is used by the `EmailerAPI` which represent outgoing Email requests for CUBAs Email functionality.
 
 This option is also a state verification. Generally it is preferable to use State verification as those verifications tend to be more robust and therefore normally increase the maintenance costs of a test case less compared to a behavior verification.
 
@@ -528,11 +546,150 @@ TIP: Try to avoid double-test functionality provided by a Framework _in integrat
 
 Coming back to the test case at hand: Option `4.` looks most promising as it is a State verification that basically describes the contract the Petclinic application has with the `EmailerAPI`.
 
+==== Different Test Cases
+
+Next we will go through the different concrete test cases for the `DiseaseWarningMailingService`.
+
+The following test cases can be identified:
+
+* `warnAboutDisease_createsAnEmail_forEachEffectedPet`
++
+checks that the amount of Emails are correct passed to the `EmailerAPI` (happy path)
+* `warnAboutDisease_createsNoEmails_forACityWithoutOwners`
++
+verifies the a negative code path, where there are no Owners located in a particular City to notify
+* `warnAboutDisease_createsAnEmail_withTheRightEmailInformation`
++
+checks the details about the Email that is supposed to be send out matches the Owners information
+* `warnAboutDisease_createsNoEmail_whenTheOwnerDoesNotHaveAnEmailAddress`
++
+checks that Pets with Owners that have not provided Email addresses are filtered out before sending Emails
+
+
+Let's look at the first test case which identifies the right amount of Emails are send out:
+
+.DiseaseWarningMailingServiceTest.java
+[source,java]
+----
+public class DiseaseWarningMailingServiceTest {
+    // ...
+    @Test
+    public void warnAboutDisease_createsAnEmail_forEachEffectedPet() {
+        // given: there is only one electric pet from Alabastia
+        assertThat(electricPetsFromAlabastia)
+            .hasSize(1); // <1>
+        // when: a warning is send out for Alabastia
+        int effectedPets = warnAboutElectricalOverchargingIn(ALABASTIA);  // <2>
+        // then: the amount of effected Pets match the expected amount of one
+        assertThat(effectedPets)
+            .isEqualTo(1);
+        // and: there is one outgoing Email for CUBAs Email Sending Functionality
+        assertThat(db.outgoingEmails())
+            .hasSize(1);  // <4>
+    }
+    // ...
+}
+----
+<1> another guard assertion to check that there is one matching Pet for `Alabastia`
+<2> execution of the SUT for `Alabastia`
+
+
+The second test case is the direct opposite of the first one. For a city which does not contain any
+pets, no Emails should be send out:
+
+.DiseaseWarningMailingServiceTest.java
+[source,java]
+----
+public class DiseaseWarningMailingServiceTest {
+    // ...
+    @Test
+    public void warnAboutDisease_createsNoEmails_forACityWithoutOwners() {
+
+        // given: there is no owner in the Cerulean City
+        assertThat(db.ownersFromCity("Cerulean City")) // <1>
+            .isEmpty();
+        // when: a warning is send out for Cerulean City
+        int effectedPets = warnAboutElectricalOverchargingIn("Cerulean City");
+        // then: no Pet should be effected
+        assertThat(effectedPets)
+            .isEqualTo(0);
+        // and: no outgoing Email should be stored in the DB
+        assertThat(db.outgoingEmails())
+            .hasSize(0);
+    }
+    // ...
+}
+----
+<1> guard verification to check for `Cerulean City` no Pets are in the DB
+
+The last test case that is discussed here is the test case `warnAboutDisease_createsNoEmail_whenTheOwnerDoesNotHaveAnEmailAddress` as it is different to the remaining test cases.
+This test case leverages a feature of https://junit.org/junit5/docs/current/user-guide/#writing-tests-nested[Nested Tests]. It allows to group certain test cases within a test class and gives them a shared context. In this case it is used to create and cleanup certain test data (additional Owner and Pet) that matches the search criteria of `Alabastia` around each test case within this nested class.
+
+.DiseaseWarningMailingServiceTest.java
+[source,java]
+----
+public class DiseaseWarningMailingServiceTest {
+    // ...
+  @Nested
+  class WarnAboutDiseaseWithAdditionalElectricPetAndOwner { // <1>
+
+        private Owner falkner; // <2>
+        private Pet zapdos;
+
+        @BeforeEach
+        void createAdditionalElectricPetAndOwner() {
+            // given: there is a second owner in Alabastia with an electric pet without an Email Address
+            falkner = db.createOwner("Falkner", null, "Miastreet 234", ALABASTIA);
+            zapdos = db.createPet("123", "Zapdos", electricType, falkner);
+        }
+
+        @Test
+        public void warnAboutDisease_createsNoEmail_whenTheOwnerDoesNotHaveAnEmailAddress() {
+
+        // given: there is two pets with type 'electric' from Alabastia
+        List<Pet> electricPetsFromAlabastia =
+            db.petsWithTypeFromCity(electricType, ALABASTIA);
+        assertThat(electricPetsFromAlabastia)
+            .hasSize(2);
+        // when: a warning is send out for Alabastia
+        int effectedPets = warnAboutElectricalOverchargingIn(ALABASTIA);
+        // then: only one email was send out for the pet with an owner that has an email
+        assertThat(effectedPets)
+              .isEqualTo(1);
+        assertThat(db.outgoingEmails())
+              .hasSize(1);
+        }
+
+        @AfterEach
+        void removeAdditionalElectricPetAndOwner() { // <3>
+            db.removeEntity(zapdos);
+            db.removeEntity(falkner);
+        }
+    }
+    // ...
+}
+----
+<1> guard verification to check for `Cerulean City` no Pets are in the DB
+<2> `falkner` and `zapdos` is http://xunitpatterns.com/Fresh%20Fixture.html[Fresh Fixture] test data that is only available in the inner `@Nested` class
+<3> cleanup of the fixture is executed after each test case within the `@Nested` class
+
+The remaining test cases of this functionality can be found in the corresponding test class https://github.com/cuba-guides/cuba-petclinic-testing-middleware/blob/master/modules/core/test/com/haulmont/sample/petclinic/service/mailing/DiseaseWarningMailingServiceTest.java[DiseaseWarningMailingServiceTest.java]
 
 == Summary
+
+A lot of introductions and concepts were covered in this guide. To summarize, let's recap the main points here.
+
+This guide started out with a general overview on test automation. Benefits of test automation were briefly mentioned and the general setup of a automated test was described in the Java ecosystem. Afterwards the different test environment categories `unit test` and `integration test` was introduced. You also learned about some CUBA specifics like the CUBA middleware testing, how the Database connection is established in the tests as well as the concept of the Test Container.
+
+Then the guide focused on two examples within the Petclinic example application.
+
+In the automatic creation of a Visit for a given Pet Identification Number the test class setup was shown. It also contains the explanation of the Test Utility Methods and how the are expressed in the test cases of this guide. By showing a concrete test case the `Arrange-Act-Assert` pattern was explained on how the test cases are laid out. The example also contained a explanation of test / seed data setup and the benefits and drawbacks of the shared fixture test data that is used in the guide.
+
+The automatic "Disease Warning Mailing" for endangered Pets example showed another example that introduced the problem of testing dependencies in the form of the `EmailerAPI` that is used in the Implementation. Different approaches were discussed and categorized into `State Verification` and `Behavior Verification`. The example test case used a state verification variant to check that the Email functionality is behaving as expected.
 
 
 == Further Information
 
-* https://doc.cuba-platform.com/reporting-7.0/index.html[CUBA docs: Reporting]
-* https://doc.cuba-platform.com/reporting-7.1/open_office.html[CUBA docs: Reporting - Appendix A: Installing and Configuring OpenOffice]
+* https://doc.cuba-platform.com/manual-latest/integration_tests_mw.html[CUBA docs: Middleware Integration Testing]
+* https://junit.org/junit5/docs/current/user-guide[JUnit 5 User Guide]
+* https://assertj.github.io/doc/[AssertJ Documentation]
