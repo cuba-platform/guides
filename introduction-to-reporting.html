@@ -13,12 +13,12 @@
     <meta name="twitter:site" content="@CubaPlatform">
     <meta name="twitter:creator" content="@CubaPlatform">
     <meta name="twitter:title" content="Introduction to Reporting and Document generation">
-    <meta name="twitter:description" content="In this guide the Reporting add-on will be introduced and different ways to interact with it through the UI and programmatically will be shown">
+    <meta name="twitter:description" content="In this guide, we introduce the Reporting add-on and ways to interact with it through the UI and programmatically">
     <meta name="twitter:image" content="https://www.cuba-platform.com/guides/images/intro-to-reports/excel-document-template-example.png">
 
     <meta property="og:type" content="article">
     <meta property="og:title" content="Introduction to Reporting and Document generation">
-    <meta property="og:description" content="In this guide the Reporting add-on will be introduced and different ways to interact with it through the UI and programmatically will be shown">
+    <meta property="og:description" content="In this guide, we introduce the Reporting add-on and ways to interact with it through the UI and programmatically">
     <meta property="og:url" content="https://www.cuba-platform.com/guides/introduction-to-reporting">
     <meta property="og:image" content="https://www.cuba-platform.com/guides/images/intro-to-reports/excel-document-template-example.png">
 
@@ -186,10 +186,10 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>CUBA applications can be enhanced to have a comprehensive report / document generation capability directly embedded into the application. The CUBA add-on <code>Reporting</code> supports various file formats like <code>DOCX</code>, <code>XLSX</code>, <code>PDF</code>, <code>HTML</code> for templating as well as output file formats. Furthermore, it contains management screens and provides APIs to interact with the report / document generation process programmatically.</p>
+<p>It is easy to enhance CUBA applications with a directly embedded comprehensive report / document generation capability. The CUBA <code>Reporting</code> add-on supports various file formats like <code>DOCX</code>, <code>XLSX</code>, <code>PDF</code>, <code>HTML</code> for templating as well as output file formats. Furthermore, it has management screens and provides APIs to interact with the report / document generation process programmatically.</p>
 </div>
 <div class="paragraph">
-<p>In this guide the <code>Reporting</code> add-on will be introduced and different ways to interact with it through the UI and programmatically will be shown.</p>
+<p>In this guide we&#8217;ll tell you about the <code>Reporting</code> add-on and how to interact with it through the UI and programmatically.</p>
 </div>
 </div>
 </div>
@@ -197,15 +197,15 @@
 <h2 id="what_will_be_built"><a class="anchor" href="#what_will_be_built"></a><a class="link" href="#what_will_be_built">What Will be Built</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a> example to show how reporting capabilities can be embedded into the application:</p>
+<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a> example to show how to embed the reporting capabilities into the application:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>a <code>patient-record</code> word document containing all relevant information (master data, visit data) for a given pet can be downloaded through the details screen of the pet.</p>
+<p>an ability to download a <code>patient-record</code> word document with all relevant information (master data, visit data) for a given pet through the details screen of the pet.</p>
 </li>
 <li>
-<p>a <code>recent-visits</code> report can be downloaded from the visit browse screen. The report contains visits of the last month, exported as an excel sheet with information about the visit, the referenced pet and its owner.</p>
+<p>a <code>recent-visits</code> report downloaded from the visit browse screen. The report contains visits of the last month, exported as an excel sheet with information about the visit, the referenced pet and its owner.</p>
 </li>
 </ul>
 </div>
@@ -267,7 +267,7 @@
 <h2 id="overview"><a class="anchor" href="#overview"></a><a class="link" href="#overview">Overview</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Oftentimes when working with business applications there is a high demand for document generation, that will take some information from the source application and bring it in the form of a commonly known format, so that it can be shared with other parties like customers, partners or other systems.</p>
+<p>Oftentimes when working with business applications there is a high demand for document generation, that will take some information from the source application and bring it in the form of a commonly known format, so that you can share it with other parties like customers, partners or other systems.</p>
 </div>
 <div class="paragraph">
 <p>These documents might either have the form of human consumable content like a PDF file or are  used more as input data for further use like a CSV / Excel file or a Word document.</p>
@@ -303,7 +303,7 @@
 </ul>
 </div>
 <div class="paragraph">
-<p>All of those requirements are the part of what the <code>Reporting</code> add-on is capable of handling. In the next section the overall concepts are covered and afterwards use cases are implemented.</p>
+<p>The <code>Reporting</code> add-on can handle all of those requirements and more. In the next section we&#8217;ll cover the overall concepts and describe how the use cases are implemented.</p>
 </div>
 </div>
 </div>
@@ -312,7 +312,7 @@
 <h2 id="templates_data_document"><a class="anchor" href="#templates_data_document"></a><a class="link" href="#templates_data_document">Templates + Data = Document</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The underpinning of this whole solution is based on on the combination of document templates with data, that are merged in order to create the resulting document / report.</p>
+<p>The underpinning of this whole solution is based on the combination of document templates with data, that are merged to create the resulting document / report.</p>
 </div>
 <div class="sect2">
 <h3 id="the_document_template"><a class="anchor" href="#the_document_template"></a><a class="link" href="#the_document_template">The Document Template</a></h3>
@@ -323,7 +323,7 @@
 <p>Those placeholders can be inserted as regular text into the template file, but they need a special character to indicate that this text is a placeholder. A placeholder is defined in the following way: <code>${NAME_OF_PLACEHOLDER}</code></p>
 </div>
 <div class="paragraph">
-<p>An example of a document template can be seen below. This example is an excel sheet, that is used later in this guide:</p>
+<p>Below you can see an example of a document template. It&#8217;s an Excel sheet, which will be used further in this guide:</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -334,7 +334,7 @@
 <p>The template contains regular text as well as the placeholders for different columns in a table like <code>${pet.name}</code> or <code>${pet.identificationNumber}</code>.</p>
 </div>
 <div class="paragraph">
-<p>Furthermore, it is possible to style and adjust the document template in any desired ways. For Word and Excel documents all the possible formatting options of those programs are able to be applied to the template file. For HTML documents the complete capabilities of CSS can be used for applying styles to the target document.</p>
+<p>Furthermore, you can style and adjust the document template in any desired way. For Word and Excel documents you can apply all the possible formatting options of those programs. For HTML documents you can use the complete capabilities of CSS for styling the target document.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -352,7 +352,7 @@ The template file format is not necessarily the file format of the output docume
 <div class="sect2">
 <h3 id="data_sources"><a class="anchor" href="#data_sources"></a><a class="link" href="#data_sources">Data Sources</a></h3>
 <div class="paragraph">
-<p>The data that is used for the report can be of various sources. Within a CUBA application fetching the data directly from the entity layer of the application is the most convenient variant. However, the <code>Reporting</code> add-on is not bound to this particular data source. It can use one of the following data sources:</p>
+<p>The data used for the report can be of various sources. Within a CUBA application fetching the data directly from the entity layer of the application is the most convenient variant. However, the <code>Reporting</code> add-on is not bound to this particular data source. It can use one of the following data sources:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -371,7 +371,7 @@ The template file format is not necessarily the file format of the output docume
 </ul>
 </div>
 <div class="paragraph">
-<p>These various sources provide a high degree of flexibility when it comes to fetch data and provide it to the template file. It is also possible to define multiple data sources and combine all the data in the template.</p>
+<p>These various sources provide a high degree of flexibility when it comes to fetch data and provide it to the template file. You can also define multiple data sources and combine all the data in the template.</p>
 </div>
 </div>
 </div>
@@ -380,7 +380,7 @@ The template file format is not necessarily the file format of the output docume
 <h2 id="report_configuration"><a class="anchor" href="#report_configuration"></a><a class="link" href="#report_configuration">Report Configuration</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Once the data sources are defined and connected through a concept called Bands to particular template placeholders, everything is setup to generate the output document. The add-on stores all this configuration in the <code>Report</code> entity which holds the configuration of the data sources together with the definition of the templates and further configuration information.</p>
+<p>Once the data sources are defined and connected to particular template placeholders through a concept called Bands, everything is setup to generate the output document. The add-on stores all this configuration in the <code>Report</code> entity which holds the configuration of the data sources and the definition of the templates and further configuration information.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -388,19 +388,19 @@ The template file format is not necessarily the file format of the output docume
 </div>
 </div>
 <div class="paragraph">
-<p>There are two main ways of creating those report records.</p>
+<p>There are two main ways to create those report records.</p>
 </div>
 <div class="paragraph">
-<p>The first one is to create an instance manually and define the data sources together with the associated JPQL / SQL queries / groovy scripts.</p>
+<p>The first one is to create a report manually and define the data sources with the associated JPQL / SQL queries / Groovy scripts.</p>
 </div>
 <div class="paragraph">
-<p>This is oftentimes needed when more complex reports should be defined which requires skills to create SQL / JPQL statements or even programming abilities through groovy scripts. This option
-is mostly for administrators that have a deep technical understanding of the inner processes of the application. It furthermore requires knowledge about its domain model and an understanding of the technical concepts of the Reporting add-on like report bands, report parameters etc.</p>
+<p>This is usually necessary for defining complex reports and requires skills to create SQL / JPQL statements or program Groovy scripts. This option
+is mostly for administrators that have a deep technical understanding of the inner application processes and domain model, as well as understanding of the Reporting add-on technical concepts like report bands, report parameters etc.</p>
 </div>
 <div class="sect2">
 <h3 id="the_report_wizard"><a class="anchor" href="#the_report_wizard"></a><a class="link" href="#the_report_wizard">The Report Wizard</a></h3>
 <div class="paragraph">
-<p>The second option is to use the report UI wizard that guides the user through the selection of various options. It includes the ability to define the conditions for entities to be selected for the report, the attributes that should be included. Furthermore, it generates a base template which already contains the selected attributes as placeholders.</p>
+<p>The second option is to use the report UI wizard that guides a user through various options. It includes the ability to define the conditions for entities to be selected for the report, the attributes that should be included. Furthermore, it generates a base template which already contains the selected attributes as placeholders.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -418,22 +418,22 @@ is mostly for administrators that have a deep technical understanding of the inn
 </div>
 </div>
 <div class="paragraph">
-<p>This variant is more targeted towards business users, since it hides away the technical details of e.g. the query definition behind a user-friendly configuration UI. For easier reports, this wizard can serve as the main UI for creating reports by business users directly.</p>
+<p>This variant is mostly for business users, since it hides away the technical details of things like the query definition behind a user-friendly configuration UI. For easier reports, this wizard can serve as the main UI for creating reports by business users directly.</p>
 </div>
 <div class="paragraph">
-<p>With the feature of generating a document template that contains the correct placeholders of the selected attributes is allows business users to change only the formatting of the output document. This template formatting normally happens in the application that they are already familiar with like Word or Excel. The main difference is that this opens up possibilities for non-technical people to work with reports without the need of any developer interaction.</p>
+<p>Generating a document template with the correct placeholders of the selected attributes allows business users to change only formatting of the output document. The template formatting is normally performed in the application that they are already familiar with like Word or Excel. The main difference is that this opens up possibilities for non-technical people to work with reports with no need of any developer help.</p>
 </div>
 <div class="paragraph">
-<p>That being said, also, for tech-savvy people it is oftentimes the fastest way to create a report or at least a starting point for manual adjustments.</p>
+<p>With that, for tech-savvy people it is usually the fastest way to create a report or at least a starting point for manual adjustments.</p>
 </div>
 <div class="paragraph">
-<p>One constraint for the report wizard is that it is tied to generating reports / documents based on the CUBA entity layer. Groovy / SQL based reports cannot <em>directly</em> be created through the wizard. However, it is possible to use the wizard report as a first step and then adjust the resulting reports bands accordingly through the regular management screen.</p>
+<p>One constraint for the report wizard is that it is tied to generating reports / documents based on the CUBA entity layer. You can&#8217;t  <em>directly</em> create Groovy / SQL based reports through the wizard. However, it is possible to use the wizard report as a first step and then adjust the resulting reports bands accordingly through the regular management screen.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="external_parameters"><a class="anchor" href="#external_parameters"></a><a class="link" href="#external_parameters">External Parameters</a></h3>
 <div class="paragraph">
-<p>A Report configuration can declare external parameters that need to be provided by the person or application code that interacts with the report. Those parameters are mainly used for the data fetching parts. In the JPQL / SQL statements as well as the groovy based data bands, those parameters are passed in to dynamically inject the values into the query / the groovy script.</p>
+<p>A Report configuration can declare external parameters that are provided by the person or application code interacting with the report. Those parameters are mainly used for the data fetching parts. In the JPQL / SQL statements as well as the groovy based data bands, those parameters are passed in to dynamically inject the values into the query / the groovy script.</p>
 </div>
 <div class="paragraph">
 <p>The configuration of the external parameters in the Reports configuration screen looks like this:</p>
@@ -444,7 +444,7 @@ is mostly for administrators that have a deep technical understanding of the inn
 </div>
 </div>
 <div class="paragraph">
-<p>When external parameters are defined, the values can be entered in two ways. The first way is to expose these parameters as a form in the generic UI. It will appear at the point when the report is executed through the generic Reports execution UI. An example of such a UI can be seen here:</p>
+<p>When external parameters are defined, the values can be entered in two ways. The first way is to expose these parameters as a form in the generic UI. It will appear at the report execution time through the generic Reports execution UI. Here is an example of such a UI:</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -458,7 +458,7 @@ is mostly for administrators that have a deep technical understanding of the inn
 <h2 id="patient_record"><a class="anchor" href="#patient_record"></a><a class="link" href="#patient_record">Patient Record</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The first report that should be generated is a patient record for a given pet. It contains an overview of the pet&#8217;s master data as well as visit data form that pet.</p>
+<p>First we will learn how to generate a report with patient records for a given pet. It contains an overview of the pet&#8217;s master data and visit data for that pet.</p>
 </div>
 <div class="paragraph">
 <p>In this case the document template will be a Word document. However, the target document will be a PDF file.</p>
@@ -485,13 +485,13 @@ is mostly for administrators that have a deep technical understanding of the inn
 <div class="sect2">
 <h3 id="defining_the_attributes"><a class="anchor" href="#defining_the_attributes"></a><a class="link" href="#defining_the_attributes">Defining the Attributes</a></h3>
 <div class="paragraph">
-<p>The direct master data of the pet are similar to what has been selected in the <code>recent-visits</code> report, basically the data of the Pet entity as well as the associated Owner entity.</p>
+<p>The direct master data of the pet is similar to the one selected in the <code>recent-visits</code> report, basically the data of the Pet entity and the associated Owner entity.</p>
 </div>
 <div class="paragraph">
-<p>In order to display a list of associated visits of this Pet entity, another data band has to be created. This is possible during the initial Reporting wizard.</p>
+<p>To display a list of associated visits of this Pet entity, we&#8217;ll create another data band. This is possible during the initial Reporting wizard.</p>
 </div>
 <div class="paragraph">
-<p>In the second step after initially defining the direct attributes of the entity, it is possible to create additional "regions" in the report. Those regions are basically translated to a particular data bands that are generated out of those selections.</p>
+<p>In the second step after initially defining the direct attributes of the entity, we can create additional "regions" in the report. Those regions are basically translated to a particular data bands generated out of those selections.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -502,7 +502,7 @@ is mostly for administrators that have a deep technical understanding of the inn
 <div class="sect2">
 <h3 id="configuring_the_output_document"><a class="anchor" href="#configuring_the_output_document"></a><a class="link" href="#configuring_the_output_document">Configuring the Output document</a></h3>
 <div class="paragraph">
-<p>The output document for this report contains one template defined initially through the report wizard. The corresponding section in the Report Configuration screen therefore contains one template entry.</p>
+<p>The output document for this report contains one template defined initially through the report wizard. So, the corresponding section in the Report Configuration screen contains one template entry.</p>
 </div>
 <div class="paragraph">
 <p>The output type is set to <code>PDF</code> while the template file is <code>DOCX</code>.</p>
@@ -519,7 +519,7 @@ is mostly for administrators that have a deep technical understanding of the inn
 <p>In this case, the filename should look like this for the Pet with the name "Horsea": <code>Patient Record - Horsea.pdf</code>.</p>
 </div>
 <div class="paragraph">
-<p>In order to achieve this, a pattern can be configured whicn in this case references to a particular band: <code>${Root.title}.pdf</code></p>
+<p>To achieve this, we can configure a pattern which references a particular band: <code>${Root.title}.pdf</code></p>
 </div>
 <div class="paragraph">
 <p><code>Root.title</code> refers to the <code>title</code> value of the <code>Root</code> data band. A groovy based data set will define the value for the title attribute like this:</p>
@@ -538,7 +538,7 @@ is mostly for administrators that have a deep technical understanding of the inn
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>the params variable gives access to the different external parameters. <code>params["entity"]</code> refers to the selected pet instance.</td>
+<td>the params variable gives access to different external parameters. <code>params["entity"]</code> refers to the selected pet instance.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -558,7 +558,7 @@ is mostly for administrators that have a deep technical understanding of the inn
 <div class="sect2">
 <h3 id="libreoffice_for_accurate_word_to_pdf_conversion"><a class="anchor" href="#libreoffice_for_accurate_word_to_pdf_conversion"></a><a class="link" href="#libreoffice_for_accurate_word_to_pdf_conversion">LibreOffice for accurate Word to PDF conversion</a></h3>
 <div class="paragraph">
-<p>After configuring the output document to be PDF, adjustments need to be made in the configuration of the application. In order to increase the accuracy of the PDF output document, CUBA is able to leverage the conversion facilities of LibreOffice.</p>
+<p>After configuring the output document to be PDF, we need to make several adjustments in the application configuration. To increase the accuracy of the PDF output document, CUBA can leverage the conversion facilities of LibreOffice.</p>
 </div>
 <div class="paragraph">
 <p>LibreOffice has an API that other programs can use to convert different file formats (especially PDF file generation). The <code>Reporting</code> add-on uses this API when LibreOffice is installed on the operating system and configured in the CUBA application properties.</p>
@@ -579,22 +579,22 @@ reporting.openoffice.path = /Applications/LibreOffice.app/Contents/MacOS</code><
 </div>
 </div>
 <div class="paragraph">
-<p>The usage of LibreOffice has to be activated and additionally the path to the LibreOffice binary has to be configured to CUBA. Once this configuration is done, the CUBA application is able to render PDF files from <code>DOCX</code> and <code>XSLX</code> templates.</p>
+<p>We need to activate the usage of LibreOffice and configure to CUBA the path to the LibreOffice binary. Once this configuration is done, the CUBA application can render PDF files from <code>DOCX</code> and <code>XSLX</code> templates.</p>
 </div>
 <div class="paragraph">
-<p>More information on the configuration can be found in the official Reporting docs: <a href="https://doc.cuba-platform.com/reporting-7.1/open_office.html">Appendix A: Installing and Configuring OpenOffice</a>.</p>
+<p>Find more information on the configuration in the official Reporting docs: <a href="https://doc.cuba-platform.com/reporting-7.1/open_office.html">Appendix A: Installing and Configuring OpenOffice</a>.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="running_the_report_from_the_pet_detail_screen"><a class="anchor" href="#running_the_report_from_the_pet_detail_screen"></a><a class="link" href="#running_the_report_from_the_pet_detail_screen">Running the Report from the Pet Detail Screen</a></h3>
 <div class="paragraph">
-<p>There are two variants on how to run a report programmatically from a screen.</p>
+<p>There are two variants of how to run a report programmatically from a screen.</p>
 </div>
 <div class="paragraph">
-<p>In this variant, the report configuration itself determines in which screens it should be "available". The remaining code in the controller just declares, that it wants to print a report and the Reporting add-on will then figure out which reports are possible in this context.</p>
+<p>In the first variant, the report configuration determines in which screens it should be "available". The remaining code in the controller just declares that it wants to print a report, and the Reporting add-on will then figures out which reports are possible in this context.</p>
 </div>
 <div class="paragraph">
-<p>The corresponding configuration section in the Reporting is "Roles and Screens". Within this section a list of UI screens can be configured in which the report is available.</p>
+<p>The corresponding configuration section in the Reporting is "Roles and Screens". Within this section we can configure a list of UI screens where  the report is available.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -655,12 +655,12 @@ reporting.openoffice.path = /Applications/LibreOffice.app/Contents/MacOS</code><
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>the <code>EditorPrintFormAction</code> from the <code>Reporting</code> add-on is used, which automatically searches for reports that are configured in this screen</td>
+<td>the <code>EditorPrintFormAction</code> from the <code>Reporting</code> add-on is used, which automatically searches for reports configured in this screen</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>In case multiple reports are configured to be available, the user is prompted with a pop-up to select the correct report to run. In this case, there is only one report configured for this screen, which results in automatic execution of that report without any further required interaction with the user.</p>
+<p>In case multiple reports are configured as available, the user is prompted with a pop-up to select the correct report to run. In this case, there is only one report configured for this screen, which results in automatic execution of that report without any further required interaction with the user.</p>
 </div>
 </div>
 </div>
@@ -669,10 +669,10 @@ reporting.openoffice.path = /Applications/LibreOffice.app/Contents/MacOS</code><
 <h2 id="recent_visits_report"><a class="anchor" href="#recent_visits_report"></a><a class="link" href="#recent_visits_report">Recent Visits Report</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The second example that should be generated by the application is the <code>recent-visits</code> report. It should be accessible as a download directly from the visit browse screen. The report contains visits of the last month, exported as an excel sheet with information about the visit, the referenced pet and its owner.</p>
+<p>The second example generated by the application is the <code>recent-visits</code> report. It should be accessible as a download directly from the visit browse screen. The report contains visits for the last month, exported as an excel sheet with information about the visit, the referenced pet and its owner.</p>
 </div>
 <div class="paragraph">
-<p>In order to fulfill this requirement the first step is to create a report via the Report Wizard. The following main settings are set:</p>
+<p>To meet this requirement, the first step is to create a report via the Report Wizard. The following main settings are:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -694,13 +694,13 @@ reporting.openoffice.path = /Applications/LibreOffice.app/Contents/MacOS</code><
 <p>The next step is to define the query. The report Wizard allows users to set the query by defining conditions through the UI.</p>
 </div>
 <div class="paragraph">
-<p>In this report the visits of the last month should be selected. However, the concept of "relative dates" is not present in the Reporting add-on directly. Due to this, this piece of logic has to be externalized to the code that triggers the report run.</p>
+<p>In this report we need to select the visits of the last month. However, the concept of "relative dates" is not represented in the Reporting add-on directly. So, this piece of logic has to be externalized to the code that triggers the report run.</p>
 </div>
 <div class="paragraph">
-<p>The report itself is going to be a little more generic in the sense that it allows to specify a period that defines the date range of the visits that will be taken into consideration. This also has the benefit: the report is potentially re-usable for other future use-cases.</p>
+<p>The report itself is going to be a little more generic in the sense that it allows to specify a period that defines the date range of the visits that will be taken into consideration. This also has the benefit: the report is potentially re-usable for future use-cases.</p>
 </div>
 <div class="paragraph">
-<p>The query consists of two conditions for the attribute <code>visitDate</code>. It should match a value that is within the range of two dates: "Visit Date Range Start" and "Visit Date Range End". The only difference between the two conditions is that for the first condition the "operation" is <code>greater or equal than: &gt;=</code> while the second condition has the operation <code>smaller than: &lt;</code>. With that, the boundaries of the range are expressed as conditions.</p>
+<p>The query consists of two conditions for the attribute <code>visitDate</code>. It should match a value between two dates: "Visit Date Range Start" and "Visit Date Range End". The only difference between the two conditions is that for the first condition the "operation" is <code>greater or equal than: &gt;=</code> while the second condition has the operation <code>smaller than: &lt;</code>. With that, the boundaries of the range are expressed as conditions.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -708,15 +708,15 @@ reporting.openoffice.path = /Applications/LibreOffice.app/Contents/MacOS</code><
 </div>
 </div>
 <div class="paragraph">
-<p>For each condition an external parameter will be created so that the concrete values can be inserted programmatically or alternatively by a user through a UI.</p>
+<p>For each condition an external parameter will be created so that the concrete values could be inserted programmatically or alternatively by a user through the UI.</p>
 </div>
 <div class="sect2">
 <h3 id="selecting_entity_attributes_of_the_visit_entity"><a class="anchor" href="#selecting_entity_attributes_of_the_visit_entity"></a><a class="link" href="#selecting_entity_attributes_of_the_visit_entity">Selecting Entity Attributes of the Visit Entity</a></h3>
 <div class="paragraph">
-<p>The next step in the wizard is to define the attributes of the base entity (Visit) and its associated entities that should be part of the report. The selection will influence, on the one hand, the <code>SELECT</code> part of the JPQL statement that is used to fetch the data. On the other hand, it influences the initial version of the columns within the template, that is generated for this report when finishing the report wizard.</p>
+<p>The next step in the wizard is to define the attributes of the base entity (Visit) and its associated entities that should be in the report. The selection will influence, on the one hand, the <code>SELECT</code> part of the JPQL statement that is used to fetch the data. On the other hand, it influences the initial version of the columns within the template generated for this report when finishing the report wizard.</p>
 </div>
 <div class="paragraph">
-<p>For the <code>recent-visits</code> Report, the following attributes should be selected:</p>
+<p>For the <code>recent-visits</code> Report, select the following attributes:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -748,39 +748,39 @@ reporting.openoffice.path = /Applications/LibreOffice.app/Contents/MacOS</code><
 </ul>
 </div>
 <div class="paragraph">
-<p>After selecting the attributes through the UI wizard, the output template file type can be configured. In this example, the default settings are applicable.</p>
+<p>After selecting the attributes through the UI wizard, we can configure the output template file type. In this example, the default settings are applicable.</p>
 </div>
 <div class="paragraph">
-<p>With that the report wizard is finished and the report configuration is shown for further adjustments.</p>
+<p>With that, the report wizard is finished and we can see the report configuration for further adjustments.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="providing_external_parameters_programmatically"><a class="anchor" href="#providing_external_parameters_programmatically"></a><a class="link" href="#providing_external_parameters_programmatically">Providing External Parameters Programmatically</a></h3>
 <div class="paragraph">
-<p>For the use case of the <code>recent-visits</code> report the generic UI is not exposed to the user. Instead, the parameters are passed in by the API call to run the report.</p>
+<p>In case of the <code>recent-visits</code> report, the generic UI is not exposed to the user. Instead, the parameters are passed in by the API call to run the report.</p>
 </div>
 <div class="paragraph">
 <p>In the <code>patient-record</code> report, the report screen connection was configured in the report configuration.</p>
 </div>
 <div class="paragraph">
-<p>There is an alternative approach on how to trigger report execution, which will be leveraged in this example.</p>
+<p>There is an alternative approach on how to trigger report execution, which you&#8217;ll see in the example below.</p>
 </div>
 <div class="paragraph">
-<p>In this case the report instance is selected programmatically (through the <code>system code</code> attribute) and directly passed into the reports API in order to execute the report and download the resulting document.</p>
+<p>In this case the report instance is selected programmatically (through the <code>system code</code> attribute) and directly passed into the reports API to execute the report and download the resulting document.</p>
 </div>
 <div class="paragraph">
-<p>The complete listing for the triggering of the <code>recent-visits</code> report shows the main steps of:</p>
+<p>To trigger the <code>recent-visits</code> report follow the steps:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>identifying the last month (externalized logic of relative date)</p>
+<p>identify the last month (externalized logic of relative date)</p>
 </li>
 <li>
-<p>loading the report instance to execute</p>
+<p>load the report instance to execute</p>
 </li>
 <li>
-<p>triggering the report execution and passing in the last month as a parameter</p>
+<p>trigger the report execution and pass in the last month as a parameter</p>
 </li>
 </ol>
 </div>
@@ -839,7 +839,7 @@ reporting.openoffice.path = /Applications/LibreOffice.app/Contents/MacOS</code><
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td><code>reportGuiManager.printReport</code> is the API for starting the execution of a report and downloading it immediately</td>
+<td><code>reportGuiManager.printReport</code> is the API for executing a report and downloading it immediately</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -862,10 +862,10 @@ reporting.openoffice.path = /Applications/LibreOffice.app/Contents/MacOS</code><
 application that provides an API to define a Time Range (either a MonthYear range or a Quarter range) and has methods to get the border values of the range.</p>
 </div>
 <div class="paragraph">
-<p>After the definition of the parameters' values, the <code>reportGuiManager.printReport</code> has the ability to pass in a Map of parameters.</p>
+<p>After the definition of the parameters' values, the <code>reportGuiManager.printReport</code> can pass in a Map of parameters.</p>
 </div>
 <div class="paragraph">
-<p>The keys of the Map have to match the <code>parameterAlias</code> value of the parameter as configured in the Report Entity.</p>
+<p>The keys of the Map must match the <code>parameterAlias</code> value of the parameter as configured in the Report Entity.</p>
 </div>
 </div>
 </div>
@@ -874,22 +874,22 @@ application that provides an API to define a Time Range (either a MonthYear rang
 <h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this introduction to reports and documents generation, the building blocks of the CUBA add-on <code>Reporting</code> were explained. A report is the concept that allows merging a document template with data from data sources to produce an output document.</p>
+<p>This introduction to reports and documents generation explained the building blocks of the CUBA <code>Reporting</code> add-on. A report is the concept that enables merging a document template with data from data sources to produce an output document.</p>
 </div>
 <div class="paragraph">
-<p>Both building blocks, the document template as well as the data sources, can be of various kinds. With that it provides a high degree of flexibility when configuring reports to generate output documents.</p>
+<p>Both building blocks, the document template and the data sources, can be of various kinds. With that it provides a high degree of flexibility when configuring reports to generate output documents.</p>
 </div>
 <div class="paragraph">
-<p>All this configuration is hold in the main entity: <code>Report</code>, which can be created through a UI wizard or manually through the configuration UI. With that differentiation it supports users with different levels of technical capabilities.</p>
+<p>All this configuration is held in the main entity: <code>Report</code>, which can be created through a UI wizard or manually through the configuration UI. With that differentiation it supports users with different levels of technical capabilities.</p>
 </div>
 <div class="paragraph">
-<p>A report can be run directly through a generic user interface, or programmatically through the code of the application. It is possible to define external parameters, that get passed into the report. With that, reports can be configured in a more generic manner to support multiple use-cases.</p>
+<p>You can run a report directly through a generic user interface, or programmatically through the application code. You can define external parameters passed into the report. Also, you can configure reports in a more generic manner to support multiple use-cases.</p>
 </div>
 <div class="paragraph">
-<p>In this guide two reports were created. The first report uses the PDF generation in order to create a patient record for a pet. The report uses the screens configuration to declaratively configure in which screens the report should be offered.</p>
+<p>In this guide we learned how to create two reports. The first report uses the PDF generation to create a patient record for a pet. The report uses the screens configuration to declaratively configure in which screens the report should be offered.</p>
 </div>
 <div class="paragraph">
-<p>The second report generates an excel sheet containing the visits of the last month. In this case external parameters were leveraged to dynamically pass in a specific date range for the report to work on.</p>
+<p>The second report generates an Excel sheet with the visits of the last month. In this case external parameters were leveraged to dynamically pass in a specific date range for the report to work on.</p>
 </div>
 </div>
 </div>
@@ -899,7 +899,7 @@ application that provides an API to define a Time Range (either a MonthYear rang
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://doc.cuba-platform.com/reporting-7.0/index.html">CUBA docs: Reporting</a></p>
+<p><a href="https://doc.cuba-platform.com/reporting-7.1/index.html">CUBA docs: Reporting</a></p>
 </li>
 <li>
 <p><a href="https://doc.cuba-platform.com/reporting-7.1/open_office.html">CUBA docs: Reporting - Appendix A: Installing and Configuring OpenOffice</a></p>
