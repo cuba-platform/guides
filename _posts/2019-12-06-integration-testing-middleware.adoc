@@ -100,7 +100,7 @@ In order to make that environment available to the test case it takes a couple o
 
 ==== Database Connection
 
-CUBA uses the same database connection that is established when running the CUBA application. In the case of HSQLDB CUBA Studio takes care of having the database running when executing the test case.
+CUBA integration tests use the same database connection that is established when running the CUBA application. In the case of HSQLDB CUBA Studio takes care of having the database running when executing the test case.
 
 By default the database instance is `shared` between the test environment and the local application. This means that data that is defined locally when running the application is also available in the test case execution. Furthermore, if the test case changes data in the database, it is also changed the next time when you start the application.
 
