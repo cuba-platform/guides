@@ -5,9 +5,23 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CUBA Platform Guides</title>
+    <title>Unit Testing in CUBA Applications</title>
     <meta name="description" content="The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.">
     <meta name="author" content="Haulmont">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@CubaPlatform">
+    <meta name="twitter:creator" content="@CubaPlatform">
+    <meta name="twitter:title" content="Unit Testing in CUBA Applications">
+    <meta name="twitter:description" content="In this guide you will learn how automated testing in a CUBA application works. In particular this guide deals with the question of how unit tests can be executed and when it makes sense to use them.">
+    <meta name="twitter:image" content="">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Unit Testing in CUBA Applications">
+    <meta property="og:description" content="In this guide you will learn how automated testing in a CUBA application works. In particular this guide deals with the question of how unit tests can be executed and when it makes sense to use them.">
+    <meta property="og:url" content="https://www.cuba-platform.com/guides/unit-testing">
+    <meta property="og:image" content="">
+
     <link rel="shortcut icon" href="/guides/images/favicon.png" type="image/png" />
     <link rel="stylesheet" href="/guides/css/foundation.css">
     <link rel="stylesheet" href="/guides/css/font-awesome.css">
@@ -18,8 +32,8 @@
     <link rel="stylesheet" href="/guides/css/extra.css">
     <link rel="stylesheet" href="/guides/css/extra2.css">
     <link rel="stylesheet" href="/guides/css/cuba-new.css">
+    <link rel="stylesheet" href="/guides/css/font-awesome.min.css">
     <link rel="stylesheet" href="/guides/css/guides.css">
-    <script src="/guides/js/vendor/modernizr.js"></script>
     <script src="/guides/js/jquery_v2.1.min.js"></script>
     <link rel="stylesheet" href="/guides/css/main.css" />
     <!-- Google Tag Manager -->
@@ -30,7 +44,7 @@
 })(window,document,'script','dataLayer','GTM-MH3DTWV');</script>
 <!-- End Google Tag Manager -->
 </head>
-<body class="cuba-website-styles html not-front not-logged-in no-sidebars page-webinars service-booking i18n-en">
+<body class="html not-front not-logged-in no-sidebars page-node page-node- page-node-962 node-type-blog-post i18n-en">
 
 <section id="wrapper">
     
@@ -153,136 +167,257 @@
 
     <!-- Main Page Content and Sidebar -->
     <div class="content-wrapper">
-        <div class="text-node">
-            <div class="region region-content">
-                <section id="block-system-main" class="block block-system clearfix">
-                    <div class="panel-display panel-1col clearfix" id="webinars-page">
-                        <div class="container layout-main_container">
-                            <div>
-                                <!-- Title -->
-                                <div class="page-header">
-                                    <h1 class="page-header_title">Guides</h1>
-                                    <p class="page-header_description">Comprehensive articles about CUBA Platform specifics (version 7.0+)</p>
-                                </div>
+        <div class="cuba-container text-node blog">
 
-                                <!-- List Grid -->
-                                <div class="">
-                                    <div class="pane-content">
-                                        <div class="guides-list">
-                                            
-                                            <a href="/guides/intro-working-with-data-in-cuba" class="guides-list_item">
-                                                <div class="guides-list_icone_wrapper"><img src="images/intro-to-working-with-data-in-CUBA/guide_icone.svg"></div>
-                                                <div class="guides-list_wrapper">
-                                                    <div class="guides-list_title">Introduction to Working with Data in CUBA</div>
-                                                    <span class="guides-list_description">Overview on how to read and write data in a CUBA application</span>
-                                                </div>
-                                            </a>
-                                            
-                                            <a href="/guides/create-business-logic-in-cuba" class="guides-list_item">
-                                                <div class="guides-list_icone_wrapper"><img src="images/creating-business-logic-in-cuba/guide_icone.svg"></div>
-                                                <div class="guides-list_wrapper">
-                                                    <div class="guides-list_title">Create Business Logic in CUBA</div>
-                                                    <span class="guides-list_description">Guide on what options are available for putting business logic into a CUBA application</span>
-                                                </div>
-                                            </a>
-                                            
-                                            <a href="/guides/decouple-business-logic-with-app-events" class="guides-list_item">
-                                                <div class="guides-list_icone_wrapper"><img src="images/decouple-business-logic-with-application-events/guide_icone.svg"></div>
-                                                <div class="guides-list_wrapper">
-                                                    <div class="guides-list_title">Decouple Business Logic with Application Events</div>
-                                                    <span class="guides-list_description">Overview on how application events can be used in a CUBA application to decouple business logic</span>
-                                                </div>
-                                            </a>
-                                            
-                                            <a href="/guides/logging-in-cuba-applications" class="guides-list_item">
-                                                <div class="guides-list_icone_wrapper"><img src="images/application-logging-in-cuba/guide_icone.svg"></div>
-                                                <div class="guides-list_wrapper">
-                                                    <div class="guides-list_title">Logging in CUBA Applications</div>
-                                                    <span class="guides-list_description">Guide on why and how to use logging in a CUBA application in order to get insights</span>
-                                                </div>
-                                            </a>
-                                            
-                                            <a href="/guides/data-modelling-many-to-many-association" class="guides-list_item">
-                                                <div class="guides-list_icone_wrapper"><img src="images/data-model-many-to-many/guide_icone.svg"></div>
-                                                <div class="guides-list_wrapper">
-                                                    <div class="guides-list_title">Data Modelling: Many-to-Many Association</div>
-                                                    <span class="guides-list_description">Data modelling guide: what are Many-to-Many associations and when to use them</span>
-                                                </div>
-                                            </a>
-                                            
-                                            <a href="/guides/data-modelling-entity-inheritance" class="guides-list_item">
-                                                <div class="guides-list_icone_wrapper"><img src="images/data-model-entity-inheritance/guide_icone.svg"></div>
-                                                <div class="guides-list_wrapper">
-                                                    <div class="guides-list_title">Data Modelling: Entity Inheritance</div>
-                                                    <span class="guides-list_description">Data Modelling guide: How entity inheritance can be used in a CUBA application</span>
-                                                </div>
-                                            </a>
-                                            
-                                            <a href="/guides/data-modelling-composition" class="guides-list_item">
-                                                <div class="guides-list_icone_wrapper"><img src="images/data-model-composition/guide_icone.svg"></div>
-                                                <div class="guides-list_wrapper">
-                                                    <div class="guides-list_title">Data Modelling: Composition</div>
-                                                    <span class="guides-list_description">Data modelling guide: What are Compositions and when to use them over Associations</span>
-                                                </div>
-                                            </a>
-                                            
-                                            <a href="/guides/initial-entity-values" class="guides-list_item">
-                                                <div class="guides-list_icone_wrapper"><img src="images/initial-entity-values/guide_icone.svg"></div>
-                                                <div class="guides-list_wrapper">
-                                                    <div class="guides-list_title">Initial Values for Entity Instances</div>
-                                                    <span class="guides-list_description">This guide demonstrates different options on how initial values can be set for an entity</span>
-                                                </div>
-                                            </a>
-                                            
-                                            <a href="/guides/localization-in-cuba-applications" class="guides-list_item">
-                                                <div class="guides-list_icone_wrapper"><img src="images/i18n-messages/guide_icone.svg"></div>
-                                                <div class="guides-list_wrapper">
-                                                    <div class="guides-list_title">Localization in CUBA applications</div>
-                                                    <span class="guides-list_description">In this guide the localization features of a CUBA application are explained</span>
-                                                </div>
-                                            </a>
-                                            
-                                            <a href="/guides/working-with-images" class="guides-list_item">
-                                                <div class="guides-list_icone_wrapper"><img src="images/working-with-images/guide_icone.svg"></div>
-                                                <div class="guides-list_wrapper">
-                                                    <div class="guides-list_title">Working with Images in CUBA applications</div>
-                                                    <span class="guides-list_description">In this guide several ways will be explored on how to interact with images in a CUBA application</span>
-                                                </div>
-                                            </a>
-                                            
-                                            <a href="/guides/anonymous-access-and-social-login" class="guides-list_item">
-                                                <div class="guides-list_icone_wrapper"><img src="images/anonymous-access-and-social-login/guide_icone.svg"></div>
-                                                <div class="guides-list_wrapper">
-                                                    <div class="guides-list_title">Anonymous Access &amp; Social Login</div>
-                                                    <span class="guides-list_description">In this guide the anonymous access feature and social login implementation are explained</span>
-                                                </div>
-                                            </a>
-                                            
-                                            <a href="/guides/introduction-to-reporting" class="guides-list_item">
-                                                <div class="guides-list_icone_wrapper"><img src="images/intro-to-reports/guide_icone.svg"></div>
-                                                <div class="guides-list_wrapper">
-                                                    <div class="guides-list_title">Introduction to Report and Document generation</div>
-                                                    <span class="guides-list_description">In this guide the Reporting add-on will be introduced and different ways to interact with it through the UI and programmatically will be shown</span>
-                                                </div>
-                                            </a>
-                                            
-                                            <a href="/guides/integration-testing-middleware" class="guides-list_item">
-                                                <div class="guides-list_icone_wrapper"><img src="images/intro-to-reports/guide_icone.svg"></div>
-                                                <div class="guides-list_wrapper">
-                                                    <div class="guides-list_title">Middleware Integration Testing in CUBA applications</div>
-                                                    <span class="guides-list_description">In this guide you will learn how automated testing in a CUBA application works. In particular this guide deals with middleware layer of a CUBA application and how integration tests can be executed there.</span>
-                                                </div>
-                                            </a>
-                                            
-                                            <a href="/guides/unit-testing" class="guides-list_item">
-                                                <div class="guides-list_icone_wrapper"><img src="images/intro-to-reports/guide_icone.svg"></div>
-                                                <div class="guides-list_wrapper">
-                                                    <div class="guides-list_title">Unit Testing in CUBA applications</div>
-                                                    <span class="guides-list_description">In this guide you will learn how automated testing in a CUBA application works. In particular this guide deals with the question of how unit tests can be executed and when it makes sense to use them.</span>
-                                                </div>
-                                            </a>
-                                            
-                                        </div>
+
+
+            <!-- Main content (left column) -->
+            <div class="region region-content">
+
+
+
+                <section id="block-system-main" class="block block-system clearfix">
+                    <div id="node-962" class="article node node-blog-post node-promoted clearfix">
+                        <div class="content">
+                            <div class="field field-name-body field-type-text-with-summary field-label-hidden">
+                                <div class="field-items">
+                                    <div class="field-item even" property="content: encoded">
+                                        <h1>Unit Testing in CUBA Applications</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this guide you will learn how automated testing in a CUBA application works. In particular this guide deals with the question of how unit tests can be executed and when it makes sense to use them.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="what_will_be_built"><a class="anchor" href="#what_will_be_built"></a><a class="link" href="#what_will_be_built">What Will be Built</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a> example to show how existing features can be tested in an automated fashion via unit testing:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>calculation of next regular checkup date proposals for a Pet</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="final_application"><a class="anchor" href="#final_application"></a><a class="link" href="#final_application">Final Application</a></h3>
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-reports/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-reports/master/img/login-screen.png"/></a>
+</div>
+<div class="sect2">
+<h3 id="requirements"><a class="anchor" href="#requirements"></a><a class="link" href="#requirements">Requirements</a></h3>
+<div class="paragraph">
+<p>Your development environment requires to contain the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://adoptopenjdk.net/">JDK 1.8</a></p>
+</li>
+<li>
+<p>a text editor or IDE (<a href="https://www.jetbrains.com/idea/download/">IntelliJ IDEA</a> preferred)</p>
+</li>
+<li>
+<p><a href="https://www.cuba-platform.com/download">CUBA Studio</a> as standalone IDE or as an IDEA plugin (optional)</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-platform/cuba-cli/wiki/Installation">CUBA CLI</a> (optional)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-unit-testing/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
+</div>
+<div class="paragraph">
+<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-unit-testing.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-unit-testing.git</a></code></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="example_cuba_petclinic"><a class="anchor" href="#example_cuba_petclinic"></a><a class="link" href="#example_cuba_petclinic">Example: CUBA petclinic</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The project that is the basis for this example is <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a>. It is based on the commonly known <a href="https://github.com/spring-projects/spring-petclinic">Spring Petclinic</a>. The CUBA Petclinic application deals with the domain of a Pet clinic and the associated business workflows to manage a pet clinic.</p>
+</div>
+<div class="paragraph">
+<p>The underlying domain model for the application looks like this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/guides/images/domain-model.png" alt="Domain model">
+</div>
+</div>
+<div class="paragraph">
+<p>The main entities are <strong>Pet</strong> and <strong>Visit</strong>. A Pet is visiting the petclinic and during this Visit a Vet is taking care of it. A Pet belongs to an Owner, which can hold multiple pets. The visit describes the act of a pet visiting the clinic with the help of its owner.</p>
+</div>
+<a href="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/login-screen.png"/></a>
+</div>
+</div>
+<div class="sect1">
+<h2 id="overview"><a class="anchor" href="#overview"></a><a class="link" href="#overview">Overview</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this guides you will learn how to use the techniques of unit testing without dependencies. This approach differs from the previously discussed variant of middleware integration testing, where a close-to-production test environment is created for the test to run.</p>
+</div>
+<div class="paragraph">
+<p>In case of unit testing, the test environment is very slim because basically no runtime of the CUBA framework is provided. In return for giving up this convenience, unit testing allows you to more easily spin up the system under test and bring it to the proper state it needs to be to exercise the test case. It also cuts out a whole lot of problems regarding test data setup and is generally executed faster by orders of magnitude.</p>
+</div>
+<div class="sect2">
+<h3 id="unit_testing"><a class="anchor" href="#unit_testing"></a><a class="link" href="#unit_testing">Unit Testing</a></h3>
+<div class="paragraph">
+<p>Besides the integration test environment that you learned about in the middleware integration testing guide, it is also possible to create test cases, that do not spin up the Spring application context or any CUBA platform APIs at all.</p>
+</div>
+<div class="paragraph">
+<p>The main benefits of writing unit test in an isolated fashion without an integration test environment are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>locality of the test scenario</p>
+</li>
+<li>
+<p>test execution speed</p>
+</li>
+<li>
+<p>easier test fixture setup</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In this case the class under test is instantiated directly via its constructor.
+Since Spring is not involved on managing the instantiation of the class, dependency injection is not working in this scenario. Therefore dependencies (objects that the class under test relies upon) have to be instantiated manually and passed into the class under test directly.</p>
+</div>
+<div class="paragraph">
+<p>In case those dependencies are CUBA APIs, they normally have to be mocked.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="mocking"><a class="anchor" href="#mocking"></a><a class="link" href="#mocking">Mocking</a></h3>
+<div class="paragraph">
+<p>Mocking / Stubbing is a common way in test automation that helps to emulate / control &amp; verify certain external parts that the system under test interacts with in order to isolate the SUT as much as possible from its outside world.</p>
+</div>
+<div class="paragraph">
+<p>&lt;&lt; INSERT IMAGE WITH SUT &amp; DOC mocked out &gt;&gt;</p>
+</div>
+<div class="paragraph">
+<p>As seen in the picture there is one class that acts as the system that should be tested (system under test: SUT). This class uses another class that is responsible for helping some additional need. This class is normally referred to as dependent-on-component (DOC).</p>
+</div>
+<div class="paragraph">
+<p>What Stubbing or Mocking is doing now is the following:</p>
+</div>
+<div class="paragraph">
+<p>In order to isolate the SUT from any other component to gain the test locality, the DOC is replaced with a fake object. This object plays the role of the real DOC, but in the test case you control the behavior of the fake object. With that you can directly influence how the SUT behaves even if it has some interaction with another dependency that would otherwise not be controllable directly.</p>
+</div>
+<div class="sect3">
+<h4 id="mocking_frameworks"><a class="anchor" href="#mocking_frameworks"></a><a class="link" href="#mocking_frameworks">Mocking Frameworks</a></h4>
+<div class="paragraph">
+<p>JUnit itself does not contain Mocking capabilities. Instead dedicated Mocking frameworks allow to instantiated fake objects and control their behavior in a JUnit test case. In this guide you will learn about Mockito, a very popular Stubbing / Mocking framework in the Java ecosystem.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="an_example_of_mocking"><a class="anchor" href="#an_example_of_mocking"></a><a class="link" href="#an_example_of_mocking">An Example of Mocking</a></h4>
+<div class="paragraph">
+<p>The following example shows how to configure a mock object. In this case it will replace the behavior of the <code>TimeSource</code> API from CUBA which allows to retrieve the current timestamp. In this case the mock object should return yesterday. The way to define the behavior of a fake object in a JUnit Test case with Mockito looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">MockingTest.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@ExtendWith</span>(MockitoExtension.class) <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="type">class</span> <span class="class">MockingTest</span> {
+
+  <span class="annotation">@Mock</span>
+  <span class="directive">private</span> TimeSource timeSource; <i class="conum" data-value="2"></i><b>(2)</b>
+
+  <span class="annotation">@Test</span>
+  <span class="directive">public</span> <span class="type">void</span> theBehaviorOfTheTimeSource_canBeDefined_inATestCase() {
+    <span class="comment">// given:</span>
+    ZonedDateTime now = ZonedDateTime.now();
+    ZonedDateTime yesterday = now.minusDays(<span class="integer">1</span>);
+    <span class="comment">// and: the timeSource Mock is configured to return yesterday when now() is called</span>
+    Mockito
+        .when(timeSource.now())
+        .thenReturn(yesterday); <i class="conum" data-value="3"></i><b>(3)</b>
+    <span class="comment">// when: the current time is retrieved from the TimeSource Interface</span>
+    ZonedDateTime receivedTimestamp = timeSource.now(); <i class="conum" data-value="4"></i><b>(4)</b>
+    <span class="comment">// then: the received Timestamp is not now</span>
+    assertThat(receivedTimestamp)
+        .isNotEqualTo(now);
+    <span class="comment">// but: the received Timestamp is yesterday</span>
+    assertThat(receivedTimestamp)
+        .isEqualTo(yesterday);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>MockitoExtension</code> activates the automatic instantiation of the <code>@Mock</code> annotated attributes</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the <code>TimeSource</code> instance is marked as a <code>@Mock</code> and will be instantiated via Mockito</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>the Mock behavior is defined in the test case</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>invoking the method <code>now</code> returns yesterday instead of the correct value</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>With that behavior description in place, the one thing left is that the fake object instance is now manually injected into the class / system under test.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="tests_for_petclinic_functionality"><a class="anchor" href="#tests_for_petclinic_functionality"></a><a class="link" href="#tests_for_petclinic_functionality">Tests for Petclinic Functionality</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Next you will see the different examples on how to use the unit test capabilities in order to automatically test the functionality of the Petclinic example project.</p>
+</div>
+<div class="sect2">
+<h3 id="next_regular_checkup_date_proposal"><a class="anchor" href="#next_regular_checkup_date_proposal"></a><a class="link" href="#next_regular_checkup_date_proposal">Next Regular Checkup Date Proposal</a></h3>
+<div class="paragraph">
+<p>The first example is a functionality for the Petclinic project that allows the user to retrieve the information when the next regular checkup should be scheduled for a selected Pet. The next regular Checkup Date is calculated based on a couple of factors. The pet type determines the interval as well as when the last regular checkup has taken place.</p>
+</div>
+<div class="paragraph">
+<p>The calculation is executed from the UI in the Pet browse screen. The proposed Date should be taken into consideration when creating</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="further_information"><a class="anchor" href="#further_information"></a><a class="link" href="#further_information">Further Information</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://doc.cuba-platform.com/reporting-7.0/index.html">CUBA docs: Reporting</a></p>
+</li>
+<li>
+<p><a href="https://doc.cuba-platform.com/reporting-7.1/open_office.html">CUBA docs: Reporting - Appendix A: Installing and Configuring OpenOffice</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
                                     </div>
                                 </div>
                             </div>
@@ -290,9 +425,49 @@
                     </div>
                 </section>
             </div>
+            <!-- Sidebar (right column) -->
+            <div id="blog-sidebar">
+                <div class="region region-sidebar ">
+                    <section id="block-block-29" class="block block-block clearfix">
+
+                        <div class="guide-panel">
+                            <h3 class="header-table-content">Table of contents</h3>
+                            <ul class="sectlevel1">
+<li><a href="#what_will_be_built">What Will be Built</a>
+<ul class="sectlevel2">
+<li><a href="#final_application">Final Application</a></li>
+<li><a href="#requirements">Requirements</a></li>
+</ul>
+</li>
+<li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
+<li><a href="#overview">Overview</a>
+<ul class="sectlevel2">
+<li><a href="#unit_testing">Unit Testing</a></li>
+<li><a href="#mocking">Mocking</a></li>
+</ul>
+</li>
+<li><a href="#tests_for_petclinic_functionality">Tests for Petclinic Functionality</a>
+<ul class="sectlevel2">
+<li><a href="#next_regular_checkup_date_proposal">Next Regular Checkup Date Proposal</a></li>
+</ul>
+</li>
+<li><a href="#summary">Summary</a></li>
+<li><a href="#further_information">Further Information</a></li>
+</ul>
+                        </div>
+
+                        <div class="sidebar-razd"></div>
+                        <div class="guide-panel download">
+                            <a href="https://github.com/cuba-guides/cuba-petclinic-unit-testing" class="github-link" target="_blank">Example code on Github</a>
+                        </div>
+                        <div class="guide-panel cuba-version">Supported versions: CUBA 7.0+; Java 8+</div>
+
+                    </section>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <!-- End Main Content and Sidebar -->
 
     <!-- Footer -->
     <footer fragment="14269c1b298" class="footer">
@@ -478,16 +653,82 @@
 <div class="scrollTop"></div>
 </section>
 
-<script src="/guides/js/toc.js"></script>
 <script src="/guides/js/foundation.min.js"></script>
+<script src="https://unpkg.com/isotope-layout@3.0/dist/isotope.pkgd.js"></script>
+<script src="/guides/js/vendor/modernizr.js"></script>
+<script src="/guides/js/toc.js"></script>
 <script src="/guides/js/navigation.js"></script>
+<script src="/guides/js/navbar.js"></script>
 <script src="/guides/js/extra.js"></script>
 <script src="/guides/js/extra2.js"></script>
 <script src="/guides/js/cuba-new.js"></script>
 <script>
-$(document).foundation();
-var doc = document.documentElement;
-doc.setAttribute('data-useragent', navigator.userAgent);
+(function ($) {
+  $(document).foundation();
+  var doc = document.documentElement;
+  doc.setAttribute('data-useragent', navigator.userAgent)
+
+  /* Issue #24 */
+  $(".blog .content img").each(function() {
+    var imgMarkup = $(this)[0].outerHTML;
+    console.log(imgMarkup);
+    $(this).replaceWith('<div class="img-center">' + imgMarkup + '</div>');
+  });
+
+})(jQuery);
+
+// Cache selectors
+var lastId,
+    topMenu = $(".sectlevel1"),
+    topMenuHeight = topMenu.outerHeight()+1,
+
+    // All list items
+    menuItems = topMenu.find("a"),
+    // Anchors corresponding to menu items
+    scrollItems = menuItems.map(function(){
+        var item = $($(this).attr("href"));
+        if (item.length) { return item; }
+    });
+console.log(topMenuHeight );
+menuItems.click(function(e){
+    var href = $(this).attr("href"),
+        offsetTop = href === "#" ? 0 : $(href).offset().top - 85;
+    $('html, body').stop().animate({
+        scrollTop: offsetTop
+    }, 850);
+    e.preventDefault();
+    window.location =  href;
+});
+
+$( document ).ready(function() {
+    const hash = location.hash.replace('#','');
+    if(hash !== ''){
+        $('html, body').stop().animate({ scrollTop: $('a[href=#' + hash + ']').offset().top - 85}, 850);
+    }
+});
+
+// Bind to scroll
+$(window).scroll(function(){
+    // Get container scroll position
+    var fromTop = $(this).scrollTop()+topMenuHeight;
+
+    // Get id of current scroll item
+    var cur = scrollItems.map(function(){
+        if ($(this).offset().top < fromTop)
+            return this;
+    });
+    // Get the id of the current element
+    cur = cur[cur.length-1];
+    var id = cur && cur.length ? cur[0].id : "";
+
+    if (lastId !== id) {
+        lastId = id;
+        // Set/remove active class
+        menuItems
+            .parent().removeClass("active")
+            .end().filter("[href=#"+id+"]").parent().addClass("active");
+    }
+});
 
 </script>
 </body>
