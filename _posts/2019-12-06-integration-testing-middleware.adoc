@@ -1,5 +1,5 @@
 ---
-compatible_cuba_versions: 7.0+
+compatible_cuba_versions: 7.1+
 compatible_java_versions: 8+
 project_id: cuba-petclinic-testing-middleware
 permalink: integration-testing-middleware
@@ -13,7 +13,7 @@ permalink: integration-testing-middleware
 :page-root: ../../../
 :project_id: cuba-petclinic-testing-middleware
 :java_version: 1.8
-:cuba_version: 7.0
+:cuba_version: 7.1
 :page-icone: images/intro-to-reports/guide_icone.svg
 
 Test automation is key to every successful application development effort since it normally gives a high positive return on investment for QA efforts. CUBA applications are build on the Java ecosystem, which has very powerful and mature test automation capabilities. In this guide you will learn how to leverage those capabilities.
