@@ -9,7 +9,7 @@ permalink: introduction-to-reporting
 :sectlinks:
 :sectanchors:
 :page-navtitle: Introduction to Report and Document generation
-:page-excerpt: In this guide the Reporting add-on will be introduced and different ways to interact with it through the UI and programmatically will be shown
+:page-excerpt: In this guide, we introduce the Reporting add-on and ways to interact with it through the UI and programmatically
 :page-root: ../../../
 :project_id: cuba-petclinic-intro-to-reports
 :page-url-first-image: https://www.cuba-platform.com/guides/images/intro-to-reports/excel-document-template-example.png
@@ -17,16 +17,17 @@ permalink: introduction-to-reporting
 :cuba_version: 7.0
 :page-icone: images/intro-to-reports/guide_icone.svg
 
-CUBA applications can be enhanced to have a comprehensive report / document generation capability directly embedded into the application. The CUBA add-on `Reporting` supports various file formats like `DOCX`, `XLSX`, `PDF`, `HTML` for templating as well as output file formats. Furthermore, it contains management screens and provides APIs to interact with the report / document generation process programmatically.
 
-In this guide the `Reporting` add-on will be introduced and different ways to interact with it through the UI and programmatically will be shown.
+It is easy to enhance CUBA applications with a directly embedded comprehensive report / document generation capability. The CUBA `Reporting` add-on supports various file formats like `DOCX`, `XLSX`, `PDF`, `HTML` for templating as well as output file formats. Furthermore, it has management screens and provides APIs to interact with the report / document generation process programmatically.
+
+In this guide we'll tell you about the `Reporting` add-on and how to interact with it through the UI and programmatically.
 
 == What Will be Built
 
-This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA Petclinic] example to show how reporting capabilities can be embedded into the application:
+This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA Petclinic] example to show how to embed the reporting capabilities into the application:
 
-* a `patient-record` word document containing all relevant information (master data, visit data) for a given pet can be downloaded through the details screen of the pet.
-* a `recent-visits` report can be downloaded from the visit browse screen. The report contains visits of the last month, exported as an excel sheet with information about the visit, the referenced pet and its owner.
+* an ability to download a `patient-record` word document with all relevant information (master data, visit data) for a given pet through the details screen of the pet.
+* a `recent-visits` report downloaded from the visit browse screen. The report contains visits of the last month, exported as an excel sheet with information about the visit, the referenced pet and its owner.
 
 
 === Final Application
@@ -42,7 +43,7 @@ include::includes/petclinic_introduction.adoc[]
 
 == Overview
 
-Oftentimes when working with business applications there is a high demand for document generation, that will take some information from the source application and bring it in the form of a commonly known format, so that it can be shared with other parties like customers, partners or other systems.
+Oftentimes when working with business applications there is a high demand for document generation, that will take some information from the source application and bring it in the form of a commonly known format, so that you can share it with other parties like customers, partners or other systems.
 
 These documents might either have the form of human consumable content like a PDF file or are  used more as input data for further use like a CSV / Excel file or a Word document.
 
@@ -60,54 +61,54 @@ As it was mentioned above, there are lots of use cases that deal with generating
 * show a list of best sold products aggregated by category as an application screen
 * create an HTML file of the latest sales offers in order to upload & publish this file on a website
 
-All of those requirements are the part of what the `Reporting` add-on is capable of handling. In the next section the overall concepts are covered and afterwards use cases are implemented.
+The `Reporting` add-on can handle all of those requirements and more. In the next section we'll cover the overall concepts and describe how the use cases are implemented.
 
 == Templates + Data = Document
 
-The underpinning of this whole solution is based on on the combination of document templates with data, that are merged in order to create the resulting document / report.
+The underpinning of this whole solution is based on the combination of document templates with data, that are merged to create the resulting document / report.
 
 === The Document Template
 The document template is a file that acts as a blueprint for how the target file should look like. It contains placeholders as particular text snippets, that the `Reporting` add-on can pick up and put the data into the document.
 
 Those placeholders can be inserted as regular text into the template file, but they need a special character to indicate that this text is a placeholder. A placeholder is defined in the following way: `${NAME_OF_PLACEHOLDER}`
 
-An example of a document template can be seen below. This example is an excel sheet, that is used later in this guide:
+Below you can see an example of a document template. It's an Excel sheet, which will be used further in this guide:
 
 image::intro-to-reports/excel-document-template-example.png[align="center", link="images/intro-to-reports/excel-document-template-example.png"]
 
 The template contains regular text as well as the placeholders for different columns in a table like `${pet.name}` or `${pet.identificationNumber}`.
 
-Furthermore, it is possible to style and adjust the document template in any desired ways. For Word and Excel documents all the possible formatting options of those programs are able to be applied to the template file. For HTML documents the complete capabilities of CSS can be used for applying styles to the target document.
+Furthermore, you can style and adjust the document template in any desired way. For Word and Excel documents you can apply all the possible formatting options of those programs. For HTML documents you can use the complete capabilities of CSS for styling the target document.
 
 TIP: The template file format is not necessarily the file format of the output document. It is possible to e.g. have a Word based document template that will generate a PDF file when merged with the data.
 
 === Data Sources
 
-The data that is used for the report can be of various sources. Within a CUBA application fetching the data directly from the entity layer of the application is the most convenient variant. However, the `Reporting` add-on is not bound to this particular data source. It can use one of the following data sources:
+The data used for the report can be of various sources. Within a CUBA application fetching the data directly from the entity layer of the application is the most convenient variant. However, the `Reporting` add-on is not bound to this particular data source. It can use one of the following data sources:
 
 * CUBA Entities / JPQL
 * SQL
 * Groovy
 * JSON
 
-These various sources provide a high degree of flexibility when it comes to fetch data and provide it to the template file. It is also possible to define multiple data sources and combine all the data in the template.
+These various sources provide a high degree of flexibility when it comes to fetch data and provide it to the template file. You can also define multiple data sources and combine all the data in the template.
 
 == Report Configuration
 
-Once the data sources are defined and connected through a concept called Bands to particular template placeholders, everything is setup to generate the output document. The add-on stores all this configuration in the `Report` entity which holds the configuration of the data sources together with the definition of the templates and further configuration information.
+Once the data sources are defined and connected to particular template placeholders through a concept called Bands, everything is setup to generate the output document. The add-on stores all this configuration in the `Report` entity which holds the configuration of the data sources and the definition of the templates and further configuration information.
 
 image::intro-to-reports/report-entity-configuration-screen.png[align="center", link="images/intro-to-reports/report-entity-configuration-screen.png"]
 
-There are two main ways of creating those report records.
+There are two main ways to create those report records.
 
-The first one is to create an instance manually and define the data sources together with the associated JPQL / SQL queries / groovy scripts.
+The first one is to create a report manually and define the data sources with the associated JPQL / SQL queries / Groovy scripts.
 
-This is oftentimes needed when more complex reports should be defined which requires skills to create SQL / JPQL statements or even programming abilities through groovy scripts. This option
-is mostly for administrators that have a deep technical understanding of the inner processes of the application. It furthermore requires knowledge about its domain model and an understanding of the technical concepts of the Reporting add-on like report bands, report parameters etc.
+This is usually necessary for defining complex reports and requires skills to create SQL / JPQL statements or program Groovy scripts. This option
+is mostly for administrators that have a deep technical understanding of the inner application processes and domain model, as well as understanding of the Reporting add-on technical concepts like report bands, report parameters etc.
 
 === The Report Wizard
 
-The second option is to use the report UI wizard that guides the user through the selection of various options. It includes the ability to define the conditions for entities to be selected for the report, the attributes that should be included. Furthermore, it generates a base template which already contains the selected attributes as placeholders.
+The second option is to use the report UI wizard that guides a user through various options. It includes the ability to define the conditions for entities to be selected for the report, the attributes that should be included. Furthermore, it generates a base template which already contains the selected attributes as placeholders.
 
 image::intro-to-reports/report-entity-wizard-1.png[align="center", link="images/intro-to-reports/report-entity-wizard-1.png"]
 
@@ -115,31 +116,31 @@ image::intro-to-reports/report-entity-wizard-2.png[align="center", link="images/
 
 image::intro-to-reports/report-entity-wizard-3.png[align="center", link="images/intro-to-reports/report-entity-wizard-3.png"]
 
-This variant is more targeted towards business users, since it hides away the technical details of e.g. the query definition behind a user-friendly configuration UI. For easier reports, this wizard can serve as the main UI for creating reports by business users directly.
+This variant is mostly for business users, since it hides away the technical details of things like the query definition behind a user-friendly configuration UI. For easier reports, this wizard can serve as the main UI for creating reports by business users directly.
 
-With the feature of generating a document template that contains the correct placeholders of the selected attributes is allows business users to change only the formatting of the output document. This template formatting normally happens in the application that they are already familiar with like Word or Excel. The main difference is that this opens up possibilities for non-technical people to work with reports without the need of any developer interaction.
+Generating a document template with the correct placeholders of the selected attributes allows business users to change only formatting of the output document. The template formatting is normally performed in the application that they are already familiar with like Word or Excel. The main difference is that this opens up possibilities for non-technical people to work with reports with no need of any developer help.
 
-That being said, also, for tech-savvy people it is oftentimes the fastest way to create a report or at least a starting point for manual adjustments.
+With that, for tech-savvy people it is usually the fastest way to create a report or at least a starting point for manual adjustments.
 
-One constraint for the report wizard is that it is tied to generating reports / documents based on the CUBA entity layer. Groovy / SQL based reports cannot _directly_ be created through the wizard. However, it is possible to use the wizard report as a first step and then adjust the resulting reports bands accordingly through the regular management screen.
+One constraint for the report wizard is that it is tied to generating reports / documents based on the CUBA entity layer. You can't  _directly_ create Groovy / SQL based reports through the wizard. However, it is possible to use the wizard report as a first step and then adjust the resulting reports bands accordingly through the regular management screen.
 
 
 === External Parameters
 
-A Report configuration can declare external parameters that need to be provided by the person or application code that interacts with the report. Those parameters are mainly used for the data fetching parts. In the JPQL / SQL statements as well as the groovy based data bands, those parameters are passed in to dynamically inject the values into the query / the groovy script.
+A Report configuration can declare external parameters that are provided by the person or application code interacting with the report. Those parameters are mainly used for the data fetching parts. In the JPQL / SQL statements as well as the groovy based data bands, those parameters are passed in to dynamically inject the values into the query / the groovy script.
 
 The configuration of the external parameters in the Reports configuration screen looks like this:
 
 image::intro-to-reports/report-entity-configuration-external-parameters.png[align="center", link="images/intro-to-reports/report-entity-configuration-external-parameters.png"]
 
-When external parameters are defined, the values can be entered in two ways. The first way is to expose these parameters as a form in the generic UI. It will appear at the point when the report is executed through the generic Reports execution UI. An example of such a UI can be seen here:
+When external parameters are defined, the values can be entered in two ways. The first way is to expose these parameters as a form in the generic UI. It will appear at the report execution time through the generic Reports execution UI. Here is an example of such a UI:
 
 image::intro-to-reports/report-external-parameters-dynamic-ui.png[align="center", link="images/intro-to-reports/report-external-parameters-dynamic-ui.png"]
 
 
 == Patient Record
 
-The first report that should be generated is a patient record for a given pet. It contains an overview of the pet's master data as well as visit data form that pet.
+First we will learn how to generate a report with patient records for a given pet. It contains an overview of the pet's master data and visit data for that pet.
 
 In this case the document template will be a Word document. However, the target document will be a PDF file.
 
@@ -153,11 +154,11 @@ The report will have the following default settings:
 
 === Defining the Attributes
 
-The direct master data of the pet are similar to what has been selected in the `recent-visits` report, basically the data of the Pet entity as well as the associated Owner entity.
+The direct master data of the pet is similar to the one selected in the `recent-visits` report, basically the data of the Pet entity and the associated Owner entity.
 
-In order to display a list of associated visits of this Pet entity, another data band has to be created. This is possible during the initial Reporting wizard.
+To display a list of associated visits of this Pet entity, we'll create another data band. This is possible during the initial Reporting wizard.
 
-In the second step after initially defining the direct attributes of the entity, it is possible to create additional "regions" in the report. Those regions are basically translated to a particular data bands that are generated out of those selections.
+In the second step after initially defining the direct attributes of the entity, we can create additional "regions" in the report. Those regions are basically translated to a particular data bands generated out of those selections.
 
 
 image::intro-to-reports/report-entity-wizard-add-tabular-section.png[align="center", link="images/intro-to-reports/report-entity-wizard-add-tabular-section.png"]
@@ -165,7 +166,7 @@ image::intro-to-reports/report-entity-wizard-add-tabular-section.png[align="cent
 
 === Configuring the Output document
 
-The output document for this report contains one template defined initially through the report wizard. The corresponding section in the Report Configuration screen therefore contains one template entry.
+The output document for this report contains one template defined initially through the report wizard. So, the corresponding section in the Report Configuration screen contains one template entry.
 
 The output type is set to `PDF` while the template file is `DOCX`.
 
@@ -176,7 +177,7 @@ Additionally, it is possible to define the filename of the output document. This
 
 In this case, the filename should look like this for the Pet with the name "Horsea": `Patient Record - Horsea.pdf`.
 
-In order to achieve this, a pattern can be configured whicn in this case references to a particular band: `${Root.title}.pdf`
+To achieve this, we can configure a pattern which references a particular band: `${Root.title}.pdf`
 
 `Root.title` refers to the `title` value of the `Root` data band. A groovy based data set will define the value for the title attribute like this:
 
@@ -190,7 +191,7 @@ return [
     ["title" : "Patient Record - $petName"] // <2>
 ]
 ----
-<1> the params variable gives access to the different external parameters. `params["entity"]` refers to the selected pet instance.
+<1> the params variable gives access to different external parameters. `params["entity"]` refers to the selected pet instance.
 <2> a List of Maps has to be returned from this groovy script. Under the key `title` it will put the target filename
 
 The resulting usage of the groovy based data set looks like this:
@@ -200,7 +201,7 @@ image::intro-to-reports/report-configuration-report-output-title.png[align="cent
 
 === LibreOffice for accurate Word to PDF conversion
 
-After configuring the output document to be PDF, adjustments need to be made in the configuration of the application. In order to increase the accuracy of the PDF output document, CUBA is able to leverage the conversion facilities of LibreOffice.
+After configuring the output document to be PDF, we need to make several adjustments in the application configuration. To increase the accuracy of the PDF output document, CUBA can leverage the conversion facilities of LibreOffice.
 
 LibreOffice has an API that other programs can use to convert different file formats (especially PDF file generation). The `Reporting` add-on uses this API when LibreOffice is installed on the operating system and configured in the CUBA application properties.
 
@@ -219,19 +220,19 @@ reporting.openoffice.docx.useOfficeForDocumentConversion = true
 reporting.openoffice.path = /Applications/LibreOffice.app/Contents/MacOS
 ----
 
-The usage of LibreOffice has to be activated and additionally the path to the LibreOffice binary has to be configured to CUBA. Once this configuration is done, the CUBA application is able to render PDF files from `DOCX` and `XSLX` templates.
+We need to activate the usage of LibreOffice and configure to CUBA the path to the LibreOffice binary. Once this configuration is done, the CUBA application can render PDF files from `DOCX` and `XSLX` templates.
 
-More information on the configuration can be found in the official Reporting docs: https://doc.cuba-platform.com/reporting-7.1/open_office.html[Appendix A: Installing and Configuring OpenOffice].
+Find more information on the configuration in the official Reporting docs: https://doc.cuba-platform.com/reporting-7.1/open_office.html[Appendix A: Installing and Configuring OpenOffice].
 
 
 
 === Running the Report from the Pet Detail Screen
 
-There are two variants on how to run a report programmatically from a screen.
+There are two variants of how to run a report programmatically from a screen.
 
-In this variant, the report configuration itself determines in which screens it should be "available". The remaining code in the controller just declares, that it wants to print a report and the Reporting add-on will then figure out which reports are possible in this context.
+In the first variant, the report configuration determines in which screens it should be "available". The remaining code in the controller just declares that it wants to print a report, and the Reporting add-on will then figures out which reports are possible in this context.
 
-The corresponding configuration section in the Reporting is "Roles and Screens". Within this section a list of UI screens can be configured in which the report is available.
+The corresponding configuration section in the Reporting is "Roles and Screens". Within this section we can configure a list of UI screens where  the report is available.
 
 image::intro-to-reports/report-configuration-roles-and-screens.png[align="center", link="images/intro-to-reports/report-configuration-roles-and-screens.png"]
 
@@ -273,16 +274,16 @@ public class PetEdit extends StandardEditor<Pet> {
 }
 ----
 <1> the action is configured at the init event of the edit screen
-<2> the `EditorPrintFormAction` from the `Reporting` add-on is used, which automatically searches for reports that are configured in this screen
+<2> the `EditorPrintFormAction` from the `Reporting` add-on is used, which automatically searches for reports configured in this screen
 
-In case multiple reports are configured to be available, the user is prompted with a pop-up to select the correct report to run. In this case, there is only one report configured for this screen, which results in automatic execution of that report without any further required interaction with the user.
+In case multiple reports are configured as available, the user is prompted with a pop-up to select the correct report to run. In this case, there is only one report configured for this screen, which results in automatic execution of that report without any further required interaction with the user.
 
 
 == Recent Visits Report
 
-The second example that should be generated by the application is the `recent-visits` report. It should be accessible as a download directly from the visit browse screen. The report contains visits of the last month, exported as an excel sheet with information about the visit, the referenced pet and its owner.
+The second example generated by the application is the `recent-visits` report. It should be accessible as a download directly from the visit browse screen. The report contains visits for the last month, exported as an excel sheet with information about the visit, the referenced pet and its owner.
 
-In order to fulfill this requirement the first step is to create a report via the Report Wizard. The following main settings are set:
+To meet this requirement, the first step is to create a report via the Report Wizard. The following main settings are:
 
 * Report Entity: `Visit (petclinic_Visit)`
 * Template Type: `XLSX`
@@ -292,21 +293,21 @@ In order to fulfill this requirement the first step is to create a report via th
 
 The next step is to define the query. The report Wizard allows users to set the query by defining conditions through the UI.
 
-In this report the visits of the last month should be selected. However, the concept of "relative dates" is not present in the Reporting add-on directly. Due to this, this piece of logic has to be externalized to the code that triggers the report run.
+In this report we need to select the visits of the last month. However, the concept of "relative dates" is not represented in the Reporting add-on directly. So, this piece of logic has to be externalized to the code that triggers the report run.
 
-The report itself is going to be a little more generic in the sense that it allows to specify a period that defines the date range of the visits that will be taken into consideration. This also has the benefit: the report is potentially re-usable for other future use-cases.
+The report itself is going to be a little more generic in the sense that it allows to specify a period that defines the date range of the visits that will be taken into consideration. This also has the benefit: the report is potentially re-usable for future use-cases.
 
-The query consists of two conditions for the attribute `visitDate`. It should match a value that is within the range of two dates: "Visit Date Range Start" and "Visit Date Range End". The only difference between the two conditions is that for the first condition the "operation" is `greater or equal than: >=` while the second condition has the operation `smaller than: <`. With that, the boundaries of the range are expressed as conditions.
+The query consists of two conditions for the attribute `visitDate`. It should match a value between two dates: "Visit Date Range Start" and "Visit Date Range End". The only difference between the two conditions is that for the first condition the "operation" is `greater or equal than: >=` while the second condition has the operation `smaller than: <`. With that, the boundaries of the range are expressed as conditions.
 
 image::intro-to-reports/visit-by-period-date-range-creteria.png[align="center", link="images/intro-to-reports/visit-by-period-date-range-creteria.png"]
 
-For each condition an external parameter will be created so that the concrete values can be inserted programmatically or alternatively by a user through a UI.
+For each condition an external parameter will be created so that the concrete values could be inserted programmatically or alternatively by a user through the UI.
 
 === Selecting Entity Attributes of the Visit Entity
 
-The next step in the wizard is to define the attributes of the base entity (Visit) and its associated entities that should be part of the report. The selection will influence, on the one hand, the `SELECT` part of the JPQL statement that is used to fetch the data. On the other hand, it influences the initial version of the columns within the template, that is generated for this report when finishing the report wizard.
+The next step in the wizard is to define the attributes of the base entity (Visit) and its associated entities that should be in the report. The selection will influence, on the one hand, the `SELECT` part of the JPQL statement that is used to fetch the data. On the other hand, it influences the initial version of the columns within the template generated for this report when finishing the report wizard.
 
-For the `recent-visits` Report, the following attributes should be selected:
+For the `recent-visits` Report, select the following attributes:
 
 * Visit Date: `visitDate`
 * Visit Description: `description`
@@ -316,26 +317,26 @@ For the `recent-visits` Report, the following attributes should be selected:
 ** Type of the Pet: `pet.type.name`
 ** The city where the Pet lives (expressed through the address of its owner): `pet.owner.city`
 
-After selecting the attributes through the UI wizard, the output template file type can be configured. In this example, the default settings are applicable.
+After selecting the attributes through the UI wizard, we can configure the output template file type. In this example, the default settings are applicable.
 
-With that the report wizard is finished and the report configuration is shown for further adjustments.
+With that, the report wizard is finished and we can see the report configuration for further adjustments.
 
 === Providing External Parameters Programmatically
 
-For the use case of the `recent-visits` report the generic UI is not exposed to the user. Instead, the parameters are passed in by the API call to run the report.
+In case of the `recent-visits` report, the generic UI is not exposed to the user. Instead, the parameters are passed in by the API call to run the report.
 
 
 In the `patient-record` report, the report screen connection was configured in the report configuration.
 
-There is an alternative approach on how to trigger report execution, which will be leveraged in this example.
+There is an alternative approach on how to trigger report execution, which you'll see in the example below.
 
-In this case the report instance is selected programmatically (through the `system code` attribute) and directly passed into the reports API in order to execute the report and download the resulting document.
+In this case the report instance is selected programmatically (through the `system code` attribute) and directly passed into the reports API to execute the report and download the resulting document.
 
-The complete listing for the triggering of the `recent-visits` report shows the main steps of:
+To trigger the `recent-visits` report follow the steps:
 
-1. identifying the last month (externalized logic of relative date)
-2. loading the report instance to execute
-3. triggering the report execution and passing in the last month as a parameter
+1. identify the last month (externalized logic of relative date)
+2. load the report instance to execute
+3. trigger the report execution and pass in the last month as a parameter
 
 
 .VisitBrowse.java
@@ -386,7 +387,7 @@ public class VisitBrowse extends StandardLookup<Visit> {
 }
 ----
 <1> the last month based on today's date is identified
-<2> `reportGuiManager.printReport` is the API for starting the execution of a report and downloading it immediately
+<2> `reportGuiManager.printReport` is the API for executing a report and downloading it immediately
 <3> the correct report instance needs to be loaded from the database. Here it is fetched by relying on the `code` attribute value
 <4> a parameter map is passed in containing the start and end date range parameter of the report through the `MonthYearValue` object
 
@@ -397,25 +398,25 @@ The main part for passing in the external parameters is the definition of the la
 The `TimeRange` class is a custom abstraction of the example
 application that provides an API to define a Time Range (either a MonthYear range or a Quarter range) and has methods to get the border values of the range.
 
-After the definition of the parameters' values, the `reportGuiManager.printReport` has the ability to pass in a Map of parameters.
+After the definition of the parameters' values, the `reportGuiManager.printReport` can pass in a Map of parameters.
 
-The keys of the Map have to match the `parameterAlias` value of the parameter as configured in the Report Entity.
+The keys of the Map must match the `parameterAlias` value of the parameter as configured in the Report Entity.
 
 == Summary
 
-In this introduction to reports and documents generation, the building blocks of the CUBA add-on `Reporting` were explained. A report is the concept that allows merging a document template with data from data sources to produce an output document.
+This introduction to reports and documents generation explained the building blocks of the CUBA `Reporting` add-on. A report is the concept that enables merging a document template with data from data sources to produce an output document.
 
-Both building blocks, the document template as well as the data sources, can be of various kinds. With that it provides a high degree of flexibility when configuring reports to generate output documents.
+Both building blocks, the document template and the data sources, can be of various kinds. With that it provides a high degree of flexibility when configuring reports to generate output documents.
 
-All this configuration is hold in the main entity: `Report`, which can be created through a UI wizard or manually through the configuration UI. With that differentiation it supports users with different levels of technical capabilities.
+All this configuration is held in the main entity: `Report`, which can be created through a UI wizard or manually through the configuration UI. With that differentiation it supports users with different levels of technical capabilities.
 
-A report can be run directly through a generic user interface, or programmatically through the code of the application. It is possible to define external parameters, that get passed into the report. With that, reports can be configured in a more generic manner to support multiple use-cases.
+You can run a report directly through a generic user interface, or programmatically through the application code. You can define external parameters passed into the report. Also, you can configure reports in a more generic manner to support multiple use-cases.
 
-In this guide two reports were created. The first report uses the PDF generation in order to create a patient record for a pet. The report uses the screens configuration to declaratively configure in which screens the report should be offered.
+In this guide we learned how to create two reports. The first report uses the PDF generation to create a patient record for a pet. The report uses the screens configuration to declaratively configure in which screens the report should be offered.
 
-The second report generates an excel sheet containing the visits of the last month. In this case external parameters were leveraged to dynamically pass in a specific date range for the report to work on.
+The second report generates an Excel sheet with the visits of the last month. In this case external parameters were leveraged to dynamically pass in a specific date range for the report to work on.
 
 == Further Information
 
-* https://doc.cuba-platform.com/reporting-7.0/index.html[CUBA docs: Reporting]
+* https://doc.cuba-platform.com/reporting-7.1/index.html[CUBA docs: Reporting]
 * https://doc.cuba-platform.com/reporting-7.1/open_office.html[CUBA docs: Reporting - Appendix A: Installing and Configuring OpenOffice]
