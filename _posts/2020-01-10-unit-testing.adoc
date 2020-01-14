@@ -16,7 +16,7 @@ permalink: unit-testing
 :cuba_version: 7.0
 :page-icone: images/intro-to-reports/guide_icone.svg
 
-...
+In this guide you will learn how automated testing in a CUBA application works. In particular this guide deals with the question of how unit tests can be executed and when it makes sense to use them.
 
 == What Will be Built
 
@@ -69,18 +69,62 @@ In order to isolate the SUT from any other component to gain the test locality, 
 
 ==== Mocking Frameworks
 
-JUnit itself does not contain Mocking capabilities. Instead dedicated Mocking frameworks allow to instantiated fake objects and control their behavior in a JUnit test case.
+JUnit itself does not contain Mocking capabilities. Instead dedicated Mocking frameworks allow to instantiated fake objects and control their behavior in a JUnit test case. In this guide you will learn about Mockito, a very popular Stubbing / Mocking framework in the Java ecosystem.
 
-In this guide you will learn about Mockito, a very popular Stubbing / Mocking framework in the Java ecosystem.
 
 ==== An Example of Mocking
+
+The following example shows how to configure a mock object. In this case it will replace the behavior of the `TimeSource` API from CUBA which allows to retrieve the current timestamp. In this case the mock object should return yesterday. The way to define the behavior of a fake object in a JUnit Test case with Mockito looks like this:
+
+
+.MockingTest.java
+[source,java]
+----
+@ExtendWith(MockitoExtension.class) // <1>
+class MockingTest {
+
+  @Mock
+  private TimeSource timeSource; // <2>
+
+  @Test
+  public void theBehaviorOfTheTimeSource_canBeDefined_inATestCase() {
+    // given:
+    ZonedDateTime now = ZonedDateTime.now();
+    ZonedDateTime yesterday = now.minusDays(1);
+    // and: the timeSource Mock is configured to return yesterday when now() is called
+    Mockito
+        .when(timeSource.now())
+        .thenReturn(yesterday); // <3>
+    // when: the current time is retrieved from the TimeSource Interface
+    ZonedDateTime receivedTimestamp = timeSource.now(); // <4>
+    // then: the received Timestamp is not now
+    assertThat(receivedTimestamp)
+        .isNotEqualTo(now);
+    // but: the received Timestamp is yesterday
+    assertThat(receivedTimestamp)
+        .isEqualTo(yesterday);
+  }
+}
+----
+<1> The `MockitoExtension` activates the automatic instantiation of the `@Mock` annotated attributes
+<2> the `TimeSource` instance is marked as a `@Mock` and will be instantiated via Mockito
+<3> the Mock behavior is defined in the test case
+<4> invoking the method `now` returns yesterday instead of the correct value
+
+With that behavior description in place, the one thing left is that the fake object instance is now manually injected into the class / system under test.
 
 
 
 == Tests for Petclinic Functionality
 
+Next you will see the different examples on how to use the unit test capabilities in order to automatically test the functionality of the Petclinic example project.
 
 === Next Regular Checkup Date Proposal
+
+The first example is a functionality for the Petclinic project that allows the user to retrieve the information when the next regular checkup should be scheduled for a selected Pet. The next regular Checkup Date is calculated based on a couple of factors. The pet type determines the interval as well as when the last regular checkup has taken place.
+
+The calculation is executed from the UI in the Pet browse screen. The proposed Date should be taken into consideration when creating
+
 
 == Summary
 
