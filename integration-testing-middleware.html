@@ -821,12 +821,12 @@ the <code>30.create-db.sql</code> file contains seed data that is used for demon
 This has some upsides as well as downsides when it comes to test automation.</p>
 </div>
 <div class="paragraph">
-<p>On the one side it makes the test data setup easier, as there are already some data to rely upon.
+<p>On the one hand it makes the test data setup easier, as there are already some data to rely upon.
 It is not necessary to programmatically create  the required <code>Pet</code>, <code>PetType</code> and <code>Visit</code> entities
 before any test case can be executed. This make the test creation easier and faster.</p>
 </div>
 <div class="paragraph">
-<p>On the other side, relying on test data that is defined outside the test case also comes with a maintenance cost.
+<p>On the other hand, relying on test data that is defined outside the test case also comes with a maintenance cost.
 It generally makes the test cases less resilient to changes of that test data. Since this is central test data
 that all test cases share (as well as the running application), this situation can be even worse. Also is makes the test a little more obscure, since it is hard to see those implicit assumptions about certain data being available.</p>
 </div>
