@@ -111,9 +111,57 @@ class MockingTest {
 <3> the Mock behavior is defined in the test case
 <4> invoking the method `now` returns yesterday instead of the correct value
 
-With that behavior description in place, the one thing left is that the fake object instance is now manually injected into the class / system under test.
+The complete test case can be found in the example: https://github.com/cuba-guides/cuba-petclinic-unit-testing/blob/master/modules/core/test/com/haulmont/sample/petclinic/MockingTest.java[MockingTest.java]. With that behavior description in place, the one thing left is that the fake object instance is now manually injected into the class / system under test.
 
+==== Constructor Based Injection
 
+In order to achieve this one thing in the production code needs to be changed. Normally in CUBA Field based injection is used. This means that in case a Spring Bean A has a dependency to another Spring Bean B, a dependency is declared by creating a field in class A of type B like this:
+
+[source,java]
+----
+@Component
+class SpringBeanA {
+
+  @Inject // <1>
+  private SpringBeanB springBeanB; // <2>
+
+  public double doSomething() {
+      int result = springBeanB.doSomeHeavyLifting(); // <3>
+      return result / 2;
+  }
+}
+----
+<1> `@Inject` indicates Spring to instantiate a SpringBeanA instance with the correctly injected SpringBeanB instance
+<2> the field declaration indicates a dependency
+<3> the dependency can be used in the business logic of A
+
+In the context of unit testing, this pattern does not work very well, because the field can not be easily accessed without a corresponding method to inject the dependency. One way to create this dedicated injection method is Constructor based Injection. In this case the production code defines a dedicated Constructor, annotates it with `@Inject` and defines the desired dependencies as parameters in the Constructor.
+
+[source,java]
+----
+@Component
+class SpringBeanAWithConstructorInjection {
+
+  private final SpringBeanB springBeanB;
+
+  @Inject // <1>
+  public SpringBeanAWithConstructorInjection(
+          SpringBeanB springBeanB // <2>
+  ) {
+      this.springBeanB = springBeanB; // <3>
+  }
+
+  public double doSomething() {
+      int result = springBeanB.doSomeHeavyLifting(); // <3>
+      return result / 2;
+  }
+}
+----
+<1> `@Inject` indicates Spring to call the Constructor and treat the parameters as Dependencies
+<2> the dependencies are defined as Constructor parameters
+<3> the dependency instance is manually stored as the field
+
+With that change in place, it is possible to call this constructor directly in the test case and pass in the mocked instance that was configured with the help of Mockito.
 
 == Tests for Petclinic Functionality
 
@@ -123,8 +171,54 @@ Next you will see the different examples on how to use the unit test capabilitie
 
 The first example is a functionality for the Petclinic project that allows the user to retrieve the information when the next regular checkup should be scheduled for a selected Pet. The next regular Checkup Date is calculated based on a couple of factors. The pet type determines the interval as well as when the last regular checkup has taken place.
 
-The calculation is executed from the UI in the Pet browse screen. The proposed Date should be taken into consideration when creating
+The calculation is executed from the UI in the Visit Edit screen. The proposed Date can be taken into consideration when creating a new Visit. As part of that logic triggered by the UI, the following service method is available, which contains the business logic of the calculation:
 
+.RegularCheckupService.java
+[source,java]
+----
+public interface RegularCheckupService {
+
+  LocalDate calculateNextRegularCheckupDate(
+      Pet pet,
+      List<Visit> vistsOfPet
+  );
+}
+----
+
+
+The implementation of the Service declares two dependencies that it needs in order to perform the calculation:
+
+
+.RegularCheckupServiceBean.java
+[source,java]
+----
+@Service(RegularCheckupService.NAME)
+public class RegularCheckupServiceBean implements RegularCheckupService {
+
+  final protected TimeSource timeSource;
+
+  final protected List<RegularCheckupDateCalculator> regularCheckupDateCalculators;
+
+  @Inject
+  public RegularCheckupServiceBean(
+      TimeSource timeSource,
+      List<RegularCheckupDateCalculator> regularCheckupDateCalculators
+  ) {
+    this.timeSource = timeSource;
+    this.regularCheckupDateCalculators = regularCheckupDateCalculators;
+  }
+
+  @Override
+  public LocalDate calculateNextRegularCheckupDate(
+      Pet pet,
+      List<Visit> vistsOfPet
+  ) {
+    // ...
+  }
+}
+----
+
+The first dependency is the `TimeSource` API from CUBA which is needed to retrieve the current date. The second dependency is a list of `RegularCheckupDateCalculator` instances. In fact the implementation of the service does not contain all the logic for different Pet types within the `calculateNextRegularCheckupDate` method. Instead it relies on different calculators that will contain the logic for different scenarios.
 
 == Summary
 
