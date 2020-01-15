@@ -61,3 +61,20 @@ Serve:
 ```
 docker run --rm --volume="$PWD:/srv/jekyll" -p 4000:4000 jekyll/jekyll:3.8 jekyll serve
 ```
+
+#### Speed-up docker build using builder image 
+
+Using pure `jekyll` image causes dependencies (gems) being installed each time. In order to speed-up builds on CI 
+we prepare image with all required gems.
+
+Create image: 
+
+```
+docker build -f docker/builder/Dockerfile -t cuba-platform/guides-builder . 
+```
+
+Build using docker image:
+
+```
+docker run --rm --volume="$PWD:/srv/jekyll" cuba-platform/guides-builder jekyll build
+```
