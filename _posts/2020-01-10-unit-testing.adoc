@@ -171,16 +171,17 @@ Next you will see the different examples on how to use the unit test capabilitie
 
 The first example is a functionality for the Petclinic project that allows the user to retrieve the information when the next regular checkup should be scheduled for a selected Pet. The next regular Checkup Date is calculated based on a couple of factors. The pet type determines the interval as well as when the last regular checkup has taken place.
 
-The calculation is executed from the UI in the Visit Edit screen. The proposed Date can be taken into consideration when creating a new Visit. As part of that logic triggered by the UI, the following service method is available, which contains the business logic of the calculation:
+The calculation is triggered from the UI in the Visit Edit screen. The proposed Date can be taken into consideration when creating a new Visit. As part of that logic triggered by the UI, the following service method is available, which contains the business logic of the calculation:
 
 .RegularCheckupService.java
 [source,java]
 ----
 public interface RegularCheckupService {
 
+  @Validated
   LocalDate calculateNextRegularCheckupDate(
-      Pet pet,
-      List<Visit> vistsOfPet
+      @RequiredView("pet-with-owner-and-type") Pet pet,
+      List<Visit> visitHistory
   );
 }
 ----
@@ -211,14 +212,313 @@ public class RegularCheckupServiceBean implements RegularCheckupService {
   @Override
   public LocalDate calculateNextRegularCheckupDate(
       Pet pet,
-      List<Visit> vistsOfPet
+      List<Visit> visitHistory
   ) {
     // ...
   }
 }
 ----
 
-The first dependency is the `TimeSource` API from CUBA which is needed to retrieve the current date. The second dependency is a list of `RegularCheckupDateCalculator` instances. In fact the implementation of the service does not contain all the logic for different Pet types within the `calculateNextRegularCheckupDate` method. Instead it relies on different calculators that will contain the logic for different scenarios.
+The first dependency is the `TimeSource` API from CUBA which is needed to retrieve the current date. The second dependency is a list of `RegularCheckupDateCalculator` instances.
+
+The implementation of the service does not contain all the logic for different Pet types within the `calculateNextRegularCheckupDate` method. Instead the Service knows about possible Calculator classes. It filters out the one calculator that can calculate the next regular checkup date for the Pet and delegates the to the found Calculator.
+
+==== Testing the Implementation with Mocking
+
+In order to instantiate the SUT: `RegularCheckupService`, we are forced to provide both of the declared dependencies in the Constructor:
+
+* TimeSource
+* List<RegularCheckupDateCalculator>
+
+We will provide a Stub implementation for the TimeSource in this test case via Mockito.
+
+For the list of the Calculators, instead of using a Mock instances, special test implementation will be used. As the Unit test for the `RegularCheckupService` should verify the behavior in an isolated fashion, the purpose of this test is not to test the different calculator implementation. Instead the test case is going to verify the corresponding orchestration that the Service embodies.
+
+The Implementation of the Calculators will be tested in dedicated Unit tests for those classes.
+
+==== Testing the Orchestration in RegularCheckupService
+
+Starting with the test case for the `RegularCheckupService` the following test cases cover the majority of the orchestration functionality:
+
+1. only Calculators that support the Pet instance will be asked to calculate the checkup date
+2. in case multiple calculators support a Pet, the first one (based on the occurrence in the List) is chosen
+3. in case no Calculator was found, next month as the proposed regular checkup date will be used
+
+The implementation of the test cases is shown in the listing below.
+
+TIP: The JUnit Annotation `@DisplayName` is used to better describe the test cases in the test result report. Additionally it helps to link the the test case implementation to the above given test case descriptions.
+
+.RegularCheckupServiceTest.java
+[source,java]
+----
+@ExtendWith(MockitoExtension.class)
+class RegularCheckupServiceTest {
+  //...
+  @Mock
+  private TimeSource timeSource;
+
+  private PetclinicData data = new PetclinicData(); // <1>
+
+  @BeforeEach
+  void configureTimeSourceToReturnNowCorrectly() {
+    Mockito.lenient()
+        .when(timeSource.now())
+        .thenReturn(ZonedDateTime.now());
+  }
+
+  @Test
+  @DisplayName(
+      "1. only Calculators that support the Pet instance " +
+      "will be asked to calculate the checkup date"
+  )
+  public void one_supportingCalculator_thisOneIsChosen() {
+    // given: first calculator does not support the Pet
+    RegularCheckupDateCalculator threeMonthCalculator =
+        notSupporting(THREE_MONTHS_AGO); // <2>
+    // and: second calculator supports the Pet
+    RegularCheckupDateCalculator lastYearCalculator =
+        supportingWithDate(LAST_YEAR); // <3>
+    // when:
+    LocalDate nextRegularCheckup = calculate( // <4>
+        calculators(threeMonthCalculator, lastYearCalculator)
+    );
+    // then: the result should be the result that the calculator that was supported
+    assertThat(nextRegularCheckup)
+        .isEqualTo(LAST_YEAR);
+  }
+
+
+  @Test
+  @DisplayName(
+      "2. in case multiple calculators support a Pet," +
+      " the first one is chosen to calculate"
+  )
+  public void multiple_supportingCalculators_theFirstOneIsChosen() {
+    // given: two calculators support the Pet
+    //   the order within the list is used for fetching the first suitable calculator
+    List<RegularCheckupDateCalculator> calculators = calculators(
+        supportingWithDate(ONE_MONTHS_AGO),
+        notSupporting(THREE_MONTHS_AGO),
+        supportingWithDate(TWO_MONTHS_AGO)
+    );
+    // when:
+    LocalDate nextRegularCheckup = calculate(calculators);
+    // then: the result is the one from the first calculator
+    assertThat(nextRegularCheckup)
+        .isEqualTo(ONE_MONTHS_AGO);
+  }
+
+  @Test
+  @DisplayName(
+      "3. in case no Calculator was found, " +
+      "next month as the proposed regular checkup date will be used"
+  )
+  public void no_supportingCalculators_nextMonthWillBeReturned() {
+    // given: only not-supporting calculators are available for the Pet
+    List<RegularCheckupDateCalculator> onlyNotSupportingCalculators =
+        calculators(
+            notSupporting(ONE_MONTHS_AGO)
+        );
+    // when:
+    LocalDate nextRegularCheckup = calculate(onlyNotSupportingCalculators);
+    // then: the default implementation will return next month
+    assertThat(nextRegularCheckup)
+        .isEqualTo(NEXT_MONTH);
+  }
+
+  /*
+   * instantiates the SUT with the provided calculators as dependencies
+   * and executes the calculation
+   */
+  private LocalDate calculate(
+          List<RegularCheckupDateCalculator> calculators
+  ) {
+    RegularCheckupService service = new RegularCheckupServiceBean(
+        timeSource,
+        calculators
+    );
+
+    return service.calculateNextRegularCheckupDate(
+        data.petWithType(data.waterType()),
+        Lists.emptyList()
+    );
+  }
+  // ...
+}
+----
+<1> `PetclinicData` acts as a Test Utility Method holder. As no DB is present in the Unit test, it only creates transient objects
+<2> `notSupporting` provides a Calculator that will not support the Pet (returns `false` for `supports(Pet pet)`)
+<3> `supportingWithDate` provides a Calculator that supports the Pet (returns `true` for `supports(Pet pet)`) and returns the passed in Date as the result
+<4> `calculate` is the method that contains the instantiation and execution of the service
+
+The full source code including the helper methods and test implementation of the Calculator can be found in the example project: https://github.com/cuba-guides/cuba-petclinic-unit-testing/blob/master/modules/core/test/com/haulmont/sample/petclinic/service/visit/regular_checkup/RegularCheckupServiceTest.java[RegularCheckupServiceTest.java].
+
+
+==== Testing the Calculators
+
+As described above the unit test for the `RegularCheckupService` does not include the implementations of the different calculators itself. This is done on purpose in order to benefit from the isolation aspects and the localization of the test scenarios. Otherwise the `RegularCheckupServiceTest` would contain test cases for all the different calculators as well as the orchestration logic.
+
+Splitting the test cases for the orchestration and the calculator allows us to create a comparably easy test case setup for testing one of the calculators. In this example we will take a look at the `ElectricPetTypeCalculator` and the corresponding test case.
+
+For this calculator, that is responsible for Pets of type `Electric` it embodies the following business rules:
+
+1. it should only be used if the name of the PetType is `Electric`, otherwise not
+2. the interval between two regular Checkups is one year for electric pets
+3. Visits that are not regular checkups should not influence the calculation
+4. in case the Pet has not done a regular checkup at the Petclinic before, next month should be proposed
+5. if the last Regular Checkup was performed longer than one year ago, next month should be proposed
+
+
+==== ElectricPetTypeCalculator Test Cases
+
+The implementation of the different test cases that verify those business rules can be found below. This test class also uses the `PetclinicData` helper for various test utility methods.
+
+.ElectricPetTypeCalculatorTest.java
+[source,java]
+----
+@ExtendWith(MockitoExtension.class)
+class ElectricPetTypeCalculatorTest {
+
+  private PetclinicData data = new PetclinicData();
+  private RegularCheckupDateCalculator calculator = new ElectricPetTypeCalculator();
+
+  private Pet electricPet;
+
+  @BeforeEach
+  void createElectricPet() {
+    electricPet = data.petWithType(data.electricType());
+  }
+
+  @Nested
+  @DisplayName(
+      "1. it should only be used if the name of the Pet Type " +
+      "is 'Electric', otherwise not"
+  )
+  class Supports { // <1>
+
+    @Test
+    public void calculator_supportsPetsWithType_Electric() {
+      // expect:
+      assertThat(calculator.supports(electricPet))
+          .isTrue();
+    }
+
+    @Test
+    public void calculator_doesNotSupportsPetsWithType_Water() {
+      // given:
+      Pet waterPet = data.petWithType(data.waterType());
+      // expect:
+      assertThat(calculator.supports(waterPet))
+          .isFalse();
+    }
+  }
+
+  @Nested
+  class CalculateRegularCheckupDate {
+
+    @Mock
+    private TimeSource timeSource;
+
+    private final LocalDate LAST_YEAR = now().minusYears(1); // <2>
+    private final LocalDate LAST_MONTH = now().minusMonths(1);
+    private final LocalDate SIX_MONTHS_AGO = now().minusMonths(6);
+    private final LocalDate NEXT_MONTH = now().plusMonths(1);
+
+    private List<Visit> visits = new ArrayList<>();
+
+    @BeforeEach
+    void configureTimeSourceMockBehavior() {
+      Mockito.lenient()
+          .when(timeSource.now())
+          .thenReturn(ZonedDateTime.now());
+    }
+
+    @Test
+    @DisplayName(
+        "2. the interval between two regular Checkups " +
+        "is one year for electric pets"
+    )
+    public void intervalIsOneYear_fromTheLatestRegularCheckup() {
+      // given: there are two regular checkups in the visit history of this pet
+      visits.add(data.regularCheckup(LAST_YEAR));
+      visits.add(data.regularCheckup(LAST_MONTH));
+      // when:
+      LocalDate nextRegularCheckup =
+          calculate(electricPet, visits); // <3>
+      // then:
+      assertThat(nextRegularCheckup)
+          .isEqualTo(LAST_MONTH.plusYears(1));
+    }
+
+
+    @Test
+    @DisplayName(
+        "3. Visits that are not regular checkups " +
+        "should not influence the calculation"
+    )
+    public void onlyRegularCheckupVisitsMatter_whenCalculatingNextRegularCheckup() {
+      // given: one regular checkup and one surgery
+      visits.add(data.regularCheckup(SIX_MONTHS_AGO));
+      visits.add(data.surgery(LAST_MONTH));
+      // when:
+      LocalDate nextRegularCheckup =
+          calculate(electricPet, visits);
+      // then: the date of the last checkup is used
+      assertThat(nextRegularCheckup)
+          .isEqualTo(SIX_MONTHS_AGO.plusYears(1));
+    }
+
+
+    @Test
+    @DisplayName(
+        "4. in case the Pet has not done a regular checkup " +
+        "at the Petclinic before, next month should be proposed"
+    )
+    public void ifThePetDidNotHavePreviousCheckups_nextMonthIsProposed() {
+      // given: there is no regular checkup, just a surgery
+      visits.add(data.surgery(LAST_MONTH));
+      // when:
+      LocalDate nextRegularCheckup =
+          calculate(electricPet, visits);
+      // then:
+      assertThat(nextRegularCheckup)
+          .isEqualTo(NEXT_MONTH);
+    }
+
+
+    @Test
+    @DisplayName(
+        "5. if the last Regular Checkup was performed longer than " +
+        "one year ago, next month should be proposed"
+    )
+    public void ifARegularCheckup_exceedsTheInterval_nextMonthIsProposed() {
+      // given: one regular checkup thirteen month ago
+      visits.add(data.regularCheckup(LAST_YEAR.minusMonths(1)));
+      // when:
+      LocalDate nextRegularCheckup =
+          calculate(electricPet, visits);
+      // then:
+      assertThat(nextRegularCheckup)
+          .isEqualTo(NEXT_MONTH);
+    }
+
+    private LocalDate calculate(Pet pet, List<Visit> visitHistory) {
+      return calculator.calculateRegularCheckupDate(
+          pet,
+          visitHistory,
+          timeSource
+      );
+    }
+  }
+}
+----
+<1> `Supports` describes test cases of that verify the behavior of `support()` method via `@Nested` grouping of JUnit
+<2> several static points in time are statically defined that are used as test fixtures and verification values
+<3> `calculate` is executing the corresponding method of the calculator (SUT)
+
+The test class uses the JUnit Annotation `@Nested`. This allows to define groups of test cases that all share the same context. In this case it is used to group them by the methods of the SUT that they test: `@Nested class Supports {}` for the `support()` method to verify. `@Nested class CalculateRegularCheckupDate` for the `calculate()` method of the API.
+
+Furthermore the context definition is used to create certain test data as well as `@BeforeEach` setup methods only for all the test cases that are defined in that context. E.g. only in the context `CalculateRegularCheckupDate` it is necessary to define the `timeSource` mock behavior.
 
 == Summary
 
