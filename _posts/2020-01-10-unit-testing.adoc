@@ -22,6 +22,7 @@ In this guide you will learn how automated testing in a CUBA application works. 
 
 This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA Petclinic] example to show how existing features can be tested in an automated fashion via unit testing:
 
+* display amount of Pets of a given Pet type for a particular Owner
 * calculation of next regular checkup date proposals for a Pet
 
 === Final Application
@@ -166,6 +167,11 @@ With that change in place, it is possible to call this constructor directly in t
 == Tests for Petclinic Functionality
 
 Next you will see the different examples on how to use the unit test capabilities in order to automatically test the functionality of the Petclinic example project.
+
+=== Pet Amount for a Particular Owner
+
+The first test case
+
 
 === Next Regular Checkup Date Proposal
 
@@ -520,8 +526,28 @@ The test class uses the JUnit Annotation `@Nested`. This allows to define groups
 
 Furthermore the context definition is used to create certain test data as well as `@BeforeEach` setup methods only for all the test cases that are defined in that context. E.g. only in the context `CalculateRegularCheckupDate` it is necessary to define the `timeSource` mock behavior.
 
+The two above shown test cases that we saw test the different sub parts of the implementation of the "Next Regular Checkup Date Calculation" into multiple parts. With that design choice in the tests and the implementation it allows to create test cases, that have a strong locality. This means in case one test case after a production change does not succeed anymore, it is easier and faster to find the root cause.
+
+== Limitations of Unit Testing
+
+
 == Summary
 
+In this guide we learned how to use unit tests to test functionality in an isolated fashion using JUnit. In the introduction you saw the differences using plain unit tests compared to middleware integration tests. In particular no external dependencies like databases are used. Furthermore the test environment does not leverage a test container. Instead the SUT has to be instantiated manually.
+
+In order to create isolated tests it is sometimes required to leverage a Mocking framework as we did in the `RegularCheckupServiceTest` example. Mocking is a way to control the environment & dependencies the SUT interacts with. By exchanging particular dependencies with special test implementations the test case is capable of setup the behavior of the dependency (and potentially use it for verification purposes as well). Mockito in the Java ecosystem allows to configure the dependencies and their desired behavior.
+
+We also learned that exchanging field based injection with constructor based injection production code helps to manually inject dependencies into the SUT in testing scenarios.
+
+The benefit of using plain unit tests over integration tests is that the tests run orders of magnitudes faster. This benefits sounds like a nice to have feature, but in fact it allows to go down a path of much more aggressive usage of automated testing. Using test driven development (TDD) as an example technique benefits very much from fast feedback cycles that those execution times provide.
+
+Besides the benefits in the workflow of developing the test cases, we also learned about an architectural benefit: test scenario locality. Keeping the surface area of the SUT small helps to spot root causes of test failures much faster.
+
+Finally the test fixture setup is normally easier to create as well when the surface area is kept small.
+
+Besides the benefits we also looked at the limitations of unit testing. One example was that we are not able to verify the correct usage of particular environmental behavior the code lives in. Although our Unit tests perfectly show that the business rules might be correctly defined in the calculators, the question if the are using the correct Spring annotations to be picked up by the framework in the right way cannot easily be verified by unit tests.
+
+Therefore using unit tests should only be used in combination with a set of integration tests that cover the remaining open questions. With this combination we can be quite sure that our application is actually working as we expect it.
 
 == Further Information
 
