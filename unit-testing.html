@@ -472,7 +472,256 @@ Since Spring is not involved on managing the instantiation of the class, depende
 <div class="sect2">
 <h3 id="pet_amount_for_a_particular_owner"><a class="anchor" href="#pet_amount_for_a_particular_owner"></a><a class="link" href="#pet_amount_for_a_particular_owner">Pet Amount for a Particular Owner</a></h3>
 <div class="paragraph">
-<p>The first test case</p>
+<p>The first test case deals with the feature of count the amount of pets that are associated to an Owner for a given Pet Type. This feature is used in the UI to display that number when the user selects one Owner in the corresponding browse screen.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/unit-testing/pets-of-type.png" alt="pets of type">
+</div>
+</div>
+<div class="paragraph">
+<p>The following business rules describe the functionality:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>if the pet type of a pet matches the asked pet type the pet should be counted, otherwise not</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="implementation"><a class="anchor" href="#implementation"></a><a class="link" href="#implementation">Implementation</a></h4>
+<div class="paragraph">
+<p>The implementation logic will be put into the Owner Entity class itself and exposed via a method <code>Owner.petsOfType(PetType petType)</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">Pet.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="type">class</span> <span class="class">Owner</span> <span class="directive">extends</span> Person {
+    <span class="comment">// ...</span>
+    <span class="directive">public</span> <span class="type">long</span> petsOfType(PetType petType) {
+        <span class="keyword">return</span> pets.stream()
+            .filter(pet -&gt; Objects.equals(petType.getName(), pet.getType().getName()))
+            .count();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It uses the Java 8 Streams API in order to iterate over the list of pets and filter out the ones that match on the Pet types name. Afterwards it counts the correctly identified pets.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="test_cases_for_the_happy_paths"><a class="anchor" href="#test_cases_for_the_happy_paths"></a><a class="link" href="#test_cases_for_the_happy_paths">Test Cases for the Happy Paths</a></h4>
+<div class="paragraph">
+<p>We will start with the three test cases that verify the above described business rule.</p>
+</div>
+<div class="listingblock">
+<div class="title">OwnerTest.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="type">class</span> <span class="class">OwnerTest</span> {
+
+  PetclinicData data = <span class="keyword">new</span> PetclinicData();
+  <span class="directive">private</span> PetType electric;
+  <span class="directive">private</span> <span class="predefined-type">Owner</span> owner;
+  <span class="directive">private</span> PetType fire;
+
+  <span class="annotation">@BeforeEach</span>
+  <span class="directive">public</span> <span class="type">void</span> initTestData() {
+    electric = data.electricType();
+    fire = data.fireType();
+
+    owner = <span class="keyword">new</span> <span class="predefined-type">Owner</span>();
+  }
+
+  <span class="annotation">@Test</span>
+  <span class="directive">public</span> <span class="type">void</span> givenOnePetWithElectricPet_whenAskingForElectricType_oneIsReturned() {
+    <span class="comment">// given:</span>
+    owner.pets = <span class="predefined-type">Arrays</span>.asList( <i class="conum" data-value="1"></i><b>(1)</b>
+        data.petWithType(electric)
+    );
+    <span class="comment">// expect:</span>
+    assertThat(owner.petsOfType(electric)) <i class="conum" data-value="2"></i><b>(2)</b>
+        .isEqualTo(<span class="integer">1</span>);
+  }
+
+  <span class="annotation">@Test</span>
+  <span class="directive">public</span> <span class="type">void</span> givenOnePetWithElectricPet_whenAskingForFireType_zeroIsReturned() {
+    <span class="comment">// given:</span>
+    owner.pets = <span class="predefined-type">Arrays</span>.asList(
+        data.petWithType(electric)
+    );
+    <span class="comment">// expect:</span>
+    assertThat(owner.petsOfType(fire))
+        .isEqualTo(<span class="integer">0</span>);
+  }
+
+
+  <span class="annotation">@Test</span>
+  <span class="directive">public</span> <span class="type">void</span> givenTwoElectricPetsAndOneFirePet_whenAskingForElectricType_twoIsReturned() {
+    <span class="comment">// given:</span>
+    owner.pets = <span class="predefined-type">Arrays</span>.asList(
+        data.petWithType(electric),
+        data.petWithType(fire),
+        data.petWithType(electric)
+    );
+    <span class="comment">// expect:</span>
+    assertThat(owner.petsOfType(electric))
+        .isEqualTo(<span class="integer">2</span>);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the pet&#8217;s are defined for the owner</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>petsOfType</code> is executed with a particular pet type and the outcome is verified</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The first test case is a positive test case, which contains the simplest amount of test fixture setup possible. Oftentimes it is a good idea to make the test data as small and clear as possible, because it shows better the essence of the test case.</p>
+</div>
+<div class="paragraph">
+<p>The second test case is of the same kind but for a negative expectation. The third test case is a combination of both test cases.</p>
+</div>
+<div class="paragraph">
+<p>This means that in this scenario this test case will not help to catch problems in the implementation that other test would not have found. In quality assurance terms, this test case lives in the same equivalent class as the other tests. This test case has more documentary purposes over actual regression.</p>
+</div>
+<div class="paragraph">
+<p>With those tests in place, we have covered all code paths that are living along the happy path. This is a term, that describes normally the code execution path that works with valid input values and no error scenarios.</p>
+</div>
+<div class="paragraph">
+<p>But if we think a little bit outside of that happy path, we will find a couple of more test cases, that are waiting to be written.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="testing_edge_cases"><a class="anchor" href="#testing_edge_cases"></a><a class="link" href="#testing_edge_cases">Testing Edge Cases</a></h4>
+<div class="paragraph">
+<p>When considering the edge cases of the API that the method provides, there are multiple error scenarios to consider.</p>
+</div>
+<div class="paragraph">
+<p>Just imagine the following situation: The <code>LookupField</code> in the UI does not require a Pet Type to be entered. If the user uses that and does not select a Pet Type and clicks OK the passed in <code>PetType</code> will be <code>null</code>. What happens in this case in the implementation? It will produce a <code>NullPointerException</code>. Thinking about edge cases in tests is very valuable, because it normally reveals bugs in the implementation that would otherwise normally only be found at runtime of the application.</p>
+</div>
+<div class="paragraph">
+<p>To deal with that behavior that we will now create a test case, that proves this hypothesis:</p>
+</div>
+<div class="listingblock">
+<div class="title">OwnerTest.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="type">class</span> <span class="class">OwnerTest</span> {
+  <span class="comment">// ...</span>
+  <span class="annotation">@Test</span>
+  <span class="directive">public</span> <span class="type">void</span> whenAskingForNull_zeroIsReturned() {
+    <span class="comment">// expect:</span>
+    assertThat(owner.petsOfType(<span class="predefined-constant">null</span>))
+        .isEqualTo(<span class="integer">0</span>);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By defining that edge case, we also defined the expected behavior of the API. In this case we defined the return value should be zero. Running the test case shows the existence of the <code>NullPointerException</code> in this situation.</p>
+</div>
+<div class="paragraph">
+<p>With that knowledge and test case that will tell us when we have reached a success state, we can adjust the implementation to behave according to our specification:</p>
+</div>
+<div class="listingblock">
+<div class="title">Owner.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="type">class</span> <span class="class">Owner</span> {
+    <span class="directive">public</span> <span class="type">long</span> petsOfType(PetType petType) {
+
+        <span class="keyword">if</span> (petType == <span class="predefined-constant">null</span>) {
+            <span class="keyword">return</span> <span class="integer">0L</span>;
+        }
+
+        <span class="keyword">return</span> pets.stream()
+            .filter(pet -&gt; Objects.equals(petType.getName(), pet.getType().getName()))
+            .count();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Running the test case once again, we will see that the application now is capable of dealing with "invalid" inputs and react to it accordingly.</p>
+</div>
+<div class="paragraph">
+<p>The next edge case that is of similar kind is when one of the pets the owner owns has no Pet type assigned. This is possible due to the current implementation of the entity model, <code>Pet.type</code> is not required.</p>
+</div>
+<div class="paragraph">
+<p>In this case, we would like to exclude those Pets from counting. The following test case will show the desired behavior:</p>
+</div>
+<div class="listingblock">
+<div class="title">OwnerTest.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="type">class</span> <span class="class">OwnerTest</span> {
+  <span class="comment">// ...</span>
+  <span class="annotation">@Test</span>
+  <span class="directive">public</span> <span class="type">void</span> petsWithoutType_areNotConsideredInTheCounting() {
+    <span class="comment">// given:</span>
+    Pet petWithoutType = data.petWithType(<span class="predefined-constant">null</span>);
+    <span class="comment">// and:</span>
+    owner.pets = <span class="predefined-type">Arrays</span>.asList(
+        data.petWithType(electric),
+        petWithoutType
+    );
+    <span class="comment">// expect:</span>
+    assertThat(owner.petsOfType(electric))
+        .isEqualTo(<span class="integer">1</span>);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Executing the test shows another <code>NullPointerException</code> in the implementation. The following change will make the test case pass:</p>
+</div>
+<div class="listingblock">
+<div class="title">Owner.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="type">class</span> <span class="class">Owner</span> {
+    <span class="directive">public</span> <span class="type">long</span> petsOfType(PetType petType) {
+
+        <span class="keyword">if</span> (petType == <span class="predefined-constant">null</span>) {
+            <span class="keyword">return</span> <span class="integer">0L</span>;
+        }
+
+        <span class="keyword">return</span> pets.stream()
+            .filter(pet -&gt; Objects.nonNull(pet.getType())) <i class="conum" data-value="1"></i><b>(1)</b>
+            .filter(pet -&gt; Objects.equals(petType.getName(), pet.getType().getName()))
+            .count();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the pets with a null type will be excluded before doing the comparison</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>With that the implementation and test cases are mainly complete. As you have seen, thinking about the edge cases is just as necessary as testing the happy path. Both variants are necessary to get to a complete test coverage and have a comprehensive test suite to rely upon.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The way to write the test case first to identify a bug / develop a feature / prove a particular scenario is called <code>Test driven development</code> - TDD. Using this workflow normally leads to very good test coverage. In the case of fixing a bug it also gives you a clear end point where you know that you have fixed the bug.
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 <div class="sect2">
