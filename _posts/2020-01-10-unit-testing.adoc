@@ -170,8 +170,201 @@ Next you will see the different examples on how to use the unit test capabilitie
 
 === Pet Amount for a Particular Owner
 
-The first test case
+The first test case deals with the feature of count the amount of pets that are associated to an Owner for a given Pet Type. This feature is used in the UI to display that number when the user selects one Owner in the corresponding browse screen.
 
+
+image::unit-testing/pets-of-type.png[align="center"]
+
+The following business rules describe the functionality:
+
+* if the pet type of a pet matches the asked pet type the pet should be counted, otherwise not
+
+==== Implementation
+
+The implementation logic will be put into the Owner Entity class itself and exposed via a method `Owner.petsOfType(PetType petType)`.
+
+
+.Pet.java
+[source,java]
+----
+class Owner extends Person {
+    // ...
+    public long petsOfType(PetType petType) {
+        return pets.stream()
+            .filter(pet -> Objects.equals(petType.getName(), pet.getType().getName()))
+            .count();
+    }
+}
+----
+
+It uses the Java 8 Streams API in order to iterate over the list of pets and filter out the ones that match on the Pet types name. Afterwards it counts the correctly identified pets.
+
+==== Test Cases for the Happy Paths
+
+We will start with the three test cases that verify the above described business rule.
+
+.OwnerTest.java
+[source,java]
+----
+class OwnerTest {
+
+  PetclinicData data = new PetclinicData();
+  private PetType electric;
+  private Owner owner;
+  private PetType fire;
+
+  @BeforeEach
+  public void initTestData() {
+    electric = data.electricType();
+    fire = data.fireType();
+
+    owner = new Owner();
+  }
+
+  @Test
+  public void givenOnePetWithElectricPet_whenAskingForElectricType_oneIsReturned() {
+    // given:
+    owner.pets = Arrays.asList( // <1>
+        data.petWithType(electric)
+    );
+    // expect:
+    assertThat(owner.petsOfType(electric)) // <2>
+        .isEqualTo(1);
+  }
+
+  @Test
+  public void givenOnePetWithElectricPet_whenAskingForFireType_zeroIsReturned() {
+    // given:
+    owner.pets = Arrays.asList(
+        data.petWithType(electric)
+    );
+    // expect:
+    assertThat(owner.petsOfType(fire))
+        .isEqualTo(0);
+  }
+
+
+  @Test
+  public void givenTwoElectricPetsAndOneFirePet_whenAskingForElectricType_twoIsReturned() {
+    // given:
+    owner.pets = Arrays.asList(
+        data.petWithType(electric),
+        data.petWithType(fire),
+        data.petWithType(electric)
+    );
+    // expect:
+    assertThat(owner.petsOfType(electric))
+        .isEqualTo(2);
+  }
+}
+----
+<1> the pet's are defined for the owner
+<2> `petsOfType` is executed with a particular pet type and the outcome is verified
+
+The first test case is a positive test case, which contains the simplest amount of test fixture setup possible. Oftentimes it is a good idea to make the test data as small and clear as possible, because it shows better the essence of the test case.
+
+The second test case is of the same kind but for a negative expectation. The third test case is a combination of both test cases.
+
+This means that in this scenario this test case will not help to catch problems in the implementation that other test would not have found. In quality assurance terms, this test case lives in the same equivalent class as the other tests. This test case has more documentary purposes over actual regression.
+
+With those tests in place, we have covered all code paths that are living along the happy path. This is a term, that describes normally the code execution path that works with valid input values and no error scenarios.
+
+But if we think a little bit outside of that happy path, we will find a couple of more test cases, that are waiting to be written.
+
+==== Testing Edge Cases
+
+When considering the edge cases of the API that the method provides, there are multiple error scenarios to consider.
+
+Just imagine the following situation: The `LookupField` in the UI does not require a Pet Type to be entered. If the user uses that and does not select a Pet Type and clicks OK the passed in `PetType` will be `null`. What happens in this case in the implementation? It will produce a `NullPointerException`. Thinking about edge cases in tests is very valuable, because it normally reveals bugs in the implementation that would otherwise normally only be found at runtime of the application.
+
+To deal with that behavior that we will now create a test case, that proves this hypothesis:
+
+.OwnerTest.java
+[source,java]
+----
+class OwnerTest {
+  // ...
+  @Test
+  public void whenAskingForNull_zeroIsReturned() {
+    // expect:
+    assertThat(owner.petsOfType(null))
+        .isEqualTo(0);
+  }
+}
+----
+
+By defining that edge case, we also defined the expected behavior of the API. In this case we defined the return value should be zero. Running the test case shows the existence of the `NullPointerException` in this situation.
+
+With that knowledge and test case that will tell us when we have reached a success state, we can adjust the implementation to behave according to our specification:
+
+.Owner.java
+[source,java]
+----
+class Owner {
+    public long petsOfType(PetType petType) {
+
+        if (petType == null) {
+            return 0L;
+        }
+
+        return pets.stream()
+            .filter(pet -> Objects.equals(petType.getName(), pet.getType().getName()))
+            .count();
+    }
+}
+----
+
+Running the test case once again, we will see that the application now is capable of dealing with "invalid" inputs and react to it accordingly.
+
+The next edge case that is of similar kind is when one of the pets the owner owns has no Pet type assigned. This is possible due to the current implementation of the entity model, `Pet.type` is not required.
+
+In this case, we would like to exclude those Pets from counting. The following test case will show the desired behavior:
+
+.OwnerTest.java
+[source,java]
+----
+class OwnerTest {
+  // ...
+  @Test
+  public void petsWithoutType_areNotConsideredInTheCounting() {
+    // given:
+    Pet petWithoutType = data.petWithType(null);
+    // and:
+    owner.pets = Arrays.asList(
+        data.petWithType(electric),
+        petWithoutType
+    );
+    // expect:
+    assertThat(owner.petsOfType(electric))
+        .isEqualTo(1);
+  }
+}
+----
+
+Executing the test shows another `NullPointerException` in the implementation. The following change will make the test case pass:
+
+.Owner.java
+[source,java]
+----
+class Owner {
+    public long petsOfType(PetType petType) {
+
+        if (petType == null) {
+            return 0L;
+        }
+
+        return pets.stream()
+            .filter(pet -> Objects.nonNull(pet.getType())) // <1>
+            .filter(pet -> Objects.equals(petType.getName(), pet.getType().getName()))
+            .count();
+    }
+}
+----
+<1> the pets with a null type will be excluded before doing the comparison
+
+With that the implementation and test cases are mainly complete. As you have seen, thinking about the edge cases is just as necessary as testing the happy path. Both variants are necessary to get to a complete test coverage and have a comprehensive test suite to rely upon.
+
+TIP: The way to write the test case first to identify a bug / develop a feature / prove a particular scenario is called `Test driven development` - TDD. Using this workflow normally leads to very good test coverage. In the case of fixing a bug it also gives you a clear end point where you know that you have fixed the bug.
 
 === Next Regular Checkup Date Proposal
 
