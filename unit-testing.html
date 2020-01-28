@@ -580,7 +580,7 @@ Since Spring is not involved on managing the instantiation of the class, depende
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td><code>petsOfType</code> is executed with a particular pet type and the outcome is verified</td>
+<td><code>petsOfType</code> is executed with a particular Type and the outcome is verified</td>
 </tr>
 </table>
 </div>
@@ -606,7 +606,7 @@ Since Spring is not involved on managing the instantiation of the class, depende
 <p>When considering the edge cases of the API that the method provides, there are multiple error scenarios to consider.</p>
 </div>
 <div class="paragraph">
-<p>Just imagine the following situation: The <code>LookupField</code> in the UI does not require a Pet Type to be entered. If the user uses that and does not select a Pet Type and clicks OK the passed in <code>PetType</code> will be <code>null</code>. What happens in this case in the implementation? It will produce a <code>NullPointerException</code>. Thinking about edge cases in tests is very valuable, because it normally reveals bugs in the implementation that would otherwise normally only be found at runtime of the application.</p>
+<p>Just imagine the following situation: The <code>LookupField</code> in the UI does not require a Pet Type to be entered. If the user uses that and does not select a Type and clicks OK the passed in <code>PetType</code> will be <code>null</code>. What happens in this case in the implementation? It will produce a <code>NullPointerException</code>. Thinking about edge cases in tests is very valuable, because it normally reveals bugs in the implementation that would otherwise normally only be found at runtime of the application.</p>
 </div>
 <div class="paragraph">
 <p>To deal with that behavior that we will now create a test case, that proves this hypothesis:</p>
@@ -652,7 +652,7 @@ Since Spring is not involved on managing the instantiation of the class, depende
 <p>Running the test case once again, we will see that the application now is capable of dealing with "invalid" inputs and react to it accordingly.</p>
 </div>
 <div class="paragraph">
-<p>The next edge case that is of similar kind is when one of the pets the owner owns has no Pet type assigned. This is possible due to the current implementation of the entity model, <code>Pet.type</code> is not required.</p>
+<p>The next edge case that is of similar kind is when one of the pets the owner owns has no Type assigned. This is possible due to the current implementation of the entity model, <code>Pet.type</code> is not required.</p>
 </div>
 <div class="paragraph">
 <p>In this case, we would like to exclude those Pets from counting. The following test case will show the desired behavior:</p>
@@ -717,7 +717,7 @@ Since Spring is not involved on managing the instantiation of the class, depende
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-The way to write the test case first to identify a bug / develop a feature / prove a particular scenario is called <code>Test driven development</code> - TDD. Using this workflow normally leads to very good test coverage. In the case of fixing a bug it also gives you a clear end point where you know that you have fixed the bug.
+The way to write the test case first to identify a bug / develop a feature / prove a particular scenario is called <code>Test driven development</code> - TDD. Using this workflow normally leads to very good test coverage as well as some other benefits. In the case of fixing a bug it also gives you a clear end point where you know that you have fixed the bug.
 </td>
 </tr>
 </table>
@@ -727,7 +727,7 @@ The way to write the test case first to identify a bug / develop a feature / pro
 <div class="sect2">
 <h3 id="next_regular_checkup_date_proposal"><a class="anchor" href="#next_regular_checkup_date_proposal"></a><a class="link" href="#next_regular_checkup_date_proposal">Next Regular Checkup Date Proposal</a></h3>
 <div class="paragraph">
-<p>The first example is a functionality for the Petclinic project that allows the user to retrieve the information when the next regular checkup should be scheduled for a selected Pet. The next regular Checkup Date is calculated based on a couple of factors. The pet type determines the interval as well as when the last regular checkup has taken place.</p>
+<p>The next more comprehensive example is a functionality for the Petclinic project that allows the user to retrieve the information when the next regular checkup should be scheduled for a selected Pet. The next regular Checkup Date is calculated based on a couple of factors. The pet type determines the interval as well as when the last regular checkup has taken place.</p>
 </div>
 <div class="paragraph">
 <p>The calculation is triggered from the UI in the Visit Edit screen. The proposed Date can be taken into consideration when creating a new Visit. As part of that logic triggered by the UI, the following service method is available, which contains the business logic of the calculation:</p>
@@ -746,7 +746,7 @@ The way to write the test case first to identify a bug / develop a feature / pro
 </div>
 </div>
 <div class="paragraph">
-<p>The implementation of the Service declares two dependencies that it needs in order to perform the calculation:</p>
+<p>The implementation of the Service defines two dependencies that it needs in order to perform the calculation. The dependencies are declared by constructor based injection so that the unit test can inject its own implementation easily.</p>
 </div>
 <div class="listingblock">
 <div class="title">RegularCheckupServiceBean.java</div>
@@ -783,6 +783,46 @@ The way to write the test case first to identify a bug / develop a feature / pro
 <div class="paragraph">
 <p>The implementation of the service does not contain all the logic for different Pet types within the <code>calculateNextRegularCheckupDate</code> method. Instead the Service knows about possible Calculator classes. It filters out the one calculator that can calculate the next regular checkup date for the Pet and delegates the to the found Calculator.</p>
 </div>
+<div class="paragraph">
+<p>The API of the <code>RegularCheckupDateCalculator</code> looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">RegularCheckupDateCalculator.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">/**
+ * API for Calculators that calculates a proposal date for the next regular checkup date
+ */</span>
+<span class="directive">public</span> <span class="type">interface</span> <span class="class">RegularCheckupDateCalculator</span> {
+
+  <span class="comment">/**
+   * defines if a calculator supports a Pet instance
+   * @param pet the Pet to calculate the checkup date for
+   * @return true if the calculator supports this pet, otherwise false
+   */</span>
+  <span class="type">boolean</span> supports(Pet pet);
+
+  <span class="comment">/**
+   * calculates the next regular checkup date for the Pet
+   * @param pet the Pet to calculate checkup date for
+   * @param visitHistory the visit history of that Pet
+   * @param timeSource the TimeSource CUBA API
+   *
+   * @return the calculated regular checkup date
+   */</span>
+  LocalDate calculateRegularCheckupDate(
+      Pet pet,
+      <span class="predefined-type">List</span>&lt;Visit&gt; visitHistory,
+      TimeSource timeSource
+  );
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It consists of two methods: <code>supports</code> defines if a given Calculator is capable of calculating the date proposal for the given pet. In case the calculator is capable of calculating, the second method <code>calculateRegularCheckupDate</code> is invoked to perform the calculation.</p>
+</div>
+<div class="paragraph">
+<p>There are several implementations of that interface in the implementation. Most of them implement the specific date calculation for a particular Pet type.</p>
+</div>
 <div class="sect3">
 <h4 id="testing_the_implementation_with_mocking"><a class="anchor" href="#testing_the_implementation_with_mocking"></a><a class="link" href="#testing_the_implementation_with_mocking">Testing the Implementation with Mocking</a></h4>
 <div class="paragraph">
@@ -791,10 +831,10 @@ The way to write the test case first to identify a bug / develop a feature / pro
 <div class="ulist">
 <ul>
 <li>
-<p>TimeSource</p>
+<p><code>TimeSource</code></p>
 </li>
 <li>
-<p>List&lt;RegularCheckupDateCalculator&gt;</p>
+<p><code>List&lt;RegularCheckupDateCalculator&gt;</code></p>
 </li>
 </ul>
 </div>
@@ -802,7 +842,55 @@ The way to write the test case first to identify a bug / develop a feature / pro
 <p>We will provide a Stub implementation for the TimeSource in this test case via Mockito.</p>
 </div>
 <div class="paragraph">
-<p>For the list of the Calculators, instead of using a Mock instances, special test implementation will be used. As the Unit test for the <code>RegularCheckupService</code> should verify the behavior in an isolated fashion, the purpose of this test is not to test the different calculator implementation. Instead the test case is going to verify the corresponding orchestration that the Service embodies.</p>
+<p>For the list of the Calculators, instead of using a Mock instances, a special test implementation will be used. This is can also be seen as a Stub, but instead of defining it on the fly via Mockito, a dedicated class <code>ConfigurableTestCalculator</code> is defined in the test sources which has two static configuration options: the answers to the two API methods <code>support</code> and <code>calculate</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">ConfigurableTestCalculator.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">/**
+ * test calculator implementation that allows to statically define the calculation result
+ */</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">ConfigurableTestCalculator</span> <span class="directive">implements</span> RegularCheckupDateCalculator {
+
+  <span class="directive">private</span> <span class="directive">final</span> <span class="type">boolean</span> supports;
+  <span class="directive">private</span> <span class="directive">final</span> LocalDate result;
+
+  <span class="directive">private</span> ConfigurableTestCalculator(<span class="type">boolean</span> supports, LocalDate result) {
+    <span class="local-variable">this</span>.supports = supports;
+    <span class="local-variable">this</span>.result = result;
+  }
+
+  <span class="comment">// ...</span>
+
+  <span class="comment">/**
+   * creates a Calculator that will answer true to {@link RegularCheckupDateCalculator#supports(Pet)}
+   * for test case purposes and returns the provided date as a result
+   */</span>
+  <span class="directive">static</span> RegularCheckupDateCalculator supportingWithDate(LocalDate date) {
+    <span class="keyword">return</span> <span class="keyword">new</span> ConfigurableTestCalculator(<span class="predefined-constant">true</span>, date);
+  }
+
+  <span class="annotation">@Override</span>
+  <span class="directive">public</span> <span class="type">boolean</span> supports(Pet pet) {
+    <span class="keyword">return</span> supports;
+  }
+
+  <span class="annotation">@Override</span>
+  <span class="directive">public</span> LocalDate calculateRegularCheckupDate(
+      Pet pet,
+      <span class="predefined-type">List</span>&lt;Visit&gt; visitHistory,
+      TimeSource timeSource
+  ) {
+    <span class="keyword">return</span> result;
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This test implementation is another form of exchanging the dependent on component (DOC) in the test case. Using a Mocking framework or providing static test classes is more or less the same from a 10'000 feet point of view and support the same goal.</p>
+</div>
+<div class="paragraph">
+<p>As the Unit test for the <code>RegularCheckupService</code> should verify the behavior in an isolated fashion, the purpose of this test is not to test the different calculator implementation. Instead the test case is going to verify the corresponding orchestration that the Service embodies.</p>
 </div>
 <div class="paragraph">
 <p>The Implementation of the Calculators will be tested in dedicated Unit tests for those classes.</p>
@@ -887,8 +975,7 @@ The JUnit Annotation <code>@DisplayName</code> is used to better describe the te
       <span class="string"><span class="delimiter">&quot;</span><span class="content"> the first one is chosen to calculate</span><span class="delimiter">&quot;</span></span>
   )
   <span class="directive">public</span> <span class="type">void</span> multiple_supportingCalculators_theFirstOneIsChosen() {
-    <span class="comment">// given: two calculators support the Pet</span>
-    <span class="comment">//   the order within the list is used for fetching the first suitable calculator</span>
+    <span class="comment">// given: two calculators are valid; the ONE_MONTH_AGO calculator is first</span>
     <span class="predefined-type">List</span>&lt;RegularCheckupDateCalculator&gt; calculators = calculators(
         supportingWithDate(ONE_MONTHS_AGO),
         notSupporting(THREE_MONTHS_AGO),
@@ -1172,7 +1259,24 @@ The JUnit Annotation <code>@DisplayName</code> is used to better describe the te
 <div class="sect1">
 <h2 id="limitations_of_unit_testing"><a class="anchor" href="#limitations_of_unit_testing"></a><a class="link" href="#limitations_of_unit_testing">Limitations of Unit Testing</a></h2>
 <div class="sectionbody">
-
+<div class="paragraph">
+<p>Unit testing in an isolated fashion has some great advantages over integration testing. It spins up a different, much smaller test environment that allows to run test fast. Also by avoiding dependencies to other classes of the application as well as the framework it is based upon, the test case can be much more robust and independent of a changing environment.</p>
+</div>
+<div class="paragraph">
+<p>But this very same isolation also is the basis for the main limitation of Unit tests. In order to achieve that level of isolation, we have to basically encode certain assumptions on the integration points. This is true for the test environment as well as the dependencies that are mocked. As long as those assumptions stay true, everything is fine. But once the environment changes, there is a chance that the encoded assumptions are not longer matching the reality.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s take an example of a very implicit assumption on the test environment: In the <code>RegularCheckupService</code> example the expressed dependency on the <code>List&lt;RegularCheckupDateCalculator&gt;</code> is only sufficiently working as expected in production code, if every Calculator is annotated with the <code>@Component</code> Spring annotation. Otherwise it is not picked up. Furthermore as the implementation of the Service implies that the order of the injected List defines which Calculator to ask first, all Calculators need to have a <code>@Ordered</code> annotation in place so that the order is defined.</p>
+</div>
+<div class="paragraph">
+<p>Both of those examples could not be tested via a unit test, as we explicitly don&#8217;t want to test the interaction between those classes.</p>
+</div>
+<div class="paragraph">
+<p>Although unit tests should be the primary mechanism of testing business logic, in order to also cover those interaction problems, it is crucial to also implement integration testing. A good rule of thumb, is to only test the remaining questions in an integration testing scenario. So instead of creating all those test cases again and execute them in an integration test environment only a small subset of those test cases should be used.</p>
+</div>
+<div class="paragraph">
+<p>In the above mentioned example a good candidate for an integration test would be the test case: <code>multiple_supportingCalculators_theFirstOneIsChosen</code> which verifies that the right components are injected and the correct one is used for performing the calculation.</p>
+</div>
 </div>
 </div>
 <div class="sect1">
