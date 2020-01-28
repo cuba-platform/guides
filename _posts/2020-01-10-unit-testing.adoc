@@ -259,7 +259,7 @@ class OwnerTest {
 }
 ----
 <1> the pet's are defined for the owner
-<2> `petsOfType` is executed with a particular pet type and the outcome is verified
+<2> `petsOfType` is executed with a particular Type and the outcome is verified
 
 The first test case is a positive test case, which contains the simplest amount of test fixture setup possible. Oftentimes it is a good idea to make the test data as small and clear as possible, because it shows better the essence of the test case.
 
@@ -275,7 +275,7 @@ But if we think a little bit outside of that happy path, we will find a couple o
 
 When considering the edge cases of the API that the method provides, there are multiple error scenarios to consider.
 
-Just imagine the following situation: The `LookupField` in the UI does not require a Pet Type to be entered. If the user uses that and does not select a Pet Type and clicks OK the passed in `PetType` will be `null`. What happens in this case in the implementation? It will produce a `NullPointerException`. Thinking about edge cases in tests is very valuable, because it normally reveals bugs in the implementation that would otherwise normally only be found at runtime of the application.
+Just imagine the following situation: The `LookupField` in the UI does not require a Pet Type to be entered. If the user uses that and does not select a Type and clicks OK the passed in `PetType` will be `null`. What happens in this case in the implementation? It will produce a `NullPointerException`. Thinking about edge cases in tests is very valuable, because it normally reveals bugs in the implementation that would otherwise normally only be found at runtime of the application.
 
 To deal with that behavior that we will now create a test case, that proves this hypothesis:
 
@@ -316,7 +316,7 @@ class Owner {
 
 Running the test case once again, we will see that the application now is capable of dealing with "invalid" inputs and react to it accordingly.
 
-The next edge case that is of similar kind is when one of the pets the owner owns has no Pet type assigned. This is possible due to the current implementation of the entity model, `Pet.type` is not required.
+The next edge case that is of similar kind is when one of the pets the owner owns has no Type assigned. This is possible due to the current implementation of the entity model, `Pet.type` is not required.
 
 In this case, we would like to exclude those Pets from counting. The following test case will show the desired behavior:
 
@@ -364,11 +364,11 @@ class Owner {
 
 With that the implementation and test cases are mainly complete. As you have seen, thinking about the edge cases is just as necessary as testing the happy path. Both variants are necessary to get to a complete test coverage and have a comprehensive test suite to rely upon.
 
-TIP: The way to write the test case first to identify a bug / develop a feature / prove a particular scenario is called `Test driven development` - TDD. Using this workflow normally leads to very good test coverage. In the case of fixing a bug it also gives you a clear end point where you know that you have fixed the bug.
+TIP: The way to write the test case first to identify a bug / develop a feature / prove a particular scenario is called `Test driven development` - TDD. Using this workflow normally leads to very good test coverage as well as some other benefits. In the case of fixing a bug it also gives you a clear end point where you know that you have fixed the bug.
 
 === Next Regular Checkup Date Proposal
 
-The first example is a functionality for the Petclinic project that allows the user to retrieve the information when the next regular checkup should be scheduled for a selected Pet. The next regular Checkup Date is calculated based on a couple of factors. The pet type determines the interval as well as when the last regular checkup has taken place.
+The next more comprehensive example is a functionality for the Petclinic project that allows the user to retrieve the information when the next regular checkup should be scheduled for a selected Pet. The next regular Checkup Date is calculated based on a couple of factors. The pet type determines the interval as well as when the last regular checkup has taken place.
 
 The calculation is triggered from the UI in the Visit Edit screen. The proposed Date can be taken into consideration when creating a new Visit. As part of that logic triggered by the UI, the following service method is available, which contains the business logic of the calculation:
 
@@ -386,7 +386,7 @@ public interface RegularCheckupService {
 ----
 
 
-The implementation of the Service declares two dependencies that it needs in order to perform the calculation:
+The implementation of the Service defines two dependencies that it needs in order to perform the calculation. The dependencies are declared by constructor based injection so that the unit test can inject its own implementation easily.
 
 
 .RegularCheckupServiceBean.java
@@ -422,16 +422,99 @@ The first dependency is the `TimeSource` API from CUBA which is needed to retrie
 
 The implementation of the service does not contain all the logic for different Pet types within the `calculateNextRegularCheckupDate` method. Instead the Service knows about possible Calculator classes. It filters out the one calculator that can calculate the next regular checkup date for the Pet and delegates the to the found Calculator.
 
+The API of the `RegularCheckupDateCalculator` looks like this:
+
+.RegularCheckupDateCalculator.java
+[source,java]
+----
+/**
+ * API for Calculators that calculates a proposal date for the next regular checkup date
+ */
+public interface RegularCheckupDateCalculator {
+
+  /**
+   * defines if a calculator supports a Pet instance
+   * @param pet the Pet to calculate the checkup date for
+   * @return true if the calculator supports this pet, otherwise false
+   */
+  boolean supports(Pet pet);
+
+  /**
+   * calculates the next regular checkup date for the Pet
+   * @param pet the Pet to calculate checkup date for
+   * @param visitHistory the visit history of that Pet
+   * @param timeSource the TimeSource CUBA API
+   *
+   * @return the calculated regular checkup date
+   */
+  LocalDate calculateRegularCheckupDate(
+      Pet pet,
+      List<Visit> visitHistory,
+      TimeSource timeSource
+  );
+}
+----
+
+It consists of two methods: `supports` defines if a given Calculator is capable of calculating the date proposal for the given pet. In case the calculator is capable of calculating, the second method `calculateRegularCheckupDate` is invoked to perform the calculation.
+
+There are several implementations of that interface in the implementation. Most of them implement the specific date calculation for a particular Pet type.
+
 ==== Testing the Implementation with Mocking
 
 In order to instantiate the SUT: `RegularCheckupService`, we are forced to provide both of the declared dependencies in the Constructor:
 
-* TimeSource
-* List<RegularCheckupDateCalculator>
+* `TimeSource`
+* `List<RegularCheckupDateCalculator>`
 
 We will provide a Stub implementation for the TimeSource in this test case via Mockito.
 
-For the list of the Calculators, instead of using a Mock instances, special test implementation will be used. As the Unit test for the `RegularCheckupService` should verify the behavior in an isolated fashion, the purpose of this test is not to test the different calculator implementation. Instead the test case is going to verify the corresponding orchestration that the Service embodies.
+For the list of the Calculators, instead of using a Mock instances, a special test implementation will be used. This is can also be seen as a Stub, but instead of defining it on the fly via Mockito, a dedicated class `ConfigurableTestCalculator` is defined in the test sources which has two static configuration options: the answers to the two API methods `support` and `calculate`:
+
+.ConfigurableTestCalculator.java
+[source,java]
+----
+/**
+ * test calculator implementation that allows to statically define the calculation result
+ */
+public class ConfigurableTestCalculator implements RegularCheckupDateCalculator {
+
+  private final boolean supports;
+  private final LocalDate result;
+
+  private ConfigurableTestCalculator(boolean supports, LocalDate result) {
+    this.supports = supports;
+    this.result = result;
+  }
+
+  // ...
+
+  /**
+   * creates a Calculator that will answer true to {@link RegularCheckupDateCalculator#supports(Pet)}
+   * for test case purposes and returns the provided date as a result
+   */
+  static RegularCheckupDateCalculator supportingWithDate(LocalDate date) {
+    return new ConfigurableTestCalculator(true, date);
+  }
+
+  @Override
+  public boolean supports(Pet pet) {
+    return supports;
+  }
+
+  @Override
+  public LocalDate calculateRegularCheckupDate(
+      Pet pet,
+      List<Visit> visitHistory,
+      TimeSource timeSource
+  ) {
+    return result;
+  }
+}
+----
+
+This test implementation is another form of exchanging the dependent on component (DOC) in the test case. Using a Mocking framework or providing static test classes is more or less the same from a 10'000 feet point of view and support the same goal.
+
+As the Unit test for the `RegularCheckupService` should verify the behavior in an isolated fashion, the purpose of this test is not to test the different calculator implementation. Instead the test case is going to verify the corresponding orchestration that the Service embodies.
 
 The Implementation of the Calculators will be tested in dedicated Unit tests for those classes.
 
@@ -493,8 +576,7 @@ class RegularCheckupServiceTest {
       " the first one is chosen to calculate"
   )
   public void multiple_supportingCalculators_theFirstOneIsChosen() {
-    // given: two calculators support the Pet
-    //   the order within the list is used for fetching the first suitable calculator
+    // given: two calculators are valid; the ONE_MONTH_AGO calculator is first
     List<RegularCheckupDateCalculator> calculators = calculators(
         supportingWithDate(ONE_MONTHS_AGO),
         notSupporting(THREE_MONTHS_AGO),
@@ -722,6 +804,18 @@ Furthermore the context definition is used to create certain test data as well a
 The two above shown test cases that we saw test the different sub parts of the implementation of the "Next Regular Checkup Date Calculation" into multiple parts. With that design choice in the tests and the implementation it allows to create test cases, that have a strong locality. This means in case one test case after a production change does not succeed anymore, it is easier and faster to find the root cause.
 
 == Limitations of Unit Testing
+
+Unit testing in an isolated fashion has some great advantages over integration testing. It spins up a different, much smaller test environment that allows to run test fast. Also by avoiding dependencies to other classes of the application as well as the framework it is based upon, the test case can be much more robust and independent of a changing environment.
+
+But this very same isolation also is the basis for the main limitation of Unit tests. In order to achieve that level of isolation, we have to basically encode certain assumptions on the integration points. This is true for the test environment as well as the dependencies that are mocked. As long as those assumptions stay true, everything is fine. But once the environment changes, there is a chance that the encoded assumptions are not longer matching the reality.
+
+Let's take an example of a very implicit assumption on the test environment: In the `RegularCheckupService` example the expressed dependency on the `List<RegularCheckupDateCalculator>` is only sufficiently working as expected in production code, if every Calculator is annotated with the `@Component` Spring annotation. Otherwise it is not picked up. Furthermore as the implementation of the Service implies that the order of the injected List defines which Calculator to ask first, all Calculators need to have a `@Ordered` annotation in place so that the order is defined.
+
+Both of those examples could not be tested via a unit test, as we explicitly don't want to test the interaction between those classes.
+
+Although unit tests should be the primary mechanism of testing business logic, in order to also cover those interaction problems, it is crucial to also implement integration testing. A good rule of thumb, is to only test the remaining questions in an integration testing scenario. So instead of creating all those test cases again and execute them in an integration test environment only a small subset of those test cases should be used.
+
+In the above mentioned example a good candidate for an integration test would be the test case: `multiple_supportingCalculators_theFirstOneIsChosen` which verifies that the right components are injected and the correct one is used for performing the calculation.
 
 
 == Summary
