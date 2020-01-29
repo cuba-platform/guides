@@ -13,12 +13,12 @@
     <meta name="twitter:site" content="@CubaPlatform">
     <meta name="twitter:creator" content="@CubaPlatform">
     <meta name="twitter:title" content="Unit Testing in CUBA Applications">
-    <meta name="twitter:description" content="In this guide you will learn how automated testing in a CUBA application works. In particular this guide deals with the question of how unit tests can be executed and when it makes sense to use them.">
+    <meta name="twitter:description" content="In this guide you will learn how automated testing in a CUBA application works. In particular this guide deals with the question of how unit tests can be executed and when it makes sense to use them over integration testing.">
     <meta name="twitter:image" content="">
 
     <meta property="og:type" content="article">
     <meta property="og:title" content="Unit Testing in CUBA Applications">
-    <meta property="og:description" content="In this guide you will learn how automated testing in a CUBA application works. In particular this guide deals with the question of how unit tests can be executed and when it makes sense to use them.">
+    <meta property="og:description" content="In this guide you will learn how automated testing in a CUBA application works. In particular this guide deals with the question of how unit tests can be executed and when it makes sense to use them over integration testing.">
     <meta property="og:url" content="https://www.cuba-platform.com/guides/unit-testing">
     <meta property="og:image" content="">
 
@@ -186,7 +186,7 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this guide you will learn how automated testing in a CUBA application works. In particular this guide deals with the question of how unit tests can be executed and when it makes sense to use them.</p>
+<p>In this guide you will learn how automated testing in a CUBA application works. In particular this guide deals with the question of how unit tests can be executed and when it makes sense to use them over integration testing.</p>
 </div>
 </div>
 </div>
@@ -264,7 +264,7 @@
 <h2 id="overview"><a class="anchor" href="#overview"></a><a class="link" href="#overview">Overview</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this guides you will learn how to use the techniques of unit testing without dependencies. This approach differs from the previously discussed variant of middleware integration testing, where a close-to-production test environment is created for the test to run.</p>
+<p>In this guides you will learn how to use the techniques of unit testing without dependencies. This approach differs from the other discussed variant of middleware integration testing (see <a href="https://www.cuba-platform.com/guides/integration-testing-middleware">CUBA guide: middleware integration testing</a>), where a close-to-production test environment is created for the test to run.</p>
 </div>
 <div class="paragraph">
 <p>In case of unit testing, the test environment is very slim because basically no runtime of the CUBA framework is provided. In return for giving up this convenience, unit testing allows you to more easily spin up the system under test and bring it to the proper state it needs to be to exercise the test case. It also cuts out a whole lot of problems regarding test data setup and is generally executed faster by orders of magnitude.</p>
@@ -295,7 +295,7 @@
 Since Spring is not involved on managing the instantiation of the class, dependency injection is not working in this scenario. Therefore dependencies (objects that the class under test relies upon) have to be instantiated manually and passed into the class under test directly.</p>
 </div>
 <div class="paragraph">
-<p>In case those dependencies are CUBA APIs, they normally have to be mocked.</p>
+<p>In case those dependencies are CUBA APIs, those have to be mocked.</p>
 </div>
 </div>
 <div class="sect2">
@@ -303,28 +303,30 @@ Since Spring is not involved on managing the instantiation of the class, depende
 <div class="paragraph">
 <p>Mocking / Stubbing is a common way in test automation that helps to emulate / control &amp; verify certain external parts that the system under test interacts with in order to isolate the SUT as much as possible from its outside world.</p>
 </div>
-<div class="paragraph">
-<p>&lt;&lt; INSERT IMAGE WITH SUT &amp; DOC mocked out &gt;&gt;</p>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/unit-testing/testing-doc-replacement.png" alt="testing doc replacement">
+</div>
 </div>
 <div class="paragraph">
-<p>As seen in the picture there is one class that acts as the system that should be tested (system under test: SUT). This class uses another class that is responsible for helping some additional need. This class is normally referred to as dependent-on-component (DOC).</p>
+<p>As seen in the diagram there is one class that acts as the system that should be tested (system under test: SUT). This class uses another class that is responsible for helping some additional need. This class is normally referred to as dependent-on-component (DOC).</p>
 </div>
 <div class="paragraph">
 <p>What Stubbing or Mocking is doing now is the following:</p>
 </div>
 <div class="paragraph">
-<p>In order to isolate the SUT from any other component to gain the test locality, the DOC is replaced with a fake object. This object plays the role of the real DOC, but in the test case you control the behavior of the fake object. With that you can directly influence how the SUT behaves even if it has some interaction with another dependency that would otherwise not be controllable directly.</p>
+<p>In order to isolate the SUT from any other dependent-on-component in order to gain the test locality, the DOC is replaced with a Stub implementation. This object plays the role of the real DOC, but in the test case you control the behavior of the Stub. With that you can directly influence how the SUT behaves even if it has some interaction with another dependency that would otherwise not be controllable directly.</p>
 </div>
 <div class="sect3">
 <h4 id="mocking_frameworks"><a class="anchor" href="#mocking_frameworks"></a><a class="link" href="#mocking_frameworks">Mocking Frameworks</a></h4>
 <div class="paragraph">
-<p>JUnit itself does not contain Mocking capabilities. Instead dedicated Mocking frameworks allow to instantiated fake objects and control their behavior in a JUnit test case. In this guide you will learn about Mockito, a very popular Stubbing / Mocking framework in the Java ecosystem.</p>
+<p>JUnit itself does not contain Mocking capabilities. Instead dedicated Mocking frameworks allow to instantiated Stub / Mock objects and control their behavior in a JUnit test case. In this guide you will learn about Mockito, a very popular Stubbing / Mocking framework in the Java ecosystem.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="an_example_of_mocking"><a class="anchor" href="#an_example_of_mocking"></a><a class="link" href="#an_example_of_mocking">An Example of Mocking</a></h4>
 <div class="paragraph">
-<p>The following example shows how to configure a mock object. In this case it will replace the behavior of the <code>TimeSource</code> API from CUBA which allows to retrieve the current timestamp. In this case the mock object should return yesterday. The way to define the behavior of a fake object in a JUnit Test case with Mockito looks like this:</p>
+<p>The following example shows how to configure a Stub object. In this case it will replace the behavior of the <code>TimeSource</code> API from CUBA which allows to retrieve the current timestamp. In this case the Stub object should return yesterday. The way to define the behavior of a Stub / Mock object with Mockito is to use the Mockito API like in the following listing (3):</p>
 </div>
 <div class="listingblock">
 <div class="title">MockingTest.java</div>
@@ -377,13 +379,14 @@ Since Spring is not involved on managing the instantiation of the class, depende
 </table>
 </div>
 <div class="paragraph">
-<p>The complete test case can be found in the example: <a href="https://github.com/cuba-guides/cuba-petclinic-unit-testing/blob/master/modules/core/test/com/haulmont/sample/petclinic/MockingTest.java">MockingTest.java</a>. With that behavior description in place, the one thing left is that the fake object instance is now manually injected into the class / system under test.</p>
+<p>The complete test case can be found in the example: <a href="https://github.com/cuba-guides/cuba-petclinic-unit-testing/blob/master/modules/core/test/com/haulmont/sample/petclinic/MockingTest.java">MockingTest.java</a>. With that behavior description in place, the one thing left is that the Stub object instance has to be manually passed into the class / system under test.</p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="constructor_based_injection"><a class="anchor" href="#constructor_based_injection"></a><a class="link" href="#constructor_based_injection">Constructor Based Injection</a></h4>
+</div>
+<div class="sect2">
+<h3 id="constructor_based_injection"><a class="anchor" href="#constructor_based_injection"></a><a class="link" href="#constructor_based_injection">Constructor Based Injection</a></h3>
 <div class="paragraph">
-<p>In order to achieve this one thing in the production code needs to be changed. Normally in CUBA Field based injection is used. This means that in case a Spring Bean A has a dependency to another Spring Bean B, a dependency is declared by creating a field in class A of type B like this:</p>
+<p>In order to achieve this one thing in the production code needs to be changed. CUBA and Studio by default uses Field injection. This means that in case a Spring Bean A has a dependency to another Spring Bean B, a dependency is declared by creating a field in class A of type B like this:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -417,7 +420,7 @@ Since Spring is not involved on managing the instantiation of the class, depende
 </table>
 </div>
 <div class="paragraph">
-<p>In the context of unit testing, this pattern does not work very well, because the field can not be easily accessed without a corresponding method to inject the dependency. One way to create this dedicated injection method is Constructor based Injection. In this case the production code defines a dedicated Constructor, annotates it with <code>@Inject</code> and defines the desired dependencies as parameters in the Constructor.</p>
+<p>In the context of unit testing, this pattern does not work very well, because the field can not be easily accessed without a corresponding method to inject the dependency. One way to create this dedicated injection method is Constructor based Injection. In this case the the class that needs a dependency defines a dedicated Constructor, annotates it with <code>@Inject</code> and mentions the desired dependencies as Constructor parameters.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -457,8 +460,7 @@ Since Spring is not involved on managing the instantiation of the class, depende
 </table>
 </div>
 <div class="paragraph">
-<p>With that change in place, it is possible to call this constructor directly in the test case and pass in the mocked instance that was configured with the help of Mockito.</p>
-</div>
+<p>In production the code still works as before, because Spring supports both kinds of injection. In the test case we can call this constructor directly and pass in the mocked instance that was configured through Mockito.</p>
 </div>
 </div>
 </div>
@@ -467,7 +469,7 @@ Since Spring is not involved on managing the instantiation of the class, depende
 <h2 id="tests_for_petclinic_functionality"><a class="anchor" href="#tests_for_petclinic_functionality"></a><a class="link" href="#tests_for_petclinic_functionality">Tests for Petclinic Functionality</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Next you will see the different examples on how to use the unit test capabilities in order to automatically test the functionality of the Petclinic example project.</p>
+<p>Next you will see the different examples on how to use the unit test capabilities in order to automatically test the functionality of the Petclinic example project in a fast and isolated manner.</p>
 </div>
 <div class="sect2">
 <h3 id="pet_amount_for_a_particular_owner"><a class="anchor" href="#pet_amount_for_a_particular_owner"></a><a class="link" href="#pet_amount_for_a_particular_owner">Pet Amount for a Particular Owner</a></h3>
@@ -492,7 +494,7 @@ Since Spring is not involved on managing the instantiation of the class, depende
 <div class="sect3">
 <h4 id="implementation"><a class="anchor" href="#implementation"></a><a class="link" href="#implementation">Implementation</a></h4>
 <div class="paragraph">
-<p>The implementation logic will be put into the Owner Entity class itself and exposed via a method <code>Owner.petsOfType(PetType petType)</code>.</p>
+<p>The implementation logic is located in Owner Entity class itself:</p>
 </div>
 <div class="listingblock">
 <div class="title">Pet.java</div>
@@ -501,18 +503,20 @@ Since Spring is not involved on managing the instantiation of the class, depende
     <span class="comment">// ...</span>
     <span class="directive">public</span> <span class="type">long</span> petsOfType(PetType petType) {
         <span class="keyword">return</span> pets.stream()
-            .filter(pet -&gt; Objects.equals(petType.getName(), pet.getType().getName()))
+            .filter(pet -&gt;
+                Objects.equals(petType.getName(), pet.getType().getName())
+            )
             .count();
     }
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>It uses the Java 8 Streams API in order to iterate over the list of pets and filter out the ones that match on the Pet types name. Afterwards it counts the correctly identified pets.</p>
+<p>It uses the Java 8 Streams API to iterate over the list of pets and filter out the ones that match on the Pet types name. Afterwards it counts the correctly identified pets.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="test_cases_for_the_happy_paths"><a class="anchor" href="#test_cases_for_the_happy_paths"></a><a class="link" href="#test_cases_for_the_happy_paths">Test Cases for the Happy Paths</a></h4>
+<h4 id="test_cases_for_the_happy_path"><a class="anchor" href="#test_cases_for_the_happy_path"></a><a class="link" href="#test_cases_for_the_happy_path">Test Cases for the Happy Path</a></h4>
 <div class="paragraph">
 <p>We will start with the three test cases that verify the above described business rule.</p>
 </div>
@@ -535,7 +539,7 @@ Since Spring is not involved on managing the instantiation of the class, depende
   }
 
   <span class="annotation">@Test</span>
-  <span class="directive">public</span> <span class="type">void</span> givenOnePetWithElectricPet_whenAskingForElectricType_oneIsReturned() {
+  <span class="directive">public</span> <span class="type">void</span> aPetWithMatchingPetType_isCounted() {
     <span class="comment">// given:</span>
     owner.pets = <span class="predefined-type">Arrays</span>.asList( <i class="conum" data-value="1"></i><b>(1)</b>
         data.petWithType(electric)
@@ -546,7 +550,7 @@ Since Spring is not involved on managing the instantiation of the class, depende
   }
 
   <span class="annotation">@Test</span>
-  <span class="directive">public</span> <span class="type">void</span> givenOnePetWithElectricPet_whenAskingForFireType_zeroIsReturned() {
+  <span class="directive">public</span> <span class="type">void</span> aPetWithNonMatchingPetType_isNotCounted() {
     <span class="comment">// given:</span>
     owner.pets = <span class="predefined-type">Arrays</span>.asList(
         data.petWithType(electric)
@@ -558,7 +562,7 @@ Since Spring is not involved on managing the instantiation of the class, depende
 
 
   <span class="annotation">@Test</span>
-  <span class="directive">public</span> <span class="type">void</span> givenTwoElectricPetsAndOneFirePet_whenAskingForElectricType_twoIsReturned() {
+  <span class="directive">public</span> <span class="type">void</span> twoPetsMatch_andOneNot_twoIsReturned() {
     <span class="comment">// given:</span>
     owner.pets = <span class="predefined-type">Arrays</span>.asList(
         data.petWithType(electric),
@@ -576,7 +580,7 @@ Since Spring is not involved on managing the instantiation of the class, depende
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>the pet&#8217;s are defined for the owner</td>
+<td>the pets are configured for the owner</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -585,16 +589,25 @@ Since Spring is not involved on managing the instantiation of the class, depende
 </table>
 </div>
 <div class="paragraph">
-<p>The first test case is a positive test case, which contains the simplest amount of test fixture setup possible. Oftentimes it is a good idea to make the test data as small and clear as possible, because it shows better the essence of the test case.</p>
+<p>The first test case is a positive test case, which contains the simplest amount of test fixture setup possible. The second test case is of the same kind but for a negative expectation. The third test case is a combination of both test cases.</p>
 </div>
 <div class="paragraph">
-<p>The second test case is of the same kind but for a negative expectation. The third test case is a combination of both test cases.</p>
+<p>Oftentimes it is a good idea to make the test data as small and clear as possible, because it shows better the essence of the test case.</p>
 </div>
 <div class="paragraph">
-<p>This means that in this scenario this test case will not help to catch problems in the implementation that other test would not have found. In quality assurance terms, this test case lives in the same equivalent class as the other tests. This test case has more documentary purposes over actual regression.</p>
+<p>With those tests in place, we have covered all code paths that are living along the happy path.</p>
 </div>
-<div class="paragraph">
-<p>With those tests in place, we have covered all code paths that are living along the happy path. This is a term, that describes normally the code execution path that works with valid input values and no error scenarios.</p>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Happy path is a term, that describes the code execution path that works with valid input values and no error scenarios.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>But if we think a little bit outside of that happy path, we will find a couple of more test cases, that are waiting to be written.</p>
@@ -603,10 +616,22 @@ Since Spring is not involved on managing the instantiation of the class, depende
 <div class="sect3">
 <h4 id="testing_edge_cases"><a class="anchor" href="#testing_edge_cases"></a><a class="link" href="#testing_edge_cases">Testing Edge Cases</a></h4>
 <div class="paragraph">
-<p>When considering the edge cases of the API that the method provides, there are multiple error scenarios to consider.</p>
+<p>When considering the edge cases of that method, there are multiple error scenarios to consider. Just imagine the following situation:</p>
 </div>
 <div class="paragraph">
-<p>Just imagine the following situation: The <code>LookupField</code> in the UI does not require a Pet Type to be entered. If the user uses that and does not select a Type and clicks OK the passed in <code>PetType</code> will be <code>null</code>. What happens in this case in the implementation? It will produce a <code>NullPointerException</code>. Thinking about edge cases in tests is very valuable, because it normally reveals bugs in the implementation that would otherwise normally only be found at runtime of the application.</p>
+<p>The <code>LookupField</code> in the UI does not require a Pet Type to be entered. If the user uses that and does not select a Type and clicks OK the passed in <code>PetType</code> will be <code>null</code>. What happens in this case in the implementation? It will produce a <code>NullPointerException</code>.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Thinking about edge cases in tests is very valuable, because it reveals bugs in the implementation that would otherwise only be found at runtime of the application.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>To deal with that behavior that we will now create a test case, that proves this hypothesis:</p>
@@ -708,7 +733,7 @@ Since Spring is not involved on managing the instantiation of the class, depende
 </table>
 </div>
 <div class="paragraph">
-<p>With that the implementation and test cases are mainly complete. As you have seen, thinking about the edge cases is just as necessary as testing the happy path. Both variants are necessary to get to a complete test coverage and have a comprehensive test suite to rely upon.</p>
+<p>With that the first example unit test is complete. As you have seen, thinking about the edge cases is just as necessary as testing the happy path. Both variants are required to get to a complete test coverage and have a comprehensive test suite to rely upon.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -717,7 +742,7 @@ Since Spring is not involved on managing the instantiation of the class, depende
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-The way to write the test case first to identify a bug / develop a feature / prove a particular scenario is called <code>Test driven development</code> - TDD. Using this workflow normally leads to very good test coverage as well as some other benefits. In the case of fixing a bug it also gives you a clear end point where you know that you have fixed the bug.
+The way to write the test case first to identify a bug / develop a feature / prove a particular scenario is called <code>Test driven development</code> - TDD. Using this workflow leads to very good test coverage as well as some other benefits. In the case of fixing a bug it also gives you a clear end point where you know that you have fixed the bug.
 </td>
 </tr>
 </table>
@@ -1298,7 +1323,7 @@ The JUnit Annotation <code>@DisplayName</code> is used to better describe the te
 <p>Besides the benefits in the workflow of developing the test cases, we also learned about an architectural benefit: test scenario locality. Keeping the surface area of the SUT small helps to spot root causes of test failures much faster.</p>
 </div>
 <div class="paragraph">
-<p>Finally the test fixture setup is normally easier to create as well when the surface area is kept small.</p>
+<p>Finally the test fixture setup is easier to create as well when the surface area is kept small.</p>
 </div>
 <div class="paragraph">
 <p>Besides the benefits we also looked at the limitations of unit testing. One example was that we are not able to verify the correct usage of particular environmental behavior the code lives in. Although our Unit tests perfectly show that the business rules might be correctly defined in the calculators, the question if the are using the correct Spring annotations to be picked up by the framework in the right way cannot easily be verified by unit tests.</p>
@@ -1314,10 +1339,7 @@ The JUnit Annotation <code>@DisplayName</code> is used to better describe the te
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://doc.cuba-platform.com/reporting-7.0/index.html">CUBA docs: Reporting</a></p>
-</li>
-<li>
-<p><a href="https://doc.cuba-platform.com/reporting-7.1/open_office.html">CUBA docs: Reporting - Appendix A: Installing and Configuring OpenOffice</a></p>
+<p><a href="https://www.cuba-platform.com/guides/integration-testing-middleware">CUBA guide: middleware integration testing</a></p>
 </li>
 </ul>
 </div>
@@ -1349,6 +1371,7 @@ The JUnit Annotation <code>@DisplayName</code> is used to better describe the te
 <ul class="sectlevel2">
 <li><a href="#unit_testing">Unit Testing</a></li>
 <li><a href="#mocking">Mocking</a></li>
+<li><a href="#constructor_based_injection">Constructor Based Injection</a></li>
 </ul>
 </li>
 <li><a href="#tests_for_petclinic_functionality">Tests for Petclinic Functionality</a>
