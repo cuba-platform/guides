@@ -62,11 +62,11 @@ Mocking / Stubbing is a common way in test automation that helps to emulate / co
 
 image::unit-testing/testing-doc-replacement.png[align="center"]
 
-As seen in the diagram there is one class that acts as the system that should be tested (system under test: SUT). This class uses another class that is responsible for helping some additional need. This class is normally referred to as dependent-on-component (DOC).
+As seen in the diagram there is one class that acts as the system that should be tested (system under test: SUT). This class uses another class that is responsible for helping some additional need. This class is normally referred to as a dependency.
 
 What Stubbing or Mocking is doing now is the following:
 
-In order to isolate the SUT from any other dependent-on-component in order to gain the test locality, the DOC is replaced with a Stub implementation. This object plays the role of the real DOC, but in the test case you control the behavior of the Stub. With that you can directly influence how the SUT behaves even if it has some interaction with another dependency that would otherwise not be controllable directly.
+In order to isolate the SUT from any other dependency in order to gain the test locality, the dependency is replaced with a Stub implementation. This object plays the role of the real dependency, but in the test case you control the behavior of the Stub. With that you can directly influence how the SUT behaves even if it has some interaction with another dependency that would otherwise not be controllable directly.
 
 ==== Mocking Frameworks
 
@@ -522,7 +522,7 @@ public class ConfigurableTestCalculator
 }
 ----
 
-This test implementation is another form of exchanging the dependent on component (DOC) in the test case. Using a Mocking framework or providing static test classes is more or less the same from a 10'000 feet point of view and support the same goal.
+This test implementation is another form of exchanging the dependency in the test case. Using a Mocking framework or providing static test classes is more or less the same from a 10'000 feet point of view and support the same goal.
 
 As the unit test for the `RegularCheckupService` should verify the behavior in an isolated fashion, the purpose of this test is not to test the different calculators. Instead the test case is going to verify the corresponding orchestration that the service embodies.
 
