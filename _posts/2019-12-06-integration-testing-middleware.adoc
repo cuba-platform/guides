@@ -1,5 +1,5 @@
 ---
-compatible_cuba_versions: 7.0+
+compatible_cuba_versions: 7.1+
 compatible_java_versions: 8+
 project_id: cuba-petclinic-testing-middleware
 permalink: integration-testing-middleware
@@ -13,7 +13,7 @@ permalink: integration-testing-middleware
 :page-root: ../../../
 :project_id: cuba-petclinic-testing-middleware
 :java_version: 1.8
-:cuba_version: 7.0
+:cuba_version: 7.1
 :page-icone: images/intro-to-reports/guide_icone.svg
 
 Test automation is key to every successful application development effort since it normally gives a high positive return on investment for QA efforts. CUBA applications are build on the Java ecosystem, which has very powerful and mature test automation capabilities. In this guide you will learn how to leverage those capabilities.
@@ -71,9 +71,9 @@ In a CUBA application, just like any other Java application, it is possible and 
 
 In a test case (which is expressed as another Java class in a special test source directory) instances of production classes are instantiated and methods are executed. Afterwards the results are verified through programmatic comparison of an expected result against the actual result. Depending on this comparison, the test case is either treated as "success" or "failure".
 
-A CUBA application is divided into two parts: the middleware part and the frontend part. The middleware consists of a combination of the `core` and the `global` module in the source code. It normally contains the majority of the business logic, integrations to other systems and the database related interactions.
+A CUBA application is divided into two parts: the middleware part and the client part. The middleware consists of a combination of the `core` and the `global` module in the source code. It normally contains the majority of the business logic, integrations to other systems and the database related interactions.
 
-This guide is only about testing the middleware part of a CUBA application, since for the frontend different patterns and testing strategies apply. Therefore this kind of testing is covered in another dedicated guide.
+This guide is only about testing the middleware part of a CUBA application, since for the client different patterns and testing strategies apply. Therefore this kind of testing is covered in another dedicated guide.
 
 == Test Environments
 Depending on how production code is executed in a test environment, this environment needs to fulfil certain criteria. If e.g. a test exercises a production class that interacts with a database, this database has to be up and running in that environment and the production code needs to have a proper connection to it.
@@ -100,7 +100,7 @@ In order to make that environment available to the test case it takes a couple o
 
 ==== Database Connection
 
-CUBA uses the same database connection that is established when running the CUBA application. In the case of HSQLDB CUBA Studio takes care of having the database running when executing the test case.
+CUBA integration tests use the same database connection that is established when running the CUBA application. In the case of HSQLDB CUBA Studio takes care of having the database running when executing the test case.
 
 By default the database instance is `shared` between the test environment and the local application. This means that data that is defined locally when running the application is also available in the test case execution. Furthermore, if the test case changes data in the database, it is also changed the next time when you start the application.
 
@@ -214,10 +214,15 @@ public class VisitServiceBean implements VisitService {
   //...
   @Override
   public Visit createVisitForToday(String identificationNumber) {
-    return loadPetByIdentificationNumber(identificationNumber) // <1>
-            .map(this::createVisitForPet) // <2>
-            .map(this::saveVisit) // <3>
-            .orElse(null);
+    Optional<Pet> pet = loadPetByIdentificationNumber(identificationNumber);  // <1>
+
+    if (!pet.isPresent()) {
+      return null;
+    }
+
+    return saveVisit( // <2>
+        createVisitForPet(pet.get())
+    );
   }
 
   private Visit createVisitForPet(Pet pet) {
@@ -240,8 +245,7 @@ public class VisitServiceBean implements VisitService {
 }
 ----
 <1> the Pet is searched by the given Identification Number returning an `Optional<Pet>`
-<2> in case a Pet is found, a corresponding Visit will be created
-<3> the newly created Visit instance will be stored in the database
+<2> in case a Pet is found, a corresponding Visit will be created and stored
 
 ==== Test Class Setup
 
@@ -386,11 +390,11 @@ but furthermore Visit information are stored as well. This is due to the fact th
 the `30.create-db.sql` file contains seed data that is used for demonstration purposes.
 This has some upsides as well as downsides when it comes to test automation.
 
-On the one side it makes the test data setup easier, as there are already some data to rely upon.
+On the one hand it makes the test data setup easier, as there are already some data to rely upon.
 It is not necessary to programmatically create  the required `Pet`, `PetType` and `Visit` entities
 before any test case can be executed. This make the test creation easier and faster.
 
-On the other side, relying on test data that is defined outside the test case also comes with a maintenance cost.
+On the other hand, relying on test data that is defined outside the test case also comes with a maintenance cost.
 It generally makes the test cases less resilient to changes of that test data. Since this is central test data
 that all test cases share (as well as the running application), this situation can be even worse. Also is makes the test a little more obscure, since it is hard to see those implicit assumptions about certain data being available.
 
