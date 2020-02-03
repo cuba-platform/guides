@@ -214,10 +214,15 @@ public class VisitServiceBean implements VisitService {
   //...
   @Override
   public Visit createVisitForToday(String identificationNumber) {
-    return loadPetByIdentificationNumber(identificationNumber) // <1>
-            .map(this::createVisitForPet) // <2>
-            .map(this::saveVisit) // <3>
-            .orElse(null);
+    Optional<Pet> pet = loadPetByIdentificationNumber(identificationNumber);  // <1>
+
+    if (!pet.isPresent()) {
+      return null;
+    }
+
+    return saveVisit( // <2>
+        createVisitForPet(pet.get())
+    );
   }
 
   private Visit createVisitForPet(Pet pet) {
@@ -240,8 +245,7 @@ public class VisitServiceBean implements VisitService {
 }
 ----
 <1> the Pet is searched by the given Identification Number returning an `Optional<Pet>`
-<2> in case a Pet is found, a corresponding Visit will be created
-<3> the newly created Visit instance will be stored in the database
+<2> in case a Pet is found, a corresponding Visit will be created and stored
 
 ==== Test Class Setup
 
