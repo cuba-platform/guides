@@ -9,12 +9,12 @@ permalink: integration-testing-middleware
 :sectlinks:
 :sectanchors:
 :page-navtitle: Middleware Integration Testing in CUBA applications
-:page-excerpt: In this guide you will learn how automated testing in a CUBA application works. In particular this guide deals with middleware layer of a CUBA application and how integration tests can be executed there.
+:page-excerpt: Testing Guide: Middleware integration testing of a CUBA application
 :page-root: ../../../
 :project_id: cuba-petclinic-testing-middleware
 :java_version: 1.8
 :cuba_version: 7.1
-:page-icone: images/intro-to-reports/guide_icone.svg
+:page-icone: images/integration-testing-middleware/testing_integration.svg
 
 Test automation is the key to every successful application development process since it normally gives a high positive return on investments for QA efforts. CUBA applications are built on the Java ecosystem which has very powerful and mature test automation capabilities. In this guide you will learn how to leverage those capabilities.
 
@@ -27,11 +27,6 @@ This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA Pet
 * automatic creation of a Visit for a given Pet Identification Number
 * automatic "Disease Warning Mailing" for endangered Pets
 
-=== Final Application
-
-++++
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-reports/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-reports/master/img/login-screen.png"/></a>
-++++
 
 include::includes/guide_requirements.adoc[]
 
