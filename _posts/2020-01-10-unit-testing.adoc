@@ -16,7 +16,7 @@ permalink: unit-testing
 :cuba_version: 7.0
 :page-icone: images/intro-to-reports/guide_icone.svg
 
-In this guide you will learn how automated testing in a CUBA application works. In particular this guide deals with the question of how unit tests can be executed and when it makes sense to use them over integration testing.
+In this guide you will learn how automated testing in a CUBA application works. In particular, this guide deals with the question of how unit tests can be executed and when it makes sense to use them over integration testing.
 
 == What Will be Built
 
@@ -37,45 +37,45 @@ include::includes/petclinic_introduction.adoc[]
 
 == Overview
 
-In this guides you will learn how to use the techniques of unit testing without dependencies. This approach differs from the other discussed variant of middleware integration testing (see https://www.cuba-platform.com/guides/integration-testing-middleware[CUBA guide: middleware integration testing]), where a close-to-production test environment is created for the test to run.
+In this guide you will learn how to use the techniques of unit testing without dependencies. This approach differs from the other discussed variant of middleware integration testing (see https://www.cuba-platform.com/guides/integration-testing-middleware[CUBA guide: middleware integration testing]), where a close-to-production test environment is created for the test to run.
 
-In case of unit testing, the test environment is very slim because basically no runtime of the CUBA framework is provided. In return for giving up this convenience, unit testing allows you to more easily spin up the system under test and bring it to the proper state it needs to be to exercise the test case. It also cuts out a whole lot of problems regarding test data setup and is generally executed faster by orders of magnitude.
+In case of unit testing, the test environment is very slim because basically no runtime of the CUBA framework is provided. For giving up this convenience, unit testing allows you to more easily spin up the system under test and bring it to the proper state for exercising the test case. It also cuts out a whole lot of problems regarding test data setup and is generally executed faster by orders of magnitude.
 
 === Unit Testing
 
-Besides the integration test environment that you learned about in the middleware integration testing guide, it is also possible to create test cases, that do not spin up the Spring application context or any CUBA platform APIs at all.
+Besides the integration test environment that you learned about in the middleware integration testing guide, it is also possible to create test cases that do not spin up the Spring application context or any CUBA Platform APIs at all.
 
-The main benefits of writing unit test in an isolated fashion without an integration test environment are:
+The main benefits of writing a unit test in an isolated fashion without an integration test environment are:
 
 * locality of the test scenario
 * test execution speed
 * easier test fixture setup
 
-In this case the class under test is instantiated directly via its constructor.
-Since Spring is not involved on managing the instantiation of the class, dependency injection is not working in this scenario. Therefore dependencies (objects that the class under test relies upon) have to be instantiated manually and passed into the class under test directly.
+In this case, the class under test is instantiated directly via its constructor.
+Since Spring is not involved in managing the instantiation of the class, dependency injection is not working in this scenario. Therefore, dependencies (objects that the class under test relies upon) must be instantiated manually and passed into the class under the test directly.
 
-In case those dependencies are CUBA APIs, those have to be mocked.
+In case those dependencies are CUBA APIs, they have to be mocked.
 
 === Mocking
 
-Mocking / Stubbing is a common way in test automation that helps to emulate / control & verify certain external parts that the system under test interacts with in order to isolate the SUT as much as possible from its outside world.
+Mocking / Stubbing is a common way in test automation that helps to emulate / control & verify certain external parts that the system under the test interacts with to isolate the SUT from its outside world as much as possible.
 
 image::unit-testing/testing-doc-replacement.png[align="center"]
 
-As seen in the diagram there is one class that acts as the system that should be tested (system under test: SUT). This class uses another class that is responsible for helping some additional need. This class is normally referred to as a dependency.
+As you can see in the diagram, there is one class that acts as the system to be tested (system under test: SUT). This class uses another class responsible for helping some additional needs. This class is normally referred to as a dependency.
 
-What Stubbing or Mocking is doing now is the following:
+Stubbing or Mocking is now doing the following:
 
-In order to isolate the SUT from any other dependency in order to gain the test locality, the dependency is replaced with a Stub implementation. This object plays the role of the real dependency, but in the test case you control the behavior of the Stub. With that you can directly influence how the SUT behaves even if it has some interaction with another dependency that would otherwise not be controllable directly.
+To isolate the SUT from any other dependency and to gain the test locality, the dependency is replaced with a Stub implementation. This object plays the role of a real dependency, but in the test case you control the behavior of the Stub. With that you can directly influence on the SUT behaviour, even if it has some interaction with another dependency that otherwise would be out of direct control.
 
 ==== Mocking Frameworks
 
-JUnit itself does not contain Mocking capabilities. Instead dedicated Mocking frameworks allow to instantiated Stub / Mock objects and control their behavior in a JUnit test case. In this guide you will learn about Mockito, a very popular Stubbing / Mocking framework in the Java ecosystem.
+JUnit itself does not contain Mocking capabilities. Instead dedicated Mocking frameworks allow instantiating Stub / Mock objects and control over their behavior in a JUnit test case. In this guide you will learn about Mockito, a very popular Stubbing / Mocking framework in the Java ecosystem.
 
 
 ==== An Example of Mocking
 
-The following example shows how to configure a Stub object. In this case it will replace the behavior of the `TimeSource` API from CUBA which allows to retrieve the current timestamp. In this case the Stub object should return yesterday. The way to define the behavior of a Stub / Mock object with Mockito is to use the Mockito API like in the following listing (3):
+This example shows how to configure a Stub object. In this case it will replace the behavior of the `TimeSource` API from CUBA which allows retrieving the current timestamp. The Stub object should return yesterday. The way to define the behavior of a Stub / Mock object with Mockito is to use the Mockito API like in the following listing (3):
 
 .MockingTest.java
 [source,java]
@@ -106,16 +106,16 @@ class MockingTest {
   }
 }
 ----
-<1> The `MockitoExtension` activates the automatic instantiation of the `@Mock` annotated attributes
+<1> the `MockitoExtension` activates the automatic instantiation of the `@Mock` annotated attributes
 <2> the `TimeSource` instance is marked as a `@Mock` and will be instantiated via Mockito
 <3> the Mock behavior is defined in the test case
 <4> invoking the method `now` returns yesterday instead of the correct value
 
-The complete test case can be found in the example: https://github.com/cuba-guides/cuba-petclinic-unit-testing/blob/master/modules/core/test/com/haulmont/sample/petclinic/MockingTest.java[MockingTest.java]. With that behavior description in place, the one thing left is that the Stub object instance has to be manually passed into the class / system under test.
+The complete test case can be found in the example: https://github.com/cuba-guides/cuba-petclinic-unit-testing/blob/master/modules/core/test/com/haulmont/sample/petclinic/MockingTest.java[MockingTest.java]. With that behavior description in place, the one thing left is that the Stub object instance must be manually passed into the class / system under test.
 
 === Constructor Based Injection
 
-In order to achieve this one thing in the production code needs to be changed. CUBA and Studio by default uses Field injection. This means that in case a Spring Bean A has a dependency to another Spring Bean B, a dependency is declared by creating a field in class A of type B like this:
+To achieve this, one thing in the production code should be changed. CUBA and Studio by default uses Field injection. This means that if a Spring Bean A has a dependency to another Spring Bean B, a dependency is declared by creating a field in the class A of type B like this:
 
 [source,java]
 ----
@@ -135,7 +135,7 @@ class SpringBeanA {
 <2> the field declaration indicates a dependency
 <3> the dependency can be used in the business logic of A
 
-In the context of unit testing, this pattern does not work very well, because the field can not be easily accessed without a corresponding method to inject the dependency. One way to create this dedicated injection method is Constructor based Injection. In this case the the class that needs a dependency defines a dedicated Constructor, annotates it with `@Inject` and mentions the desired dependencies as Constructor parameters.
+In the context of unit testing, this pattern does not work quite well because the field can not be easily accessed without a corresponding method to inject the dependency. One way to create this dedicated injection method is Constructor based Injection. In this case, the class that needs a dependency defines a dedicated Constructor, annotates it with `@Inject` and mentions the desired dependencies as Constructor parameters.
 
 [source,java]
 ----
@@ -159,28 +159,28 @@ class SpringBeanAWithConstructorInjection {
 ----
 <1> `@Inject` indicates Spring to call the Constructor and treat the parameters as Dependencies
 <2> the dependencies are defined as Constructor parameters
-<3> the dependency instance is manually stored as the field
+<3> the dependency instance is manually stored as a field
 
-In production the code still works as before, because Spring supports both kinds of injection. In the test case we can call this constructor directly and pass in the mocked instance that was configured through Mockito.
+In production the code still works as before, because Spring supports both kinds of injection. In the test case we can call this constructor directly and pass it to the mocked instance configured through Mockito.
 
 == Tests for Petclinic Functionality
 
-Next you will see the different examples on how to use the unit test capabilities in order to automatically test the functionality of the Petclinic example project in a fast and isolated manner.
+Next, you will see the different examples on how to use the unit test capabilities to automatically test the functionality of the Petclinic example project in a fast and isolated manner.
 
 === Pet Amount for a Particular Owner
 
-The first test case deals with the feature of count the amount of pets that are associated to an Owner for a given pet type. This feature is used in the UI to display that number when the user selects one Owner in the corresponding browse screen.
+The first test case deals with the calculation of the amount of pets that are associated with an Owner for a given pet type. This feature is used in the UI to display this number when the user selects one Owner in the corresponding browse screen.
 
 
 image::unit-testing/pets-of-type.png[align="center"]
 
 The following business rules describe the functionality:
 
-* if the pet type of a pet matches the asked pet type the pet should be counted, otherwise not
+* If the pet type of a pet matches the asked pet type, the pet should be counted, otherwise not.
 
 ==== Implementation
 
-The implementation logic is located in Owner Entity class itself:
+The implementation logic is located in the Owner Entity class itself:
 
 .Pet.java
 [source,java]
@@ -197,7 +197,7 @@ class Owner extends Person {
 }
 ----
 
-It uses the Java 8 Streams API to iterate over the list of pets and filter out the ones that match on the pet types name. Afterwards it counts the correctly identified pets.
+It uses the Java 8 Streams API to iterate over the list of pets and filter out the ones that match with the pet type name. Afterwards it counts the correctly identified pets.
 
 ==== Test Cases for the Happy Path
 
@@ -267,19 +267,19 @@ Oftentimes it is a good idea to make the test data as small and clear as possibl
 
 With those tests in place, we have covered all code paths that are living along the happy path.
 
-TIP: Happy path is a term, that describes the code execution path that works with valid input values and no error scenarios.
+TIP: Happy path is a term describing the code execution path that works with valid input values and no error scenarios.
 
-But if we think a little bit outside of that happy path, we will find a couple of more test cases, that are waiting to be written.
+But if we think a little bit outside of this happy path, we will find a couple of more test cases to be written.
 
 ==== Testing Edge Cases
 
-When considering the edge cases of that method, there are multiple error scenarios to consider. Just imagine the following situation:
+When thinking of the edge cases of that method, there are multiple error scenarios to consider. Just imagine the following situation:
 
-The `LookupField` in the UI does not require a pet type to be entered. If the user uses that and does not select a type and clicks OK the passed in `PetType` will be `null`. What happens in this case in the implementation? It will produce a `NullPointerException`.
+The `LookupField` in the UI does not require a pet type to be entered. If the user uses it and does not select a type and clicks OK, the passed in `PetType` will be `null`. What happens in this case in the implementation? It will produce a `NullPointerException`.
 
-TIP: Thinking about edge cases in tests is very valuable, because it reveals bugs in the implementation that would otherwise only be found at runtime of the application.
+TIP: Thinking about edge cases in tests is very important because it reveals bugs in the implementation that otherwise can be found only at the application runtime.
 
-To deal with that behavior that we will now create a test case, that proves this hypothesis:
+Now, to deal with that behavior, we will create a test case that proves this hypothesis:
 
 .OwnerTest.java
 [source,java]
@@ -295,9 +295,9 @@ class OwnerTest {
 }
 ----
 
-By defining that edge case, we also defined the expected behavior of the API. In this case we defined the return value should be zero. Running the test case shows the existence of the `NullPointerException` in this situation.
+By defining that edge case, we also defined the expected behavior of the API. In this case we defined that the return value should be zero. Running the test case shows the existence of the `NullPointerException` in this situation.
 
-With that knowledge and test case that will tell us when we have reached a success state, we can adjust the implementation to behave according to our specification:
+With this knowledge and test case that will tell us when we have reached a success state, we can adjust the implementation to behave according to our specification:
 
 .Owner.java
 [source,java]
@@ -316,9 +316,9 @@ class Owner {
 }
 ----
 
-Running the test case once again, we will see that the application now is capable of dealing with "invalid" inputs and react to it accordingly.
+Running the test case once again, we will see that the application can now deal with "invalid" inputs and react to them accordingly.
 
-The next edge case that is of similar kind is when one of the pets the owner owns has no type assigned. This is possible due to the current implementation of the entity model, `Pet.type` is not required.
+The next similar edge case is when one of the owner's pets has no type assigned. This is possible due to the current implementation of the entity model, `Pet.type` is not required.
 
 In this case, we would like to exclude those pets from counting. The following test case will show the desired behavior:
 
@@ -362,17 +362,17 @@ class Owner {
     }
 }
 ----
-<1> the pets without a type will be excluded before doing the comparison
+<1> pets without a type will be excluded before doing the comparison
 
-With that the first example unit test is complete. As you have seen, thinking about the edge cases is just as necessary as testing the happy path. Both variants are required to get to a complete test coverage and have a comprehensive test suite to rely upon.
+With that, the first example unit test is complete. As you have seen, thinking about the edge cases is just as necessary as testing the happy path. Both variants are required for a complete test coverage and a comprehensive test suite to rely on.
 
-One additional thing to note here, is that when you look at the test, it covers not the end to end feature from the UI to the business logic (and potentially the database). This is the very nature of a unit test. Instead, the normal way of tackling that issue would be to create other unit tests for the other parts in isolation as well. Oftentimes a smaller set of integration tests would also be created that verify the correct interaction of the different components.
+One additional thing to note here is that when you look at the test, it covers not the end to end feature from the UI to the business logic (and potentially the database). This is the very nature of a unit test. Instead, the normal way of tackling this issue would be to create other unit tests for the other parts in isolation as well. Oftentimes a smaller set of integration tests would also be created to verify the correct interaction of different components.
 
-TIP: The way to write the test case first to identify a bug / develop a feature / prove a particular scenario is called `Test Driven Development` - TDD. Using this workflow leads to very good test coverage as well as some other benefits. In the case of fixing a bug it also gives you a clear end point where you know that you have fixed the bug.
+TIP: The way to write the test case first to identify a bug / develop a feature / prove a particular scenario is called `Test Driven Development` - TDD. With this workflow you can get a very good test coverage as well as some other benefits. In the case of fixing a bug it also gives you a clear end point where you know that you have fixed the bug.
 
 === Next Regular Checkup Date Proposal
 
-The next more comprehensive example is a functionality for the Petclinic project that allows the user to retrieve the information when the next regular checkup should be scheduled for a selected pet. The next regular Checkup Date is calculated based on a couple of factors. The pet type determines the interval as well as when the last regular checkup has taken place.
+The next more comprehensive example is the functionality for the Petclinic project that allows the user to retrieve the information when the next regular checkup is scheduled for a selected pet. The next regular Checkup Date is calculated based on a couple of factors. The pet type determines the interval and when the last regular checkup was.
 
 The calculation is triggered from the UI in a dedicated Visit Editor for creating Regular Checkups: https://github.com/cuba-guides/cuba-petclinic-unit-testing/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/visit/visit/VisitCreateRegularCheckup.java[VisitCreateRegularCheckup]. As part of that logic triggered by the UI, the following service method is used, which contains the business logic of the calculation:
 
@@ -422,9 +422,9 @@ public class RegularCheckupServiceBean implements RegularCheckupService {
 }
 ----
 
-The first dependency is the `TimeSource` API from CUBA which is needed to retrieve the current date. The second dependency is a list of `RegularCheckupDateCalculator` instances.
+The first dependency is the `TimeSource` API from CUBA for retrieving the current date. The second dependency is a list of `RegularCheckupDateCalculator` instances.
 
-The implementation of the service does not contain the calculation logic for different pet types within the `calculateNextRegularCheckupDate` method. Instead it knows about possible Calculator classes. It filters out the one calculator that can calculate the next regular checkup date for the pet and delegates the calculation to the found Calculator.
+The implementation of the service does not contain the calculation logic for different pet types within the `calculateNextRegularCheckupDate` method. Instead it knows about possible Calculator classes. It filters out the only calculator that can calculate the next regular checkup date for the pet and delegates the calculation to it.
 
 The API of the `RegularCheckupDateCalculator` looks like this:
 
@@ -461,7 +461,7 @@ public interface RegularCheckupDateCalculator {
 
 It consists of two methods: `supports` defines if a Calculator is capable of calculating the date proposal for the given pet. In case the calculator is, the second method `calculateRegularCheckupDate` is invoked to perform the calculation.
 
-There are several implementations of that interface in the implementation. Most of them implement the specific date calculation for a particular pet type.
+There are several implementations of this interface in the implementation. Most of them implement the specific date calculation for a particular pet type.
 
 ==== Testing the Implementation with Mocking
 
@@ -472,7 +472,7 @@ In order to instantiate the SUT: `RegularCheckupService`, we are forced to provi
 
 We will provide a Stub implementation for the TimeSource in this test case via Mockito.
 
-For the list of the Calculators, instead of using a Mock instances, a special test implementation will be used. This is can also be seen as a Stub, but instead of defining it on the fly via Mockito, a dedicated class `ConfigurableTestCalculator` is defined in the test sources which has two static configuration options: the answers to the two API methods `support` and `calculate`.
+For the list of the Calculators, instead of using a Mock instances, we'll use a special test implementation. This can also be seen as a Stub, but instead of defining it on the fly via Mockito, a dedicated class `ConfigurableTestCalculator` is defined in the test sources. It has two static configuration options: the answers to the two API methods `support` and `calculate`.
 
 .ConfigurableTestCalculator.java
 [source,java]
@@ -522,7 +522,7 @@ public class ConfigurableTestCalculator
 }
 ----
 
-This test implementation is another form of exchanging the dependency in the test case. Using a Mocking framework or providing static test classes is more or less the same from a 10'000 feet point of view and support the same goal.
+This test implementation is another form of exchanging the dependency in the test case. Using a Mocking framework or providing static test classes is more or less the same from a 10'000 feet point of view and supports the same goal.
 
 As the unit test for the `RegularCheckupService` should verify the behavior in an isolated fashion, the purpose of this test is not to test the different calculators. Instead the test case is going to verify the corresponding orchestration that the service embodies.
 
@@ -530,15 +530,15 @@ The implementation of the calculators will be tested in dedicated unit tests for
 
 ==== Testing the Orchestration in RegularCheckupService
 
-Starting with the test case for the `RegularCheckupService` the following test cases cover the majority of the orchestration functionality:
+Starting with the test case for the `RegularCheckupService`, the following test cases cover the majority of the orchestration functionality:
 
 1. only calculators that support the pet instance will be asked to calculate the checkup date
 2. in case multiple calculators support a pet, the first one is chosen
-3. in case no calculator was found, next month as the proposed regular checkup date will be used
+3. in case no calculator was found, next month will be used as the proposed regular checkup date.
 
-The implementation of the test cases is shown in the listing below.
+You can find the implementation of the test cases in the listing below.
 
-TIP: The JUnit Annotation `@DisplayName` is used to better describe the test cases in the test result report. Additionally it helps to link the the test case implementation to the above given test case descriptions.
+TIP: The JUnit Annotation `@DisplayName` is used to better describe the test cases in the test result report. Additionally it helps to link the test case implementation to the above given test case descriptions.
 
 .RegularCheckupServiceTest.java
 [source,java]
@@ -647,22 +647,22 @@ The full source code including the helper methods and test implementation of the
 
 ==== Testing the Calculators
 
-As described above the unit test for the `RegularCheckupService` does not include the implementations of the different calculators itself. This is done on purpose in order to benefit from the isolation aspects and the localization of the test scenarios. Otherwise the `RegularCheckupServiceTest` would contain test cases for all the different calculators as well as the orchestration logic.
+As described above, the unit test for the `RegularCheckupService` does not include the implementations of different calculators itself. This is done on purpose, to benefit from the isolation aspects and the localization of the test scenarios. Otherwise the `RegularCheckupServiceTest` would contain test cases for all different calculators as well as the orchestration logic.
 
 Splitting the test cases for the orchestration and the calculator allows us to create a comparably easy test case setup for testing one of the calculators. In this example we will take a look at the `ElectricPetTypeCalculator` and the corresponding test case.
 
-For this calculator, that is responsible for pets of type `Electric` it embodies the following business rules:
+For the calculator responsible for pets of type `Electric`, it embodies the following business rules:
 
 1. it should only be used if the name of the pet type is `Electric`, otherwise not
 2. the interval between two regular Checkups is one year for electric pets
 3. Visits that are not regular checkups should not influence the calculation
-4. in case the pet has not done a regular checkup at the Petclinic before, next month should be proposed
+4. in case the pet didn't have a regular checkup at the Petclinic before, next month should be proposed
 5. if the last Regular Checkup was performed longer than one year ago, next month should be proposed
 
 
 ==== ElectricPetTypeCalculator Test Cases
 
-The implementation of the different test cases that verify those business rules can be found below. This test class also uses the `PetclinicData` helper for various test utility methods.
+You can find the implementation of the different test cases that verify those business rules below. This test class also uses the `PetclinicData` helper for various test utility methods.
 
 .ElectricPetTypeCalculatorTest.java
 [source,java]
@@ -810,49 +810,49 @@ class ElectricPetTypeCalculatorTest {
 }
 ----
 <1> `Supports` describes test cases that verify the behavior of `supports()` method via `@Nested` grouping of JUnit
-<2> several points in time are statically defined that are used as test fixtures and verification values
+<2> several points in time used as test fixtures and verification values are statically defined
 <3> `calculate` is executing the corresponding method of the calculator (SUT)
 
-The test class uses the JUnit Annotation `@Nested`. This allows to define groups of test cases that all share the same context. In this case it is used to group them by the methods of the SUT that they test: `@Nested class Supports {}` for the `support()` method to verify. `@Nested class CalculateRegularCheckupDate` for the `calculate()` method of the API.
+The test class uses the JUnit Annotation `@Nested`. This allows defining groups of test cases with the same context. In this case, it is used to group them by the methods of the SUT they test: `@Nested class Supports {}` for the `support()` method to verify, `@Nested class CalculateRegularCheckupDate` for the `calculate()` method of the API.
 
-Furthermore the context definition is used to create certain test data as well as `@BeforeEach` setup methods only for all the test cases that are defined in that context. E.g. only in the context `CalculateRegularCheckupDate` it is necessary to define the `timeSource` mock behavior.
+Furthermore, the context definition is used to create certain test data as well as `@BeforeEach` setup methods for all the test cases defined in this context. E.g. only in the context `CalculateRegularCheckupDate` it is necessary to define the `timeSource` mock behavior.
 
 == Limitations of Unit Testing
 
-Unit testing in an isolated fashion has some great advantages over integration testing. It spins up a different, much smaller test environment that allows to run test fast. Also by avoiding dependencies to other classes of the application as well as the framework it is based upon, the test case can be much more robust and independent of a changing environment.
+Unit testing in an isolated fashion has some great advantages over integration testing. It spins up a different, much smaller test environment that allows a faster test run. Also, by avoiding dependencies to other classes of the application and the framework it is based upon, the test case can be much more robust and independent of a changing environment.
 
-But this very same isolation also is the basis for the main limitation of unit tests. In order to achieve that level of isolation, we have to basically encode certain assumptions on the integration points. This is true for the test environment as well as the dependencies that are mocked. As long as those assumptions stay true, everything is fine. But once the environment changes, there is a chance that the encoded assumptions are not longer matching the reality.
+But this very same isolation is also the basis for the main limitation of unit tests. To achieve this level of isolation, we have to basically encode certain assumptions on the integration points. This is true for the test environment as well as the mocked dependencies. As long as those assumptions stay true, everything is fine. But once the environment changes, there is a chance that the encoded assumptions are no longer matching the reality.
 
 Let's take an example of a very implicit assumption on the test environment:
 
-In the `RegularCheckupService` example the expressed dependency on `List<RegularCheckupDateCalculator>` is only sufficiently working as expected in production code, if every Calculator is a Spring bean. This means it needs to have an annotation `@Component` added to the class. Otherwise it is not picked up and therefore it will influence the overall behavior of the business logic, because e.g. now the default value (next month) will be returned.
+In the `RegularCheckupService` example the expressed dependency on `List<RegularCheckupDateCalculator>` is sufficiently working as expected in production code, only if every Calculator is a Spring bean. This means it needs to have an annotation `@Component` added to the class. Otherwise, it is not picked up, and therefore it will influence the overall behavior of the business logic, because e.g. now the default value (next month) will be returned.
 
-Furthermore as the implementation of the service implies that the order of the injected list defines which calculator to ask first, all calculators additionally need to have a `@Ordered` annotation in place so that the order is defined.
+Furthermore, as the implementation of the service implies that the order of the injected list defines which calculator to ask first, all calculators additionally need to have an `@Ordered` annotation in place so that the order is defined.
 
 Both of those examples could not be tested via a unit test, as we explicitly don't want to test the interaction between those classes and the comparably slow test container for every unit test.
 
-Unit tests should be the primary mechanism of testing business logic. But in order to also cover those interaction scenarios, it is crucial to also implement integration testing. A good rule of thumb is to only test the those scenarios in an integration test. So instead of creating all those test cases again and execute them in an integration test environment only a small subset of those test cases should be used.
+Unit tests should be the primary mechanism of testing business logic. But to cover those interaction scenarios, too, it is crucial to implement integration testing. A good rule of thumb is to test those scenarios only in an integration test. So, instead of creating all those test cases again and execute them in an integration test environment, only a small subset of those test cases should be used.
 
 In the above mentioned example a good candidate for an integration test would be the test case: `multiple_supportingCalculators_theFirstOneIsChosen` which verifies that the right components are injected and the correct one is used for performing the calculation.
 
 
 == Summary
 
-In this guide we learned how to use unit tests to test functionality in an isolated fashion using JUnit. In the introduction you saw the differences using plain unit tests compared to middleware integration tests. In particular no external dependencies like databases are used. Furthermore the test environment does not leverage a test container. Instead we instantiate the SUT manually.
+In this guide we learned how to use unit tests to test functionality in an isolated fashion using JUnit. In the introduction you saw the differences between using plain unit tests and middleware integration tests. In particular, no external dependencies like databases are used. Furthermore, the test environment does not leverage a test container. Instead we instantiate the SUT manually.
 
-In order to create isolated tests it is sometimes required to leverage a Mocking framework as we did in the `RegularCheckupServiceTest` example. Mocking is a way to control the environment & dependencies the SUT interacts with. By exchanging particular dependencies with special test implementations the test case is capable of setup the behavior of the dependency (and potentially use it for verification purposes as well). Mockito in the Java ecosystem allows to configure the dependencies and their desired behavior.
+In order to create isolated tests, sometimes you need to leverage a Mocking framework as we did in the `RegularCheckupServiceTest` example. Mocking is a way to control the environment & dependencies the SUT interacts with. By exchanging particular dependencies with special test implementations, the test case is capable of setting up the behavior of the dependency (and potentially use it for verification purposes as well). In the Java ecosystem, Mockito allows configuring the dependencies and their desired behavior.
 
 We also learned that exchanging field based injection with constructor based injection production code helps to manually inject dependencies into the SUT in testing scenarios.
 
-The benefit of using plain unit tests over integration tests is that the tests run orders of magnitudes faster. This benefits sounds like a nice to have feature, but in fact it allows to go down a path of much more aggressive usage of automated testing. Using test driven development (TDD) as an example technique benefits very much from fast feedback cycles that those execution times provide.
+The benefit of using plain unit tests over integration tests is that the tests run orders of magnitudes faster. This benefit sounds like a nice-to-have feature, but in fact it allows going down a path of much more aggressive usage of automated testing. Using test driven development (TDD) as an example technique benefits very much from fast feedback cycles provided by those execution times.
 
-Besides the benefits in the workflow of developing the test cases, we also learned about an architectural benefit: test scenario locality. Keeping the surface area of the SUT small helps to spot root causes of test failures much faster.
+Besides the benefits in the workflow of developing the test cases, we also learned about an architectural benefit: test scenario locality. Keeping the surface area of the SUT helps to spot root causes of test failures much faster.
 
-Finally the test fixture setup is easier to create as well when the surface area is kept small.
+Finally, the test fixture setup is easier to create as well, when the surface area is kept small.
 
-Besides the benefits we also looked at the limitations of unit testing. One example was that we are not able to verify the correct usage of particular environmental behavior the code lives in. Although our unit tests perfectly show that the business rules might be correctly defined in the calculators, the question if the are using the correct Spring annotations to be picked up by the framework in the right way cannot easily be verified by unit tests.
+Besides the benefits we also looked at the limitations of unit testing. One example was that we are not able to verify the correct usage of particular environmental behavior the code lives in. Although our unit tests perfectly show that the business rules might be correctly defined in the calculators, the question if they are using the correct Spring annotations to be picked up by the framework in the right way cannot be easily verified by unit tests.
 
-Therefore using unit tests should only be used in combination with a set of integration tests that cover the remaining open questions. With this combination we can be quite sure that our application is actually working as we expect it.
+Therefore, using unit tests should only be used in combination with a set of integration tests that cover the remaining open questions. With this combination we can be quite sure that our application is actually working as we expect.
 
 == Further Information
 
