@@ -43,21 +43,22 @@ Normally it is useful to create the guide as a draft. In order to see them as we
 $ jekyll serve --drafts --config _config.yml 
 ```
 
-### Using Docker
+### Build Using Docker 
 
-If you don't want to set up Ruby environment you can use jekyll Docker image
+Create builder image with required dependencies: 
 
-Pull jekyll image:
 ```
-docker pull jekyll/jekyll:3.8
+docker build -f docker/builder/Dockerfile -t cuba-platform/guides-builder . 
 ```
 
 Build:
+
 ```
-docker run --rm --volume="$PWD:/srv/jekyll" jekyll/jekyll:3.8 jekyll build
+docker run --rm --volume="$PWD:/srv/jekyll" cuba-platform/guides-builder jekyll build
 ```
 
 Serve:
+
 ```
-docker run --rm --volume="$PWD:/srv/jekyll" -p 4000:4000 jekyll/jekyll:3.8 jekyll serve
+docker run --rm --volume="$PWD:/srv/jekyll" -p 4000:4000 cuba-platform/guides-builder jekyll serve
 ```
