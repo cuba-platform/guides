@@ -14,7 +14,7 @@ permalink: unit-testing
 :project_id: cuba-petclinic-unit-testing
 :java_version: 1.8
 :cuba_version: 7.1
-:page-icone: images/intro-to-reports/guide_icone.svg
+:page-icone: images/unit-testing/guide_icone.svg
 
 In this guide you will learn how automated testing in a CUBA application works. In particular, this guide deals with the question of how unit tests can be executed and when it makes sense to use them over integration testing.
 
