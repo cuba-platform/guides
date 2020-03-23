@@ -50,7 +50,7 @@
           <y:Geometry height="115.99999999999994" width="170.8495517881488" x="387.69943045513196" y="136.0"/>
           <y:Fill color="#F2F2F2" transparent="false"/>
           <y:BorderStyle color="#9DB0BD" type="line" width="1.0"/>
-          <y:NodeLabel alignment="left" autoSizePolicy="content" configuration="com.yworks.entityRelationship.label.name" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.310546875" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="t" textColor="#333333" verticalTextPosition="bottom" visible="true" width="34.27197265625" x="68.2887895659494" xml:space="preserve" y="3.0">DOC</y:NodeLabel>
+          <y:NodeLabel alignment="left" autoSizePolicy="content" configuration="com.yworks.entityRelationship.label.name" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.310546875" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="t" textColor="#333333" verticalTextPosition="bottom" visible="true" width="85.9609375" x="42.4443071440744" xml:space="preserve" y="3.0">Dependency</y:NodeLabel>
           <y:NodeLabel alignment="left" autoSizePolicy="content" borderDistance="20.0" configuration="com.yworks.entityRelationship.label.attributes" fontFamily="Dialog" fontSize="14" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.48828125" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="bl" textColor="#6E6E6E" verticalTextPosition="bottom" visible="false" width="71.1015625" x="20.0" xml:space="preserve" y="75.51171874999994">Terminals</y:NodeLabel>
           <y:UML clipContent="true" constraint="" hasDetailsColor="false" omitDetails="false" stereotype="" use3DEffect="false">
             <y:AttributeLabel xml:space="preserve"/>
@@ -72,7 +72,6 @@
     </edge>
     <edge id="e1" source="n0" target="n1">
       <data key="d8" xml:space="preserve"/>
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
