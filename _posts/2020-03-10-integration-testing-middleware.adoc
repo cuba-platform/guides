@@ -12,7 +12,7 @@ permalink: integration-testing-middleware
 :page-excerpt: Testing Guide: Middleware integration testing of a CUBA application
 :page-root: ../../../
 :project_id: cuba-petclinic-testing-middleware
-:java_version: 1.8
+:java_version: 8
 :cuba_version: 7.1
 :page-icone: images/integration-testing-middleware/testing_integration.svg
 
