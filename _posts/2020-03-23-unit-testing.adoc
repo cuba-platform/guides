@@ -1,5 +1,5 @@
 ---
-compatible_cuba_versions: 7.0+
+compatible_cuba_versions: 7.1+
 compatible_java_versions: 8+
 project_id: cuba-petclinic-unit-testing
 permalink: unit-testing
@@ -13,7 +13,7 @@ permalink: unit-testing
 :page-root: ../../../
 :project_id: cuba-petclinic-unit-testing
 :java_version: 1.8
-:cuba_version: 7.0
+:cuba_version: 7.1
 :page-icone: images/intro-to-reports/guide_icone.svg
 
 In this guide you will learn how automated testing in a CUBA application works. In particular, this guide deals with the question of how unit tests can be executed and when it makes sense to use them over integration testing.
@@ -853,7 +853,3 @@ Finally, the test fixture setup is easier to create as well, when the surface ar
 Besides the benefits we also looked at the limitations of unit testing. One example was that we are not able to verify the correct usage of particular environmental behavior the code lives in. Although our unit tests perfectly show that the business rules might be correctly defined in the calculators, the question if they are using the correct Spring annotations to be picked up by the framework in the right way cannot be easily verified by unit tests.
 
 Therefore, using unit tests should only be used in combination with a set of integration tests that cover the remaining open questions. With this combination we can be quite sure that our application is actually working as we expect.
-
-== Further Information
-
-* https://www.cuba-platform.com/guides/integration-testing-middleware[CUBA guide: middleware integration testing]
