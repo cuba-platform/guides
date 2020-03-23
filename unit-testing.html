@@ -1,0 +1,1671 @@
+<!doctype html>
+<!--[if IE 9]>
+<html class="lt-ie10" lang="en"> <![endif]-->
+<html class="no-js" lang="en" data-useragent="Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Testing in CUBA Applications</title>
+    <meta name="description" content="The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.">
+    <meta name="author" content="Haulmont">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@CubaPlatform">
+    <meta name="twitter:creator" content="@CubaPlatform">
+    <meta name="twitter:title" content="Unit Testing in CUBA Applications">
+    <meta name="twitter:description" content="In this guide you will learn how automated testing in a CUBA application works. In particular this guide deals with the question of how unit tests can be executed and when it makes sense to use them over integration testing.">
+    <meta name="twitter:image" content="">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Unit Testing in CUBA Applications">
+    <meta property="og:description" content="In this guide you will learn how automated testing in a CUBA application works. In particular this guide deals with the question of how unit tests can be executed and when it makes sense to use them over integration testing.">
+    <meta property="og:url" content="https://www.cuba-platform.com/guides/unit-testing">
+    <meta property="og:image" content="">
+
+    <link rel="shortcut icon" href="/guides/images/favicon.png" type="image/png" />
+    <link rel="stylesheet" href="/guides/css/foundation.css">
+    <link rel="stylesheet" href="/guides/css/font-awesome.css">
+    <link rel="stylesheet" href="/guides/css/coderay.css">
+    <link rel="stylesheet" href="/guides/css/bootstrap.css">
+    <link rel="stylesheet" href="https://www.cuba-platform.com/sites/all/themes/cuba_adaptive/css/reset.css">
+    <link rel="stylesheet" href="https://www.cuba-platform.com/sites/all/themes/cuba_adaptive/css/animate.css">
+    <link rel="stylesheet" href="/guides/css/extra.css">
+    <link rel="stylesheet" href="/guides/css/extra2.css">
+    <link rel="stylesheet" href="/guides/css/cuba-new.css">
+    <link rel="stylesheet" href="/guides/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/guides/css/guides.css">
+    <script src="/guides/js/jquery_v2.1.min.js"></script>
+    <link rel="stylesheet" href="/guides/css/main.css" />
+    <!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-MH3DTWV');</script>
+<!-- End Google Tag Manager -->
+</head>
+<body class="html not-front not-logged-in no-sidebars page-node page-node- page-node-962 node-type-blog-post i18n-en">
+
+<section id="wrapper">
+    
+<header role="banner" fragment="14269c1b298" class="header">
+    <nav class="header_nav">
+        <input id="mobile-menu-open" type="checkbox" class="header_checkbox">
+        <div class="container header_container">
+            <div class="header_toggle">
+                <label for="mobile-menu-open"
+                       class="header_toggle-label toggle-label">
+                    <span>CUBA.platform</span>
+                </label>
+            </div>
+            <a href="/" class="header_logo nuxt-link-active"></a>
+            <ul class="header_menu">
+                <li class="header_menu_item"><a href="/framework/" class="header_menu_link">Framework</a></li>
+                <li class="header_menu_item"><a href="/learn/" class="header_menu_link nuxt-link-active">Learn</a></li>
+                <li class="header_menu_item"><a href="/documentation/" class="header_menu_link">Documentation</a></li>
+                <li class="header_menu_item"><a href="/discuss/" class="header_menu_link">Forum</a></li>
+                <li class="header_menu_item"><a href="/blog/" class="header_menu_link">Blog</a></li>
+            </ul>
+            <div class="header-support">
+                <button class="header-support_toggle">
+                <img src="images/users.svg" class="header-support_toggle_icon">
+                <span class="header-support_toggle_text">Services</span></button>
+                <div class="header-support_popup">
+                    <div class="support-popup">
+                        <div class="support-popup_services">
+                            <h3 class="support-popup_services_title">Commercial services for your project</h3>
+                            <ul class="services-list">
+                                <li class="services-list_item"><a href="/support-options/"><strong
+                                        class="services-list_title">Consultancy &amp; Support</strong>
+                                    <div class="services-list_text">
+                                        <div><p>Commercial consulting requests have a guaranteed response
+                                            time.</p>
+                                        </div>
+                                    </div>
+                                </a></li>
+                                <li class="services-list_item"><a href="/development/"><strong
+                                        class="services-list_title">Custom Development</strong>
+                                    <div class="services-list_text">
+                                        <div><p>We can deliver a turn key solution or contribute to your
+                                            project</p>
+                                        </div>
+                                    </div>
+                                </a></li>
+                                <li class="services-list_item"><a href="/training/"><strong
+                                        class="services-list_title">Training</strong>
+                                    <div class="services-list_text">
+                                        <div><p>For fast and deep dive into framework features to shift your
+                                            team productivity.</p>
+                                        </div>
+                                    </div>
+                                </a></li>
+                            </ul>
+                        </div>
+                        <div class="support-popup_haulmont">
+                            <div class="support-popup_haulmont_header"><h3 class="support-popup_haulmont_title">
+                                Haulmont</h3>
+                                <div class="support-popup_haulmont_subtitle">we develop modern enterprise
+                                    solutions
+                                </div>
+                            </div>
+                            <ul class="haulmont-list">
+                                <li class="haulmont-list_item">
+                                    <div><p>Experts in Enterprise software</p>
+                                    </div>
+                                </li>
+                                <li class="haulmont-list_item">
+                                    <div><p>Creators of the CUBA Platform</p>
+                                    </div>
+                                </li>
+                                <li class="haulmont-list_item">
+                                    <div><p>Established in 2008</p>
+                                    </div>
+                                </li>
+                            </ul>
+                            <ul class="numbers-list">
+                                <li class="numbers-list_item"><strong class="numbers-list_number">300+</strong>
+                                    <div class="numbers-list_text">developers</div>
+                                </li>
+                                <li class="numbers-list_item"><strong class="numbers-list_number">400+</strong>
+                                    <div class="numbers-list_text">projects</div>
+                                </li>
+                                <li class="numbers-list_item">
+                                    <div class="numbers-list_text">Customers in</div>
+                                    <strong class="numbers-list_number">60+</strong>
+                                    <div class="numbers-list_text">countries</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <a href="/user/" class="header_profile">
+                <svg xmlns="http://www.w3.org/2000/svg" id="i-profile" class="icon header_profile_src" viewBox="0 0 563.43 563.43" width="100%" height="100%">
+                    <path d="M280.79 314.559c83.266 0 150.803-67.538 150.803-150.803S364.055 13.415 280.79 13.415 129.987 80.953 129.987 163.756s67.537 150.803 150.803 150.803zm0-261.824c61.061 0 111.021 49.959 111.021 111.021s-49.96 111.02-111.021 111.02-111.021-49.959-111.021-111.021 49.959-111.02 111.021-111.02zM19.891 550.015h523.648c11.102 0 19.891-8.789 19.891-19.891 0-104.082-84.653-189.198-189.198-189.198H189.198C85.116 340.926 0 425.579 0 530.124c0 11.102 8.789 19.891 19.891 19.891zm169.307-169.307h185.034c75.864 0 138.313 56.436 148.028 129.524H41.17c9.714-72.625 72.164-129.524 148.028-129.524z"></path>
+                </svg>
+            </a>
+        </div>
+    </nav>
+    <nav class="header-submenu">
+        <div class="container header-submenu_container">
+            <a href="/learn/quickstart/" class="header-submenu_link">Quick Start</a>
+            <a href="/learn/live-demo/" class="header-submenu_link">Live Demo</a>
+            <a href="/guides/" class="header-submenu_link nuxt-link-exact-active nuxt-link-active">Guides</a>
+        </div>
+    </nav>
+</header>
+
+<style>
+    .upper-header .header-options {
+        display: none;
+    }
+
+    .upper-header .upper-header-wrapper .header-menu div .nav > li:last-child > a {
+        padding-right: 0;
+    }
+</style>
+
+    <!-- Main Page Content and Sidebar -->
+    <div class="content-wrapper">
+        <div class="cuba-container text-node blog">
+
+
+
+            <!-- Main content (left column) -->
+            <div class="region region-content">
+
+
+
+                <section id="block-system-main" class="block block-system clearfix">
+                    <div id="node-962" class="article node node-blog-post node-promoted clearfix">
+                        <div class="content">
+                            <div class="field field-name-body field-type-text-with-summary field-label-hidden">
+                                <div class="field-items">
+                                    <div class="field-item even" property="content: encoded">
+                                        <h1>Unit Testing in CUBA Applications</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this guide you will learn how automated testing in a CUBA application works. In particular, this guide deals with the question of how unit tests can be executed and when it makes sense to use them over integration testing.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="what_will_be_built"><a class="anchor" href="#what_will_be_built"></a><a class="link" href="#what_will_be_built">What Will be Built</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a> example to show how existing features can be tested in an automated fashion via unit testing:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>display amount of pets of a given pet type for a particular Owner</p>
+</li>
+<li>
+<p>calculation of next regular checkup date proposals for a pet</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="final_application"><a class="anchor" href="#final_application"></a><a class="link" href="#final_application">Final Application</a></h3>
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-reports/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-reports/master/img/login-screen.png"/></a>
+</div>
+<div class="sect2">
+<h3 id="requirements"><a class="anchor" href="#requirements"></a><a class="link" href="#requirements">Requirements</a></h3>
+<div class="paragraph">
+<p>Your development environment requires to contain the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://adoptopenjdk.net/">JDK 1.8</a></p>
+</li>
+<li>
+<p>a text editor or IDE (<a href="https://www.jetbrains.com/idea/download/">IntelliJ IDEA</a> preferred)</p>
+</li>
+<li>
+<p><a href="https://www.cuba-platform.com/download">CUBA Studio</a> as standalone IDE or as an IDEA plugin (optional)</p>
+</li>
+<li>
+<p><a href="https://github.com/cuba-platform/cuba-cli/wiki/Installation">CUBA CLI</a> (optional)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-unit-testing/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
+</div>
+<div class="paragraph">
+<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-unit-testing.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-unit-testing.git</a></code></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="example_cuba_petclinic"><a class="anchor" href="#example_cuba_petclinic"></a><a class="link" href="#example_cuba_petclinic">Example: CUBA petclinic</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The project that is the basis for this example is <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a>. It is based on the commonly known <a href="https://github.com/spring-projects/spring-petclinic">Spring Petclinic</a>. The CUBA Petclinic application deals with the domain of a Pet clinic and the associated business workflows to manage a pet clinic.</p>
+</div>
+<div class="paragraph">
+<p>The underlying domain model for the application looks like this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/guides/images/domain-model.png" alt="Domain model">
+</div>
+</div>
+<div class="paragraph">
+<p>The main entities are <strong>Pet</strong> and <strong>Visit</strong>. A Pet is visiting the petclinic and during this Visit a Vet is taking care of it. A Pet belongs to an Owner, which can hold multiple pets. The visit describes the act of a pet visiting the clinic with the help of its owner.</p>
+</div>
+<a href="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/login-screen.png"/></a>
+</div>
+</div>
+<div class="sect1">
+<h2 id="overview"><a class="anchor" href="#overview"></a><a class="link" href="#overview">Overview</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this guide you will learn how to use the techniques of unit testing without dependencies. This approach differs from the other discussed variant of middleware integration testing (see <a href="https://www.cuba-platform.com/guides/integration-testing-middleware">CUBA guide: middleware integration testing</a>), where a close-to-production test environment is created for the test to run.</p>
+</div>
+<div class="paragraph">
+<p>In case of unit testing, the test environment is very slim because basically no runtime of the CUBA framework is provided. For giving up this convenience, unit testing allows you to more easily spin up the system under test and bring it to the proper state for exercising the test case. It also cuts out a whole lot of problems regarding test data setup and is generally executed faster by orders of magnitude.</p>
+</div>
+<div class="sect2">
+<h3 id="unit_testing"><a class="anchor" href="#unit_testing"></a><a class="link" href="#unit_testing">Unit Testing</a></h3>
+<div class="paragraph">
+<p>Besides the integration test environment that you learned about in the middleware integration testing guide, it is also possible to create test cases that do not spin up the Spring application context or any CUBA Platform APIs at all.</p>
+</div>
+<div class="paragraph">
+<p>The main benefits of writing a unit test in an isolated fashion without an integration test environment are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>locality of the test scenario</p>
+</li>
+<li>
+<p>test execution speed</p>
+</li>
+<li>
+<p>easier test fixture setup</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In this case, the class under test is instantiated directly via its constructor.
+Since Spring is not involved in managing the instantiation of the class, dependency injection is not working in this scenario. Therefore, dependencies (objects that the class under test relies upon) must be instantiated manually and passed into the class under the test directly.</p>
+</div>
+<div class="paragraph">
+<p>In case those dependencies are CUBA APIs, they have to be mocked.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="mocking"><a class="anchor" href="#mocking"></a><a class="link" href="#mocking">Mocking</a></h3>
+<div class="paragraph">
+<p>Mocking / Stubbing is a common way in test automation that helps to emulate / control &amp; verify certain external parts that the system under the test interacts with to isolate the SUT from its outside world as much as possible.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/unit-testing/testing-doc-replacement.png" alt="testing doc replacement">
+</div>
+</div>
+<div class="paragraph">
+<p>As you can see in the diagram, there is one class that acts as the system to be tested (system under test: SUT). This class uses another class responsible for helping some additional needs. This class is normally referred to as a dependency.</p>
+</div>
+<div class="paragraph">
+<p>Stubbing or Mocking is now doing the following:</p>
+</div>
+<div class="paragraph">
+<p>To isolate the SUT from any other dependency and to gain the test locality, the dependency is replaced with a Stub implementation. This object plays the role of a real dependency, but in the test case you control the behavior of the Stub. With that you can directly influence on the SUT behaviour, even if it has some interaction with another dependency that otherwise would be out of direct control.</p>
+</div>
+<div class="sect3">
+<h4 id="mocking_frameworks"><a class="anchor" href="#mocking_frameworks"></a><a class="link" href="#mocking_frameworks">Mocking Frameworks</a></h4>
+<div class="paragraph">
+<p>JUnit itself does not contain Mocking capabilities. Instead dedicated Mocking frameworks allow instantiating Stub / Mock objects and control over their behavior in a JUnit test case. In this guide you will learn about Mockito, a very popular Stubbing / Mocking framework in the Java ecosystem.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="an_example_of_mocking"><a class="anchor" href="#an_example_of_mocking"></a><a class="link" href="#an_example_of_mocking">An Example of Mocking</a></h4>
+<div class="paragraph">
+<p>This example shows how to configure a Stub object. In this case it will replace the behavior of the <code>TimeSource</code> API from CUBA which allows retrieving the current timestamp. The Stub object should return yesterday. The way to define the behavior of a Stub / Mock object with Mockito is to use the Mockito API like in the following listing (3):</p>
+</div>
+<div class="listingblock">
+<div class="title">MockingTest.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@ExtendWith</span>(MockitoExtension.class) <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="type">class</span> <span class="class">MockingTest</span> {
+
+  <span class="annotation">@Mock</span>
+  <span class="directive">private</span> TimeSource timeSource; <i class="conum" data-value="2"></i><b>(2)</b>
+
+  <span class="annotation">@Test</span>
+  <span class="directive">public</span> <span class="type">void</span> theBehaviorOfTheTimeSource_canBeDefined_inATestCase() {
+    <span class="comment">// given:</span>
+    ZonedDateTime now = ZonedDateTime.now();
+    ZonedDateTime yesterday = now.minusDays(<span class="integer">1</span>);
+    <span class="comment">// and: the timeSource Mock is configured to return yesterday when now() is called</span>
+    Mockito
+        .when(timeSource.now())
+        .thenReturn(yesterday); <i class="conum" data-value="3"></i><b>(3)</b>
+    <span class="comment">// when: the current time is retrieved from the TimeSource Interface</span>
+    ZonedDateTime receivedTimestamp = timeSource.now(); <i class="conum" data-value="4"></i><b>(4)</b>
+    <span class="comment">// then: the received Timestamp is not now</span>
+    assertThat(receivedTimestamp)
+        .isNotEqualTo(now);
+    <span class="comment">// but: the received Timestamp is yesterday</span>
+    assertThat(receivedTimestamp)
+        .isEqualTo(yesterday);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the <code>MockitoExtension</code> activates the automatic instantiation of the <code>@Mock</code> annotated attributes</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the <code>TimeSource</code> instance is marked as a <code>@Mock</code> and will be instantiated via Mockito</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>the Mock behavior is defined in the test case</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>invoking the method <code>now</code> returns yesterday instead of the correct value</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The complete test case can be found in the example: <a href="https://github.com/cuba-guides/cuba-petclinic-unit-testing/blob/master/modules/core/test/com/haulmont/sample/petclinic/MockingTest.java">MockingTest.java</a>. With that behavior description in place, the one thing left is that the Stub object instance must be manually passed into the class / system under test.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="constructor_based_injection"><a class="anchor" href="#constructor_based_injection"></a><a class="link" href="#constructor_based_injection">Constructor Based Injection</a></h3>
+<div class="paragraph">
+<p>To achieve this, one thing in the production code should be changed. CUBA and Studio by default uses Field injection. This means that if a Spring Bean A has a dependency to another Spring Bean B, a dependency is declared by creating a field in the class A of type B like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Component</span>
+<span class="type">class</span> <span class="class">SpringBeanA</span> {
+
+  <span class="annotation">@Inject</span> <i class="conum" data-value="1"></i><b>(1)</b>
+  <span class="directive">private</span> SpringBeanB springBeanB; <i class="conum" data-value="2"></i><b>(2)</b>
+
+  <span class="directive">public</span> <span class="type">double</span> doSomething() {
+      <span class="type">int</span> result = springBeanB.doSomeHeavyLifting(); <i class="conum" data-value="3"></i><b>(3)</b>
+      <span class="keyword">return</span> result / <span class="integer">2</span>;
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>@Inject</code> indicates Spring to instantiate a SpringBeanA instance with the correctly injected SpringBeanB instance</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the field declaration indicates a dependency</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>the dependency can be used in the business logic of A</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In the context of unit testing, this pattern does not work quite well because the field can not be easily accessed without a corresponding method to inject the dependency. One way to create this dedicated injection method is Constructor based Injection. In this case, the class that needs a dependency defines a dedicated Constructor, annotates it with <code>@Inject</code> and mentions the desired dependencies as Constructor parameters.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Component</span>
+<span class="type">class</span> <span class="class">SpringBeanAWithConstructorInjection</span> {
+
+  <span class="directive">private</span> <span class="directive">final</span> SpringBeanB springBeanB;
+
+  <span class="annotation">@Inject</span> <i class="conum" data-value="1"></i><b>(1)</b>
+  <span class="directive">public</span> SpringBeanAWithConstructorInjection(
+          SpringBeanB springBeanB <i class="conum" data-value="2"></i><b>(2)</b>
+  ) {
+      <span class="local-variable">this</span>.springBeanB = springBeanB; <i class="conum" data-value="3"></i><b>(3)</b>
+  }
+
+  <span class="directive">public</span> <span class="type">double</span> doSomething() {
+      <span class="type">int</span> result = springBeanB.doSomeHeavyLifting(); <i class="conum" data-value="3"></i><b>(3)</b>
+      <span class="keyword">return</span> result / <span class="integer">2</span>;
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>@Inject</code> indicates Spring to call the Constructor and treat the parameters as Dependencies</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the dependencies are defined as Constructor parameters</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>the dependency instance is manually stored as a field</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In production the code still works as before, because Spring supports both kinds of injection. In the test case we can call this constructor directly and pass it to the mocked instance configured through Mockito.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="tests_for_petclinic_functionality"><a class="anchor" href="#tests_for_petclinic_functionality"></a><a class="link" href="#tests_for_petclinic_functionality">Tests for Petclinic Functionality</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Next, you will see the different examples on how to use the unit test capabilities to automatically test the functionality of the Petclinic example project in a fast and isolated manner.</p>
+</div>
+<div class="sect2">
+<h3 id="pet_amount_for_a_particular_owner"><a class="anchor" href="#pet_amount_for_a_particular_owner"></a><a class="link" href="#pet_amount_for_a_particular_owner">Pet Amount for a Particular Owner</a></h3>
+<div class="paragraph">
+<p>The first test case deals with the calculation of the amount of pets that are associated with an Owner for a given pet type. This feature is used in the UI to display this number when the user selects one Owner in the corresponding browse screen.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/unit-testing/pets-of-type.png" alt="pets of type">
+</div>
+</div>
+<div class="paragraph">
+<p>The following business rules describe the functionality:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If the pet type of a pet matches the asked pet type, the pet should be counted, otherwise not.</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="implementation"><a class="anchor" href="#implementation"></a><a class="link" href="#implementation">Implementation</a></h4>
+<div class="paragraph">
+<p>The implementation logic is located in the Owner Entity class itself:</p>
+</div>
+<div class="listingblock">
+<div class="title">Pet.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="type">class</span> <span class="class">Owner</span> <span class="directive">extends</span> Person {
+    <span class="comment">// ...</span>
+    <span class="directive">public</span> <span class="type">long</span> petsOfType(PetType petType) {
+        <span class="keyword">return</span> pets.stream()
+            .filter(pet -&gt;
+                Objects.equals(petType.getName(), pet.getType().getName())
+            )
+            .count();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It uses the Java 8 Streams API to iterate over the list of pets and filter out the ones that match with the pet type name. Afterwards it counts the correctly identified pets.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="test_cases_for_the_happy_path"><a class="anchor" href="#test_cases_for_the_happy_path"></a><a class="link" href="#test_cases_for_the_happy_path">Test Cases for the Happy Path</a></h4>
+<div class="paragraph">
+<p>We will start with the three test cases that verify the above described business rule.</p>
+</div>
+<div class="listingblock">
+<div class="title">OwnerTest.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="type">class</span> <span class="class">OwnerTest</span> {
+
+  PetclinicData data = <span class="keyword">new</span> PetclinicData();
+  <span class="directive">private</span> PetType electric;
+  <span class="directive">private</span> <span class="predefined-type">Owner</span> owner;
+  <span class="directive">private</span> PetType fire;
+
+  <span class="annotation">@BeforeEach</span>
+  <span class="directive">public</span> <span class="type">void</span> initTestData() {
+    electric = data.electricType();
+    fire = data.fireType();
+
+    owner = <span class="keyword">new</span> <span class="predefined-type">Owner</span>();
+  }
+
+  <span class="annotation">@Test</span>
+  <span class="directive">public</span> <span class="type">void</span> aPetWithMatchingPetType_isCounted() {
+    <span class="comment">// given:</span>
+    owner.pets = <span class="predefined-type">Arrays</span>.asList( <i class="conum" data-value="1"></i><b>(1)</b>
+        data.petWithType(electric)
+    );
+    <span class="comment">// expect:</span>
+    assertThat(owner.petsOfType(electric)) <i class="conum" data-value="2"></i><b>(2)</b>
+        .isEqualTo(<span class="integer">1</span>);
+  }
+
+  <span class="annotation">@Test</span>
+  <span class="directive">public</span> <span class="type">void</span> aPetWithNonMatchingPetType_isNotCounted() {
+    <span class="comment">// given:</span>
+    owner.pets = <span class="predefined-type">Arrays</span>.asList(
+        data.petWithType(electric)
+    );
+    <span class="comment">// expect:</span>
+    assertThat(owner.petsOfType(fire))
+        .isEqualTo(<span class="integer">0</span>);
+  }
+
+
+  <span class="annotation">@Test</span>
+  <span class="directive">public</span> <span class="type">void</span> twoPetsMatch_andOneNot_twoIsReturned() {
+    <span class="comment">// given:</span>
+    owner.pets = <span class="predefined-type">Arrays</span>.asList(
+        data.petWithType(electric),
+        data.petWithType(fire),
+        data.petWithType(electric)
+    );
+    <span class="comment">// expect:</span>
+    assertThat(owner.petsOfType(electric))
+        .isEqualTo(<span class="integer">2</span>);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the pets are configured for the owner</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>petsOfType</code> is executed with a particular type and the outcome is verified</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The first test case is a positive test case, which contains the simplest amount of test fixture setup possible. The second test case is of the same kind but for a negative expectation. The third test case is a combination of both test cases.</p>
+</div>
+<div class="paragraph">
+<p>Oftentimes it is a good idea to make the test data as small and clear as possible, because it shows better the essence of the test case.</p>
+</div>
+<div class="paragraph">
+<p>With those tests in place, we have covered all code paths that are living along the happy path.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Happy path is a term describing the code execution path that works with valid input values and no error scenarios.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>But if we think a little bit outside of this happy path, we will find a couple of more test cases to be written.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="testing_edge_cases"><a class="anchor" href="#testing_edge_cases"></a><a class="link" href="#testing_edge_cases">Testing Edge Cases</a></h4>
+<div class="paragraph">
+<p>When thinking of the edge cases of that method, there are multiple error scenarios to consider. Just imagine the following situation:</p>
+</div>
+<div class="paragraph">
+<p>The <code>LookupField</code> in the UI does not require a pet type to be entered. If the user uses it and does not select a type and clicks OK, the passed in <code>PetType</code> will be <code>null</code>. What happens in this case in the implementation? It will produce a <code>NullPointerException</code>.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Thinking about edge cases in tests is very important because it reveals bugs in the implementation that otherwise can be found only at the application runtime.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Now, to deal with that behavior, we will create a test case that proves this hypothesis:</p>
+</div>
+<div class="listingblock">
+<div class="title">OwnerTest.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="type">class</span> <span class="class">OwnerTest</span> {
+  <span class="comment">// ...</span>
+  <span class="annotation">@Test</span>
+  <span class="directive">public</span> <span class="type">void</span> whenAskingForNull_zeroIsReturned() {
+    <span class="comment">// expect:</span>
+    assertThat(owner.petsOfType(<span class="predefined-constant">null</span>))
+        .isEqualTo(<span class="integer">0</span>);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By defining that edge case, we also defined the expected behavior of the API. In this case we defined that the return value should be zero. Running the test case shows the existence of the <code>NullPointerException</code> in this situation.</p>
+</div>
+<div class="paragraph">
+<p>With this knowledge and test case that will tell us when we have reached a success state, we can adjust the implementation to behave according to our specification:</p>
+</div>
+<div class="listingblock">
+<div class="title">Owner.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="type">class</span> <span class="class">Owner</span> {
+    <span class="directive">public</span> <span class="type">long</span> petsOfType(PetType petType) {
+
+        <span class="keyword">if</span> (petType == <span class="predefined-constant">null</span>) {
+            <span class="keyword">return</span> <span class="integer">0L</span>;
+        }
+
+        <span class="keyword">return</span> pets.stream()
+            .filter(pet -&gt; Objects.equals(petType.getName(), pet.getType().getName()))
+            .count();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Running the test case once again, we will see that the application can now deal with "invalid" inputs and react to them accordingly.</p>
+</div>
+<div class="paragraph">
+<p>The next similar edge case is when one of the owner&#8217;s pets has no type assigned. This is possible due to the current implementation of the entity model, <code>Pet.type</code> is not required.</p>
+</div>
+<div class="paragraph">
+<p>In this case, we would like to exclude those pets from counting. The following test case will show the desired behavior:</p>
+</div>
+<div class="listingblock">
+<div class="title">OwnerTest.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="type">class</span> <span class="class">OwnerTest</span> {
+  <span class="comment">// ...</span>
+  <span class="annotation">@Test</span>
+  <span class="directive">public</span> <span class="type">void</span> petsWithoutType_areNotConsideredInTheCounting() {
+    <span class="comment">// given:</span>
+    Pet petWithoutType = data.petWithType(<span class="predefined-constant">null</span>);
+    <span class="comment">// and:</span>
+    owner.pets = <span class="predefined-type">Arrays</span>.asList(
+        data.petWithType(electric),
+        petWithoutType
+    );
+    <span class="comment">// expect:</span>
+    assertThat(owner.petsOfType(electric))
+        .isEqualTo(<span class="integer">1</span>);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Executing the test shows another <code>NullPointerException</code> in the implementation. The following change will make the test case pass:</p>
+</div>
+<div class="listingblock">
+<div class="title">Owner.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="type">class</span> <span class="class">Owner</span> {
+    <span class="directive">public</span> <span class="type">long</span> petsOfType(PetType petType) {
+
+        <span class="keyword">if</span> (petType == <span class="predefined-constant">null</span>) {
+            <span class="keyword">return</span> <span class="integer">0L</span>;
+        }
+
+        <span class="keyword">return</span> pets.stream()
+            .filter(pet -&gt; Objects.nonNull(pet.getType())) <i class="conum" data-value="1"></i><b>(1)</b>
+            .filter(pet -&gt; Objects.equals(petType.getName(), pet.getType().getName()))
+            .count();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>pets without a type will be excluded before doing the comparison</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>With that, the first example unit test is complete. As you have seen, thinking about the edge cases is just as necessary as testing the happy path. Both variants are required for a complete test coverage and a comprehensive test suite to rely on.</p>
+</div>
+<div class="paragraph">
+<p>One additional thing to note here is that when you look at the test, it covers not the end to end feature from the UI to the business logic (and potentially the database). This is the very nature of a unit test. Instead, the normal way of tackling this issue would be to create other unit tests for the other parts in isolation as well. Oftentimes a smaller set of integration tests would also be created to verify the correct interaction of different components.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The way to write the test case first to identify a bug / develop a feature / prove a particular scenario is called <code>Test Driven Development</code> - TDD. With this workflow you can get a very good test coverage as well as some other benefits. In the case of fixing a bug it also gives you a clear end point where you know that you have fixed the bug.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="next_regular_checkup_date_proposal"><a class="anchor" href="#next_regular_checkup_date_proposal"></a><a class="link" href="#next_regular_checkup_date_proposal">Next Regular Checkup Date Proposal</a></h3>
+<div class="paragraph">
+<p>The next more comprehensive example is the functionality for the Petclinic project that allows the user to retrieve the information when the next regular checkup is scheduled for a selected pet. The next regular Checkup Date is calculated based on a couple of factors. The pet type determines the interval and when the last regular checkup was.</p>
+</div>
+<div class="paragraph">
+<p>The calculation is triggered from the UI in a dedicated Visit Editor for creating Regular Checkups: <a href="https://github.com/cuba-guides/cuba-petclinic-unit-testing/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/visit/visit/VisitCreateRegularCheckup.java">VisitCreateRegularCheckup</a>. As part of that logic triggered by the UI, the following service method is used, which contains the business logic of the calculation:</p>
+</div>
+<div class="listingblock">
+<div class="title">RegularCheckupService.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">interface</span> <span class="class">RegularCheckupService</span> {
+
+  <span class="annotation">@Validated</span>
+  LocalDate calculateNextRegularCheckupDate(
+      <span class="annotation">@RequiredView</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">pet-with-owner-and-type</span><span class="delimiter">&quot;</span></span>) Pet pet,
+      <span class="predefined-type">List</span>&lt;Visit&gt; visitHistory
+  );
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The implementation of the Service defines two dependencies that it needs in order to perform the calculation. The dependencies are declared in the constructor so that the unit test can inject its own implementation of the dependency.</p>
+</div>
+<div class="listingblock">
+<div class="title">RegularCheckupServiceBean.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Service</span>(RegularCheckupService.NAME)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">RegularCheckupServiceBean</span> <span class="directive">implements</span> RegularCheckupService {
+
+  <span class="directive">final</span> <span class="directive">protected</span> TimeSource timeSource;
+
+  <span class="directive">final</span> <span class="directive">protected</span> <span class="predefined-type">List</span>&lt;RegularCheckupDateCalculator&gt; calculators;
+
+  <span class="annotation">@Inject</span>
+  <span class="directive">public</span> RegularCheckupServiceBean(
+      TimeSource timeSource,
+      <span class="predefined-type">List</span>&lt;RegularCheckupDateCalculator&gt; calculators
+  ) {
+    <span class="local-variable">this</span>.timeSource = timeSource;
+    <span class="local-variable">this</span>.calculators = calculators;
+  }
+
+  <span class="annotation">@Override</span>
+  <span class="directive">public</span> LocalDate calculateNextRegularCheckupDate(
+      Pet pet,
+      <span class="predefined-type">List</span>&lt;Visit&gt; visitHistory
+  ) {
+    <span class="comment">// ...</span>
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The first dependency is the <code>TimeSource</code> API from CUBA for retrieving the current date. The second dependency is a list of <code>RegularCheckupDateCalculator</code> instances.</p>
+</div>
+<div class="paragraph">
+<p>The implementation of the service does not contain the calculation logic for different pet types within the <code>calculateNextRegularCheckupDate</code> method. Instead it knows about possible Calculator classes. It filters out the only calculator that can calculate the next regular checkup date for the pet and delegates the calculation to it.</p>
+</div>
+<div class="paragraph">
+<p>The API of the <code>RegularCheckupDateCalculator</code> looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">RegularCheckupDateCalculator.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">/**
+ * API for Calculators that calculates a proposal date for the next regular checkup date
+ */</span>
+<span class="directive">public</span> <span class="type">interface</span> <span class="class">RegularCheckupDateCalculator</span> {
+
+  <span class="comment">/**
+   * defines if a calculator supports a pet instance
+   * @param pet the pet to calculate the checkup date for
+   * @return true if the calculator supports this pet, otherwise false
+   */</span>
+  <span class="type">boolean</span> supports(Pet pet);
+
+  <span class="comment">/**
+   * calculates the next regular checkup date for the pet
+   * @param pet the pet to calculate checkup date for
+   * @param visitHistory the visit history of that pet
+   * @param timeSource the TimeSource CUBA API
+   *
+   * @return the calculated regular checkup date
+   */</span>
+  LocalDate calculateRegularCheckupDate(
+      Pet pet,
+      <span class="predefined-type">List</span>&lt;Visit&gt; visitHistory,
+      TimeSource timeSource
+  );
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It consists of two methods: <code>supports</code> defines if a Calculator is capable of calculating the date proposal for the given pet. In case the calculator is, the second method <code>calculateRegularCheckupDate</code> is invoked to perform the calculation.</p>
+</div>
+<div class="paragraph">
+<p>There are several implementations of this interface in the implementation. Most of them implement the specific date calculation for a particular pet type.</p>
+</div>
+<div class="sect3">
+<h4 id="testing_the_implementation_with_mocking"><a class="anchor" href="#testing_the_implementation_with_mocking"></a><a class="link" href="#testing_the_implementation_with_mocking">Testing the Implementation with Mocking</a></h4>
+<div class="paragraph">
+<p>In order to instantiate the SUT: <code>RegularCheckupService</code>, we are forced to provide both of the declared dependencies in the Constructor:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>TimeSource</code></p>
+</li>
+<li>
+<p><code>List&lt;RegularCheckupDateCalculator&gt;</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>We will provide a Stub implementation for the TimeSource in this test case via Mockito.</p>
+</div>
+<div class="paragraph">
+<p>For the list of the Calculators, instead of using a Mock instances, we&#8217;ll use a special test implementation. This can also be seen as a Stub, but instead of defining it on the fly via Mockito, a dedicated class <code>ConfigurableTestCalculator</code> is defined in the test sources. It has two static configuration options: the answers to the two API methods <code>support</code> and <code>calculate</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">ConfigurableTestCalculator.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">/**
+ * test calculator implementation that allows to statically
+ * define the calculation result
+ */</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">ConfigurableTestCalculator</span>
+    <span class="directive">implements</span> RegularCheckupDateCalculator {
+
+  <span class="directive">private</span> <span class="directive">final</span> <span class="type">boolean</span> supports;
+  <span class="directive">private</span> <span class="directive">final</span> LocalDate result;
+
+  <span class="directive">private</span> ConfigurableTestCalculator(
+          <span class="type">boolean</span> supports,
+          LocalDate result
+  ) {
+    <span class="local-variable">this</span>.supports = supports;
+    <span class="local-variable">this</span>.result = result;
+  }
+
+  <span class="comment">// ...</span>
+
+  <span class="comment">/**
+   * creates a Calculator that will answer true
+   * to {@link RegularCheckupDateCalculator#supports(Pet)} for
+   * test case purposes and returns the provided date as a result
+   */</span>
+  <span class="directive">static</span> RegularCheckupDateCalculator supportingWithDate(LocalDate date) {
+    <span class="keyword">return</span> <span class="keyword">new</span> ConfigurableTestCalculator(<span class="predefined-constant">true</span>, date);
+  }
+
+  <span class="annotation">@Override</span>
+  <span class="directive">public</span> <span class="type">boolean</span> supports(Pet pet) {
+    <span class="keyword">return</span> supports;
+  }
+
+  <span class="annotation">@Override</span>
+  <span class="directive">public</span> LocalDate calculateRegularCheckupDate(
+      Pet pet,
+      <span class="predefined-type">List</span>&lt;Visit&gt; visitHistory,
+      TimeSource timeSource
+  ) {
+    <span class="keyword">return</span> result;
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This test implementation is another form of exchanging the dependency in the test case. Using a Mocking framework or providing static test classes is more or less the same from a 10'000 feet point of view and supports the same goal.</p>
+</div>
+<div class="paragraph">
+<p>As the unit test for the <code>RegularCheckupService</code> should verify the behavior in an isolated fashion, the purpose of this test is not to test the different calculators. Instead the test case is going to verify the corresponding orchestration that the service embodies.</p>
+</div>
+<div class="paragraph">
+<p>The implementation of the calculators will be tested in dedicated unit tests for those classes.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="testing_the_orchestration_in_regularcheckupservice"><a class="anchor" href="#testing_the_orchestration_in_regularcheckupservice"></a><a class="link" href="#testing_the_orchestration_in_regularcheckupservice">Testing the Orchestration in RegularCheckupService</a></h4>
+<div class="paragraph">
+<p>Starting with the test case for the <code>RegularCheckupService</code>, the following test cases cover the majority of the orchestration functionality:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>only calculators that support the pet instance will be asked to calculate the checkup date</p>
+</li>
+<li>
+<p>in case multiple calculators support a pet, the first one is chosen</p>
+</li>
+<li>
+<p>in case no calculator was found, next month will be used as the proposed regular checkup date.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>You can find the implementation of the test cases in the listing below.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The JUnit Annotation <code>@DisplayName</code> is used to better describe the test cases in the test result report. Additionally it helps to link the test case implementation to the above given test case descriptions.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">RegularCheckupServiceTest.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@ExtendWith</span>(MockitoExtension.class)
+<span class="type">class</span> <span class="class">RegularCheckupServiceTest</span> {
+  <span class="comment">//...</span>
+  <span class="annotation">@Mock</span>
+  <span class="directive">private</span> TimeSource timeSource;
+
+  <span class="directive">private</span> PetclinicData data = <span class="keyword">new</span> PetclinicData(); <i class="conum" data-value="1"></i><b>(1)</b>
+
+  <span class="annotation">@BeforeEach</span>
+  <span class="type">void</span> configureTimeSourceToReturnNowCorrectly() {
+    Mockito.lenient()
+        .when(timeSource.now())
+        .thenReturn(ZonedDateTime.now());
+  }
+
+  <span class="annotation">@Test</span>
+  <span class="annotation">@DisplayName</span>(
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">1. only calculators that support the pet instance </span><span class="delimiter">&quot;</span></span> +
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">will be asked to calculate the checkup date</span><span class="delimiter">&quot;</span></span>
+  )
+  <span class="directive">public</span> <span class="type">void</span> one_supportingCalculator_thisOneIsChosen() {
+    <span class="comment">// given: first calculator does not support the pet</span>
+    RegularCheckupDateCalculator threeMonthCalculator =
+        notSupporting(THREE_MONTHS_AGO); <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="comment">// and: second calculator supports the pet</span>
+    RegularCheckupDateCalculator lastYearCalculator =
+        supportingWithDate(LAST_YEAR); <i class="conum" data-value="3"></i><b>(3)</b>
+    <span class="comment">// when:</span>
+    LocalDate nextRegularCheckup = calculate( <i class="conum" data-value="4"></i><b>(4)</b>
+        calculators(threeMonthCalculator, lastYearCalculator)
+    );
+    <span class="comment">// then: the result should be the result that the calculator that was supported</span>
+    assertThat(nextRegularCheckup)
+        .isEqualTo(LAST_YEAR);
+  }
+
+
+  <span class="annotation">@Test</span>
+  <span class="annotation">@DisplayName</span>(
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">2. in case multiple calculators support a pet,</span><span class="delimiter">&quot;</span></span> +
+      <span class="string"><span class="delimiter">&quot;</span><span class="content"> the first one is chosen to calculate</span><span class="delimiter">&quot;</span></span>
+  )
+  <span class="directive">public</span> <span class="type">void</span> multiple_supportingCalculators_theFirstOneIsChosen() {
+    <span class="comment">// given: two calculators are valid; the ONE_MONTH_AGO calculator is first</span>
+    <span class="predefined-type">List</span>&lt;RegularCheckupDateCalculator&gt; calculators = calculators(
+        supportingWithDate(ONE_MONTHS_AGO),
+        notSupporting(THREE_MONTHS_AGO),
+        supportingWithDate(TWO_MONTHS_AGO)
+    );
+    <span class="comment">// when:</span>
+    LocalDate nextRegularCheckup = calculate(calculators);
+    <span class="comment">// then: the result is the one from the first calculator</span>
+    assertThat(nextRegularCheckup)
+        .isEqualTo(ONE_MONTHS_AGO);
+  }
+
+  <span class="annotation">@Test</span>
+  <span class="annotation">@DisplayName</span>(
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">3. in case no calculator was found, </span><span class="delimiter">&quot;</span></span> +
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">next month as the proposed regular checkup date will be used</span><span class="delimiter">&quot;</span></span>
+  )
+  <span class="directive">public</span> <span class="type">void</span> no_supportingCalculators_nextMonthWillBeReturned() {
+    <span class="comment">// given: only not-supporting calculators are available for the pet</span>
+    <span class="predefined-type">List</span>&lt;RegularCheckupDateCalculator&gt; onlyNotSupportingCalculators =
+        calculators(
+            notSupporting(ONE_MONTHS_AGO)
+        );
+    <span class="comment">// when:</span>
+    LocalDate nextRegularCheckup = calculate(onlyNotSupportingCalculators);
+    <span class="comment">// then: the default implementation will return next month</span>
+    assertThat(nextRegularCheckup)
+        .isEqualTo(NEXT_MONTH);
+  }
+
+  <span class="comment">/*
+   * instantiates the SUT with the provided calculators as dependencies
+   * and executes the calculation
+   */</span>
+  <span class="directive">private</span> LocalDate calculate(
+          <span class="predefined-type">List</span>&lt;RegularCheckupDateCalculator&gt; calculators
+  ) {
+    RegularCheckupService service = <span class="keyword">new</span> RegularCheckupServiceBean(
+        timeSource,
+        calculators
+    );
+
+    <span class="keyword">return</span> service.calculateNextRegularCheckupDate(
+        data.petWithType(data.waterType()),
+        Lists.emptyList()
+    );
+  }
+  <span class="comment">// ...</span>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>PetclinicData</code> acts as a Test Utility Method holder. As no DB is present in the unit test, it only creates transient objects</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>notSupporting</code> provides a Calculator that will not support the pet (returns <code>false</code> for <code>supports(Pet pet)</code>)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td><code>supportingWithDate</code> provides a Calculator that supports the pet (returns <code>true</code> for <code>supports(Pet pet)</code>) and returns the passed in Date as the result</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td><code>calculate</code> is the method that contains the instantiation and execution of the service</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The full source code including the helper methods and test implementation of the Calculator can be found in the example project: <a href="https://github.com/cuba-guides/cuba-petclinic-unit-testing/blob/master/modules/core/test/com/haulmont/sample/petclinic/service/visit/regular_checkup/RegularCheckupServiceTest.java">RegularCheckupServiceTest.java</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="testing_the_calculators"><a class="anchor" href="#testing_the_calculators"></a><a class="link" href="#testing_the_calculators">Testing the Calculators</a></h4>
+<div class="paragraph">
+<p>As described above, the unit test for the <code>RegularCheckupService</code> does not include the implementations of different calculators itself. This is done on purpose, to benefit from the isolation aspects and the localization of the test scenarios. Otherwise the <code>RegularCheckupServiceTest</code> would contain test cases for all different calculators as well as the orchestration logic.</p>
+</div>
+<div class="paragraph">
+<p>Splitting the test cases for the orchestration and the calculator allows us to create a comparably easy test case setup for testing one of the calculators. In this example we will take a look at the <code>ElectricPetTypeCalculator</code> and the corresponding test case.</p>
+</div>
+<div class="paragraph">
+<p>For the calculator responsible for pets of type <code>Electric</code>, it embodies the following business rules:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>it should only be used if the name of the pet type is <code>Electric</code>, otherwise not</p>
+</li>
+<li>
+<p>the interval between two regular Checkups is one year for electric pets</p>
+</li>
+<li>
+<p>Visits that are not regular checkups should not influence the calculation</p>
+</li>
+<li>
+<p>in case the pet didn&#8217;t have a regular checkup at the Petclinic before, next month should be proposed</p>
+</li>
+<li>
+<p>if the last Regular Checkup was performed longer than one year ago, next month should be proposed</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="electricpettypecalculator_test_cases"><a class="anchor" href="#electricpettypecalculator_test_cases"></a><a class="link" href="#electricpettypecalculator_test_cases">ElectricPetTypeCalculator Test Cases</a></h4>
+<div class="paragraph">
+<p>You can find the implementation of the different test cases that verify those business rules below. This test class also uses the <code>PetclinicData</code> helper for various test utility methods.</p>
+</div>
+<div class="listingblock">
+<div class="title">ElectricPetTypeCalculatorTest.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@ExtendWith</span>(MockitoExtension.class)
+<span class="type">class</span> <span class="class">ElectricPetTypeCalculatorTest</span> {
+
+  <span class="directive">private</span> PetclinicData data;
+  <span class="directive">private</span> RegularCheckupDateCalculator calculator;
+
+  <span class="directive">private</span> Pet electricPet;
+
+  <span class="annotation">@BeforeAll</span>
+  <span class="type">void</span> createTestEnvironment() {
+    data = <span class="keyword">new</span> PetclinicData();
+    calculator = <span class="keyword">new</span> ElectricPetTypeCalculator();
+  }
+
+  <span class="annotation">@BeforeEach</span>
+  <span class="type">void</span> createElectricPet() {
+    electricPet = data.petWithType(data.electricType());
+  }
+
+  <span class="annotation">@Nested</span>
+  <span class="annotation">@DisplayName</span>(
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">1. it should only be used if the name of the pet type </span><span class="delimiter">&quot;</span></span> +
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">   is 'Electric', otherwise not</span><span class="delimiter">&quot;</span></span>
+  )
+  <span class="type">class</span> <span class="class">Supports</span> { <i class="conum" data-value="1"></i><b>(1)</b>
+
+    <span class="annotation">@Test</span>
+    <span class="directive">public</span> <span class="type">void</span> calculator_supportsPetsWithType_Electric() {
+      <span class="comment">// expect:</span>
+      assertThat(calculator.supports(electricPet))
+          .isTrue();
+    }
+
+    <span class="annotation">@Test</span>
+    <span class="directive">public</span> <span class="type">void</span> calculator_doesNotSupportsPetsWithType_Water() {
+      <span class="comment">// given:</span>
+      Pet waterPet = data.petWithType(data.waterType());
+      <span class="comment">// expect:</span>
+      assertThat(calculator.supports(waterPet))
+          .isFalse();
+    }
+  }
+
+  <span class="annotation">@Nested</span>
+  <span class="type">class</span> <span class="class">CalculateRegularCheckupDate</span> {
+
+    <span class="annotation">@Mock</span>
+    <span class="directive">private</span> TimeSource timeSource;
+
+    <span class="directive">private</span> <span class="directive">final</span> LocalDate LAST_YEAR = now().minusYears(<span class="integer">1</span>); <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="directive">private</span> <span class="directive">final</span> LocalDate LAST_MONTH = now().minusMonths(<span class="integer">1</span>);
+    <span class="directive">private</span> <span class="directive">final</span> LocalDate SIX_MONTHS_AGO = now().minusMonths(<span class="integer">6</span>);
+    <span class="directive">private</span> <span class="directive">final</span> LocalDate NEXT_MONTH = now().plusMonths(<span class="integer">1</span>);
+
+    <span class="directive">private</span> <span class="predefined-type">List</span>&lt;Visit&gt; visits = <span class="keyword">new</span> <span class="predefined-type">ArrayList</span>&lt;&gt;();
+
+    <span class="annotation">@BeforeEach</span>
+    <span class="type">void</span> configureTimeSourceMockBehavior() {
+      Mockito.lenient()
+          .when(timeSource.now())
+          .thenReturn(ZonedDateTime.now());
+    }
+
+    <span class="annotation">@Test</span>
+    <span class="annotation">@DisplayName</span>(
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">2. the interval between two regular Checkups </span><span class="delimiter">&quot;</span></span> +
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">   is one year for electric pets</span><span class="delimiter">&quot;</span></span>
+    )
+    <span class="directive">public</span> <span class="type">void</span> intervalIsOneYear_fromTheLatestRegularCheckup() {
+      <span class="comment">// given: there are two regular checkups in the visit history of this pet</span>
+      visits.add(data.regularCheckup(LAST_YEAR));
+      visits.add(data.regularCheckup(LAST_MONTH));
+      <span class="comment">// when:</span>
+      LocalDate nextRegularCheckup =
+          calculate(electricPet, visits); <i class="conum" data-value="3"></i><b>(3)</b>
+      <span class="comment">// then:</span>
+      assertThat(nextRegularCheckup)
+          .isEqualTo(LAST_MONTH.plusYears(<span class="integer">1</span>));
+    }
+
+
+    <span class="annotation">@Test</span>
+    <span class="annotation">@DisplayName</span>(
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">3. Visits that are not regular checkups </span><span class="delimiter">&quot;</span></span> +
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">   should not influence the calculation</span><span class="delimiter">&quot;</span></span>
+    )
+    <span class="directive">public</span> <span class="type">void</span> onlyRegularCheckupVisitsMatter_whenCalculatingNextRegularCheckup() {
+      <span class="comment">// given: one regular checkup and one surgery</span>
+      visits.add(data.regularCheckup(SIX_MONTHS_AGO));
+      visits.add(data.surgery(LAST_MONTH));
+      <span class="comment">// when:</span>
+      LocalDate nextRegularCheckup =
+          calculate(electricPet, visits);
+      <span class="comment">// then: the date of the last checkup is used</span>
+      assertThat(nextRegularCheckup)
+          .isEqualTo(SIX_MONTHS_AGO.plusYears(<span class="integer">1</span>));
+    }
+
+
+    <span class="annotation">@Test</span>
+    <span class="annotation">@DisplayName</span>(
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">4. in case the pet has not done a regular checkup </span><span class="delimiter">&quot;</span></span> +
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">   at the Petclinic before, next month should be proposed</span><span class="delimiter">&quot;</span></span>
+    )
+    <span class="directive">public</span> <span class="type">void</span> ifThePetDidNotHavePreviousCheckups_nextMonthIsProposed() {
+      <span class="comment">// given: there is no regular checkup, just a surgery</span>
+      visits.add(data.surgery(LAST_MONTH));
+      <span class="comment">// when:</span>
+      LocalDate nextRegularCheckup =
+          calculate(electricPet, visits);
+      <span class="comment">// then:</span>
+      assertThat(nextRegularCheckup)
+          .isEqualTo(NEXT_MONTH);
+    }
+
+
+    <span class="annotation">@Test</span>
+    <span class="annotation">@DisplayName</span>(
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">5. if the last Regular Checkup was performed longer than </span><span class="delimiter">&quot;</span></span> +
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">   one year ago, next month should be proposed</span><span class="delimiter">&quot;</span></span>
+    )
+    <span class="directive">public</span> <span class="type">void</span> ifARegularCheckup_exceedsTheInterval_nextMonthIsProposed() {
+      <span class="comment">// given: one regular checkup thirteen month ago</span>
+      visits.add(data.regularCheckup(LAST_YEAR.minusMonths(<span class="integer">1</span>)));
+      <span class="comment">// when:</span>
+      LocalDate nextRegularCheckup =
+          calculate(electricPet, visits);
+      <span class="comment">// then:</span>
+      assertThat(nextRegularCheckup)
+          .isEqualTo(NEXT_MONTH);
+    }
+
+    <span class="directive">private</span> LocalDate calculate(Pet pet, <span class="predefined-type">List</span>&lt;Visit&gt; visitHistory) {
+      <span class="keyword">return</span> calculator.calculateRegularCheckupDate(
+          pet,
+          visitHistory,
+          timeSource
+      );
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>Supports</code> describes test cases that verify the behavior of <code>supports()</code> method via <code>@Nested</code> grouping of JUnit</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>several points in time used as test fixtures and verification values are statically defined</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td><code>calculate</code> is executing the corresponding method of the calculator (SUT)</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The test class uses the JUnit Annotation <code>@Nested</code>. This allows defining groups of test cases with the same context. In this case, it is used to group them by the methods of the SUT they test: <code>@Nested class Supports {}</code> for the <code>support()</code> method to verify, <code>@Nested class CalculateRegularCheckupDate</code> for the <code>calculate()</code> method of the API.</p>
+</div>
+<div class="paragraph">
+<p>Furthermore, the context definition is used to create certain test data as well as <code>@BeforeEach</code> setup methods for all the test cases defined in this context. E.g. only in the context <code>CalculateRegularCheckupDate</code> it is necessary to define the <code>timeSource</code> mock behavior.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="limitations_of_unit_testing"><a class="anchor" href="#limitations_of_unit_testing"></a><a class="link" href="#limitations_of_unit_testing">Limitations of Unit Testing</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Unit testing in an isolated fashion has some great advantages over integration testing. It spins up a different, much smaller test environment that allows a faster test run. Also, by avoiding dependencies to other classes of the application and the framework it is based upon, the test case can be much more robust and independent of a changing environment.</p>
+</div>
+<div class="paragraph">
+<p>But this very same isolation is also the basis for the main limitation of unit tests. To achieve this level of isolation, we have to basically encode certain assumptions on the integration points. This is true for the test environment as well as the mocked dependencies. As long as those assumptions stay true, everything is fine. But once the environment changes, there is a chance that the encoded assumptions are no longer matching the reality.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s take an example of a very implicit assumption on the test environment:</p>
+</div>
+<div class="paragraph">
+<p>In the <code>RegularCheckupService</code> example the expressed dependency on <code>List&lt;RegularCheckupDateCalculator&gt;</code> is sufficiently working as expected in production code, only if every Calculator is a Spring bean. This means it needs to have an annotation <code>@Component</code> added to the class. Otherwise, it is not picked up, and therefore it will influence the overall behavior of the business logic, because e.g. now the default value (next month) will be returned.</p>
+</div>
+<div class="paragraph">
+<p>Furthermore, as the implementation of the service implies that the order of the injected list defines which calculator to ask first, all calculators additionally need to have an <code>@Ordered</code> annotation in place so that the order is defined.</p>
+</div>
+<div class="paragraph">
+<p>Both of those examples could not be tested via a unit test, as we explicitly don&#8217;t want to test the interaction between those classes and the comparably slow test container for every unit test.</p>
+</div>
+<div class="paragraph">
+<p>Unit tests should be the primary mechanism of testing business logic. But to cover those interaction scenarios, too, it is crucial to implement integration testing. A good rule of thumb is to test those scenarios only in an integration test. So, instead of creating all those test cases again and execute them in an integration test environment, only a small subset of those test cases should be used.</p>
+</div>
+<div class="paragraph">
+<p>In the above mentioned example a good candidate for an integration test would be the test case: <code>multiple_supportingCalculators_theFirstOneIsChosen</code> which verifies that the right components are injected and the correct one is used for performing the calculation.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this guide we learned how to use unit tests to test functionality in an isolated fashion using JUnit. In the introduction you saw the differences between using plain unit tests and middleware integration tests. In particular, no external dependencies like databases are used. Furthermore, the test environment does not leverage a test container. Instead we instantiate the SUT manually.</p>
+</div>
+<div class="paragraph">
+<p>In order to create isolated tests, sometimes you need to leverage a Mocking framework as we did in the <code>RegularCheckupServiceTest</code> example. Mocking is a way to control the environment &amp; dependencies the SUT interacts with. By exchanging particular dependencies with special test implementations, the test case is capable of setting up the behavior of the dependency (and potentially use it for verification purposes as well). In the Java ecosystem, Mockito allows configuring the dependencies and their desired behavior.</p>
+</div>
+<div class="paragraph">
+<p>We also learned that exchanging field based injection with constructor based injection production code helps to manually inject dependencies into the SUT in testing scenarios.</p>
+</div>
+<div class="paragraph">
+<p>The benefit of using plain unit tests over integration tests is that the tests run orders of magnitudes faster. This benefit sounds like a nice-to-have feature, but in fact it allows going down a path of much more aggressive usage of automated testing. Using test driven development (TDD) as an example technique benefits very much from fast feedback cycles provided by those execution times.</p>
+</div>
+<div class="paragraph">
+<p>Besides the benefits in the workflow of developing the test cases, we also learned about an architectural benefit: test scenario locality. Keeping the surface area of the SUT helps to spot root causes of test failures much faster.</p>
+</div>
+<div class="paragraph">
+<p>Finally, the test fixture setup is easier to create as well, when the surface area is kept small.</p>
+</div>
+<div class="paragraph">
+<p>Besides the benefits we also looked at the limitations of unit testing. One example was that we are not able to verify the correct usage of particular environmental behavior the code lives in. Although our unit tests perfectly show that the business rules might be correctly defined in the calculators, the question if they are using the correct Spring annotations to be picked up by the framework in the right way cannot be easily verified by unit tests.</p>
+</div>
+<div class="paragraph">
+<p>Therefore, using unit tests should only be used in combination with a set of integration tests that cover the remaining open questions. With this combination we can be quite sure that our application is actually working as we expect.</p>
+</div>
+</div>
+</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!-- Sidebar (right column) -->
+            <div id="blog-sidebar">
+                <div class="region region-sidebar ">
+                    <section id="block-block-29" class="block block-block clearfix">
+
+                        <div class="guide-panel">
+                            <h3 class="header-table-content">Table of contents</h3>
+                            <ul class="sectlevel1">
+<li><a href="#what_will_be_built">What Will be Built</a>
+<ul class="sectlevel2">
+<li><a href="#final_application">Final Application</a></li>
+<li><a href="#requirements">Requirements</a></li>
+</ul>
+</li>
+<li><a href="#example_cuba_petclinic">Example: CUBA petclinic</a></li>
+<li><a href="#overview">Overview</a>
+<ul class="sectlevel2">
+<li><a href="#unit_testing">Unit Testing</a></li>
+<li><a href="#mocking">Mocking</a></li>
+<li><a href="#constructor_based_injection">Constructor Based Injection</a></li>
+</ul>
+</li>
+<li><a href="#tests_for_petclinic_functionality">Tests for Petclinic Functionality</a>
+<ul class="sectlevel2">
+<li><a href="#pet_amount_for_a_particular_owner">Pet Amount for a Particular Owner</a></li>
+<li><a href="#next_regular_checkup_date_proposal">Next Regular Checkup Date Proposal</a></li>
+</ul>
+</li>
+<li><a href="#limitations_of_unit_testing">Limitations of Unit Testing</a></li>
+<li><a href="#summary">Summary</a></li>
+</ul>
+                        </div>
+
+                        <div class="sidebar-razd"></div>
+                        <div class="guide-panel download">
+                            <a href="https://github.com/cuba-guides/cuba-petclinic-unit-testing" class="github-link" target="_blank">Example code on Github</a>
+                        </div>
+                        <div class="guide-panel cuba-version">Supported versions: CUBA 7.1+; Java 8+</div>
+
+                    </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer fragment="14269c1b298" class="footer">
+    <div class="container footer_container">
+        <div class="footer_columns">
+            <div class="footer_column">
+                <div class="footer-menu"><h4 class="footer-menu_label">Framework</h4>
+                    <ul class="footer-menu_nav">
+                        <li><a href="/framework/">Framework</a></li>
+                        <li><a href="/tools/">Tools</a></li>
+                        <li><a href="/marketplace/">Addons</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer_column">
+                <div class="footer-menu"><h4 class="footer-menu_label">Learn</h4>
+                    <ul class="footer-menu_nav">
+                        <li><a href="/learn/quickstart/">Quick Start</a></li>
+                        <li><a href="/learn/live-demo/">Live Demo</a></li>
+                        <li><a href="/guides/">Guides</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer_column">
+                <div class="footer-menu"><h4 class="footer-menu_label">Documentation</h4>
+                    <ul class="footer-menu_nav">
+                        <li><a href="/documentation/">Documentation</a></li>
+                        <li><a href="/api-reference/">API References</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer_column">
+                <div class="footer-menu"><h4 class="footer-menu_label">Community</h4>
+                    <ul class="footer-menu_nav">
+                        <li><a href="/discuss/">Forum</a></li>
+                        <li><a href="/blog/">Blog</a></li>
+                        <li><a href="/contacts/">Contacts</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer_bottom">
+            <div class="footer_copyright">
+                Developed and sponsored by Haulmont
+                <a href="https://www.cuba-platform.com/terms-of-use/" class="footer_terms">Terms of Use</a></div>
+            <ul class="social footer_social">
+                <li class="social_item">
+                    <a href="https://github.com/cuba-platform/cuba" target="_blank" class="social_link">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon -github social_icon">
+                        <path d="M3.047 3.188C5.109 1.062 7.594 0 10.5 0c2.906 0 5.383 1.055 7.43 3.164C19.977 5.274 21 7.812 21 10.781c0 2.344-.672 4.453-2.016 6.328-1.343 1.875-3.062 3.172-5.156 3.891h-.187c-.375 0-.563-.187-.563-.563l.024-1.054c.015-.672.023-1.29.023-1.852 0-.906-.25-1.578-.75-2.015 1.438-.188 2.602-.649 3.492-1.383.89-.735 1.336-2.04 1.336-3.914 0-1.125-.36-2.094-1.078-2.906.313-.907.281-1.86-.094-2.86h-.234c-.719 0-1.61.375-2.672 1.125a9.858 9.858 0 0 0-2.625-.375c-.844 0-1.719.125-2.625.375-1.063-.75-1.953-1.125-2.672-1.125H4.97c-.375 1-.407 1.953-.094 2.86-.719.812-1.078 1.78-1.078 2.906 0 1.875.437 3.18 1.312 3.914s2.032 1.195 3.47 1.383c-.345.343-.563.828-.657 1.453a2.687 2.687 0 0 1-1.219.281c-.781 0-1.39-.39-1.828-1.172-.406-.687-.953-1.062-1.64-1.125-.657 0-.673.219-.047.656.468.25.859.782 1.171 1.594.032.125.094.274.188.445.094.172.351.399.773.68.422.281.93.422 1.524.422.437 0 .781-.031 1.031-.094v1.828c0 .344-.172.516-.516.516h-.187c-2.125-.719-3.852-2.008-5.18-3.867C.664 15.273 0 13.156 0 10.78c0-2.969 1.016-5.5 3.047-7.594z" fill="currentColor" fill-rule="evenodd"></path>
+                    </svg>
+                </a></li>
+                <li class="social_item">
+                    <a href="https://www.linkedin.com/company/cuba-platform" target="_blank" class="social_link">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon -linkedin social_icon">
+                        <path d="M19.305 0c.474 0 .875.155 1.203.465.328.31.492.702.492 1.176v17.554c0 .474-.164.894-.492 1.258-.328.365-.73.547-1.203.547h-17.5c-.474 0-.894-.182-1.258-.547C.182 20.09 0 19.67 0 19.195V1.641C0 1.167.173.775.52.465.866.155 1.294 0 1.805 0h17.5zM6.775 17.613V8.129h-2.71v9.484h2.71zM4.431 6.407c.245.245.566.367.964.367s.728-.13.988-.39.39-.574.39-.942c0-.398-.122-.727-.367-.987s-.567-.39-.965-.39-.727.13-.987.39-.39.59-.39.987c0 .368.122.69.367.965zm13.18 11.206v-5.42c0-1.336-.305-2.348-.916-3.034-.612-.687-1.407-1.03-2.386-1.03-1.048 0-1.922.506-2.62 1.517v-1.3H8.806v9.267h2.884v-5.257c0-.361.034-.614.104-.759.28-.722.77-1.083 1.468-1.083.979 0 1.468.668 1.468 2.005v5.094h2.883z" fill="currentColor" fill-rule="evenodd"></path>
+                    </svg>
+                </a></li>
+                <li class="social_item">
+                    <a href="https://www.facebook.com/CUBAplatform" target="_blank" class="social_link">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon -facebook social_icon">
+                        <path d="M17.063 0A3.939 3.939 0 0 1 21 3.938v13.124A3.939 3.939 0 0 1 17.062 21h-2.57v-8.135h2.72l.411-3.172h-3.13V7.67c0-.916.245-1.531 1.571-1.531l1.668-.014v-2.83c-.287-.041-1.285-.123-2.433-.123-2.42 0-4.088 1.476-4.088 4.183v2.338H8.477v3.172h2.734V21H3.937A3.939 3.939 0 0 1 0 17.062V3.938A3.939 3.939 0 0 1 3.938 0h13.124z" fill="currentColor" fill-rule="evenodd"></path>
+                    </svg>
+                </a></li>
+                <li class="social_item">
+                    <a href="https://twitter.com/CubaPlatform" target="_blank" class="social_link">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon -twitter social_icon">
+                            <path d="M17.5 6.59a6.058 6.058 0 0 1-1.654.465 2.903 2.903 0 0 0 1.271-1.6 5.717 5.717 0 0 1-1.832.697 2.847 2.847 0 0 0-2.092-.902 2.87 2.87 0 0 0-2.87 2.871c0 .219.013.451.068.656A8.158 8.158 0 0 1 4.457 5.77c-.246.423-.396.93-.396 1.449 0 .998.464 1.873 1.244 2.392-.479-.013-.93-.15-1.367-.355v.027c0 1.395 1.052 2.557 2.365 2.817-.246.068-.438.109-.698.109-.177 0-.355-.027-.533-.055a2.889 2.889 0 0 0 2.68 1.996A5.782 5.782 0 0 1 3.5 15.34a8.183 8.183 0 0 0 4.402 1.285c5.278 0 8.176-4.375 8.176-8.176 0-.123 0-.246-.014-.369A5.521 5.521 0 0 0 17.5 6.59zM21 3.938v13.124A3.939 3.939 0 0 1 17.062 21H3.938A3.939 3.939 0 0 1 0 17.062V3.938A3.939 3.939 0 0 1 3.938 0h13.124A3.939 3.939 0 0 1 21 3.938z" fill="currentColor" fill-rule="evenodd"></path>
+                        </svg>
+                    </a>
+                </li>
+                <li class="social_item">
+                    <a href="https://www.youtube.com/c/CubaPlatform" target="_blank" class="social_link">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon -youtube social_icon">
+                        <path d="M27.836 4.648c.11 1.97.164 3.92.164 5.852 0 1.932-.055 3.883-.164 5.852 0 1.24-.392 2.287-1.176 3.144-.784.857-1.74 1.285-2.87 1.285-2.808.146-6.071.219-9.79.219-3.719 0-6.982-.073-9.79-.219-1.13 0-2.086-.428-2.87-1.285C.556 18.64.164 17.591.164 16.352.054 14.382 0 12.432 0 10.5c0-1.276.073-3.227.219-5.852 0-1.24.383-2.287 1.148-3.144C2.133.647 3.081.219 4.211.219 6.872.073 9.97 0 13.508 0h.984c3.537 0 6.636.073 9.297.219 1.13 0 2.087.428 2.871 1.285.784.857 1.176 1.905 1.176 3.144zM11.32 15.86l7.93-5.359-7.93-5.414v10.773z" fill="currentColor" fill-rule="evenodd"></path>
+                    </svg>
+                </a></li>
+                <li class="social_item">
+                    <a href="/rss.xml" class="social_link">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon -rss social_icon">
+                            <path d="M.857 15.91C1.464 15.305 2.18 15 3 15c.821 0 1.527.295 2.116.884.59.59.884 1.295.884 2.116 0 .821-.295 1.527-.884 2.116-.59.59-1.295.884-2.116.884-.821 0-1.527-.295-2.116-.884C.294 19.526 0 18.821 0 18c0-.821.286-1.518.857-2.09zM0 7c3.828 0 7.118 1.376 9.871 4.129C12.624 13.882 14 17.172 14 21H9.625c0-2.917-.875-5.25-2.625-7s-4.083-2.625-7-2.625V7zm0-7c5.797 0 10.746 2.05 14.848 6.152C18.949 10.254 21 15.203 21 21h-4.375c0-4.667-1.604-8.604-4.813-11.813C8.604 5.98 4.668 4.375 0 4.375V0z" fill="currentColor" fill-rule="evenodd"></path>
+                        </svg>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</footer>
+<!--<script src="https://cuba-nuxt.demo.haulmont.com/_nuxt/83f852ef4b5c91802566.js" defer></script>
+<script src="https://cuba-nuxt.demo.haulmont.com/_nuxt/d3a40ea16eeb2e16777d.js" defer></script>
+<script src="https://cuba-nuxt.demo.haulmont.com/_nuxt/9bd7e05c04e06e762b47.js" defer></script>
+<script src="https://cuba-nuxt.demo.haulmont.com/_nuxt/70ff0a2e2f971caf4892.js" defer></script>
+<script src="https://cuba-nuxt.demo.haulmont.com/_nuxt/cf082d0abe0e606c10b9.js" defer></script>-->
+<style>
+    [class*="column"] + [class*="column"]:last-child {
+        float: none;
+    }
+</style>
+
+
+<!-- BEGIN FOOTER -->
+<!--<footer id="footer">
+    <div class="footer-wrapper cuba-container">
+        <div class="region region-footer-sitemap">
+            <section id="block-footer-sitemap-footer-sitemap" class="block block-footer-sitemap clearfix">
+                <div id="footer-sitemap" class="clearfix">
+                    <div class="fs-block-content">
+                        <div class="menu-footer-sitemap">
+                            <ul class="footer_links_menu-footer-sitemap total-items-5 parent-items-0 single-items-0">
+                                <li class="menu-1466 depth-1 total-children-4 parent-children-0 single-children-4  first">
+                                    <a href="/framework" class="fs-root-link">Platform</a>
+                                    <ul class="footer_links_menu-footer-sitemap total-items-4 parent-items-0 single-items-0">
+                                        <li class="menu-2770 depth-2 fs-no-children  first"><a href="/framework">The Framework</a></li>
+                                        <li class="menu-1473 depth-2 fs-no-children"><a href="/development-tools">Development Tools</a></li>
+                                        <li class="menu-2838 depth-2 fs-no-children last"><a href="/marketplace">Marketplace</a></li>
+                                    </ul>
+                                </li>
+                                <li class="menu-1469 depth-1 total-children-7 parent-children-0 single-children-7">
+                                    <a href="/online-demo" class="fs-root-link">Learn</a>
+                                    <ul class="footer_links_menu-footer-sitemap total-items-7 parent-items-0 single-items-0">
+                                        <li class="menu-1479 depth-2 fs-no-children first"><a href="/online-demo">Online demo</a></li>
+                                        <li class="menu-1477 depth-2 fs-no-children"><a href="/quickstart">Quick start</a></li>
+                                        <li class="menu-1478 depth-2 fs-no-children"><a href="/documentation">Documentation</a></li>
+                                        <li class="menu-1731 depth-2 fs-no-children"><a href="/guides">Guides</a></li>
+                                        <li class="menu-1773 depth-2 fs-no-children"><a href="/webinars">Webinars</a></li>
+                                        <li class="menu-1602 depth-2 fs-no-children last"><a href="/faq">FAQ</a></li>
+                                    </ul>
+                                </li>
+                                <li class="menu-1603 depth-1 total-children-3 parent-children-0 single-children-3"><a
+                                        href="https://www.cuba-platform.com/discuss/" class="fs-root-link">Community</a>
+                                    <ul class="footer_links_menu-footer-sitemap total-items-3 parent-items-0 single-items-0">
+                                        <li class="menu-1604 depth-2 fs-no-children first"><a href="https://www.cuba-platform.com/discuss/">Forum</a></li>
+                                        <li class="menu-1692 depth-2 fs-no-children"><a href="/testimonials">Customer stories</a></li>
+                                        <li class="menu-1615 depth-2 fs-no-children last"><a href="/blog">Blog</a></li>
+                                    </ul>
+                                </li>
+                                <li class="menu-1663 depth-1 total-children-3 parent-children-0 single-children-3"><a
+                                        href="/training" class="fs-root-link">Services</a>
+                                    <ul class="footer_links_menu-footer-sitemap total-items-3 parent-items-0 single-items-0">
+                                        <li class="menu-1756 depth-2 fs-no-children first"><a href="/training">Training</a></li>
+                                        <li class="menu-1757 depth-2 fs-no-children"><a href="/support-options">Support</a></li>
+                                        <li class="menu-1758 depth-2 fs-no-children last"><a href="/deployment">Development</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="menu-1612 depth-1 total-children-3 parent-children-0 single-children-3  last">
+                                    <a href="/download" class="fs-root-link">More</a>
+                                    <ul class="footer_links_menu-footer-sitemap total-items-3 parent-items-0 single-items-0">
+                                        <li class="menu-2773 depth-2 fs-no-children first"><a href="/download">Download</a></li>
+                                        <li class="menu-2775 depth-2 fs-no-children"><a href="/store">Store</a></li>
+                                        <li class="menu-1480 depth-2 fs-no-children last"><a href="/contacts">Contacts</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+        </div>
+        <div class="region region-footer-copyright">
+            <section id="block-block-14" class="block block-block clearfix">
+                <div class="footer-copyright">
+                    <div class="copyright">Copyright &copy; 2008-2018 Haulmont</div>
+                    <div class="licences"><a href="/terms-of-use">Terms of Use</a></div>
+                    <div class="socials">
+                        <ul>
+                            <li><a href="https://github.com/cuba-platform/cuba" class="socials-icon github"></a></li>
+                            <li><a href="https://www.youtube.com/c/CubaPlatform" class="socials-icon youtube"></a></li>
+                            <li><a href="https://www.facebook.com/CUBAplatform" class="socials-icon facebook"></a></li>
+                            <li><a href="https://twitter.com/CubaPlatform" class="socials-icon twitter"></a></li>
+                            <li><a href="https://www.linkedin.com/company/cuba-platform" class="socials-icon linkedin"></a></li>
+                            <li><a href="https://www.cuba-platform.com/rss.xml" class="socials-icon rss"></a></li>
+                        </ul>
+                    </div>
+                </div>
+                <script async defer src="https://buttons.github.io/buttons.js"></script>
+            </section>
+        </div>
+    </div>
+</footer>-->
+<!-- END FOOTER -->
+<div class="scrollTop"></div>
+</section>
+
+<script src="/guides/js/foundation.min.js"></script>
+<script src="https://unpkg.com/isotope-layout@3.0/dist/isotope.pkgd.js"></script>
+<script src="/guides/js/vendor/modernizr.js"></script>
+<script src="/guides/js/toc.js"></script>
+<script src="/guides/js/navigation.js"></script>
+<script src="/guides/js/navbar.js"></script>
+<script src="/guides/js/extra.js"></script>
+<script src="/guides/js/extra2.js"></script>
+<script src="/guides/js/cuba-new.js"></script>
+<script>
+(function ($) {
+  $(document).foundation();
+  var doc = document.documentElement;
+  doc.setAttribute('data-useragent', navigator.userAgent)
+
+  /* Issue #24 */
+  $(".blog .content img").each(function() {
+    var imgMarkup = $(this)[0].outerHTML;
+    console.log(imgMarkup);
+    $(this).replaceWith('<div class="img-center">' + imgMarkup + '</div>');
+  });
+
+})(jQuery);
+
+// Cache selectors
+var lastId,
+    topMenu = $(".sectlevel1"),
+    topMenuHeight = topMenu.outerHeight()+1,
+
+    // All list items
+    menuItems = topMenu.find("a"),
+    // Anchors corresponding to menu items
+    scrollItems = menuItems.map(function(){
+        var item = $($(this).attr("href"));
+        if (item.length) { return item; }
+    });
+console.log(topMenuHeight );
+menuItems.click(function(e){
+    var href = $(this).attr("href"),
+        offsetTop = href === "#" ? 0 : $(href).offset().top - 85;
+    $('html, body').stop().animate({
+        scrollTop: offsetTop
+    }, 850);
+    e.preventDefault();
+    window.location =  href;
+});
+
+$( document ).ready(function() {
+    const hash = location.hash.replace('#','');
+    if(hash !== ''){
+        $('html, body').stop().animate({ scrollTop: $('a[href=#' + hash + ']').offset().top - 85}, 850);
+    }
+});
+
+// Bind to scroll
+$(window).scroll(function(){
+    // Get container scroll position
+    var fromTop = $(this).scrollTop()+topMenuHeight;
+
+    // Get id of current scroll item
+    var cur = scrollItems.map(function(){
+        if ($(this).offset().top < fromTop)
+            return this;
+    });
+    // Get the id of the current element
+    cur = cur[cur.length-1];
+    var id = cur && cur.length ? cur[0].id : "";
+
+    if (lastId !== id) {
+        lastId = id;
+        // Set/remove active class
+        menuItems
+            .parent().removeClass("active")
+            .end().filter("[href=#"+id+"]").parent().addClass("active");
+    }
+});
+
+</script>
+</body>
+</html>
