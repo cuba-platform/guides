@@ -524,12 +524,31 @@ application from the UI to the database.</p>
 shift gears here a little bit and take a look at how a web integration test looks. We will do that based on the Petclinic
 example.</p>
 </div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+TODO - update for CUBA Studio 14, after the following issues have been addressed:
+<a href="https://youtrack.cuba-platform.com/issue/STUDIO-6460" class="bare">https://youtrack.cuba-platform.com/issue/STUDIO-6460</a>, <a href="https://youtrack.cuba-platform.com/issue/STUDIO-5891" class="bare">https://youtrack.cuba-platform.com/issue/STUDIO-5891</a>
+</td>
+</tr>
+</table>
+</div>
 <div class="sect2">
 <h3 id="first_web_integration_test"><a class="anchor" href="#first_web_integration_test"></a><a class="link" href="#first_web_integration_test">First Web Integration Test</a></h3>
+<div class="paragraph">
+<p>In order to run a web integration test an instance of
+<a href="https://files.cuba-platform.com/javadoc/cuba/7.2/com/haulmont/cuba/web/testsupport/TestUiEnvironment.html">TestUiEnvironment</a>
+has to be instantiated and registered as a JUnit extension. The <code>TestUiEnvironment</code> is similar to the <a href="https://www.cuba-platform.com/guides/integration-testing-middleware#test_container">Test Container</a> in the middleware integration tests.
+It acts as the running environment to interact with the application.</p>
+</div>
 <div class="listingblock">
-<div class="title">PetEditorTest.java</div>
+<div class="title">PetEditTest.java</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">OwnerBrowseTest</span> {
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">PetEditTest</span> {
 
     <span class="annotation">@RegisterExtension</span>
     TestUiEnvironment environment =
@@ -538,38 +557,82 @@ example.</p>
                             <span class="string"><span class="delimiter">&quot;</span><span class="content">com.haulmont.cuba.web.app.main</span><span class="delimiter">&quot;</span></span>,
                             <span class="string"><span class="delimiter">&quot;</span><span class="content">com.haulmont.sample.petclinic.web</span><span class="delimiter">&quot;</span></span>
                     )
-                    .withUserLogin(<span class="string"><span class="delimiter">&quot;</span><span class="content">admin</span><span class="delimiter">&quot;</span></span>);
+                    .withUserLogin(<span class="string"><span class="delimiter">&quot;</span><span class="content">admin</span><span class="delimiter">&quot;</span></span>);  <i class="conum" data-value="1"></i><b>(1)</b>
 
+    <span class="directive">private</span> TestEntityFactory&lt;Pet&gt; petsFactory;
+
+    <span class="annotation">@BeforeEach</span>
+    <span class="directive">public</span> <span class="type">void</span> setUp() {
+        Screens screens = environment.getScreens(); <i class="conum" data-value="2"></i><b>(2)</b>
+
+        petsFactory = environment
+            .getContainer()
+            .getEntityFactory(Pet.class, TestEntityState.NEW); <i class="conum" data-value="3"></i><b>(3)</b>
+    }
+
+    <span class="comment">// ...</span>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>TestUiEnvironment</code> is instantiated and directly configured</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>It is possible to retrieve CUBA APIs like the Screens API through the environment</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The <code>EntityFactory</code> allows to create entity objects specifically for tests</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The interaction pattern with the environment is very similar how it works for the middleware integration tests. With
+the Entity Factory, it is possible to create Entities with the specific needs of automated tests (like the definition of the
+desired state). Besides that the majority of the CUBA APIs can be retrieved either directly from the <code>environment</code> or from
+the <code>environment.getContainer()</code> web test container.</p>
+</div>
+<div class="paragraph">
+<p>With that setup part in place, let&#8217;s take a look at the first web integration test case. The test verifies that the
+<code>PetEdit</code> editor can be opened correctly and the <code>identificationNumber</code> property is bound correctly.</p>
+</div>
+<div class="listingblock">
+<div class="title">PetEditorTest.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">PetEditTest</span> {
+
+    <span class="comment">// ...</span>
 
     <span class="directive">private</span> Screens screens;
     <span class="directive">private</span> TestEntityFactory&lt;Pet&gt; petsFactory;
 
     <span class="annotation">@BeforeEach</span>
-    <span class="directive">public</span> <span class="type">void</span> setUp() {
-        petsFactory = environment.getContainer()
-            .getEntityFactory(Pet.class, TestEntityState.NEW);
-
+    <span class="directive">public</span> <span class="type">void</span> openMainScreen() {
         screens = environment.getScreens();
-        screens.create(MainScreen.class, OpenMode.ROOT).show();
+        screens.create(MainScreen.class, OpenMode.ROOT).show(); <i class="conum" data-value="4"></i><b>(4)</b>
     }
 
     <span class="annotation">@Test</span>
-    <span class="directive">public</span> <span class="type">void</span> when_openingThePetEditor_then_theIdentificationNumberValueIsCorrectlyBoundInTheInputField() {
+    <span class="directive">public</span> <span class="type">void</span> identificationNumberIsCorrectlyBoundInTheInputField() {
 
         Pet pet = petsFactory.create(
                 <span class="predefined-type">Collections</span>.singletonMap(<span class="string"><span class="delimiter">&quot;</span><span class="content">identificationNumber</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">019</span><span class="delimiter">&quot;</span></span>)
-        );
+        ); <i class="conum" data-value="1"></i><b>(1)</b>
 
         PetEdit petEdit = showPetEditorFor(pet);
 
-        TextInputField identificationNumber = identificationNumberField(petEdit);
+        TextInputField identificationNumberField = identificationNumberField(petEdit);
 
-        assertThat(identificationNumber.getValue())
+        assertThat(identificationNumberField.getValue()) <i class="conum" data-value="4"></i><b>(4)</b>
             .isEqualTo(<span class="string"><span class="delimiter">&quot;</span><span class="content">019</span><span class="delimiter">&quot;</span></span>);
     }
 
     <span class="directive">private</span> PetEdit showPetEditorFor(Pet pet) {
-        PetEdit petEdit = screens.create(PetEdit.class);
+        PetEdit petEdit = screens.create(PetEdit.class); <i class="conum" data-value="2"></i><b>(2)</b>
         petEdit.setEntityToEdit(pet);
         petEdit.show();
         <span class="keyword">return</span> petEdit;
@@ -578,19 +641,340 @@ example.</p>
     <span class="directive">private</span> TextInputField identificationNumberField(PetEdit petEdit) {
         <span class="keyword">return</span> (TextInputField) petEdit
             .getWindow()
-            .getComponent(<span class="string"><span class="delimiter">&quot;</span><span class="content">identificationNumberField</span><span class="delimiter">&quot;</span></span>);
+            .getComponent(<span class="string"><span class="delimiter">&quot;</span><span class="content">identificationNumberField</span><span class="delimiter">&quot;</span></span>); <i class="conum" data-value="3"></i><b>(3)</b>
     }
-
 }</code></pre>
 </div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>a new Pet Entity is created via its test data factory</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the CUBA UI APIs are used to open screens</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td><code>getComponent</code> allows to retrieve references of Components of the opened screen</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>CUBAs Component APIs can be used to perform assertions</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This first test shows an example on how to programmatically open screens and interact with the resulting UI screen.
+In this concrete example, we verify that the data binding in the form component is behaving correctly.</p>
+</div>
+<div class="paragraph">
+<p>We neither check any controller logic nor if CUBAs internal data binding is working as expected. Instead we are verifying
+that the Screen descriptor contains a field named <code>identificationNumberField</code>. This field should be wired to the <code>petDc</code>
+data container and in particular to the <code>identificationNumber</code> entity property.</p>
+</div>
+<div class="paragraph">
+<p>In particular it is this part of the XML screen descriptor that is verified for correct usage:</p>
+</div>
+<div class="listingblock">
+<div class="title">pet-edit.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;form</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">fieldGroup</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">dataContainer</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">petDc</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;column</span> <span class="attribute-name">width</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">250px</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;textField</span>
+            <span class="attribute-name">property</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>
+            <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">nameField</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+        <span class="tag">&lt;textField</span>
+            <span class="attribute-name">property</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">identificationNumber</span><span class="delimiter">&quot;</span></span>
+            <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">identificationNumberField</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
+        <span class="tag">&lt;dateField</span>
+            <span class="attribute-name">property</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">birthDate</span><span class="delimiter">&quot;</span></span>
+            <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">birthDateField</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+    <span class="tag">&lt;/column&gt;</span>
+<span class="tag">&lt;/form&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the declaration of the <code>identificationNumberField</code> with the correct property binding and type is the relevant part for the test</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>There are a couple of other areas of the overall code that are also implicitly verified:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the <code>PetEdit</code> java controller has the correct annotation(s) to act as the Editor for the <code>Pet</code> entity</p>
+</li>
+<li>
+<p>the XML definition of the Screen Descriptor <code>pet-edit.xml</code> is well-formed</p>
+</li>
+<li>
+<p>the screen could be opened without any errors (e.g. lifecycle events are performed correctly)</p>
+</li>
+<li>
+<p>the entity was correctly bound to the <code>petDc</code> data container</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>As the web integration test environment is a kind of grey-box test, it is possible to use the same APIs that are used
+in the production code. This simplifies test case implementation a lot, because all the knowledge of the CUBA APIs
+can directly be used in the integration test.</p>
+</div>
+<div class="paragraph">
+<p>Interacting with UI components is also the same as in production code. The only difference is the retrieval of the instance,
+as no dependency injection mechanism is available.</p>
+</div>
+<div class="paragraph">
+<p>In this example, the data binding is manually handled by passing in the instance through <code>petEdit.setEntityToEdit(pet)</code>.
+In the next example, we will take a look at the situation where the screen tries to automatically load data from the
+<code>DataService</code>.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="owner_browse"><a class="anchor" href="#owner_browse"></a><a class="link" href="#owner_browse">Owner Browse</a></h3>
+<div class="paragraph">
+<p>The second example is an web integration test for the interaction between the Owner Browser and the Owner Editor.
+In this case the data loading happens automatically as the Controller is annotated with <code>@LoadDataBeforeShow</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">OwnerBrowse.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@LoadDataBeforeShow</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">OwnerBrowse</span> <span class="directive">extends</span> StandardLookup&lt;<span class="predefined-type">Owner</span>&gt; {
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Besides that the controller embodies no further UI/business logic. The first test case verifies that the data that is loaded
+will be displayed correctly in the Table. The second test case goes a step further and checks the interaction between
+two screens: <code>OwnerBrowse</code> and <code>OwnerEdit</code>. Once an Owner is selected in the Table and the edit action is performed,
+the Owner Editor should be visible and the data of the selected Owner should be displayed.</p>
+</div>
+<div class="sect3">
+<h4 id="test_declarative_data_loading"><a class="anchor" href="#test_declarative_data_loading"></a><a class="link" href="#test_declarative_data_loading">Test declarative Data Loading</a></h4>
+<div class="paragraph">
+<p>Let&#8217;s look at the first test case: <code>when_ownerListIsDisplayed_thenOwnersAreShownInTheTable</code>.</p>
+</div>
+<div class="paragraph">
+<p>In order to provide the data to the data container, the result of the Data Service has to be mocked. For the Web integration
+test environment a special DataService implementation is available: <code>DataServiceProxy</code>. This class mimics parts of the behavior of the regular
+<code>DataService</code> implementation. See the information from the <a href="https://doc.cuba-platform.com/manual-latest/integration_tests_client.html">CUBA Documentation</a>:</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+DataServiceProxy - default stub for DataManager. It contains an implementation for commit() method which mimics the behavior of the real data store: makes new entities detached, increments versions, etc. The loading methods return null and empty collections.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In this case we would like the <code>DataServiceProxy</code> to return a pre-defined set of data when <code>loadList</code> is called. Also we would
+like to utilize the other parts of the <code>DataServiceProxy</code> implementation. This means, we have to only partially provide
+a different implementation of the class. Mockito allows to achieve this partial mocking with a <code>Spy</code>. A spy is similar to
+a mock object, but the difference is that it calls the real methods except for the ones that are mocked out.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s look at the complete test case first and then go though the details of the implementation:</p>
+</div>
+<div class="listingblock">
+<div class="title">OwnerBrowseTest.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">OwnerBrowseTest</span> {
 
+
+    <span class="comment">//...</span>
+
+    <span class="annotation">@BeforeEach</span>
+    <span class="directive">public</span> <span class="type">void</span> setUp() {
+        ownerFactory = environment.getContainer().getEntityFactory(<span class="predefined-type">Owner</span>.class, TestEntityState.NEW);
+
+        mockDataService();
+
+        data = <span class="keyword">new</span> PetclinicData(ownerFactory);
+
+    }
+
+    <span class="directive">private</span> <span class="type">void</span> mockDataService() {
+        dataService = Mockito.spy(
+                <span class="keyword">new</span> DataServiceProxy(environment.getContainer())
+        );
+        TestServiceProxy.mock(DataService.class, dataService);
+    }
+
+    <span class="annotation">@Test</span>
+    <span class="directive">public</span> <span class="type">void</span> when_ownerListIsDisplayed_thenOwnersAreShownInTheTable() {
+
+        when(ownerListIsLoaded())
+                .thenReturn(ashAndMisty);
+
+        OwnerBrowse ownerBrowse = openScreen(OwnerBrowse.class);
+
+        Table&lt;<span class="predefined-type">Owner</span>&gt; ownersTable = ownersTable(ownerBrowse);
+
+        assertThat(ownersTable.getItems().getItems())
+                .hasSize(<span class="integer">2</span>);
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">List</span>&lt;<span class="predefined-type">Owner</span>&gt; ownerListIsLoaded() {
+        LoadContext&lt;<span class="predefined-type">Owner</span>&gt; loadOwnerList = Mockito.argThat(loadContext -&gt;
+                loadContext.getEntityMetaClass().equals(<span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_Owner</span><span class="delimiter">&quot;</span></span>)
+        );
+        <span class="keyword">return</span> dataService.loadList(loadOwnerList);
+    }
+
+    <span class="comment">// ...</span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the setup part <code>Mockito.spy(&#8230;&#8203;)</code> creates a new Spy Instance of the DataServiceProxy, where
+we can re-configure the behavior of the <code>loadList</code> method.</p>
+</div>
+<div class="paragraph">
+<p>After creation of the Spy, we have to register the service instance for the <code>DataService</code> API for the test in the
+web integration test environment. This happens through the static <code>mock</code> method of the TestServiceProxy.</p>
+</div>
+<div class="paragraph">
+<p>The remaining part left of the manual data configuration is the definition of the mock call and the expected result.
+For that we use the Mockito API: <code>when(&#8230;&#8203;).thenReturn(&#8230;&#8203;)</code>. In this case, we need to be a little more precise, because
+we don&#8217;t want to mock all calls to <code>DataService.loadList(&#8230;&#8203;)</code> but instead only the one where the load of the <code>Owner</code>
+entity happens.</p>
+</div>
+<div class="paragraph">
+<p>The helper method <code>ownerListIsLoaded</code> defines that situation. <code>Mockito.argThat</code> is the API that lets the test define a
+Predicate lambda expression that determines if the parameters of a call to the method (<code>loadList</code> in this case) are
+matching against the call that we want to mock. Basically it acts as a filter, to pinpoint the call that we are searching
+for.</p>
+</div>
+<div class="paragraph">
+<p>The Lambda gets passed in the original parameter of the method: <code>LoadContext</code>.
+<code>loadContext.getEntityMetaClass().equals("petclinic_Owner")</code> is our filter criteria to verify that the entity class is the
+<code>Owner</code> entity.</p>
+</div>
+<div class="paragraph">
+<p>The usage of the method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>when(ownerListIsLoaded())
+                .thenReturn(ashAndMisty);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>defines the combination of the mock with the return values. In case the owner list is loaded, then Ash and Misty
+should be returned.</p>
+</div>
+<div class="paragraph">
+<p>With that information we can take a look at the actual test case once again:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">OwnerBrowseTest</span> {
+    <span class="comment">// ...</span>
+    <span class="annotation">@Test</span>
+    <span class="directive">public</span> <span class="type">void</span> when_ownerListIsDisplayed_thenOwnersAreShownInTheTable() {
+
+        when(ownerListIsLoaded())
+                .thenReturn(ashAndMisty); <i class="conum" data-value="1"></i><b>(1)</b>
+
+        OwnerBrowse ownerBrowse = openScreen(OwnerBrowse.class);
+
+        Table&lt;<span class="predefined-type">Owner</span>&gt; ownersTable = ownersTable(ownerBrowse); <i class="conum" data-value="2"></i><b>(2)</b>
+
+        assertThat(ownersTable.getItems().getItems())
+                .hasSize(<span class="integer">2</span>); <i class="conum" data-value="3"></i><b>(3)</b>
+    }
+
+    <span class="directive">private</span> Table&lt;<span class="predefined-type">Owner</span>&gt; ownersTable(OwnerBrowse ownerBrowse) {
+        <span class="keyword">return</span> (Table&lt;<span class="predefined-type">Owner</span>&gt;) ownerBrowse
+            .getWindow()
+            .getComponent(<span class="string"><span class="delimiter">&quot;</span><span class="content">ownersTable</span><span class="delimiter">&quot;</span></span>);
+    }
+
+    <span class="directive">private</span> &lt;T <span class="directive">extends</span> Screen&gt; T openScreen(<span class="predefined-type">Class</span>&lt;T&gt; screenClass) {
+        T screen = screens.create(screenClass);
+        screen.show();
+        <span class="keyword">return</span> screen;
+    }
+    <span class="comment">// ...</span>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The manual data loading is configured</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The screen is opened and the table component is retrieved from the screen</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>an assertion is made on the items of the owners table size</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>There are once again a couple of related points that are also implicitly verified:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the <code>OwnerBrowse</code> java controller has the correct Annotation to automatically load the data when the screen is opened</p>
+</li>
+<li>
+<p>the XML definition of the Screen Descriptor <code>owner-browse.xml</code> is well-formed</p>
+</li>
+<li>
+<p>the screen could be opened without any errors (e.g. lifecycle events are performed correctly)</p>
+</li>
+<li>
+<p>the table was correctly bound to the <code>ownersDc</code> data container</p>
+</li>
+<li>
+<p>the data container performed a declarative data load for the list of Owner entities</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="screen_interaction_from_owner_browse_to_owner_editor"><a class="anchor" href="#screen_interaction_from_owner_browse_to_owner_editor"></a><a class="link" href="#screen_interaction_from_owner_browse_to_owner_editor">Screen Interaction from Owner Browse to Owner Editor</a></h4>
+<div class="paragraph">
+<p>The second test case builds on the fundamentals of the first one that we just explored. In this case the goal is to test
+the correct interaction between two screens. The following steps are performed by the test:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>the Owner Browser is opened and <code>Ash</code> and <code>Misty</code> are injected as owner test data</p>
+</li>
+<li>
+<p><code>Ash</code> is selected in the Table</p>
+</li>
+<li>
+<p>the <code>edit</code> action is performed (and with it implicitly the Owner Editor is opened)</p>
+</li>
+</ol>
+</div>
+</div>
 </div>
 <div class="sect2">
-<h3 id="create_disease_warning_mailing"><a class="anchor" href="#create_disease_warning_mailing"></a><a class="link" href="#create_disease_warning_mailing">Create Disease Warning Mailing</a></h3>
+<h3 id="create_disease_warning_mailing_test"><a class="anchor" href="#create_disease_warning_mailing_test"></a><a class="link" href="#create_disease_warning_mailing_test">Create Disease Warning Mailing Test</a></h3>
 
 </div>
 </div>
@@ -661,7 +1045,7 @@ example.</p>
 <ul class="sectlevel2">
 <li><a href="#first_web_integration_test">First Web Integration Test</a></li>
 <li><a href="#owner_browse">Owner Browse</a></li>
-<li><a href="#create_disease_warning_mailing">Create Disease Warning Mailing</a></li>
+<li><a href="#create_disease_warning_mailing_test">Create Disease Warning Mailing Test</a></li>
 </ul>
 </li>
 <li><a href="#sneferu">Sneferu</a>
