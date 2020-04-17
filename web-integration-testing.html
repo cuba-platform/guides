@@ -799,12 +799,8 @@ a mock object, but the difference is that it calls the real methods except for t
 
     <span class="annotation">@BeforeEach</span>
     <span class="directive">public</span> <span class="type">void</span> setUp() {
-        ownerFactory = environment.getContainer().getEntityFactory(<span class="predefined-type">Owner</span>.class, TestEntityState.NEW);
-
         mockDataService();
-
-        data = <span class="keyword">new</span> PetclinicData(ownerFactory);
-
+        data = <span class="keyword">new</span> PetclinicData(environment.getContainer());
     }
 
     <span class="directive">private</span> <span class="type">void</span> mockDataService() {
@@ -881,11 +877,12 @@ should be returned.</p>
 <p>With that information we can take a look at the actual test case once again:</p>
 </div>
 <div class="listingblock">
+<div class="title">OwnerBrowseTest.java</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">OwnerBrowseTest</span> {
     <span class="comment">// ...</span>
     <span class="annotation">@Test</span>
-    <span class="directive">public</span> <span class="type">void</span> when_ownerListIsDisplayed_thenOwnersAreShownInTheTable() {
+    <span class="directive">public</span> <span class="type">void</span> when_ownerListIsDisplayed_then_ownersAreShownInTheTable() {
 
         when(ownerListIsLoaded())
                 .thenReturn(ashAndMisty); <i class="conum" data-value="1"></i><b>(1)</b>
@@ -971,11 +968,147 @@ the correct interaction between two screens. The following steps are performed b
 </li>
 </ol>
 </div>
+<div class="paragraph">
+<p>The assertion is based on the question if the entity that is edited in the Owner Editor is really <code>Ash</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">OwnerBrowseTest.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">OwnerBrowseTest</span> {
+    <span class="comment">// ...</span>
+    <span class="annotation">@Test</span>
+    <span class="directive">public</span> <span class="type">void</span> given_ownerIsSelected_when_editIsPerformed_then_ownerEditorIsOpened() {
+
+        when(ownerListIsLoaded())
+                .thenReturn(ashAndMisty);
+
+        OwnerBrowse ownerBrowse = openScreen(OwnerBrowse.class);
+
+        Table&lt;<span class="predefined-type">Owner</span>&gt; ownersTable = ownersTable(ownerBrowse);
+
+        ownersTable.setSelected(ash); <i class="conum" data-value="1"></i><b>(1)</b>
+
+        ownersTable
+                .getAction(<span class="string"><span class="delimiter">&quot;</span><span class="content">edit</span><span class="delimiter">&quot;</span></span>)
+                .actionPerform(editButton(ownerBrowse)); <i class="conum" data-value="2"></i><b>(2)</b>
+
+        OwnerEdit ownerEdit = findOpenScreen(OwnerEdit.class);
+
+        assertThat(ownerEdit.getEditedEntity()) <i class="conum" data-value="4"></i><b>(4)</b>
+                .isEqualTo(ash);
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">Component</span> editButton(OwnerBrowse ownerBrowse) {
+        <span class="keyword">return</span> ownerBrowse.getWindow().getComponent(<span class="string"><span class="delimiter">&quot;</span><span class="content">editBtn</span><span class="delimiter">&quot;</span></span>);
+    }
+
+    <span class="directive">private</span> &lt;T <span class="directive">extends</span> Screen&gt; T findOpenScreen(<span class="predefined-type">Class</span>&lt;T&gt; screenClass) {
+        <span class="keyword">return</span> (T) screens
+                .getOpenedScreens()
+                .getAll() <i class="conum" data-value="3"></i><b>(3)</b>
+                .stream()
+                .filter(openedScreen -&gt;
+                    openedScreen.getClass().isAssignableFrom(screenClass)
+                )
+                .findFirst()
+                .orElseThrow(<span class="exception">RuntimeException</span>::<span class="keyword">new</span>);
+    }
+
+    <span class="directive">private</span> Table&lt;<span class="predefined-type">Owner</span>&gt; ownersTable(OwnerBrowse ownerBrowse) {
+        <span class="keyword">return</span> (Table&lt;<span class="predefined-type">Owner</span>&gt;) ownerBrowse
+            .getWindow()
+            .getComponent(<span class="string"><span class="delimiter">&quot;</span><span class="content">ownersTable</span><span class="delimiter">&quot;</span></span>);
+    }
+
+    <span class="directive">private</span> &lt;T <span class="directive">extends</span> Screen&gt; T openScreen(<span class="predefined-type">Class</span>&lt;T&gt; screenClass) {
+        T screen = screens.create(screenClass);
+        screen.show();
+        <span class="keyword">return</span> screen;
+    }
+    <span class="comment">// ...</span>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>table.setSelected(&#8230;&#8203;)</code> selects Ash in the table</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the <code>edit</code> action of the owners table is performed via the Edit Button</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>the <code>Screens</code> API allows to iterate over the opened screens and filter for a particular type</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td><code>editor.getEditedEntity()</code> is used to fetch the bound entity that the editor is working on</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In this test case we used additional parts of the CUBA UI API to interact with the application e.g. via
+<code>ownersTable.setSelected(&#8230;&#8203;)</code>. Also we used it to retrieve some information that is necessary in the test, like the
+search for an opened screen.</p>
+</div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="create_disease_warning_mailing_test"><a class="anchor" href="#create_disease_warning_mailing_test"></a><a class="link" href="#create_disease_warning_mailing_test">Create Disease Warning Mailing Test</a></h3>
+<h3 id="create_disease_warning_mailing"><a class="anchor" href="#create_disease_warning_mailing"></a><a class="link" href="#create_disease_warning_mailing">Create Disease Warning Mailing</a></h3>
+<div class="paragraph">
+<p>The third and last test, that we want to take a look is the logic that was implemented in <a href="https://www.cuba-platform.com/guides/create-business-logic-in-cuba">CUBA Guide: Create Business Logic in CUBA</a>:
+the "Disease Warning Mailing" functionality. For the middleware logic of the functionality, we have already
+created a middleware integration test as described in the <a href="https://www.cuba-platform.com/guides/integration-testing-middleware#disease_warning_mailing">CUBA Guide: Middleware Integration Testing</a>.</p>
+</div>
+<div class="paragraph">
+<p>In the middleware integration test, we covered everything from the Service Interface and below, but left out the UI part.
+In this guide, we will now do the opposite. We will create an integration test, that interacts with the UI, but mocks
+out the behavior of the Service Interface. This way we can control the behavior of the dependency (<code>DiseaseWarningMailingService</code>)
+and ensure that the UI code interacts with it according to our expectations.</p>
+</div>
+<div class="listingblock">
+<div class="title">CreateDiseaseWarningMailingTest.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="type">class</span> <span class="class">CreateDiseaseWarningMailingTest</span> {
+    <span class="comment">// ...</span>
+    <span class="annotation">@Test</span>
+    <span class="directive">public</span> <span class="type">void</span> when_createDiseaseWarningMailingFormIsFilled_thenMailingIsSendOut() {
 
+        PetBrowse petBrowse = openScreen(PetBrowse.class);
+
+        Table&lt;Pet&gt; petTable = petTable(petBrowse);
+
+        petTable
+                .getAction(<span class="string"><span class="delimiter">&quot;</span><span class="content">createDiseaseWarningMailing</span><span class="delimiter">&quot;</span></span>)
+                .actionPerform(createDiseaseWarningMailingBtn(petBrowse));
+
+        CreateDiseaseWarningMailing createDiseaseWarningMailing = findOpenScreen(CreateDiseaseWarningMailing.class);
+
+        cityField(createDiseaseWarningMailing)
+                .setValue(<span class="string"><span class="delimiter">&quot;</span><span class="content">Alabastia</span><span class="delimiter">&quot;</span></span>);
+
+        diseaseField(createDiseaseWarningMailing)
+                .setValue(<span class="string"><span class="delimiter">&quot;</span><span class="content">Fever</span><span class="delimiter">&quot;</span></span>);
+
+        PetType electricType = data.electricType();
+        petTypeField(createDiseaseWarningMailing)
+                .setValue(electricType);
+
+        createDiseaseWarningMailing
+                .getWindow()
+                .getAction(<span class="string"><span class="delimiter">&quot;</span><span class="content">createDiseaseWarningMailing</span><span class="delimiter">&quot;</span></span>)
+                .actionPerform(createMailingBtn(createDiseaseWarningMailing));
+
+
+        verify(diseaseWarningMailingService, times(<span class="integer">1</span>))
+                .warnAboutDisease(electricType, <span class="string"><span class="delimiter">&quot;</span><span class="content">Fever</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Alabastia</span><span class="delimiter">&quot;</span></span>);
+    }
+}</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -1045,7 +1178,7 @@ the correct interaction between two screens. The following steps are performed b
 <ul class="sectlevel2">
 <li><a href="#first_web_integration_test">First Web Integration Test</a></li>
 <li><a href="#owner_browse">Owner Browse</a></li>
-<li><a href="#create_disease_warning_mailing_test">Create Disease Warning Mailing Test</a></li>
+<li><a href="#create_disease_warning_mailing">Create Disease Warning Mailing</a></li>
 </ul>
 </li>
 <li><a href="#sneferu">Sneferu</a>
