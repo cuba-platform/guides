@@ -417,12 +417,8 @@ public class OwnerBrowseTest {
 
     @BeforeEach
     public void setUp() {
-        ownerFactory = environment.getContainer().getEntityFactory(Owner.class, TestEntityState.NEW);
-
         mockDataService();
-
-        data = new PetclinicData(ownerFactory);
-
+        data = new PetclinicData(environment.getContainer());
     }
 
     private void mockDataService() {
@@ -489,12 +485,13 @@ should be returned.
 
 With that information we can take a look at the actual test case once again:
 
+.OwnerBrowseTest.java
 [source,java]
 ----
 public class OwnerBrowseTest {
     // ...
     @Test
-    public void when_ownerListIsDisplayed_thenOwnersAreShownInTheTable() {
+    public void when_ownerListIsDisplayed_then_ownersAreShownInTheTable() {
 
         when(ownerListIsLoaded())
                 .thenReturn(ashAndMisty); // <1>
@@ -542,8 +539,126 @@ the correct interaction between two screens. The following steps are performed b
 2. `Ash` is selected in the Table
 3. the `edit` action is performed (and with it implicitly the Owner Editor is opened)
 
+The assertion is based on the question if the entity that is edited in the Owner Editor is really `Ash`.
 
-=== Create Disease Warning Mailing Test
+
+.OwnerBrowseTest.java
+[source,java]
+----
+public class OwnerBrowseTest {
+    // ...
+    @Test
+    public void given_ownerIsSelected_when_editIsPerformed_then_ownerEditorIsOpened() {
+
+        when(ownerListIsLoaded())
+                .thenReturn(ashAndMisty);
+
+        OwnerBrowse ownerBrowse = openScreen(OwnerBrowse.class);
+
+        Table<Owner> ownersTable = ownersTable(ownerBrowse);
+
+        ownersTable.setSelected(ash); // <1>
+
+        ownersTable
+                .getAction("edit")
+                .actionPerform(editButton(ownerBrowse)); // <2>
+
+        OwnerEdit ownerEdit = findOpenScreen(OwnerEdit.class);
+
+        assertThat(ownerEdit.getEditedEntity()) // <4>
+                .isEqualTo(ash);
+    }
+
+    private Component editButton(OwnerBrowse ownerBrowse) {
+        return ownerBrowse.getWindow().getComponent("editBtn");
+    }
+
+    private <T extends Screen> T findOpenScreen(Class<T> screenClass) {
+        return (T) screens
+                .getOpenedScreens()
+                .getAll() // <3>
+                .stream()
+                .filter(openedScreen ->
+                    openedScreen.getClass().isAssignableFrom(screenClass)
+                )
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
+    }
+
+    private Table<Owner> ownersTable(OwnerBrowse ownerBrowse) {
+        return (Table<Owner>) ownerBrowse
+            .getWindow()
+            .getComponent("ownersTable");
+    }
+
+    private <T extends Screen> T openScreen(Class<T> screenClass) {
+        T screen = screens.create(screenClass);
+        screen.show();
+        return screen;
+    }
+    // ...
+}
+----
+<1> `table.setSelected(...)` selects Ash in the table
+<2> the `edit` action of the owners table is performed via the Edit Button
+<3> the `Screens` API allows to iterate over the opened screens and filter for a particular type
+<4> `editor.getEditedEntity()` is used to fetch the bound entity that the editor is working on
+
+In this test case we used additional parts of the CUBA UI API to interact with the application e.g. via
+`ownersTable.setSelected(...)`. Also we used it to retrieve some information that is necessary in the test, like the
+search for an opened screen.
+
+=== Create Disease Warning Mailing
+
+The third and last test, that we want to take a look is the logic that was implemented in https://www.cuba-platform.com/guides/create-business-logic-in-cuba[CUBA Guide: Create Business Logic in CUBA]:
+the "Disease Warning Mailing" functionality. For the middleware logic of the functionality, we have already
+created a middleware integration test as described in the https://www.cuba-platform.com/guides/integration-testing-middleware#disease_warning_mailing[CUBA Guide: Middleware Integration Testing].
+
+In the middleware integration test, we covered everything from the Service Interface and below, but left out the UI part.
+In this guide, we will now do the opposite. We will create an integration test, that interacts with the UI, but mocks
+out the behavior of the Service Interface. This way we can control the behavior of the dependency (`DiseaseWarningMailingService`)
+and ensure that the UI code interacts with it according to our expectations.
+
+
+.CreateDiseaseWarningMailingTest.java
+[source,java]
+----
+class CreateDiseaseWarningMailingTest {
+    // ...
+    @Test
+    public void when_createDiseaseWarningMailingFormIsFilled_thenMailingIsSendOut() {
+
+        PetBrowse petBrowse = openScreen(PetBrowse.class);
+
+        Table<Pet> petTable = petTable(petBrowse);
+
+        petTable
+                .getAction("createDiseaseWarningMailing")
+                .actionPerform(createDiseaseWarningMailingBtn(petBrowse));
+
+        CreateDiseaseWarningMailing createDiseaseWarningMailing = findOpenScreen(CreateDiseaseWarningMailing.class);
+
+        cityField(createDiseaseWarningMailing)
+                .setValue("Alabastia");
+
+        diseaseField(createDiseaseWarningMailing)
+                .setValue("Fever");
+
+        PetType electricType = data.electricType();
+        petTypeField(createDiseaseWarningMailing)
+                .setValue(electricType);
+
+        createDiseaseWarningMailing
+                .getWindow()
+                .getAction("createDiseaseWarningMailing")
+                .actionPerform(createMailingBtn(createDiseaseWarningMailing));
+
+
+        verify(diseaseWarningMailingService, times(1))
+                .warnAboutDisease(electricType, "Fever", "Alabastia");
+    }
+}
+----
 
 == Sneferu
 
