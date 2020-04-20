@@ -238,7 +238,7 @@ It acts as the running environment to interact with the application.
 .PetEditTest.java
 [source,java]
 ----
-public class PetEditTest {
+class PetEditTest {
 
     @RegisterExtension
     TestUiEnvironment environment =
@@ -252,7 +252,7 @@ public class PetEditTest {
     private TestEntityFactory<Pet> petsFactory;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         Screens screens = environment.getScreens(); // <2>
 
         petsFactory = environment
@@ -278,7 +278,7 @@ With that setup part in place, let's take a look at the first web integration te
 .PetEditorTest.java
 [source,java]
 ----
-public class PetEditTest {
+class PetEditTest {
 
     // ...
 
@@ -286,13 +286,13 @@ public class PetEditTest {
     private TestEntityFactory<Pet> petsFactory;
 
     @BeforeEach
-    public void openMainScreen() {
+    void openMainScreen() {
         screens = environment.getScreens();
         screens.create(MainScreen.class, OpenMode.ROOT).show(); // <4>
     }
 
     @Test
-    public void identificationNumberIsCorrectlyBoundInTheInputField() {
+    void identificationNumberIsCorrectlyBoundInTheInputField() {
 
         Pet pet = petsFactory.create(
                 Collections.singletonMap("identificationNumber", "019")
@@ -410,7 +410,7 @@ Let's look at the complete test case first and then go though the details of the
 .OwnerBrowseTest.java
 [source,java]
 ----
-public class OwnerBrowseTest {
+class OwnerBrowseTest {
 
 
     //...
@@ -429,7 +429,7 @@ public class OwnerBrowseTest {
     }
 
     @Test
-    public void when_ownerListIsDisplayed_thenOwnersAreShownInTheTable() {
+    void when_ownerListIsDisplayed_thenOwnersAreShownInTheTable() {
 
         when(ownerListIsLoaded())
                 .thenReturn(ashAndMisty);
@@ -459,19 +459,11 @@ we can re-configure the behavior of the `loadList` method.
 After creation of the Spy, we have to register the service instance for the `DataService` API for the test in the
 web integration test environment. This happens through the static `mock` method of the TestServiceProxy.
 
-The remaining part left of the manual data configuration is the definition of the mock call and the expected result.
-For that we use the Mockito API: `when(...).thenReturn(...)`. In this case, we need to be a little more precise, because
-we don't want to mock all calls to `DataService.loadList(...)` but instead only the one where the load of the `Owner`
-entity happens.
+The remaining part left of the manual data configuration is the definition of the mock call and the expected result. For that we use the Mockito API: `when(...).thenReturn(...)`. In this case, we need to be a little more precise, because we don't want to mock all calls to `DataService.loadList(...)` but instead only the one where the load of the `Owner` entity happens.
 
-The helper method `ownerListIsLoaded` defines that situation. `Mockito.argThat` is the API that lets the test define a
-Predicate lambda expression that determines if the parameters of a call to the method (`loadList` in this case) are
-matching against the call that we want to mock. Basically it acts as a filter, to pinpoint the call that we are searching
-for.
+The helper method `ownerListIsLoaded` defines that situation. `Mockito.argThat` is the API that lets the test define a Predicate lambda expression that determines if the parameters of a call to the method (`loadList` in this case) are matching against the call that we want to mock. Basically it acts as a filter, to pinpoint the call that we are searching for.
 
-The Lambda gets passed in the original parameter of the method: `LoadContext`.
-`loadContext.getEntityMetaClass().equals("petclinic_Owner")` is our filter criteria to verify that the entity class is the
-`Owner` entity.
+The Lambda gets passed in the original parameter of the method: `LoadContext`. `loadContext.getEntityMetaClass().equals("petclinic_Owner")` is our filter criteria to verify that the entity class is the `Owner` entity.
 
 The usage of the method:
 
@@ -480,18 +472,17 @@ when(ownerListIsLoaded())
                 .thenReturn(ashAndMisty);
 ```
 
-defines the combination of the mock with the return values. In case the owner list is loaded, then Ash and Misty
-should be returned.
+defines the combination of the mock with the return values. In case the owner list is loaded, then Ash and Misty should be returned.
 
 With that information we can take a look at the actual test case once again:
 
 .OwnerBrowseTest.java
 [source,java]
 ----
-public class OwnerBrowseTest {
+class OwnerBrowseTest {
     // ...
     @Test
-    public void when_ownerListIsDisplayed_then_ownersAreShownInTheTable() {
+    void when_ownerListIsDisplayed_then_ownersAreShownInTheTable() {
 
         when(ownerListIsLoaded())
                 .thenReturn(ashAndMisty); // <1>
@@ -532,8 +523,7 @@ There are once again a couple of related points that are also implicitly verifie
 
 ==== Screen Interaction from Owner Browse to Owner Editor
 
-The second test case builds on the fundamentals of the first one that we just explored. In this case the goal is to test
-the correct interaction between two screens. The following steps are performed by the test:
+The second test case builds on the fundamentals of the first one that we just explored. In this case the goal is to test the correct interaction between two screens. The following steps are performed by the test:
 
 1. the Owner Browser is opened and `Ash` and `Misty` are injected as owner test data
 2. `Ash` is selected in the Table
@@ -545,10 +535,10 @@ The assertion is based on the question if the entity that is edited in the Owner
 .OwnerBrowseTest.java
 [source,java]
 ----
-public class OwnerBrowseTest {
+class OwnerBrowseTest {
     // ...
     @Test
-    public void given_ownerIsSelected_when_editIsPerformed_then_ownerEditorIsOpened() {
+    void given_ownerIsSelected_when_editIsPerformed_then_ownerEditorIsOpened() {
 
         when(ownerListIsLoaded())
                 .thenReturn(ashAndMisty);
@@ -604,61 +594,199 @@ public class OwnerBrowseTest {
 <3> the `Screens` API allows to iterate over the opened screens and filter for a particular type
 <4> `editor.getEditedEntity()` is used to fetch the bound entity that the editor is working on
 
-In this test case we used additional parts of the CUBA UI API to interact with the application e.g. via
-`ownersTable.setSelected(...)`. Also we used it to retrieve some information that is necessary in the test, like the
-search for an opened screen.
+In this test case we used additional parts of the CUBA UI API to interact with the application e.g. via `ownersTable.setSelected(...)`. Also we used it to retrieve some information that is necessary in the test, like the search for an opened screen.
 
 === Create Disease Warning Mailing
 
 The third and last test, that we want to take a look is the logic that was implemented in https://www.cuba-platform.com/guides/create-business-logic-in-cuba[CUBA Guide: Create Business Logic in CUBA]:
-the "Disease Warning Mailing" functionality. For the middleware logic of the functionality, we have already
-created a middleware integration test as described in the https://www.cuba-platform.com/guides/integration-testing-middleware#disease_warning_mailing[CUBA Guide: Middleware Integration Testing].
+the "Disease Warning Mailing" functionality. For the middleware logic of the functionality, we have already created a middleware integration test as described in the https://www.cuba-platform.com/guides/integration-testing-middleware#disease_warning_mailing[CUBA Guide: Middleware Integration Testing].
 
 In the middleware integration test, we covered everything from the Service Interface and below, but left out the UI part.
-In this guide, we will now do the opposite. We will create an integration test, that interacts with the UI, but mocks
-out the behavior of the Service Interface. This way we can control the behavior of the dependency (`DiseaseWarningMailingService`)
-and ensure that the UI code interacts with it according to our expectations.
+In this guide, we will now do the opposite. We will create a web integration test, that interacts with the UI, but mocks
+out the behavior of the service interface. This way we can control the behavior of this dependency (`DiseaseWarningMailingService`) and ensure that the UI code interacts with it according to our expectations.
 
+The resulting UI dialog is accessible from the Pet Browser:
+
+image::integration-testing-web/create-disease-warning-mailing.png[align="center", link="images/integration-testing-web/create-disease-warning-mailing.png"]
+
+The Test contains of the following precondition:
+1. mock dependency `DiseaseWarningMailingService`
+2. open DiseaseWarningMailing Dialog through the Pet Browser
+
+After that there are the four test cases that would cover the functionality of the Dialog:
+
+1. when the form is correctly filled, it contains no validation errors
+2. when the form is correctly filled, the Mailing is send out
+3. when the form is _not_ correctly filled, it contains validation errors
+4. when the form is _not_ correctly filled, the Mailing not is send out
+
+In the following listing, only the 1. and 2. test cases are shown. The complete listing can be found on Github: [CreateDiseaseWarningMailingTest.java]
+
+WARNING: TODO - add proper Link when test are pushed to repository.
 
 .CreateDiseaseWarningMailingTest.java
 [source,java]
 ----
-class CreateDiseaseWarningMailingTest {
+
+class DiseaseWarningMailingTest {
     // ...
-    @Test
-    public void when_createDiseaseWarningMailingFormIsFilled_thenMailingIsSendOut() {
+    private Screens screens;
+    private DiseaseWarningMailingService diseaseWarningMailingService;
+    private PetType electricType;
+
+    private CreateDiseaseWarningMailing dialog;
+
+    @BeforeEach
+    void setUp() {
+        setupTestData();
+        mockDiseaseWarningMailingService();
+        openWarningMailingDialogFromPetBrowse();
+    }
+
+    // ...
+
+    private void mockDiseaseWarningMailingService() {
+
+        diseaseWarningMailingService = Mockito.mock(
+                DiseaseWarningMailingService.class
+        );
+
+        TestServiceProxy.mock(
+                DiseaseWarningMailingService.class,
+                diseaseWarningMailingService
+        ); // <1>
+    }
+
+    private void openWarningMailingDialogFromPetBrowse() {
+        screens = environment.getScreens();
+        screens.create(MainScreen.class, OpenMode.ROOT).show();
 
         PetBrowse petBrowse = openScreen(PetBrowse.class);
 
-        Table<Pet> petTable = petTable(petBrowse);
-
-        petTable
+        petTable(petBrowse)
                 .getAction("createDiseaseWarningMailing")
                 .actionPerform(createDiseaseWarningMailingBtn(petBrowse));
 
-        CreateDiseaseWarningMailing createDiseaseWarningMailing = findOpenScreen(CreateDiseaseWarningMailing.class);
+        dialog = findOpenScreen(CreateDiseaseWarningMailing.class); // <2>
 
-        cityField(createDiseaseWarningMailing)
-                .setValue("Alabastia");
+    }
 
-        diseaseField(createDiseaseWarningMailing)
-                .setValue("Fever");
+    @Nested
+    @DisplayName("When Valid Dialog Input Data, then...")
+    class When_SubmitValidDialogInput {
 
-        PetType electricType = data.electricType();
-        petTypeField(createDiseaseWarningMailing)
-                .setValue(electricType);
+        @BeforeEach
+        void fillFields() {
+            city(dialog).setValue("Alabastia");
+            disease(dialog).setValue("Fever");
+            petType(dialog).setValue(electricType);
+        }
 
-        createDiseaseWarningMailing
+        @Test
+        @DisplayName("Form is valid")
+        void then_formIsValid() {
+
+            submitDialog(dialog);
+
+            assertThat(dialog.validationResult().getAll()) // <3>
+                    .isEmpty();
+        }
+
+        @Test
+        @DisplayName("Mailing is send")
+        void then_mailingIsSend() {
+
+            submitDialog(dialog);
+
+            verify(diseaseWarningMailingService, times(1))
+                    .warnAboutDisease(
+                            electricType,
+                            "Fever",
+                            "Alabastia"
+                    ); // <4>
+        }
+
+    }
+
+    private void submitDialog(CreateDiseaseWarningMailing dialog) {
+        dialog
                 .getWindow()
                 .getAction("createDiseaseWarningMailing")
-                .actionPerform(createMailingBtn(createDiseaseWarningMailing));
+                .actionPerform(createMailingBtn(dialog));
+    }
 
 
-        verify(diseaseWarningMailingService, times(1))
-                .warnAboutDisease(electricType, "Fever", "Alabastia");
+    private Component createMailingBtn(CreateDiseaseWarningMailing dialog) {
+        return component(dialog, "createDiseaseWarningMailingBtn");
+    }
+
+    private TextInputField<String> city(CreateDiseaseWarningMailing dialog) {
+        return (TextInputField<String>) component(dialog, "city");
+    }
+
+    private Component component(Screen screen, String componentId) {
+        return screen
+                .getWindow()
+                .getComponent(componentId);
+    }
+
+    //...
+}
+----
+<1> The `DiseaseWarningMailingService` is mocked and registered in the environment
+<2> Dialog Screen is opened from the Pet Browser
+<3> the Validation Results of the Form contain no error
+<4> Mockito's `verify` method allows to assert on the interaction with the dependency
+
+In the assertion parts of the tests, there are two things relevant, that have not been discovered until now.
+
+The first test case `When_SubmitValidDialogInput.then_formIsValid()` checks if the dialog contains any validation errors.
+The validation performed manually in the `CreateDiseaseWarningMailing` screen, as it is not a StandardEditor, but rather
+a custom Screen. Due to this, there is no way to retrieve the Validation errors from outside of the screen. also not for the test.
+
+Therefore a dedicated method in the production Screen was introduced: `CreateDiseaseWarningMailing.validationResult()`,
+which looks like this:
+
+.CreateDiseaseWarningMailing.java
+[source,java]
+----
+public class CreateDiseaseWarningMailing extends Screen {
+    // ...
+    public ValidationErrors validationResult() {
+        return screenValidation.validateUiComponents(
+                asList(city, disease, petType)
+        );
     }
 }
 ----
+
+This method is used inside the Controller to perform the validation. But it is also accessible to the test case, to retrieve
+the `ValidationErrors` object from the outside, in order to make assertions on it.
+
+The second test case `When_SubmitValidDialogInput.then_mailingIsSend()` uses the `DiseaseWarningMailingService` mock to
+verify that the System under test (`CreateDiseaseWarningMailing`) is interacting with the dependency in the correct
+way.
+
+In the test case the expected interaction with the dependency is expressed. Mockito provides a `verify` method for that:
+
+```
+verify(diseaseWarningMailingService, times(1))
+        .warnAboutDisease(
+                electricType,
+                "Fever",
+                "Alabastia"
+        );
+```
+
+It translates to the following interaction expectation:
+
+> Verify that on the `diseaseWarningMailingService` object the method `warnAboutDisease` with the three parameters `electricType, "Fever", "Alabastia"` is called exactly once
+
+Mockito takes that interaction expectation and makes sure that this is true. If during the test case this interaction
+does not occur the test fails.
+
+With that we have successfully tested the UI code that is part of the overall "Create Disease Warning Mailing" functionality.
+The Middleware integration test verifies that the `warnAboutDisease` method itself works as expected.
 
 == Sneferu
 
