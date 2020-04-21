@@ -194,15 +194,15 @@
 <h2 id="what_will_be_built"><a class="anchor" href="#what_will_be_built"></a><a class="link" href="#what_will_be_built">What Will be Built</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a> example to show how existing features can be tested in an automated fashion via unit testing:</p>
+<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a> example to show how existing features can be tested in an automated fashion via web integration testing:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>display amount of pets of a given pet type for a particular Owner</p>
+<p>Owner Browse &#8594; Edit Interaction</p>
 </li>
 <li>
-<p>calculation of next regular checkup date proposals for a pet</p>
+<p>Sending out Disease Warning Mailing</p>
 </li>
 </ul>
 </div>
@@ -256,12 +256,12 @@
 <h2 id="web_integration_test_environment"><a class="anchor" href="#web_integration_test_environment"></a><a class="link" href="#web_integration_test_environment">Web Integration Test Environment</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this environment the production application is started partially, just like in the middleware integration test. All the CUBA platform based UI APIs work the way just as in the production code of the application. In the <em>Web client block</em> there is also a big part of declarative definitions of the UI via XML screen descriptors. This definitions are also covered and executed within the test environment.</p>
+<p>In this environment the production application is started partially, just like in the middleware integration test. All the CUBA platform based UI APIs work the way just as in the production code of the application. In the <em>Web client block</em> there is a big part of declarative definitions of the UI via XML screen descriptors. This definitions are also covered and executed within the test environment.</p>
 </div>
 <div class="sect2">
 <h3 id="coverage_example"><a class="anchor" href="#coverage_example"></a><a class="link" href="#coverage_example">Coverage Example</a></h3>
 <div class="paragraph">
-<p>To understand this question of coverage let&#8217;s take a look at one example within the Petclinic application and identify which parts are included, which ones are mocked and which ones are not covered at all. Coverage in this case does not mean that a test case explicitly loads the shown code and interacts with it, but more that by opening the Screen implicitly by the environment everything will be loaded and initialized, so that the test case is then able to interact with the Screen.</p>
+<p>To understand the question of coverage let&#8217;s take a look at one example within the Petclinic application and identify which parts are included, which ones are mocked and which ones are not covered by the test environment at all. Coverage in this case does not mean that a test case explicitly loads the shown code and interacts with it, but more that by opening the Screen implicitly by the environment everything will be loaded and initialized, so that the test case is then able to interact with the Screen.</p>
 </div>
 <div class="paragraph">
 <p>For this example let&#8217;s take a look at the List of the Owners from the Petclinic. It consists of the XML descriptor part as well as the UI controller. In the following listing generally everything is covered and executed just as in the production environment. Therefore it is not mentioning everything that is covered, but only the most important parts as well as the parts where the coverage ends.</p>
@@ -1302,20 +1302,210 @@ The Middleware integration test verifies that the <code>warnAboutDisease</code> 
 <div class="sect1">
 <h2 id="sneferu"><a class="anchor" href="#sneferu"></a><a class="link" href="#sneferu">Sneferu</a></h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="overview_2"><a class="anchor" href="#overview_2"></a><a class="link" href="#overview_2">Overview</a></h3>
-
+<div class="paragraph">
+<p>After seeing different implementations of web integration tests, you should have a basic idea on how to interact with
+the UI through a web integration testing. CUBAs UI APIs are for the most part capable of interacting with the various
+UI components and screens programmatically.</p>
+</div>
+<div class="paragraph">
+<p>But as these APIs are optimized for production application code, using them
+for remote-controlling CUBA UIs (this is what tests oftentimes do) is not their main focus. This results in some boilerplate
+code in the web integration tests like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">OwnerBrowseTest.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="type">class</span> <span class="class">OwnerBrowseTest</span> {
+    <span class="comment">// ...</span>
+    <span class="directive">private</span> &lt;T <span class="directive">extends</span> Screen&gt; T findOpenScreen(<span class="predefined-type">Class</span>&lt;T&gt; screenClass) {
+        <span class="keyword">return</span> (T) screens
+                .getOpenedScreens()
+                .getAll()
+                .stream()
+                .filter(openedScreen -&gt;
+                    openedScreen.getClass().isAssignableFrom(screenClass)
+                )
+                .findFirst()
+                .orElseThrow(<span class="exception">RuntimeException</span>::<span class="keyword">new</span>);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Writing this code takes away the developer from the main task at hand: write test cases to verify the correct behavior
+of the application.</p>
+</div>
+<div class="paragraph">
+<p>Sneferu is a testing library designed to make writing web integration tests for CUBA easier in order to concentrate on
+writing verification test cases. With its specific DSL and the ability to create higher level abstractions on your own,
+it also allows to express the test cases with a higher level language. This helps to create a more maintainable test suite.</p>
+</div>
+<div class="paragraph">
+<p>In order to understand the difference between a regular CUBA web integration test and a Sneferu web integration test,
+let&#8217;s revisit two test cases of the <code>OwnerBrowseTest</code> and <code>DiseaseWarningMailingTest</code>.</p>
 </div>
 <div class="sect2">
-<h3 id="create_disease_warning_mailing_revisited"><a class="anchor" href="#create_disease_warning_mailing_revisited"></a><a class="link" href="#create_disease_warning_mailing_revisited">Create Disease Warning Mailing - Revisited</a></h3>
+<h3 id="owner_browse_revisited"><a class="anchor" href="#owner_browse_revisited"></a><a class="link" href="#owner_browse_revisited">Owner Browse - Revisited</a></h3>
+<div class="paragraph">
+<p>The Owner Browse Test contains a test case, that verified the correct interaction between the <code>OwnerBrowse</code> Screen
+and the <code>OwnerEdit</code> Screen. The test case written with the help of Sneferu looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">OwnerBrowseSneferuTest.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">static</span> <span class="include">de.diedavids.sneferu.ComponentDescriptors</span>.*;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">de.diedavids.sneferu.Interactions</span>.*;
 
+<span class="type">class</span> <span class="class">OwnerBrowseSneferuTest</span> {
+
+    <span class="annotation">@RegisterExtension</span>
+    SneferuTestUiEnvironment environment =
+            <span class="keyword">new</span> SneferuTestUiEnvironment(PetclinicWebTestContainer.Common.INSTANCE)
+                    .withScreenPackages(
+                            <span class="string"><span class="delimiter">&quot;</span><span class="content">com.haulmont.cuba.web.app.main</span><span class="delimiter">&quot;</span></span>,
+                            <span class="string"><span class="delimiter">&quot;</span><span class="content">com.haulmont.sample.petclinic.web</span><span class="delimiter">&quot;</span></span>
+                    )
+                    .withUserLogin(<span class="string"><span class="delimiter">&quot;</span><span class="content">admin</span><span class="delimiter">&quot;</span></span>)
+                    .withMainScreen(MainScreen.class);
+
+    <span class="comment">// ...</span>
+
+    <span class="annotation">@Test</span>
+    <span class="type">void</span> given_ownerIsSelected_when_editIsPerformed_then_ownerEditorIsOpened(
+        <span class="annotation">@StartScreen</span> StandardLookupTestAPI&lt;<span class="predefined-type">Owner</span>, OwnerBrowse&gt; ownerBrowse,
+        <span class="annotation">@SubsequentScreen</span> StandardEditorTestAPI&lt;<span class="predefined-type">Owner</span>, OwnerEdit&gt; ownerEdit
+    ) {
+
+        ownerBrowse
+                .interact(selectInList(table(<span class="string"><span class="delimiter">&quot;</span><span class="content">ownersTable</span><span class="delimiter">&quot;</span></span>), ash))
+                .andThen(click(button(<span class="string"><span class="delimiter">&quot;</span><span class="content">editBtn</span><span class="delimiter">&quot;</span></span>)));
+
+        assertThat(ownerEdit.screen().getEditedEntity())
+                .isEqualTo(ash);
+    }
+
+    <span class="comment">//...</span>
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The Test UI environment in this case is a special Sneferu class: <code>SneferuTestUiEnvironment</code>, which adds certain capabilities
+to the environment.</p>
+</div>
+<div class="paragraph">
+<p>The test case itself declares two parameters. This is a particular feature of JUnit 5, which allows to express test
+dependencies that are required for the test. In this case, the first parameter is annotated with <code>@StartScreen</code>, which means
+that Sneferu will automatically open the screen and when the test starts, it is possible to directly interact with the
+screen. The type: <code>StandardLookupTestAPI&lt;Owner, OwnerBrowse&gt; ownerBrowse</code> defines what kind of Screen the test expects.</p>
+</div>
+<div class="paragraph">
+<p>Under the hood, an instance of <code>OwnerBrowse</code> will be shown and is wrapped in a class called <code>StandardLookupTestAPI</code> that
+provides further abstractions relevant for test case interactions with the Screen.</p>
+</div>
+<div class="paragraph">
+<p>The second parameter is the <code>OwnerEdit</code> Screen, that we need in this test case. Different to the Owner Browser, this screen
+is not the start screen for our test-screen-interaction. Instead it is a screen that will be opened automatically by
+the application. But the test cases needs to get a reference to it in order to interact with this Screen as well.
+For this scenario the <code>@SubsequentScreen</code> annotation is used.</p>
+</div>
+<div class="paragraph">
+<p>In order to interact with a Screen, the <code>ScreenTestAPI</code> wrapper classes provide various methods to do so.
+<code>ownerBrowse.interact(&#8230;&#8203;)</code> is used for that kind of interaction. It expects an interaction object as a parameter.
+Sneferu provides a lot of Interactions out of the box. The static import <code>de.diedavids.sneferu.Interactions.*;</code> allows
+to access these methods directly, so that the test case is expressed with little friction.</p>
+</div>
+<div class="paragraph">
+<p>In this case the Interaction <code>Interactions.selectInList(table("ownersTable"), ash)</code> selects a particular entity
+in a List component. It takes two parameters: the first is a reference to a component that the interaction should be
+acted upon, while the second parameter defines the entity that should be selected.</p>
+</div>
+<div class="paragraph">
+<p>Interactions can be chained via <code>interact(&#8230;&#8203;).andThen(&#8230;&#8203;)</code> in order to perform multiple interactions one after another.</p>
+</div>
+<div class="paragraph">
+<p>After the interaction is performed, the application should have opened the Owner Editor Screen. <code>ownerEdit</code> now acts as
+a reference to this screen. So it is possible to interact with that screen now. In this case the underlying Screen object
+is retrieved in order to compare the edited entity via <code>ownerEdit.screen().getEditedEntity()</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="disease_warning_mailing_revisited"><a class="anchor" href="#disease_warning_mailing_revisited"></a><a class="link" href="#disease_warning_mailing_revisited">Disease Warning Mailing - Revisited</a></h3>
+<div class="paragraph">
+<p>The second example with the Disease Warning Mailing written in Sneferu looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">DiseaseWarningMailingSneferuTest.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="type">class</span> <span class="class">DiseaseWarningMailingSneferuTest</span> {
+    <span class="comment">//...</span>
+    <span class="annotation">@Nested</span>
+    <span class="annotation">@DisplayName</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">When Valid Dialog Input Data, then...</span><span class="delimiter">&quot;</span></span>)
+    <span class="type">class</span> <span class="class">When_SubmitValidDialogInput</span> {
+        <span class="comment">// ...</span>
+        <span class="annotation">@Test</span>
+        <span class="annotation">@DisplayName</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">Mailing is send</span><span class="delimiter">&quot;</span></span>)
+        <span class="type">void</span> then_mailingIsSend(
+                <span class="annotation">@StartScreen</span> StandardScreenTestAPI&lt;CreateDiseaseWarningMailing&gt; dialog
+        ) {
+
+            dialog
+                    .interact(enter(textInputField(<span class="string"><span class="delimiter">&quot;</span><span class="content">city</span><span class="delimiter">&quot;</span></span>), <span class="string"><span class="delimiter">&quot;</span><span class="content">Alabastia</span><span class="delimiter">&quot;</span></span>))
+                    .andThen(enter(textInputField(<span class="string"><span class="delimiter">&quot;</span><span class="content">disease</span><span class="delimiter">&quot;</span></span>), <span class="string"><span class="delimiter">&quot;</span><span class="content">Fever</span><span class="delimiter">&quot;</span></span>))
+                    .andThen(select(lookupField(<span class="string"><span class="delimiter">&quot;</span><span class="content">petType</span><span class="delimiter">&quot;</span></span>), electricType))
+                    .andThen(click(button(<span class="string"><span class="delimiter">&quot;</span><span class="content">createDiseaseWarningMailingBtn</span><span class="delimiter">&quot;</span></span>)));
+
+            verify(diseaseWarningMailingService, times(<span class="integer">1</span>))
+                    .warnAboutDisease(
+                            electricType,
+                            <span class="string"><span class="delimiter">&quot;</span><span class="content">Fever</span><span class="delimiter">&quot;</span></span>,
+                            <span class="string"><span class="delimiter">&quot;</span><span class="content">Alabastia</span><span class="delimiter">&quot;</span></span>
+                    );
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It is similar tho the first test case. Once again, the start screen is injected (in this case it is of type <code>StandardScreenTestAPI</code>).
+Then interactions are performed against the screen. Afterwards the same assertion is expressed as seen before: the <code>diseaseWarningMailingService</code>
+should be called once.</p>
+</div>
+<div class="paragraph">
+<p>As we have seen, Sneferu allows to ease the programmatic interactions with the focused Interaction API. Furthermore
+it removes the need to write a lot of boilerplate code with the CUBA UI APIs.</p>
+</div>
+<div class="paragraph">
+<p>More information on the library can be found in the <a href="https://www.cuba-platform.com/marketplace/sneferu/">CUBA Marketplace: Sneferu</a>
+or on <a href="https://github.com/mariodavid/sneferu">Github: mariodavid/sneferu</a>.</p>
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
 <div class="sectionbody">
-
+<div class="paragraph">
+<p>In this guide we learned about the way on how to write and execute web integration tests for CUBA. In the beginning, we
+walked through the coverage area that a web integration test has as well as its limitations. A web integration test
+contains the UI Logic with its Java Controllers and the corresponding XML Screen descriptors. It does not cover execution
+of the middleware parts like Service Implementations or Data Loading.</p>
+</div>
+<div class="paragraph">
+<p>After that we took a look into three example web integration tests: <code>PetEditTest</code>, <code>OwnerBrowseTest</code> and <code>DiseaseWarningMailingTest</code>.
+These tests showed how to programmatically open screens via the <code>TestUiEnvironment</code> as well as various techniques
+to interact with the components on the screen. Additionally we mocked the boundaries of the web integration test and verified
+that the interactions with the dependency are performed correctly.</p>
+</div>
+<div class="paragraph">
+<p>Finally, we looked into an alternative way of expressing web integration tests in CUBA: Sneferu. A library specifically designed
+for the purpose of writing web integration tests fast, easy and more expressive.</p>
+</div>
+<div class="paragraph">
+<p>The combination of Web integration tests and Middleware integration tests (as learned in the guide: <a href="https://www.cuba-platform.com/guides/integration-testing-middleware">Middleware Integration Testing in CUBA Applications</a>) provides a solid safety-net. With the verified interactions between the Service boundaries the overall
+test coverage can be quite good. With that it enables you to iterate fast on your application, but at the same time be sure
+that the functionality is still working as expected.</p>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -1328,6 +1518,9 @@ The Middleware integration test verifies that the <code>warnAboutDisease</code> 
 </li>
 <li>
 <p><a href="https://doc.cuba-platform.com/manual-latest/integration_tests_client.html">CUBA Documentation: Web Integration Tests</a></p>
+</li>
+<li>
+<p><a href="https://www.cuba-platform.com/marketplace/sneferu/">CUBA Marketplace: Sneferu - Web Integration Testing Library</a></p>
 </li>
 </ul>
 </div>
@@ -1370,8 +1563,8 @@ The Middleware integration test verifies that the <code>warnAboutDisease</code> 
 </li>
 <li><a href="#sneferu">Sneferu</a>
 <ul class="sectlevel2">
-<li><a href="#overview_2">Overview</a></li>
-<li><a href="#create_disease_warning_mailing_revisited">Create Disease Warning Mailing - Revisited</a></li>
+<li><a href="#owner_browse_revisited">Owner Browse - Revisited</a></li>
+<li><a href="#disease_warning_mailing_revisited">Disease Warning Mailing - Revisited</a></li>
 </ul>
 </li>
 <li><a href="#summary">Summary</a></li>
