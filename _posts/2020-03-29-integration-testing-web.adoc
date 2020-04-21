@@ -20,10 +20,10 @@ In this guide you will learn how automated testing in a CUBA application works. 
 
 == What Will be Built
 
-This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA Petclinic] example to show how existing features can be tested in an automated fashion via unit testing:
+This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA Petclinic] example to show how existing features can be tested in an automated fashion via web integration testing:
 
-* display amount of pets of a given pet type for a particular Owner
-* calculation of next regular checkup date proposals for a pet
+* Owner Browse -> Edit Interaction
+* Sending out Disease Warning Mailing
 
 include::includes/guide_requirements.adoc[]
 
@@ -41,11 +41,11 @@ The _Middleware block_ on the other side is _not_ part of the test environment. 
 
 == Web Integration Test Environment
 
-In this environment the production application is started partially, just like in the middleware integration test. All the CUBA platform based UI APIs work the way just as in the production code of the application. In the _Web client block_ there is also a big part of declarative definitions of the UI via XML screen descriptors. This definitions are also covered and executed within the test environment.
+In this environment the production application is started partially, just like in the middleware integration test. All the CUBA platform based UI APIs work the way just as in the production code of the application. In the _Web client block_ there is a big part of declarative definitions of the UI via XML screen descriptors. This definitions are also covered and executed within the test environment.
 
 === Coverage Example
 
-To understand this question of coverage let's take a look at one example within the Petclinic application and identify which parts are included, which ones are mocked and which ones are not covered at all. Coverage in this case does not mean that a test case explicitly loads the shown code and interacts with it, but more that by opening the Screen implicitly by the environment everything will be loaded and initialized, so that the test case is then able to interact with the Screen.
+To understand the question of coverage let's take a look at one example within the Petclinic application and identify which parts are included, which ones are mocked and which ones are not covered by the test environment at all. Coverage in this case does not mean that a test case explicitly loads the shown code and interacts with it, but more that by opening the Screen implicitly by the environment everything will be loaded and initialized, so that the test case is then able to interact with the Screen.
 
 For this example let's take a look at the List of the Owners from the Petclinic. It consists of the XML descriptor part as well as the UI controller. In the following listing generally everything is covered and executed just as in the production environment. Therefore it is not mentioning everything that is covered, but only the most important parts as well as the parts where the coverage ends.
 
@@ -790,15 +790,186 @@ The Middleware integration test verifies that the `warnAboutDisease` method itse
 
 == Sneferu
 
-=== Overview
+After seeing different implementations of web integration tests, you should have a basic idea on how to interact with
+the UI through a web integration testing. CUBAs UI APIs are for the most part capable of interacting with the various
+UI components and screens programmatically.
 
-=== Create Disease Warning Mailing - Revisited
+But as these APIs are optimized for production application code, using them
+for remote-controlling CUBA UIs (this is what tests oftentimes do) is not their main focus. This results in some boilerplate
+code in the web integration tests like this:
 
+.OwnerBrowseTest.java
+[source,java]
+----
+class OwnerBrowseTest {
+    // ...
+    private <T extends Screen> T findOpenScreen(Class<T> screenClass) {
+        return (T) screens
+                .getOpenedScreens()
+                .getAll()
+                .stream()
+                .filter(openedScreen ->
+                    openedScreen.getClass().isAssignableFrom(screenClass)
+                )
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
+    }
+}
+----
+
+Writing this code takes away the developer from the main task at hand: write test cases to verify the correct behavior
+of the application.
+
+Sneferu is a testing library designed to make writing web integration tests for CUBA easier in order to concentrate on
+writing verification test cases. With its specific DSL and the ability to create higher level abstractions on your own,
+it also allows to express the test cases with a higher level language. This helps to create a more maintainable test suite.
+
+In order to understand the difference between a regular CUBA web integration test and a Sneferu web integration test,
+let's revisit two test cases of the `OwnerBrowseTest` and `DiseaseWarningMailingTest`.
+
+
+=== Owner Browse - Revisited
+
+The Owner Browse Test contains a test case, that verified the correct interaction between the `OwnerBrowse` Screen
+and the `OwnerEdit` Screen. The test case written with the help of Sneferu looks like this:
+
+.OwnerBrowseSneferuTest.java
+[source,java]
+----
+import static de.diedavids.sneferu.ComponentDescriptors.*;
+import static de.diedavids.sneferu.Interactions.*;
+
+class OwnerBrowseSneferuTest {
+
+    @RegisterExtension
+    SneferuTestUiEnvironment environment =
+            new SneferuTestUiEnvironment(PetclinicWebTestContainer.Common.INSTANCE)
+                    .withScreenPackages(
+                            "com.haulmont.cuba.web.app.main",
+                            "com.haulmont.sample.petclinic.web"
+                    )
+                    .withUserLogin("admin")
+                    .withMainScreen(MainScreen.class);
+
+    // ...
+
+    @Test
+    void given_ownerIsSelected_when_editIsPerformed_then_ownerEditorIsOpened(
+        @StartScreen StandardLookupTestAPI<Owner, OwnerBrowse> ownerBrowse,
+        @SubsequentScreen StandardEditorTestAPI<Owner, OwnerEdit> ownerEdit
+    ) {
+
+        ownerBrowse
+                .interact(selectInList(table("ownersTable"), ash))
+                .andThen(click(button("editBtn")));
+
+        assertThat(ownerEdit.screen().getEditedEntity())
+                .isEqualTo(ash);
+    }
+
+    //...
+
+}
+----
+
+The Test UI environment in this case is a special Sneferu class: `SneferuTestUiEnvironment`, which adds certain capabilities
+to the environment.
+
+The test case itself declares two parameters. This is a particular feature of JUnit 5, which allows to express test
+dependencies that are required for the test. In this case, the first parameter is annotated with `@StartScreen`, which means
+that Sneferu will automatically open the screen and when the test starts, it is possible to directly interact with the
+screen. The type: `StandardLookupTestAPI<Owner, OwnerBrowse> ownerBrowse` defines what kind of Screen the test expects.
+
+Under the hood, an instance of `OwnerBrowse` will be shown and is wrapped in a class called `StandardLookupTestAPI` that
+provides further abstractions relevant for test case interactions with the Screen.
+
+The second parameter is the `OwnerEdit` Screen, that we need in this test case. Different to the Owner Browser, this screen
+is not the start screen for our test-screen-interaction. Instead it is a screen that will be opened automatically by
+the application. But the test cases needs to get a reference to it in order to interact with this Screen as well.
+For this scenario the `@SubsequentScreen` annotation is used.
+
+In order to interact with a Screen, the `ScreenTestAPI` wrapper classes provide various methods to do so.
+`ownerBrowse.interact(...)` is used for that kind of interaction. It expects an interaction object as a parameter.
+Sneferu provides a lot of Interactions out of the box. The static import `de.diedavids.sneferu.Interactions.*;` allows
+to access these methods directly, so that the test case is expressed with little friction.
+
+In this case the Interaction `Interactions.selectInList(table("ownersTable"), ash)` selects a particular entity
+in a List component. It takes two parameters: the first is a reference to a component that the interaction should be
+acted upon, while the second parameter defines the entity that should be selected.
+
+Interactions can be chained via `interact(...).andThen(...)` in order to perform multiple interactions one after another.
+
+After the interaction is performed, the application should have opened the Owner Editor Screen. `ownerEdit` now acts as
+a reference to this screen. So it is possible to interact with that screen now. In this case the underlying Screen object
+is retrieved in order to compare the edited entity via `ownerEdit.screen().getEditedEntity()`.
+
+=== Disease Warning Mailing - Revisited
+
+The second example with the Disease Warning Mailing written in Sneferu looks like this:
+
+.DiseaseWarningMailingSneferuTest.java
+[source,java]
+----
+class DiseaseWarningMailingSneferuTest {
+    //...
+    @Nested
+    @DisplayName("When Valid Dialog Input Data, then...")
+    class When_SubmitValidDialogInput {
+        // ...
+        @Test
+        @DisplayName("Mailing is send")
+        void then_mailingIsSend(
+                @StartScreen StandardScreenTestAPI<CreateDiseaseWarningMailing> dialog
+        ) {
+
+            dialog
+                    .interact(enter(textInputField("city"), "Alabastia"))
+                    .andThen(enter(textInputField("disease"), "Fever"))
+                    .andThen(select(lookupField("petType"), electricType))
+                    .andThen(click(button("createDiseaseWarningMailingBtn")));
+
+            verify(diseaseWarningMailingService, times(1))
+                    .warnAboutDisease(
+                            electricType,
+                            "Fever",
+                            "Alabastia"
+                    );
+        }
+    }
+}
+----
+
+It is similar tho the first test case. Once again, the start screen is injected (in this case it is of type `StandardScreenTestAPI`).
+Then interactions are performed against the screen. Afterwards the same assertion is expressed as seen before: the `diseaseWarningMailingService`
+should be called once.
+
+As we have seen, Sneferu allows to ease the programmatic interactions with the focused Interaction API. Furthermore
+it removes the need to write a lot of boilerplate code with the CUBA UI APIs.
+
+More information on the library can be found in the https://www.cuba-platform.com/marketplace/sneferu/[CUBA Marketplace: Sneferu]
+or on https://github.com/mariodavid/sneferu[Github: mariodavid/sneferu].
 
 == Summary
 
+In this guide we learned about the way on how to write and execute web integration tests for CUBA. In the beginning, we
+walked through the coverage area that a web integration test has as well as its limitations. A web integration test
+contains the UI Logic with its Java Controllers and the corresponding XML Screen descriptors. It does not cover execution
+of the middleware parts like Service Implementations or Data Loading.
+
+After that we took a look into three example web integration tests: `PetEditTest`, `OwnerBrowseTest` and `DiseaseWarningMailingTest`.
+These tests showed how to programmatically open screens via the `TestUiEnvironment` as well as various techniques
+to interact with the components on the screen. Additionally we mocked the boundaries of the web integration test and verified
+that the interactions with the dependency are performed correctly.
+
+Finally, we looked into an alternative way of expressing web integration tests in CUBA: Sneferu. A library specifically designed
+for the purpose of writing web integration tests fast, easy and more expressive.
+
+The combination of Web integration tests and Middleware integration tests (as learned in the guide: https://www.cuba-platform.com/guides/integration-testing-middleware[Middleware Integration Testing in CUBA Applications]) provides a solid safety-net. With the verified interactions between the Service boundaries the overall
+test coverage can be quite good. With that it enables you to iterate fast on your application, but at the same time be sure
+that the functionality is still working as expected.
 
 == Further Information
 
 * https://files.cuba-platform.com/javadoc/cuba/{cuba_version}/com/haulmont/cuba/core/app/DataService.html[CUBA API Reference: DataService]
 * https://doc.cuba-platform.com/manual-latest/integration_tests_client.html[CUBA Documentation: Web Integration Tests]
+* https://www.cuba-platform.com/marketplace/sneferu/[CUBA Marketplace: Sneferu - Web Integration Testing Library]
