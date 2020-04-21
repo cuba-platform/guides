@@ -261,7 +261,7 @@
 <div class="sect2">
 <h3 id="coverage_example"><a class="anchor" href="#coverage_example"></a><a class="link" href="#coverage_example">Coverage Example</a></h3>
 <div class="paragraph">
-<p>To understand the question of coverage let&#8217;s take a look at one example within the Petclinic application and identify which parts are included, which ones are mocked and which ones are not covered by the test environment at all. Coverage in this case does not mean that a test case explicitly loads the shown code and interacts with it, but more that by opening the Screen implicitly by the environment everything will be loaded and initialized, so that the test case is then able to interact with the Screen.</p>
+<p>To understand the question of coverage let&#8217;s take a look at one example within the Petclinic application and identify which parts are included, which ones are mocked and which ones are not covered by the test environment at all.</p>
 </div>
 <div class="paragraph">
 <p>For this example let&#8217;s take a look at the List of the Owners from the Petclinic. It consists of the XML descriptor part as well as the UI controller. In the following listing generally everything is covered and executed just as in the production environment. Therefore it is not mentioning everything that is covered, but only the most important parts as well as the parts where the coverage ends.</p>
@@ -318,7 +318,7 @@
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>all buttons and actions are covered and can be performed</td>
+<td>all buttons and actions are covered and can be executed in the test</td>
 </tr>
 </table>
 </div>
@@ -340,7 +340,7 @@ environment of the web integration test requires to configure the entity instanc
 </div>
 <div class="paragraph">
 <p>Next to the UI Screen descriptor, the programmatic sibling is the UI controller. Let&#8217;s take a look at the coverage for
-the corresponding PetBrowse UI controller:</p>
+the corresponding <code>PetBrowse</code> UI controller:</p>
 </div>
 <div class="listingblock">
 <div class="title">PetBrowse.java</div>
@@ -404,7 +404,7 @@ the corresponding PetBrowse UI controller:</p>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>the Screens API is performed correctly and the <code>CreateDiseaseWarningMailing</code> screen is opened</td>
+<td>the Screens API is executed correctly and the <code>CreateDiseaseWarningMailing</code> screen is opened</td>
 </tr>
 </table>
 </div>
@@ -443,7 +443,7 @@ JavaScript code that is part of Vaadin is not covered.</p>
 </td>
 <td class="content">
 The web integration test environment does <em>not</em> interact with the application via a real web browser. To cover
-this area in a test case, a functional end-to-end test through something like <a href="https://www.cuba-platform.com/marketplace/masquerade/">Masquerade</a> has to be performed.
+this area in a test case, a functional end-to-end test through tools like <a href="https://www.cuba-platform.com/marketplace/masquerade/">Masquerade</a> has to be performed.
 </td>
 </tr>
 </table>
@@ -462,7 +462,7 @@ by the UI components. Detailed information about the <code>DataService</code> AP
 <div class="sect2">
 <h3 id="benefits_limitations"><a class="anchor" href="#benefits_limitations"></a><a class="link" href="#benefits_limitations">Benefits &amp; Limitations</a></h3>
 <div class="paragraph">
-<p>Using Web integration tests allows developers to automatically verify the correctness of the majority of the UI screen
+<p>Using web integration tests allows developers to automatically verify the correctness of the majority of the UI screen
 definition and its business logic. For the UI parts relying primarily on unit test would require to use a lot of mocking
 of the CUBA UI APIs as well as letting go the verification of the declarative part.</p>
 </div>
@@ -477,7 +477,7 @@ the much more complicated test data setup, the speed of the execution are all ex
 <div class="paragraph">
 <p>Web integration tests do not have those problems. Instead running the tests is orders of magnitude faster compared to run
 a selenium based test. A regular web integration test takes a sub second to run, whereas a Selenium based test easily can
-take half a minute to perform the same operation. Also any kind of false positive test runs that oftentimes occur in a
+take half a minute to perform the same operation. Also a lot of false positive test runs that oftentimes occur in a
 selenium based test suite are not a problem of a web integration test. Those result due to the asynchronous nature of the browser
 which is not used in this case.</p>
 </div>
@@ -582,7 +582,7 @@ It acts as the running environment to interact with the application.</p>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>It is possible to retrieve CUBA APIs like the Screens API through the environment</td>
+<td>It is possible to retrieve CUBA APIs like <code>Screens</code> through the environment</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -591,22 +591,17 @@ It acts as the running environment to interact with the application.</p>
 </table>
 </div>
 <div class="paragraph">
-<p>The interaction pattern with the environment is very similar how it works for the middleware integration tests. With
-the Entity Factory, it is possible to create Entities with the specific needs of automated tests (like the definition of the
-desired state). Besides that the majority of the CUBA APIs can be retrieved either directly from the <code>environment</code> or from
-the <code>environment.getContainer()</code> web test container.</p>
+<p>With the Entity Factory, it is possible to create Entities with the specific needs of automated tests (like the definition of the desired state). Besides that the majority of the CUBA APIs can be retrieved either directly from the <code>environment</code> or from the <code>environment.getContainer()</code> web test container.</p>
 </div>
 <div class="paragraph">
 <p>With that setup part in place, let&#8217;s take a look at the first web integration test case. The test verifies that the
-<code>PetEdit</code> editor can be opened correctly and the <code>identificationNumber</code> property is bound correctly.</p>
+<code>PetEdit</code> editor can be opened correctly and the <code>identificationNumber</code> property is bound to corresponding UI component.</p>
 </div>
 <div class="listingblock">
 <div class="title">PetEditorTest.java</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="type">class</span> <span class="class">PetEditTest</span> {
-
     <span class="comment">// ...</span>
-
     <span class="directive">private</span> Screens screens;
     <span class="directive">private</span> TestEntityFactory&lt;Pet&gt; petsFactory;
 
@@ -625,9 +620,9 @@ the <code>environment.getContainer()</code> web test container.</p>
 
         PetEdit petEdit = showPetEditorFor(pet);
 
-        TextInputField identificationNumberField = identificationNumberField(petEdit);
+        TextInputField inputField = identificationNumberField(petEdit);
 
-        assertThat(identificationNumberField.getValue()) <i class="conum" data-value="4"></i><b>(4)</b>
+        assertThat(inputField.getValue()) <i class="conum" data-value="4"></i><b>(4)</b>
             .isEqualTo(<span class="string"><span class="delimiter">&quot;</span><span class="content">019</span><span class="delimiter">&quot;</span></span>);
     }
 
@@ -667,13 +662,11 @@ the <code>environment.getContainer()</code> web test container.</p>
 </table>
 </div>
 <div class="paragraph">
-<p>This first test shows an example on how to programmatically open screens and interact with the resulting UI screen.
-In this concrete example, we verify that the data binding in the form component is behaving correctly.</p>
+<p>This first test shows an example on how to programmatically open screens and interact with the components of the screen.
+In this example, we verify that the data binding in the form component is behaving correctly.</p>
 </div>
 <div class="paragraph">
-<p>We neither check any controller logic nor if CUBAs internal data binding is working as expected. Instead we are verifying
-that the Screen descriptor contains a field named <code>identificationNumberField</code>. This field should be wired to the <code>petDc</code>
-data container and in particular to the <code>identificationNumber</code> entity property.</p>
+<p>We neither check any controller logic nor do we check <em>explicitly</em> if CUBAs internal data binding is working as expected. Instead we are verifying that the Screen descriptor contains a field named <code>identificationNumberField</code>. This field should be wired to the <code>petDc</code> data container and also to the <code>identificationNumber</code> entity attribute.</p>
 </div>
 <div class="paragraph">
 <p>In particular it is this part of the XML screen descriptor that is verified for correct usage:</p>
@@ -705,7 +698,7 @@ data container and in particular to the <code>identificationNumber</code> entity
 </table>
 </div>
 <div class="paragraph">
-<p>There are a couple of other areas of the overall code that are also implicitly verified:</p>
+<p>There are a couple of other areas of the overall code that are also verified <em>implicitly</em>:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -729,8 +722,7 @@ in the production code. This simplifies test case implementation a lot, because 
 can directly be used in the integration test.</p>
 </div>
 <div class="paragraph">
-<p>Interacting with UI components is also the same as in production code. The only difference is the retrieval of the instance,
-as no dependency injection mechanism is available.</p>
+<p>Interacting with UI components is also the same as in production code. The only difference is the retrieval of the component instances, as no dependency injection mechanism is available.</p>
 </div>
 <div class="paragraph">
 <p>In this example, the data binding is manually handled by passing in the instance through <code>petEdit.setEntityToEdit(pet)</code>.
@@ -741,8 +733,7 @@ In the next example, we will take a look at the situation where the screen tries
 <div class="sect2">
 <h3 id="owner_browse"><a class="anchor" href="#owner_browse"></a><a class="link" href="#owner_browse">Owner Browse</a></h3>
 <div class="paragraph">
-<p>The second example is an web integration test for the interaction between the Owner Browser and the Owner Editor.
-In this case the data loading happens automatically as the Controller is annotated with <code>@LoadDataBeforeShow</code>:</p>
+<p>The second example is a web integration test that deals with the interaction between the Owner Browser and the Owner Editor. In this case the data loading happens automatically as the Controller is annotated with <code>@LoadDataBeforeShow</code>:</p>
 </div>
 <div class="listingblock">
 <div class="title">OwnerBrowse.java</div>
@@ -753,20 +744,18 @@ In this case the data loading happens automatically as the Controller is annotat
 </div>
 </div>
 <div class="paragraph">
-<p>Besides that the controller embodies no further UI/business logic. The first test case verifies that the data that is loaded
-will be displayed correctly in the Table. The second test case goes a step further and checks the interaction between
-two screens: <code>OwnerBrowse</code> and <code>OwnerEdit</code>. Once an Owner is selected in the Table and the edit action is performed,
-the Owner Editor should be visible and the data of the selected Owner should be displayed.</p>
+<p>Besides that the controller embodies no further UI/business logic. The <code>OwnerBrowseTest</code> web integration test consists of two test cases:</p>
+</div>
+<div class="paragraph">
+<p>The first test case verifies that the data that is loaded will be displayed correctly in the Table. The second test case goes a step further and checks the interaction between two screens: <code>OwnerBrowse</code> and <code>OwnerEdit</code>. Once an Owner is selected in the Table and the edit action is performed, the Owner Editor should be visible and the data of the selected Owner should be displayed.</p>
 </div>
 <div class="sect3">
-<h4 id="test_declarative_data_loading"><a class="anchor" href="#test_declarative_data_loading"></a><a class="link" href="#test_declarative_data_loading">Test declarative Data Loading</a></h4>
+<h4 id="test_declarative_data_loading"><a class="anchor" href="#test_declarative_data_loading"></a><a class="link" href="#test_declarative_data_loading">Test: Declarative Data Loading</a></h4>
 <div class="paragraph">
 <p>Let&#8217;s look at the first test case: <code>when_ownerListIsDisplayed_thenOwnersAreShownInTheTable</code>.</p>
 </div>
 <div class="paragraph">
-<p>In order to provide the data to the data container, the result of the Data Service has to be mocked. For the Web integration
-test environment a special DataService implementation is available: <code>DataServiceProxy</code>. This class mimics parts of the behavior of the regular
-<code>DataService</code> implementation. See the information from the <a href="https://doc.cuba-platform.com/manual-latest/integration_tests_client.html">CUBA Documentation</a>:</p>
+<p>In order to provide the data to the data container, the result of the Data Service has to be mocked. For the web integration test environment a special DataService implementation is available: <code>DataServiceProxy</code>. This class mimics parts of the behavior of the regular <code>DataService</code> implementation. See the information from the <a href="https://doc.cuba-platform.com/manual-latest/integration_tests_client.html">CUBA Documentation</a>:</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -775,7 +764,7 @@ test environment a special DataService implementation is available: <code>DataSe
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-DataServiceProxy - default stub for DataManager. It contains an implementation for commit() method which mimics the behavior of the real data store: makes new entities detached, increments versions, etc. The loading methods return null and empty collections.
+<em>DataServiceProxy</em> - default stub for DataManager. It contains an implementation for commit() method which mimics the behavior of the real data store: makes new entities detached, increments versions, etc. The loading methods return null and empty collections.
 </td>
 </tr>
 </table>
@@ -840,8 +829,7 @@ a mock object, but the difference is that it calls the real methods except for t
 we can re-configure the behavior of the <code>loadList</code> method.</p>
 </div>
 <div class="paragraph">
-<p>After creation of the Spy, we have to register the service instance for the <code>DataService</code> API for the test in the
-web integration test environment. This happens through the static <code>mock</code> method of the TestServiceProxy.</p>
+<p>After creation of the Spy, we have to register the service instance as the <code>DataService</code> API implementation for the test in the test case. This happens through the static <code>mock</code> method of the TestServiceProxy.</p>
 </div>
 <div class="paragraph">
 <p>The remaining part left of the manual data configuration is the definition of the mock call and the expected result. For that we use the Mockito API: <code>when(&#8230;&#8203;).thenReturn(&#8230;&#8203;)</code>. In this case, we need to be a little more precise, because we don&#8217;t want to mock all calls to <code>DataService.loadList(&#8230;&#8203;)</code> but instead only the one where the load of the <code>Owner</code> entity happens.</p>
@@ -941,7 +929,7 @@ web integration test environment. This happens through the static <code>mock</co
 </div>
 </div>
 <div class="sect3">
-<h4 id="screen_interaction_from_owner_browse_to_owner_editor"><a class="anchor" href="#screen_interaction_from_owner_browse_to_owner_editor"></a><a class="link" href="#screen_interaction_from_owner_browse_to_owner_editor">Screen Interaction from Owner Browse to Owner Editor</a></h4>
+<h4 id="test_screen_interaction_from_owner_browse_to_owner_editor"><a class="anchor" href="#test_screen_interaction_from_owner_browse_to_owner_editor"></a><a class="link" href="#test_screen_interaction_from_owner_browse_to_owner_editor">Test: Screen Interaction from Owner Browse to Owner Editor</a></h4>
 <div class="paragraph">
 <p>The second test case builds on the fundamentals of the first one that we just explored. In this case the goal is to test the correct interaction between two screens. The following steps are performed by the test:</p>
 </div>
@@ -1064,9 +1052,17 @@ out the behavior of the service interface. This way we can control the behavior 
 </div>
 </div>
 <div class="paragraph">
-<p>The Test contains of the following precondition:
-1. mock dependency <code>DiseaseWarningMailingService</code>
-2. open DiseaseWarningMailing Dialog through the Pet Browser</p>
+<p>The Test contains of the following precondition:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>mock dependency <code>DiseaseWarningMailingService</code></p>
+</li>
+<li>
+<p>open DiseaseWarningMailing Dialog through the Pet Browser</p>
+</li>
+</ol>
 </div>
 <div class="paragraph">
 <p>After that there are the four test cases that would cover the functionality of the Dialog:</p>
@@ -1223,7 +1219,7 @@ TODO - add proper Link when test are pushed to repository.
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>the Validation Results of the Form contain no error</td>
+<td>Assertion that the validation results of the form contains no error</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
@@ -1248,7 +1244,7 @@ which looks like this:</p>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">CreateDiseaseWarningMailing</span> <span class="directive">extends</span> Screen {
     <span class="comment">// ...</span>
-    <span class="directive">public</span> ValidationErrors validationResult() {
+    ValidationErrors validationResult() {
         <span class="keyword">return</span> screenValidation.validateUiComponents(
                 asList(city, disease, petType)
         );
@@ -1257,8 +1253,7 @@ which looks like this:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>This method is used inside the Controller to perform the validation. But it is also accessible to the test case, to retrieve
-the <code>ValidationErrors</code> object from the outside, in order to make assertions on it.</p>
+<p>This method is used inside the Controller to perform the validation. But it is also accessible to the test case, to retrieve the <code>ValidationErrors</code> object from the outside, in order to make assertions on it.</p>
 </div>
 <div class="paragraph">
 <p>The second test case <code>When_SubmitValidDialogInput.then_mailingIsSend()</code> uses the <code>DiseaseWarningMailingService</code> mock to
@@ -1284,7 +1279,7 @@ way.</p>
 <div class="quoteblock">
 <blockquote>
 <div class="paragraph">
-<p>Verify that on the <code>diseaseWarningMailingService</code> object the method <code>warnAboutDisease</code> with the three parameters <code>electricType, "Fever", "Alabastia"</code> is called exactly once</p>
+<p>Verify that on the <code>diseaseWarningMailingService</code> object the method <code>warnAboutDisease</code> with the three parameters <code>electricType, "Fever", "Alabastia"</code> is called exactly once.</p>
 </div>
 </blockquote>
 </div>
@@ -1293,8 +1288,7 @@ way.</p>
 does not occur the test fails.</p>
 </div>
 <div class="paragraph">
-<p>With that we have successfully tested the UI code that is part of the overall "Create Disease Warning Mailing" functionality.
-The Middleware integration test verifies that the <code>warnAboutDisease</code> method itself works as expected.</p>
+<p>With that we have successfully tested the UI code that is part of the overall "Create Disease Warning Mailing" functionality. The Middleware integration test verifies that the <code>warnAboutDisease</code> method itself works as expected.</p>
 </div>
 </div>
 </div>
@@ -1404,16 +1398,13 @@ screen. The type: <code>StandardLookupTestAPI&lt;Owner, OwnerBrowse&gt; ownerBro
 provides further abstractions relevant for test case interactions with the Screen.</p>
 </div>
 <div class="paragraph">
-<p>The second parameter is the <code>OwnerEdit</code> Screen, that we need in this test case. Different to the Owner Browser, this screen
-is not the start screen for our test-screen-interaction. Instead it is a screen that will be opened automatically by
-the application. But the test cases needs to get a reference to it in order to interact with this Screen as well.
-For this scenario the <code>@SubsequentScreen</code> annotation is used.</p>
+<p>The second parameter is the <code>OwnerEdit</code> Screen, that we need in this test case. Different to the Owner Browser, this screen is not the start screen for our test-screen-interaction. Instead it is a screen that will be opened automatically by the application. But the test cases needs to get a reference to it in order to interact with this Screen afterwards as well. For this scenario the <code>@SubsequentScreen</code> annotation is used.</p>
 </div>
 <div class="paragraph">
 <p>In order to interact with a Screen, the <code>ScreenTestAPI</code> wrapper classes provide various methods to do so.
 <code>ownerBrowse.interact(&#8230;&#8203;)</code> is used for that kind of interaction. It expects an interaction object as a parameter.
 Sneferu provides a lot of Interactions out of the box. The static import <code>de.diedavids.sneferu.Interactions.*;</code> allows
-to access these methods directly, so that the test case is expressed with little friction.</p>
+to access methods like <code>selectInList</code> directly, so that the test case is expressed with little friction.</p>
 </div>
 <div class="paragraph">
 <p>In this case the Interaction <code>Interactions.selectInList(table("ownersTable"), ash)</code> selects a particular entity
@@ -1425,8 +1416,7 @@ acted upon, while the second parameter defines the entity that should be selecte
 </div>
 <div class="paragraph">
 <p>After the interaction is performed, the application should have opened the Owner Editor Screen. <code>ownerEdit</code> now acts as
-a reference to this screen. So it is possible to interact with that screen now. In this case the underlying Screen object
-is retrieved in order to compare the edited entity via <code>ownerEdit.screen().getEditedEntity()</code>.</p>
+a reference to this just opened screen. So it is possible to interact with that screen now. In this case the underlying Screen object is retrieved in order to compare the edited entity via <code>ownerEdit.screen().getEditedEntity()</code>.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1446,7 +1436,7 @@ is retrieved in order to compare the edited entity via <code>ownerEdit.screen().
         <span class="annotation">@Test</span>
         <span class="annotation">@DisplayName</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">Mailing is send</span><span class="delimiter">&quot;</span></span>)
         <span class="type">void</span> then_mailingIsSend(
-                <span class="annotation">@StartScreen</span> StandardScreenTestAPI&lt;CreateDiseaseWarningMailing&gt; dialog
+            <span class="annotation">@StartScreen</span> StandardScreenTestAPI&lt;CreateDiseaseWarningMailing&gt; dialog
         ) {
 
             dialog
@@ -1486,16 +1476,16 @@ or on <a href="https://github.com/mariodavid/sneferu">Github: mariodavid/sneferu
 <h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this guide we learned about the way on how to write and execute web integration tests for CUBA. In the beginning, we
-walked through the coverage area that a web integration test has as well as its limitations. A web integration test
-contains the UI Logic with its Java Controllers and the corresponding XML Screen descriptors. It does not cover execution
-of the middleware parts like Service Implementations or Data Loading.</p>
+<p>In this guide we learned about the way on how to write and execute web integration tests for CUBA. In the beginning we
+walked through the coverage area that a web integration test has as well as its limitations.</p>
+</div>
+<div class="paragraph">
+<p>A web integration test contains the UI Logic with its Java Controllers and the corresponding XML Screen descriptors. It does not cover execution of the middleware parts like Service Implementations or Data Loading.</p>
 </div>
 <div class="paragraph">
 <p>After that we took a look into three example web integration tests: <code>PetEditTest</code>, <code>OwnerBrowseTest</code> and <code>DiseaseWarningMailingTest</code>.
 These tests showed how to programmatically open screens via the <code>TestUiEnvironment</code> as well as various techniques
-to interact with the components on the screen. Additionally we mocked the boundaries of the web integration test and verified
-that the interactions with the dependency are performed correctly.</p>
+to interact with the components on the screen. Additionally we mocked the boundaries of the web integration test and verified that the interactions with the dependency are performed correctly.</p>
 </div>
 <div class="paragraph">
 <p>Finally, we looked into an alternative way of expressing web integration tests in CUBA: Sneferu. A library specifically designed
