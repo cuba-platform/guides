@@ -180,9 +180,9 @@ As it is shown in this example, it is also possible to combine the two approache
 
 The corresponding UI screens look like this:
 
-image::initial-entity-values/regular-checkup-1-select-pet.png[Step 1: Pet selection, link="initial-entity-values/regular-checkup-1-select-pet.png"]
+image::initial-entity-values/regular-checkup-1-select-pet.png[Step 1: Pet selection, link="/guides/images/initial-entity-values/regular-checkup-1-select-pet.png"]
 
-image::initial-entity-values/regular-checkup-2-prefilled-visit.png[Step 2: Prefilled visit screen, link="initial-entity-values/regular-checkup-2-prefilled-visit.png"]
+image::initial-entity-values/regular-checkup-2-prefilled-visit.png[Step 2: Prefilled visit screen, link="/guides/images/initial-entity-values/regular-checkup-2-prefilled-visit.png"]
 
 == Dependent Attribute Initialization
 
