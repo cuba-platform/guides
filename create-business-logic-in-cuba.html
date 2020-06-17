@@ -14,13 +14,13 @@
     <meta name="twitter:creator" content="@CubaPlatform">
     <meta name="twitter:title" content="Create Business Logic in CUBA">
     <meta name="twitter:description" content="Guide on what options are available for putting business logic into a CUBA application">
-    <meta name="twitter:image" content="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/login-screen.png">
+    <meta name="twitter:image" content="images/creating-business-logic-in-cuba/login-screen.png">
 
     <meta property="og:type" content="article">
     <meta property="og:title" content="Create Business Logic in CUBA">
     <meta property="og:description" content="Guide on what options are available for putting business logic into a CUBA application">
     <meta property="og:url" content="https://www.cuba-platform.com/guides/create-business-logic-in-cuba">
-    <meta property="og:image" content="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/login-screen.png">
+    <meta property="og:image" content="images/creating-business-logic-in-cuba/login-screen.png">
 
     <link rel="shortcut icon" href="/guides/images/favicon.png" type="image/png" />
     <link rel="stylesheet" href="/guides/css/foundation.css">
@@ -455,7 +455,7 @@
 </div>
 <div class="sect2">
 <h3 id="final_application"><a class="anchor" href="#final_application"></a><a class="link" href="#final_application">Final Application</a></h3>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/login-screen.png"/></a>
+<a href="images/creating-business-logic-in-cuba/adjustments-cuba-petclinic-overview.gif"><img src="images/creating-business-logic-in-cuba/login-screen.png"/></a>
 </div>
 <div class="sect2">
 <h3 id="requirements"><a class="anchor" href="#requirements"></a><a class="link" href="#requirements">Requirements</a></h3>
@@ -498,7 +498,7 @@
 <div class="paragraph">
 <p>The main entities are <strong>Pet</strong> and <strong>Visit</strong>. A Pet is visiting the petclinic and during this Visit a Vet is taking care of it. A Pet belongs to an Owner, which can hold multiple pets. The visit describes the act of a pet visiting the clinic with the help of its owner.</p>
 </div>
-<a href="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/login-screen.png"/></a>
+<a href="images/intro-to-working-with-data-in-CUBA/cuba-petclinic-overview.gif"><img src="images/intro-to-working-with-data-in-CUBA/login-screen.png"/></a>
 </div>
 </div>
 <div class="sect1">
@@ -507,7 +507,7 @@
 <div class="paragraph">
 <p>Assuming the discount calculation should be executed when a user clicks a button on the Pets&#8217;s browser screen, the most straightforward way to accomplish this is to put the calculation logic right in the associated controller class.</p>
 </div>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/calculate-discout-for-pet.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/calculate-discout-for-pet.png"/></a>
+<a href="images/creating-business-logic-in-cuba/calculate-discout-for-pet.png"><img src="images/creating-business-logic-in-cuba/calculate-discout-for-pet.png"/></a>
 <div class="paragraph">
 <p>See the <strong>Calculate discount</strong> button in the petclinic application and the screen controller implementation: <a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetBrowse.java#L15">PetBrowse</a>.</p>
 </div>
@@ -599,7 +599,7 @@ This approach is acceptable if the logic is invoked from a single point and it i
 <div class="paragraph">
 <p>The example that is implemented as (multiple) client tier beans is to display the contact information of the pet&#8217;s owner directly from the pet browser or the pet details screen.</p>
 </div>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/fetch-contact-of-pet.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/fetch-contact-of-pet.png"/></a>
+<a href="images/creating-business-logic-in-cuba/fetch-contact-of-pet.png"><img src="images/creating-business-logic-in-cuba/fetch-contact-of-pet.png"/></a>
 <div class="paragraph">
 <p>For this there are two Spring beans:</p>
 </div>
@@ -735,7 +735,7 @@ This approach is acceptable if the logic is invoked from a single point and it i
 <div class="paragraph">
 <p>In the Petclinic application, the following service was created: <code>DiseaseWarningMailingService</code>. It sends out disease warning mailings to the potentially endangered pets' owners.</p>
 </div>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/create-disease-warning-mailing.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-business-logic/master/img/create-disease-warning-mailing.png"/></a>
+<a href="images/creating-business-logic-in-cuba/create-disease-warning-mailing.png"><img src="images/creating-business-logic-in-cuba/create-disease-warning-mailing.png"/></a>
 <div class="ulist">
 <ul>
 <li>

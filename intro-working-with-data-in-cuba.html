@@ -14,13 +14,13 @@
     <meta name="twitter:creator" content="@CubaPlatform">
     <meta name="twitter:title" content="Introduction to Working with Data in CUBA">
     <meta name="twitter:description" content="Overview on how to read and write data in a CUBA application">
-    <meta name="twitter:image" content="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-visit-for-pet.png">
+    <meta name="twitter:image" content="images/intro-to-working-with-data-in-CUBA/create-visit-for-pet.png">
 
     <meta property="og:type" content="article">
     <meta property="og:title" content="Introduction to Working with Data in CUBA">
     <meta property="og:description" content="Overview on how to read and write data in a CUBA application">
     <meta property="og:url" content="https://www.cuba-platform.com/guides/intro-working-with-data-in-cuba">
-    <meta property="og:image" content="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-visit-for-pet.png">
+    <meta property="og:image" content="images/intro-to-working-with-data-in-CUBA/create-visit-for-pet.png">
 
     <link rel="shortcut icon" href="/guides/images/favicon.png" type="image/png" />
     <link rel="stylesheet" href="/guides/css/foundation.css">
@@ -465,7 +465,7 @@
 </div>
 <div class="sect2">
 <h3 id="final_application"><a class="anchor" href="#final_application"></a><a class="link" href="#final_application">Final Application</a></h3>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/login-screen.png"/></a>
+<a href="images/intro-to-working-with-data-in-CUBA/adjustments-cuba-petclinic-overview.gif"><img src="images/intro-to-working-with-data-in-CUBA/login-screen.png"/></a>
 </div>
 <div class="sect2">
 <h3 id="requirements"><a class="anchor" href="#requirements"></a><a class="link" href="#requirements">Requirements</a></h3>
@@ -508,7 +508,7 @@
 <div class="paragraph">
 <p>The main entities are <strong>Pet</strong> and <strong>Visit</strong>. A Pet is visiting the petclinic and during this Visit a Vet is taking care of it. A Pet belongs to an Owner, which can hold multiple pets. The visit describes the act of a pet visiting the clinic with the help of its owner.</p>
 </div>
-<a href="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/login-screen.png"/></a>
+<a href="images/intro-to-working-with-data-in-CUBA/cuba-petclinic-overview.gif"><img src="images/intro-to-working-with-data-in-CUBA/login-screen.png"/></a>
 </div>
 </div>
 <div class="sect1">
@@ -543,7 +543,7 @@ a lot of cases where data has to be loaded from the database or stored in the da
 <div class="paragraph">
 <p>In the case of the Petclinic example, there is some business logic which should create a new Visit for a given Pet by its Identification Number.</p>
 </div>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-visit-for-pet.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-visit-for-pet.png"/></a>
+<a href="images/intro-to-working-with-data-in-CUBA/create-visit-for-pet.png"><img src="images/intro-to-working-with-data-in-CUBA/create-visit-for-pet.png"/></a>
 <div class="paragraph">
 <p>The source code that loads the Pet instance by its Identification Number is located in <a href="https://github.com/cuba-guides/cuba-petclinic-intro-to-datamanager/blob/master/modules/core/src/com/cubaplatform/petclinic/service/visit/VisitServiceBean.java#L47">VisitServiceBean.java</a> in the example application. The usage of the DataManager API looks like this:</p>
 </div>
@@ -588,7 +588,7 @@ a lot of cases where data has to be loaded from the database or stored in the da
 <div class="paragraph">
 <p>The Petclinic application has the capability to let the user send out Disease Warning Mailings. The user has to define the location of a known disease as well as the type of Pet that is endangered by this disease. The system will find all endangered Pets and send out a Mailing to the owners.</p>
 </div>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-disease-warning-mailing.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-disease-warning-mailing.png"/></a>
+<a href="images/intro-to-working-with-data-in-CUBA/create-disease-warning-mailing.png"><img src="images/intro-to-working-with-data-in-CUBA/create-disease-warning-mailing.png"/></a>
 <div class="paragraph">
 <p>The part that finds the endangered Pets looks like this with the use of the DataManager API:</p>
 </div>
