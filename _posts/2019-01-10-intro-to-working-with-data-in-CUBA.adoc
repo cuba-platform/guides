@@ -15,7 +15,7 @@ permalink: intro-working-with-data-in-cuba
 :project_id: cuba-petclinic-intro-to-datamanager
 :java_version: 8
 :cuba_version: 7.0
-:page-url-first-image: https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-visit-for-pet.png
+:page-url-first-image: images/intro-to-working-with-data-in-CUBA/create-visit-for-pet.png
 
 This guide walks you through the CUBA APIs for programmatically interacting with the database through the DataManager API.
 
@@ -30,7 +30,7 @@ This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA pet
 === Final Application
 
 ++++
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/login-screen.png"/></a>
+<a href="images/intro-to-working-with-data-in-CUBA/adjustments-cuba-petclinic-overview.gif"><img src="images/intro-to-working-with-data-in-CUBA/login-screen.png"/></a>
 ++++
 
 include::includes/guide_requirements.adoc[]
@@ -62,7 +62,7 @@ The first option is to load a single Entity instance from the database. This opt
 In the case of the Petclinic example, there is some business logic which should create a new Visit for a given Pet by its Identification Number.
 
 ++++
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-visit-for-pet.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-visit-for-pet.png"/></a>
+<a href="images/intro-to-working-with-data-in-CUBA/create-visit-for-pet.png"><img src="images/intro-to-working-with-data-in-CUBA/create-visit-for-pet.png"/></a>
 ++++
 
 The source code that loads the Pet instance by its Identification Number is located in https://github.com/cuba-guides/cuba-petclinic-intro-to-datamanager/blob/master/modules/core/src/com/cubaplatform/petclinic/service/visit/VisitServiceBean.java#L47[VisitServiceBean.java] in the example application. The usage of the DataManager API looks like this:
@@ -103,7 +103,7 @@ The next very common option is to load multiple items defined by a query.
 The Petclinic application has the capability to let the user send out Disease Warning Mailings. The user has to define the location of a known disease as well as the type of Pet that is endangered by this disease. The system will find all endangered Pets and send out a Mailing to the owners.
 
 ++++
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-disease-warning-mailing.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-disease-warning-mailing.png"/></a>
+<a href="images/intro-to-working-with-data-in-CUBA/create-disease-warning-mailing.png"><img src="images/intro-to-working-with-data-in-CUBA/create-disease-warning-mailing.png"/></a>
 ++++
 
 

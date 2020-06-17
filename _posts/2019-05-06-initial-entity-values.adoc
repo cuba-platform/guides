@@ -13,7 +13,7 @@ permalink: initial-entity-values
 :page-icone: images/initial-entity-values/guide_icone.svg
 :page-root: ../../../
 :project_id: cuba-petclinic-initial-entity-values
-:page-url-first-image: https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-initial-entity-values/master/img/login-screen.png
+:page-url-first-image: images/initial-entity-values/login-screen.png
 :java_version: 8
 :cuba_version: 7.0
 
@@ -34,7 +34,7 @@ This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA pet
 === Final Application
 
 ++++
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-initial-entity-values/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-initial-entity-values/master/img/login-screen.png"/></a>
+<a href="images/initial-entity-values/adjustments-cuba-petclinic-overview.gif"><img src="images/initial-entity-values/login-screen.png"/></a>
 ++++
 
 include::includes/guide_requirements.adoc[]
