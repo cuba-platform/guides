@@ -1,0 +1,79 @@
+---
+compatible_cuba_versions: 7.1+
+compatible_java_versions: 8+
+project_id: cuba-petclinic-unit-testing
+permalink: unit-testing
+---
+= Product Customizations with Application Components
+:showtitle:
+:sectlinks:
+:sectanchors:
+:page-navtitle: Product Customizations with Application Components
+:page-excerpt:In this guide you will learn how customer-specific solutions can be created based on a standard product. We will leverage the capabilities of CUBAs application components to modularize the overall application.
+:page-root: ../../../
+:project_id: cuba-petclinic-unit-testing
+:java_version: 8
+:cuba_version: 7.1
+:page-icone: images/unit-testing/guide_icone.svg
+
+In this guide you will learn how customer-specific solutions can be created based on a standard product. We will leverage the capabilities of CUBAs application components to modularize the overall application.
+
+== What we are going to build
+
+This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA Petclinic] example to show how two customer-specific extensions `Kanto-Petclinic` and `Alabastia-Petclinic` can be created and how specific extensions are created:
+
+* convert the Petclinic project into a CUBA application component
+* create two CUBA applications: `Kanto-Petclinic` and `Alabastia-Petclinic` that use the CUBA Petclinic as a basis
+
+=== Kanto-Petclinic
+
+The Kanto Petclinic extends the original Project with the following customer specific behavior:
+
+* add an additional attribute `previousIllnesses` to the Visit Entity
+* allow users to create a Visit for today from the Pet Browse screen
+
+=== Alabastia-Petclinic
+
+The Alabastia Petclinic extends the original Project with the following customer specific behavior:
+
+* give users the ability to assign Treatment Rooms to Visits
+* automatically pre-select the Assigned Nurse based on the current user when creating a new Visit
+* automatically pre-select the Nurses Treatment Room for a new Visit
+
+
+include::includes/guide_requirements.adoc[]
+
+== Overview
+
+Application components in CUBA can be used to create reusable components of functionality that can be leveraged in other CUBA applications. Depending on how much functionality the application component contains, an application component can have the form of a small addon, that enriches your application with a particular aspect.
+
+But application components can also be used to represent a complete application. In this case, the application component contains all the entities, screens and business logic that the standard application consists of. Then the actual application just uses the application component and only puts very slight adjustments on it.
+
+This second scenario is what we will be covering in this guide in particular. In the example we will convert the Petclinic application into an application component. Then we will create two applications, that uses the Petclinic and adjust it to their customer-specific needs.
+
+With this approach we can incorporate requirements from customers, that would like the standard product (Petclinic) to be adjusted in order to use it. Application components give us a compile-time extension mechanism for this problem.
+
+
+=== Different Extension Mechanisms
+
+Before we dive into the concrete example of the Petclinic, let's explore the differences between compile-time and runtime extensions. Depending on the required capabilities, deployment- and distribution mechanisms of the product one or the other might be more suitable.
+
+==== Runtime Extensions: Plugins, Scripting & Configuration
+
+The first extension mechanism of a CUBA application is a runtime extension. The main characteristic of that extension is, that during the build process one application artifact like a `war` binary has been created. This binary is always the same and distributed to all customers. The extension part of the application does not change the original binary e.g. by replacing certain classes.
+
+Instead, the extensions are added at the runtime / deployment time of the application. This can be in various forms, like a plugin architecture. In this case it would e.g. be additional jar files, which contain the plugins for the application. Those jar files are placed into the application server. Oftentimes it is required to restart the application to pick up those plugins.
+
+Such a jar file plugin can contain source code. Normally it is used for implementing certain interfaces that are defined within the main application, in order to fulfil / replace a particular functionality.
+
+The next step, which is less powerful is Scripting. In CUBA there are several mechanisms/ examples built-in for scripting in place. Scripting allows to programmatically define particular pre-defined areas of the functionality in the application. One example of that inside CUBA itself is the Constraint definition within the security groups administration. It is possible to define a groovy script, which will determine if a particular user has access to a particular resource like an entity record.
+
+Oftentimes scripting is combined with configuration. Taking the Constraint definition once again: the groovy script is just one part of the dynamic configuration. It actually belongs to a bigger "Constraint configuration", which includes a link to an Entity, a type of operation etc.
+
+Configuration also allows certain extension capabilities. But those extension points are very limited in terms of the overall application and they also need to be defined within the application itself.
+
+==== Compile-Time Extension: Application Component
+
+
+
+
