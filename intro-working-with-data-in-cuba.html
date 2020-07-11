@@ -617,6 +617,18 @@ a lot of cases where data has to be loaded from the database or stored in the da
 <div class="paragraph">
 <p>The query part is a little more complicated compared to above, but the same pattern applies. The differences in this example are the usage of the <code>list()</code> method as we expect multiple Pets from the database query. Also, a specific view has been used, because not only the Pet data but also the Owner data has to be loaded in order to send out the Mailings.</p>
 </div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+the <code>query</code> methods also support different shortcut variants for defining the JPQL query like <code>query("e.owner.city = ?1", ownerCity)</code>. More information on the shortcuts can be found in the <a href="https://doc.cuba-platform.com/manual-7.0/dataManager.html#dm_query">docs</a>.
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 </div>
