@@ -130,6 +130,8 @@ private List<Pet> findEndangeredPets(PetType petType, String city) {
 
 The query part is a little more complicated compared to above, but the same pattern applies. The differences in this example are the usage of the `list()` method as we expect multiple Pets from the database query. Also, a specific view has been used, because not only the Pet data but also the Owner data has to be loaded in order to send out the Mailings.
 
+TIP: the `query` methods also supports different shortcut variants for defining the JPQL query like `query("e.owner.city = ?1", ownerCity)`. More information on the shortcuts can be found in the https://doc.cuba-platform.com/manual-{cuba_version}/dataManager.html#dm_query[docs].
+
 == Write Data with DataManager
 
 DataManager is also responsible for writing data into the database. There are also different ways to achieve it based on the case at hand.
