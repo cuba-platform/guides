@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Logging in CUBA Applications</title>
-    <meta name="description" content="The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.">
+    <meta name="description" content="Guide on why and how to use logging in a CUBA application in order to get insights">
     <meta name="author" content="Haulmont">
 
     <meta name="twitter:card" content="summary_large_image">
@@ -14,13 +14,13 @@
     <meta name="twitter:creator" content="@CubaPlatform">
     <meta name="twitter:title" content="Logging in CUBA Applications">
     <meta name="twitter:description" content="Guide on why and how to use logging in a CUBA application in order to get insights">
-    <meta name="twitter:image" content="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-application-logging/master/img/cuba-server-log-messages.png">
+    <meta name="twitter:image" content="images/application-logging-in-cuba/cuba-server-log-messages.png">
 
     <meta property="og:type" content="article">
     <meta property="og:title" content="Logging in CUBA Applications">
     <meta property="og:description" content="Guide on why and how to use logging in a CUBA application in order to get insights">
     <meta property="og:url" content="https://www.cuba-platform.com/guides/logging-in-cuba-applications">
-    <meta property="og:image" content="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-application-logging/master/img/cuba-server-log-messages.png">
+    <meta property="og:image" content="images/application-logging-in-cuba/cuba-server-log-messages.png">
 
     <link rel="shortcut icon" href="/guides/images/favicon.png" type="image/png" />
     <link rel="stylesheet" href="/guides/css/foundation.css">
@@ -66,6 +66,24 @@
                 <li class="header_menu_item"><a href="/discuss/" class="header_menu_link">Forum</a></li>
                 <li class="header_menu_item"><a href="/blog/" class="header_menu_link">Blog</a></li>
             </ul>
+            <div class="lang-switch">
+                <div class="multiselect-wrapper select-wrapper" onclick="langSwitch()">
+                    <div tabindex="0" class="multiselect">
+                        <div class="multiselect__select"></div>
+                        <div class="multiselect__tags">
+                            <span class="multiselect__single">EN</span>
+                        </div>
+                        <div tabindex="-1" class="multiselect__content-wrapper" style="max-height: 300px; display: none;">
+                            <ul class="multiselect__content" style="display: inline-block;">
+                                <li class="multiselect__element"><span class="multiselect__option multiselect__option--highlight">EN</span></li>
+                                <li class="multiselect__element"><span class="multiselect__option"><a href="http://cuba-platform.ru/">RU</a></span></li>
+                                <li class="multiselect__element"><span class="multiselect__option"><a href="https://cuba-platform.cn/">CN</a></span> </li>
+                                <li class="multiselect__element"><span class="multiselect__option"><a href="http://cuba-platform.it/">IT</a></span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="header-support">
                 <button class="header-support_toggle">
                 <img src="images/users.svg" class="header-support_toggle_icon">
@@ -155,6 +173,29 @@
     </nav>
 </header>
 
+<script>
+    function langSwitch() {
+        var el = document.querySelector('.multiselect');
+        var el1 = document.querySelector('.multiselect__content-wrapper');
+        if(el.classList.contains("multiselect--active")) {
+            el.classList.remove("multiselect--active");
+            el1.style.display = 'none';
+        } else {
+            el.classList.add("multiselect--active");
+            el1.style.display = 'block';
+        }
+    }
+    document.addEventListener('click', function(event) {
+        var e = document.querySelector('.lang-switch');
+        var el = document.querySelector('.multiselect');
+        var el1 = document.querySelector('.multiselect__content-wrapper');
+
+        if (!e.contains(event.target)) {
+            el1.style.display='none';
+            el.classList.remove("multiselect--active");
+        }
+    });
+</script>
 <style>
     .upper-header .header-options {
         display: none;
@@ -163,6 +204,222 @@
     .upper-header .upper-header-wrapper .header-menu div .nav > li:last-child > a {
         padding-right: 0;
     }
+
+    .header-support {
+        margin-left: 20px;
+    }
+
+    /* lang-switch*/
+     .lang-switch {
+         flex: 0 0 auto;
+         margin-left: auto;
+     }
+
+    @media screen and (max-width: 1000px) {
+        .lang-switch {
+           display: none;
+        }
+    }
+
+    .lang-switch .multiselect__select {
+        display: none;
+    }
+
+    .lang-switch .multiselect__tags {
+        border: none;
+        cursor: pointer;
+    }
+
+    .lang-switch .multiselect__content-wrapper {
+        top: 49px;
+        left: -7px;
+        width: 45px;
+        overflow: hidden;
+        border-radius: 0;
+        background: #FFF;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.25);
+    }
+
+    .lang-switch .multiselect__content-wrapper ul li:first-child {
+        display: none;
+    }
+
+    .lang-switch .multiselect-wrapper .multiselect {
+        min-height: 22px;
+    }
+
+    .lang-switch .multiselect__option:hover {
+        background: #E8F2FB;
+    }
+
+    .lang-switch .multiselect__option a:hover {
+        color: #0784E3!important;
+        text-decoration: none;
+    }
+
+    .lang-switch .multiselect__option {
+        width: 45px;
+        height: 34px;
+        min-height: 34px;
+        padding: 0;
+    }
+
+    .lang-switch .multiselect__option a {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 43px;
+        height: 34px;
+        font-size: 13px;
+        line-height: 22px;
+        color: #9B9B9B;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .lang-switch .multiselect__tags {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 27px;
+        height: 22px;
+        min-height: 22px;
+        padding: 0;
+    }
+
+    .lang-switch .multiselect__tags:hover {
+        color: #0784E3;
+    }
+
+    .lang-switch .multiselect__single {
+        display: block;
+        font-size: 13px;
+        line-height: 22px;
+        color: #9B9B9B;
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        border-radius: 0;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .lang-switch .multiselect__single:hover {
+        border: none;
+        color: #0784E3;
+    }
+
+    .lang-switch .multiselect__element {
+        overflow: hidden;
+        height: 34px;
+        min-height: 34px;
+    }
+
+    .lang-switch .multiselect--active .multiselect__single {
+        color: #0784E3;
+    }
+
+    .multiselect {
+        box-sizing: content-box;
+        display: block;
+        position: relative;
+        width: 100%;
+        min-height: 40px;
+        text-align: left;
+        color: #35495e;
+    }
+    .multiselect, .multiselect__single {
+        font-family: inherit;
+        font-size: 16px;
+        touch-action: manipulation;
+    }
+    .multiselect__select {
+        position: absolute;
+        width: 40px;
+        height: 38px;
+        right: 1px;
+        top: 1px;
+        padding: 4px 8px;
+        text-align: center;
+        transition: transform .2s ease;
+    }
+    .multiselect__select {
+        line-height: 16px;
+        box-sizing: border-box;
+        display: block;
+        margin: 0;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    .multiselect__tags {
+        min-height: 40px;
+        display: block;
+        padding: 8px 40px 0 8px;
+        border-radius: 5px;
+        border: 1px solid #e8e8e8;
+        background: #fff;
+        font-size: 14px;
+    }
+
+    .multiselect * {
+        box-sizing: border-box;
+    }
+
+    .multiselect__single {
+        position: relative;
+        display: inline-block;
+        min-height: 20px;
+        line-height: 20px;
+        border: none;
+        border-radius: 5px;
+        background: #fff;
+        padding: 0 0 0 5px;
+        width: 100%;
+        transition: border .1s ease;
+        box-sizing: border-box;
+        margin-bottom: 8px;
+        vertical-align: top;
+    }
+
+    .multiselect__content-wrapper {
+        position: absolute;
+        display: block;
+        background: #fff;
+        width: 100%;
+        max-height: 240px;
+        overflow: auto;
+        border: 1px solid #e8e8e8;
+        border-top: none;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+        z-index: 50;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .multiselect__content {
+        list-style: none;
+        display: inline-block;
+        padding: 0;
+        margin: 0;
+        min-width: 100%;
+        vertical-align: top;
+    }
+
+    .multiselect__option {
+        display: block;
+        padding: 12px;
+        min-height: 40px;
+        line-height: 16px;
+        text-decoration: none;
+        text-transform: none;
+        vertical-align: middle;
+        position: relative;
+        cursor: pointer;
+        white-space: nowrap;
+    }
+    /* end lang-switch*/
 </style>
 
     <!-- Main Page Content and Sidebar -->
@@ -237,7 +494,7 @@
 <div class="paragraph">
 <p>The main entities are <strong>Pet</strong> and <strong>Visit</strong>. A Pet is visiting the petclinic and during this Visit a Vet is taking care of it. A Pet belongs to an Owner, which can hold multiple pets. The visit describes the act of a pet visiting the clinic with the help of its owner.</p>
 </div>
-<a href="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/login-screen.png"/></a>
+<a href="images/intro-to-working-with-data-in-CUBA/cuba-petclinic-overview.gif"><img src="images/intro-to-working-with-data-in-CUBA/login-screen.png"/></a>
 </div>
 </div>
 <div class="sect1">
@@ -376,7 +633,7 @@
 <div class="paragraph">
 <p>CUBA offers a user interface screen, which displays the log information of the running application. It can be found via <code>Administration &gt; Server Log &gt; View</code>:</p>
 </div>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-application-logging/master/img/cuba-server-log-messages.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-application-logging/master/img/cuba-server-log-messages.png"/></a>
+<a href="images/application-logging-in-cuba/cuba-server-log-messages.png"><img src="images/application-logging-in-cuba/cuba-server-log-messages.png"/></a>
 <div class="paragraph">
 <p>The UI allows the user to display different log files or download them for later use. It gives also non-administrator roles access to the logs, while it is still possible to restrict access only to allowed roles.</p>
 </div>
@@ -518,7 +775,7 @@
 <div class="paragraph">
 <p>For this use-case, a CUBA application allows reconfiguring the levels of existing loggers and also add loggers at runtime through a user interface.</p>
 </div>
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-application-logging/master/img/cuba-server-log-settings.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-application-logging/master/img/cuba-server-log-settings.png"/></a>
+<a href="images/application-logging-in-cuba/cuba-server-log-settings.png"><img src="images/application-logging-in-cuba/cuba-server-log-settings.png"/></a>
 </div>
 <div class="sect2">
 <h3 id="set_logging_context_with_mdc"><a class="anchor" href="#set_logging_context_with_mdc"></a><a class="link" href="#set_logging_context_with_mdc">Set Logging Context with MDC</a></h3>
