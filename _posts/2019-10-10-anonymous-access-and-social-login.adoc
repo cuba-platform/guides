@@ -34,8 +34,8 @@ In particular, the following topics will be covered:
 === Final Application
 
 ++++
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-social-login/master/img/cuba-petclinic-overview.gif">
-  <img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-social-login/master/img/login-dialog.png"/>
+<a href="images/anonymous-access-and-social-login/cuba-petclinic-overview.gif">
+  <img src="images/anonymous-access-and-social-login/login-dialog.png"/>
 </a>
 ++++
 

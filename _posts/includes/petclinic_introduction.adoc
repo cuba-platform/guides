@@ -10,5 +10,5 @@ The main entities are *Pet* and *Visit*. A Pet is visiting the petclinic and dur
 
 
 ++++
-<a href="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/login-screen.png"/></a>
+<a href="images/intro-to-working-with-data-in-CUBA/cuba-petclinic-overview.gif"><img src="images/intro-to-working-with-data-in-CUBA/login-screen.png"/></a>
 ++++

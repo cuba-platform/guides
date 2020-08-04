@@ -15,7 +15,7 @@ permalink: intro-working-with-data-in-cuba
 :project_id: cuba-petclinic-intro-to-datamanager
 :java_version: 8
 :cuba_version: 7.0
-:page-url-first-image: https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-visit-for-pet.png
+:page-url-first-image: images/intro-to-working-with-data-in-CUBA/create-visit-for-pet.png
 
 This guide walks you through the CUBA APIs for programmatically interacting with the database through the DataManager API.
 
@@ -30,7 +30,7 @@ This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA pet
 === Final Application
 
 ++++
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/login-screen.png"/></a>
+<a href="images/intro-to-working-with-data-in-CUBA/adjustments-cuba-petclinic-overview.gif"><img src="images/intro-to-working-with-data-in-CUBA/login-screen.png"/></a>
 ++++
 
 include::includes/guide_requirements.adoc[]
@@ -62,7 +62,7 @@ The first option is to load a single Entity instance from the database. This opt
 In the case of the Petclinic example, there is some business logic which should create a new Visit for a given Pet by its Identification Number.
 
 ++++
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-visit-for-pet.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-visit-for-pet.png"/></a>
+<a href="images/intro-to-working-with-data-in-CUBA/create-visit-for-pet.png"><img src="images/intro-to-working-with-data-in-CUBA/create-visit-for-pet.png"/></a>
 ++++
 
 The source code that loads the Pet instance by its Identification Number is located in https://github.com/cuba-guides/cuba-petclinic-intro-to-datamanager/blob/master/modules/core/src/com/cubaplatform/petclinic/service/visit/VisitServiceBean.java#L47[VisitServiceBean.java] in the example application. The usage of the DataManager API looks like this:
@@ -78,23 +78,27 @@ private DataManager dataManager;
  * loads a Pet by its Identification Number
  *
  * @param identificationNumber the Identification Number to load
- * @return the Pet for the given Identification Number
+ * @return the Pet for the given Identification Number if found
  */
-private Pet loadPetByIdentificationNumber(String identificationNumber) {
+private Optional<Pet> loadPetByIdentificationNumber(String identificationNumber) {
     return dataManager.load(Pet.class)
             .query("select e from petclinic$Pet e where e.identificationNumber = :identificationNumber")
             .parameter("identificationNumber", identificationNumber)
-            .one();
+            .optional();
 }
 ----
 
-DataManager has a https://martinfowler.com/bliki/FluentInterface.html[fluent API] which allows to chain operations on the load operation in order to define parameters to the execution. In this case, the interaction starts with `dataManager.load(Pet.class)`. Then the JPQL query is defined and the associated parameters are configured with the parameter values. The `one()` method executes the load operation and fetches exactly one item that matches the criteria. If there are no results the corresponding exception is thrown.
+DataManager has a https://martinfowler.com/bliki/FluentInterface.html[fluent API] which allows chaining operations on the load operation in order to define parameters to the execution. In this case, the interaction starts with `dataManager.load(Pet.class)`. Then the JPQL query is defined, and the associated parameters are configured with the parameter values.
 
-It is up to the application developer to decide if the query can return one or possibly multiple results. In this case, it is only possible to create an Identification Number once, we can be sure that the query will return at the most one item.
+The `optional()` method executes the load operation and fetches exactly one item that matches the criteria. If there are no results the corresponding result is `Optional.empty()`.
+
+Alternatively it is possible to use `one()` instead of `optional()`. In this case the `Pet` instance is returned directly. But in case no result is found the method throws an `IllegalStateException`.
+
+It is up to the application developer to decide if the query can return one or possibly multiple results. In this case, it is only possible to create an Identification Number once, we can be sure that the query will return at most one item.
 
 In this case, the attribute `identificationNumber` is not the primary key of the entity. But it represents a globally unique identification number given by proper Pet authorities - therefore it is modeled uniquely within the application.
 
-If the task is to load a Pet by its primary key (`id`) the query is easier to create as the query part is not needed: `dataManager.load(Pet.class).id(id).one();`
+If the task is to load a Pet by its primary key (`id`) the query is easier to create as the query part is not needed: `dataManager.load(Pet.class).id(id).optional();`
 
 === Multiple Items by Query
 
@@ -103,11 +107,10 @@ The next very common option is to load multiple items defined by a query.
 The Petclinic application has the capability to let the user send out Disease Warning Mailings. The user has to define the location of a known disease as well as the type of Pet that is endangered by this disease. The system will find all endangered Pets and send out a Mailing to the owners.
 
 ++++
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-disease-warning-mailing.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-disease-warning-mailing.png"/></a>
+<a href="images/intro-to-working-with-data-in-CUBA/create-disease-warning-mailing.png"><img src="images/intro-to-working-with-data-in-CUBA/create-disease-warning-mailing.png"/></a>
 ++++
 
-
-The part that finds the endangered Pets looks like this with the use of the DataManager API:
+The part which finds the endangered Pets looks like this with the use of the DataManager API:
 
 .DiseaseWarningMailingServiceBean.java
 [source,java]
@@ -126,6 +129,8 @@ private List<Pet> findEndangeredPets(PetType petType, String city) {
 ----
 
 The query part is a little more complicated compared to above, but the same pattern applies. The differences in this example are the usage of the `list()` method as we expect multiple Pets from the database query. Also, a specific view has been used, because not only the Pet data but also the Owner data has to be loaded in order to send out the Mailings.
+
+TIP: the `query` methods also supports different shortcut variants for defining the JPQL query like `query("e.owner.city = ?1", ownerCity)`. More information on the shortcuts can be found in the https://doc.cuba-platform.com/manual-{cuba_version}/dataManager.html#dm_query[docs].
 
 == Write Data with DataManager
 
