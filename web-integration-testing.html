@@ -443,7 +443,7 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this guide you will learn how automated testing in a CUBA application works. In particular this guide deals with the integration testing of the UI within the web layer.</p>
+<p>In this guide you will learn how automated testing in a CUBA application works. In particular, this guide deals with the integration testing of the UI within the web layer.</p>
 </div>
 </div>
 </div>
@@ -494,7 +494,7 @@
 <p>In this third guide about testing you will learn how to test logic in the user interface. This is similar to the variant of middleware integration testing (see <a href="https://www.cuba-platform.com/guides/integration-testing-middleware">CUBA guide: middleware integration testing</a>), where a close-to-production test environment is created for the test to run.</p>
 </div>
 <div class="paragraph">
-<p>The difference in this case is that the environment, which is provided only starts the part of a CUBA application that is inside the <a href="https://doc.cuba-platform.com/manual-latest/app_tiers.html">Client tier</a> of the architecture diagram.</p>
+<p>The difference in this case is that the provided environment starts only a part of a CUBA application that is inside the <a href="https://doc.cuba-platform.com/manual-latest/app_tiers.html">Client tier</a> of the architecture diagram.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -502,10 +502,10 @@
 </div>
 </div>
 <div class="paragraph">
-<p>In particular the <em>Web client block</em> is the part that is tested in a web integration test.</p>
+<p>In particular, the <em>Web client block</em> is the part that is tested in a web integration test.</p>
 </div>
 <div class="paragraph">
-<p>The <em>Middleware block</em> on the other side is <em>not</em> part of the test environment. Instead Stub implementations are provided for all functionality that is part of that block. This includes the CUBA standard APIs like DataManager as well as custom Services that contain business logic.</p>
+<p>The <em>Middleware block</em>, on the other side, is <em>not</em> a part of the test environment. Instead Stub implementations are provided for all functionality in the block. This includes the CUBA standard APIs like DataManager and custom Services that contain business logic.</p>
 </div>
 </div>
 </div>
@@ -513,15 +513,15 @@
 <h2 id="web_integration_test_environment"><a class="anchor" href="#web_integration_test_environment"></a><a class="link" href="#web_integration_test_environment">Web Integration Test Environment</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this environment the production application is started partially, just like in the middleware integration test. All the CUBA platform based UI APIs work the way just as in the production code of the application. In the <em>Web client block</em> there is a big part of declarative definitions of the UI via XML screen descriptors. This definitions are also covered and executed within the test environment.</p>
+<p>In this environment the production application is started partially, just like in the middleware integration test. All the CUBA Platform based UI APIs work the same way as in the production code of the application. In the <em>Web client block</em> we have a big part of declarative definitions of the UI implemented via XML screen descriptors. These definitions are also covered and executed within the test environment.</p>
 </div>
 <div class="sect2">
 <h3 id="coverage_example"><a class="anchor" href="#coverage_example"></a><a class="link" href="#coverage_example">Coverage Example</a></h3>
 <div class="paragraph">
-<p>To understand the question of coverage let&#8217;s take a look at one example within the Petclinic application and identify which parts are included, which ones are mocked and which ones are not covered by the test environment at all.</p>
+<p>To understand the question of coverage let&#8217;s take a look at one example within the Petclinic application and identify which parts are included, which ones are mocked, and which ones are not covered by the test environment at all.</p>
 </div>
 <div class="paragraph">
-<p>For this example let&#8217;s take a look at the List of the Owners from the Petclinic. It consists of the XML descriptor part as well as the UI controller. In the following listing generally everything is covered and executed just as in the production environment. Therefore it is not mentioning everything that is covered, but only the most important parts as well as the parts where the coverage ends.</p>
+<p>For this example let&#8217;s take a look at the List of Owners from the Petclinic. It consists of the XML descriptor part and the UI controller. In the following listing generally everything is covered and executed just as in the production environment. Therefore, it is not mentioning everything that is covered, but only the most important parts as well as the parts where the coverage ends.</p>
 </div>
 <div class="listingblock">
 <div class="title">pet-browse.xml</div>
@@ -592,12 +592,10 @@ The test environment behaves almost like the production environment. The XML Scr
 </table>
 </div>
 <div class="paragraph">
-<p>The main point of difference for the UI descriptor is the data loader section. Instead of performing the query against the database, the
-environment of the web integration test requires to configure the entity instances that should be returned.</p>
+<p>The main difference for the UI descriptor is the data loader section. Instead of performing the query against the database, the environment of the web integration test requires configuring the entity instances that should be returned.</p>
 </div>
 <div class="paragraph">
-<p>Next to the UI Screen descriptor, the programmatic sibling is the UI controller. Let&#8217;s take a look at the coverage for
-the corresponding <code>PetBrowse</code> UI controller:</p>
+<p>Next to the UI Screen descriptor, the programmatic sibling is the UI controller. Let&#8217;s take a look at the coverage for the corresponding <code>PetBrowse</code> UI controller:</p>
 </div>
 <div class="listingblock">
 <div class="title">PetBrowse.java</div>
@@ -645,7 +643,7 @@ the corresponding <code>PetBrowse</code> UI controller:</p>
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>CUBA UI APIs are covered and working as in production environment</td>
+<td>CUBA UI APIs are covered and work as in production environment</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -653,27 +651,26 @@ the corresponding <code>PetBrowse</code> UI controller:</p>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Action Subscriptions that interact with the XML Screen Descriptor are covered and performed in case a button is pressed in the test</td>
+<td>Action Subscriptions that interact with the XML Screen Descriptor are covered and performed in case a button is clicked in the test</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>business logic in the <code>global</code> module (e.g. <code>pet.calculateDiscount()</code>) is part of the test environment as well</td>
+<td>Business logic in the <code>global</code> module (e.g. <code>pet.calculateDiscount()</code>) is part of the test environment as well</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>the Screens API is executed correctly and the <code>CreateDiseaseWarningMailing</code> screen is opened</td>
+<td>The Screens API is executed correctly and the <code>CreateDiseaseWarningMailing</code> screen is opened</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>In the UI Controller it once again behaves very much like in the production environment. All injections (UI components and CUBA APIs)
-work as expected. All business logic in the <code>web</code> and <code>global</code> modules are performed just as in the production environment.</p>
+<p>In the UI Controller it once again behaves like in the production environment. All injections (UI components and CUBA APIs) work as expected. All business logic in the <code>web</code> and <code>global</code> modules is performed just as in the production environment.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="coverage_of_the_web_integration_test"><a class="anchor" href="#coverage_of_the_web_integration_test"></a><a class="link" href="#coverage_of_the_web_integration_test">Coverage of the Web integration test</a></h3>
 <div class="paragraph">
-<p>Based on the example from above, you can see coverage of the web integration test environment in this overview diagram:</p>
+<p>Based on the example above, you can see the coverage of the web integration test environment in this overview diagram:</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -681,14 +678,13 @@ work as expected. All business logic in the <code>web</code> and <code>global</c
 </div>
 </div>
 <div class="paragraph">
-<p>The solid arrows represent the connections that are part of the coverage, whereas the dashed arrows are the ones are not covered and have to be mocked / emulated by the test case.</p>
+<p>The solid arrows represent the connections that are part of the coverage, whereas the dashed arrows perform the not covered ones and have to be mocked / emulated by the test case.</p>
 </div>
 <div class="paragraph">
-<p>As explained before in the example, all Screen Controller code as well as the XML Screen descriptor definitions are covered.
-Additionally all business logic that is located in the <code>web</code> and the <code>global</code> module is covered and executed.</p>
+<p>As explained in the example, all Screen Controller code as well as the XML Screen descriptor definitions are covered. Additionally, all business logic located in the <code>web</code> and the <code>global</code> module is covered and executed.</p>
 </div>
 <div class="paragraph">
-<p>On the upper border of the diagram the code that is executed in the browser is not part of the environment. This is all JavaScript code that is part of Vaadin is not covered.</p>
+<p>On the upper border of the diagram the code executed in the browser is not part of the environment. This JavaScript code is part of Vaadin and is not covered.</p>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -704,29 +700,28 @@ The web integration test environment does <em>not</em> interact with the applica
 </div>
 <div class="paragraph">
 <p>The borders at the bottom of the layered diagram for the web integration test environment are the Middleware Services.
-The service interfaces itself acts as the point where the test case has to provide a stub implementation that returns the expected values.</p>
+The service interfaces themselves act as the point where the test case has to provide a stub implementation that returns the expected values.</p>
 </div>
 <div class="paragraph">
-<p>The same is true for the declarative data loading in the XML Screen descriptor. Internally the declarative data interaction as well as the <code>DataManager</code> API uses the <code>DataService</code> Service to provide the data. This means inside the test case, this <code>DataService</code> interface has to be replaced with a Stub implementation that provides the data that should be used by the UI components. Detailed information about the <code>DataService</code> API can be found in the <a href="https://files.cuba-platform.com/javadoc/cuba/7.2/com/haulmont/cuba/core/app/DataService.html">CUBA API Reference: DataService</a></p>
+<p>The same is true for the declarative data loading in the XML Screen descriptor. Internally the declarative data interaction as well as the <code>DataManager</code> API uses the <code>DataService</code> Service to provide the data. This means that inside the test case, this <code>DataService</code> interface has to be replaced with a Stub implementation that provides the data to be used by the UI components. The detailed information about the <code>DataService</code> API can be found in the <a href="https://files.cuba-platform.com/javadoc/cuba/7.2/com/haulmont/cuba/core/app/DataService.html">CUBA API Reference: DataService</a></p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="benefits_limitations"><a class="anchor" href="#benefits_limitations"></a><a class="link" href="#benefits_limitations">Benefits &amp; Limitations</a></h3>
 <div class="paragraph">
-<p>Using web integration tests allows developers to automatically verify the correctness of the majority of the UI screen definition and its business logic. For the UI parts relying primarily on unit test would require to use a lot of mocking of the CUBA UI APIs as well as letting go the verification of the declarative part.</p>
+<p>Using web integration tests allows developers to automatically verify if the majority of the UI screen definitions and their business logic are correct. For the UI parts relying primarily on unit test would require to use a lot of mocking of the CUBA UI APIs as well as letting go the verification of the declarative part.</p>
 </div>
 <div class="paragraph">
-<p>We learned in the beginning that the web integration tests provide a close-to-production environment for the tests. This means that for a lot of UI logic verification it is not necessary to run an end-to-end black box test case through the browser via Selenium e.g.</p>
+<p>In the beginning we&#8217;ve learnt that web integration tests provide a close-to-production environment for the tests. This means that for a lot of UI logic verification it is not necessary to run an end-to-end black box test case through the browser via Selenium e.g.</p>
 </div>
 <div class="paragraph">
-<p>Automated Testing through the web browser is inherently more complex to do. The asynchronicity of the browser interaction, the much more complicated test data setup, the speed of the execution are all examples of that.</p>
+<p>Automated Testing through the web browser is inherently more complex to do. The asynchronicity of the browser interaction, the much more complicated test data setup, the speed of the execution are the examples of that.</p>
 </div>
 <div class="paragraph">
-<p>Web integration tests do not have those problems. Instead running the tests is orders of magnitude faster compared to run a selenium based test. A regular web integration test takes a sub second to run, whereas a Selenium based test easily can take half a minute to perform the same operation. Also a lot of false positive test runs that oftentimes occur in a selenium based test suite are not a problem of a web integration test. Those result due to the asynchronous nature of the browser
-which is not used in this case.</p>
+<p>Web integration tests do not have those problems. Instead, running the tests is orders of magnitude faster compared to running a selenium based test. A regular web integration test takes a sub second to run, whereas a Selenium based test easily can take half a minute to perform the same operation. Also, a lot of false positive tests runs that oftentimes occur in a selenium based test suite are not a problem of a web integration test. It happens because of the asynchronous nature of the browser which is not used in this case.</p>
 </div>
 <div class="paragraph">
-<p>On the other hand, there are limitations on what a web integration test can do and verify. By the fact that we have to stub out data operations it is not possible to find a lot of scenarios that occur during that process. Here are some examples, which are not able to catch during web integration tests:</p>
+<p>On the other hand, there are limitations on what a web integration test can do and verify. By the fact that we have to stub out data operations, it is impossible to find many scenarios that occur during that process. Here are some examples which can&#8217;t be caught during web integration tests:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -745,10 +740,10 @@ which is not used in this case.</p>
 <p>For all those examples (and more) it is not possible to verify the behavior with an integration test.</p>
 </div>
 <div class="paragraph">
-<p>The same is true for the correct interaction with custom Services that are used in the UI. As those Services are stubbed out there is a potential to miss some scenarios in the mocking, which results in that the production application differs from the web integration test behavior.</p>
+<p>The same is true for the correct interaction with custom Services that are used in the UI. As those Services are stubbed out, so there is a potential to miss some scenarios in the mocking, which results in that the production application differs from the web integration test behavior.</p>
 </div>
 <div class="paragraph">
-<p>These are limitations with a web integration test. In order to overcome those, it requires a black-box end-to-end test case. CUBA has a dedicated library called <a href="https://www.cuba-platform.com/marketplace/masquerade/">Masquerade</a> that makes creating those test cases easier. It is based on Selenium and therefore performs real browser based tests that interacts with the application from the UI to the database.</p>
+<p>These are limitations with a web integration test. To overcome them, you need a black-box end-to-end test case. CUBA has a dedicated library called <a href="https://www.cuba-platform.com/marketplace/masquerade/">Masquerade</a> that makes creating those test cases easier. It is based on Selenium and therefore performs real browser based tests that interact with the application from the UI to the database.</p>
 </div>
 </div>
 </div>
@@ -757,13 +752,12 @@ which is not used in this case.</p>
 <h2 id="petclinic_web_integration_tests"><a class="anchor" href="#petclinic_web_integration_tests"></a><a class="link" href="#petclinic_web_integration_tests">Petclinic Web Integration Tests</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>After elaborating the theoretical ways on what a web integration test is and where its functionality boundaries are, lets shift gears here a little bit and take a look at how a web integration test looks. We will do that based on the Petclinic example.</p>
+<p>After looking through the theoretical ways on what a web integration test is and where its functionality boundaries are, let&#8217;s shift gears here a little bit and take a look at how a web integration test looks. We will do that based on the Petclinic example.</p>
 </div>
 <div class="sect2">
 <h3 id="first_web_integration_test"><a class="anchor" href="#first_web_integration_test"></a><a class="link" href="#first_web_integration_test">First Web Integration Test</a></h3>
 <div class="paragraph">
-<p>In order to run a web integration test an instance of <a href="https://files.cuba-platform.com/javadoc/cuba/7.2/com/haulmont/cuba/web/testsupport/TestUiEnvironment.html">TestUiEnvironment</a>
-has to be instantiated and registered as a JUnit extension. The <code>TestUiEnvironment</code> is similar to the <a href="https://www.cuba-platform.com/guides/integration-testing-middleware#test_container">Test Container</a> in the middleware integration tests. It acts as the running environment to interact with the application.</p>
+<p>In order to run a web integration test you have to install and register as a JUnit extension an instance of <a href="https://files.cuba-platform.com/javadoc/cuba/7.2/com/haulmont/cuba/web/testsupport/TestUiEnvironment.html">TestUiEnvironment</a>. The <code>TestUiEnvironment</code> is similar to the <a href="https://www.cuba-platform.com/guides/integration-testing-middleware#test_container">Test Container</a> in the middleware integration tests. It acts as the running environment to interact with the application.</p>
 </div>
 <div class="listingblock">
 <div class="title">PetEditTest.java</div>
@@ -806,15 +800,15 @@ has to be instantiated and registered as a JUnit extension. The <code>TestUiEnvi
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>The <code>EntityFactory</code> allows to create entity objects specifically for tests</td>
+<td>The <code>EntityFactory</code> allows creating entity objects specifically for tests</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>With the Entity Factory, it is possible to create Entities with the specific needs of automated tests (like the definition of the desired state). Besides that the majority of the CUBA APIs can be retrieved either directly from the <code>environment</code> or from the <code>environment.getContainer()</code> web test container.</p>
+<p>With the Entity Factory, it is possible to create Entities for the specific needs of automated tests (like the definition of the desired state). Besides, the majority of the CUBA APIs can be retrieved either directly from the <code>environment</code> or from the <code>environment.getContainer()</code> web test container.</p>
 </div>
 <div class="paragraph">
-<p>With that setup part in place, let&#8217;s take a look at the first web integration test case. The test verifies that the <code>PetEdit</code> editor can be opened correctly and the <code>identificationNumber</code> property is bound to corresponding UI component.</p>
+<p>With that setup part in place, let&#8217;s have a look at the first web integration test case. The test verifies that the <code>PetEdit</code> editor can be opened correctly and the <code>identificationNumber</code> property is bound to corresponding UI component.</p>
 </div>
 <div class="listingblock">
 <div class="title">PetEditorTest.java</div>
@@ -876,7 +870,7 @@ has to be instantiated and registered as a JUnit extension. The <code>TestUiEnvi
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>CUBAs Component APIs can be used to perform assertions</td>
+<td>CUBA&#8217;s Component APIs can be used to perform assertions</td>
 </tr>
 </table>
 </div>
@@ -885,7 +879,7 @@ has to be instantiated and registered as a JUnit extension. The <code>TestUiEnvi
 In this example, we verify that the data binding in the form component is behaving correctly.</p>
 </div>
 <div class="paragraph">
-<p>We neither check any controller logic nor do we check <em>explicitly</em> if CUBAs internal data binding is working as expected. Instead we are verifying that the Screen descriptor contains a field named <code>identificationNumberField</code>. This field should be wired to the <code>petDc</code> data container and also to the <code>identificationNumber</code> entity attribute.</p>
+<p>We neither check any controller logic nor check <em>explicitly</em> if CUBA&#8217;s internal data binding works as expected. Instead, we are verifying that the Screen descriptor contains a field named <code>identificationNumberField</code>. This field should be wired to the <code>petDc</code> data container and also to the <code>identificationNumber</code> entity attribute.</p>
 </div>
 <div class="paragraph">
 <p>In particular, it is this part of the XML screen descriptor that is verified for correct usage:</p>
@@ -922,7 +916,7 @@ In this example, we verify that the data binding in the form component is behavi
 <div class="ulist">
 <ul>
 <li>
-<p>the <code>PetEdit</code> java controller has the correct annotation(s) to act as the Editor for the <code>Pet</code> entity</p>
+<p>the <code>PetEdit</code> java controller has the correct annotation(s) to act as an Editor for the <code>Pet</code> entity</p>
 </li>
 <li>
 <p>the XML definition of the Screen Descriptor <code>pet-edit.xml</code> is well-formed</p>
@@ -936,14 +930,13 @@ In this example, we verify that the data binding in the form component is behavi
 </ul>
 </div>
 <div class="paragraph">
-<p>As the web integration test environment is a kind of grey-box test, it is possible to use the same APIs that are used in the production code. This simplifies test case implementation a lot, because all the knowledge of the CUBA APIs can directly be used in the integration test.</p>
+<p>As the web integration test environment is a kind of a grey-box test, it is possible to use the same APIs that are used in the production code. This simplifies test case implementation a lot, because all the knowledge of the CUBA APIs can directly be used in the integration test.</p>
 </div>
 <div class="paragraph">
 <p>Interacting with UI components is also the same as in production code. The only difference is the retrieval of the component instances, as no dependency injection mechanism is available.</p>
 </div>
 <div class="paragraph">
-<p>In this example, the data binding is manually handled by passing in the instance through <code>petEdit.setEntityToEdit(pet)</code>. In the next example, we will take a look at the situation where the screen tries to automatically load data from the
-<code>DataService</code>.</p>
+<p>In this example, the data binding is manually handled by passing in the instance through <code>petEdit.setEntityToEdit(pet)</code>. In the next example, we will take a look at the situation where the screen tries to automatically load data from the <code>DataService</code>.</p>
 </div>
 </div>
 <div class="sect2">
@@ -960,10 +953,10 @@ In this example, we verify that the data binding in the form component is behavi
 </div>
 </div>
 <div class="paragraph">
-<p>Besides that the controller embodies no further UI/business logic. The <code>OwnerBrowseTest</code> web integration test consists of two test cases:</p>
+<p>The controller embodies no further UI/business logic. The <code>OwnerBrowseTest</code> web integration test consists of two test cases:</p>
 </div>
 <div class="paragraph">
-<p>The first test case verifies that the data that is loaded will be displayed correctly in the Table. The second test case goes a step further and checks the interaction between two screens: <code>OwnerBrowse</code> and <code>OwnerEdit</code>. Once an Owner is selected in the Table and the edit action is performed, the Owner Editor should be visible and the data of the selected Owner should be displayed.</p>
+<p>The first test case verifies that the loaded data will be displayed correctly in the Table. The second test case goes a step further and checks the interaction between two screens: <code>OwnerBrowse</code> and <code>OwnerEdit</code>. Once an Owner is selected in the Table and the edit action is performed, the Owner Editor should be visible and the data of the selected Owner should be displayed.</p>
 </div>
 <div class="sect3">
 <h4 id="test_declarative_data_loading"><a class="anchor" href="#test_declarative_data_loading"></a><a class="link" href="#test_declarative_data_loading">Test: Declarative Data Loading</a></h4>
@@ -971,7 +964,7 @@ In this example, we verify that the data binding in the form component is behavi
 <p>Let&#8217;s look at the first test case: <code>when_ownerListIsDisplayed_then_ownersAreShownInTheTable</code>.</p>
 </div>
 <div class="paragraph">
-<p>In order to provide the data to the data container, the result of the Data Service has to be mocked. For the web integration test environment a special DataService implementation is available: <code>DataServiceProxy</code>. This class mimics parts of the behavior of the regular <code>DataService</code> implementation. See the information from the <a href="https://doc.cuba-platform.com/manual-latest/integration_tests_client.html">CUBA Documentation</a>:</p>
+<p>To provide data to the data container, the result of the Data Service has to be mocked. For the web integration test environment a special DataService implementation is available: <code>DataServiceProxy</code>. This class mimics parts of the behavior of the regular <code>DataService</code> implementation. See the information from the <a href="https://doc.cuba-platform.com/manual-latest/integration_tests_client.html">CUBA Documentation</a>:</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -986,7 +979,7 @@ In this example, we verify that the data binding in the form component is behavi
 </table>
 </div>
 <div class="paragraph">
-<p>In this case we would like the <code>DataServiceProxy</code> to return a pre-defined set of data when <code>loadList</code> is called. Also we would like to utilize the other parts of the <code>DataServiceProxy</code> implementation. This means, we have to only partially provide a different implementation of the class. Mockito allows to achieve this partial mocking with a <code>Spy</code>. A spy is similar to a mock object, but the difference is that it calls the real methods except for the ones that are mocked out.</p>
+<p>In this case we would like the <code>DataServiceProxy</code> to return a pre-defined set of data when <code>loadList</code> is called. Also we would like to utilize the other parts of the <code>DataServiceProxy</code> implementation. This means, we have to only partially provide a different implementation of the class. Mockito allows us to achieve this partial mocking with a <code>Spy</code>. A spy is similar to a mock object, but the difference is that it calls the real methods except for the ones that are mocked out.</p>
 </div>
 <div class="paragraph">
 <p>Let&#8217;s look at the complete test case first and then go though the details of the implementation:</p>
@@ -1044,10 +1037,10 @@ In this example, we verify that the data binding in the form component is behavi
 <p>After creation of the Spy, we have to register the service instance as the <code>DataService</code> API implementation for the test in the test case. This happens through the static <code>mock</code> method of the TestServiceProxy.</p>
 </div>
 <div class="paragraph">
-<p>The remaining part left of the manual data configuration is the definition of the mock call and the expected result. For that we use the Mockito API: <code>when(&#8230;&#8203;).thenReturn(&#8230;&#8203;)</code>. In this case, we need to be a little more precise, because we don&#8217;t want to mock all calls to <code>DataService.loadList(&#8230;&#8203;)</code> but instead only the one where the load of the <code>Owner</code> entity happens.</p>
+<p>The remaining part of the manual data configuration is the definition of the mock call and the expected result. For that we use the Mockito API: <code>when(&#8230;&#8203;).thenReturn(&#8230;&#8203;)</code>. In this case, we need to be a little more precise, because we don&#8217;t want to mock all calls to <code>DataService.loadList(&#8230;&#8203;)</code> but instead only the one where the load of the <code>Owner</code> entity happens.</p>
 </div>
 <div class="paragraph">
-<p>The helper method <code>ownerListIsLoaded</code> defines that situation. <code>Mockito.argThat</code> is the API that lets the test define a Predicate lambda expression that determines if the parameters of a call to the method (<code>loadList</code> in this case) are matching against the call that we want to mock. Basically it acts as a filter, to pinpoint the call that we are searching for.</p>
+<p>The helper method <code>ownerListIsLoaded</code> defines this situation. <code>Mockito.argThat</code> is the API that lets the test define a Predicate lambda expression that determines if the method call parameters (<code>loadList</code> in this case) are matching against the call that we want to mock. Basically it acts as a filter, to pinpoint the call that we are searching for.</p>
 </div>
 <div class="paragraph">
 <p>The Lambda gets passed in the original parameter of the method: <code>LoadContext</code>. <code>loadContext.getEntityMetaClass().equals("petclinic_Owner")</code> is our filter criteria to verify that the entity class is the <code>Owner</code> entity.</p>
@@ -1062,10 +1055,10 @@ In this example, we verify that the data binding in the form component is behavi
 </div>
 </div>
 <div class="paragraph">
-<p>defines the combination of the mock with the return values. In case the owner list is loaded, then Ash and Misty should be returned.</p>
+<p>defines the combination of the mock with the return values. In case the owner list is loaded, Ash and Misty should be returned.</p>
 </div>
 <div class="paragraph">
-<p>With that information we can take a look at the actual test case once again:</p>
+<p>With this information we can take a look at the actual test case once again:</p>
 </div>
 <div class="listingblock">
 <div class="title">OwnerBrowseTest.java</div>
@@ -1113,7 +1106,7 @@ In this example, we verify that the data binding in the form component is behavi
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>an assertion is made on the items of the owners table size</td>
+<td>An assertion is made on the items of the owners table size</td>
 </tr>
 </table>
 </div>
@@ -1143,7 +1136,7 @@ In this example, we verify that the data binding in the form component is behavi
 <div class="sect3">
 <h4 id="test_screen_interaction_from_owner_browse_to_owner_editor"><a class="anchor" href="#test_screen_interaction_from_owner_browse_to_owner_editor"></a><a class="link" href="#test_screen_interaction_from_owner_browse_to_owner_editor">Test: Screen Interaction from Owner Browse to Owner Editor</a></h4>
 <div class="paragraph">
-<p>The second test case builds on the fundamentals of the first one that we just explored. In this case the goal is to test the correct interaction between two screens. The following steps are performed by the test:</p>
+<p>The second test case is built on the fundamentals of the first one that we just explored. In this case the goal is to test the correct interaction between two screens. The test performs the following steps:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -1231,7 +1224,7 @@ In this example, we verify that the data binding in the form component is behavi
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>the <code>Screens</code> API allows to iterate over the opened screens and filter for a particular type</td>
+<td>the <code>Screens</code> API lets iterate over the opened screens and filter for a particular type</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
@@ -1240,19 +1233,19 @@ In this example, we verify that the data binding in the form component is behavi
 </table>
 </div>
 <div class="paragraph">
-<p>In this test case we used additional parts of the CUBA UI API to interact with the application e.g. via <code>ownersTable.setSelected(&#8230;&#8203;)</code>. Also we used it to retrieve some information that is necessary in the test, like the search for an opened screen.</p>
+<p>In this test case we used additional parts of the CUBA UI API to interact with the application e.g. via <code>ownersTable.setSelected(&#8230;&#8203;)</code>. Also, we used it to retrieve some information that is necessary in the test, like the search for an opened screen.</p>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="create_disease_warning_mailing"><a class="anchor" href="#create_disease_warning_mailing"></a><a class="link" href="#create_disease_warning_mailing">Create Disease Warning Mailing</a></h3>
 <div class="paragraph">
-<p>The third and last test, that we want to take a look is the logic that was implemented in <a href="https://www.cuba-platform.com/guides/create-business-logic-in-cuba">CUBA Guide: Create Business Logic in CUBA</a>:
+<p>The third and last test that we want to take a look at, is the logic implemented in <a href="https://www.cuba-platform.com/guides/create-business-logic-in-cuba">CUBA Guide: Create Business Logic in CUBA</a>:
 the "Disease Warning Mailing" functionality. For the middleware logic of the functionality, we have already created a middleware integration test as described in the <a href="https://www.cuba-platform.com/guides/integration-testing-middleware#disease_warning_mailing">CUBA Guide: Middleware Integration Testing</a>.</p>
 </div>
 <div class="paragraph">
 <p>In the middleware integration test, we covered everything from the Service Interface and below, but left out the UI part.
-In this guide, we will now do the opposite. We will create a web integration test, that interacts with the UI, but mocks out the behavior of the service interface. This way we can control the behavior of this dependency (<code>DiseaseWarningMailingService</code>) and ensure that the UI code interacts with it according to our expectations.</p>
+In this guide, we will now do the opposite. We will create a web integration test that interacts with the UI but mocks out the behavior of the service interface. This way we can control the behavior of this dependency (<code>DiseaseWarningMailingService</code>) and ensure that the UI code interacts with it according to our expectations.</p>
 </div>
 <div class="paragraph">
 <p>The resulting UI dialog is accessible from the Pet Browser:</p>
@@ -1263,7 +1256,7 @@ In this guide, we will now do the opposite. We will create a web integration tes
 </div>
 </div>
 <div class="paragraph">
-<p>The Test contains of the following precondition:</p>
+<p>The Test contains the following preconditions:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -1276,7 +1269,7 @@ In this guide, we will now do the opposite. We will create a web integration tes
 </ol>
 </div>
 <div class="paragraph">
-<p>After that there are the four test cases that would cover the functionality of the Dialog:</p>
+<p>After that there are four test cases that would cover the functionality of the Dialog:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -1422,19 +1415,19 @@ In this guide, we will now do the opposite. We will create a web integration tes
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Mockito&#8217;s <code>verify</code> method allows to assert on the interaction with the dependency</td>
+<td>Mockito&#8217;s <code>verify</code> method allows asserting on the interaction with the dependency</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>In the assertion parts of the tests, there are two things relevant, that have not been discovered until now.</p>
+<p>In the assertion parts of the tests, there are two things relevant that haven&#8217;t been discovered until now.</p>
 </div>
 <div class="paragraph">
 <p>The first test case <code>When_SubmitValidDialogInput.then_formIsValid()</code> checks if the dialog contains any validation errors.
-The validation performed manually in the <code>CreateDiseaseWarningMailing</code> screen, as it is not a StandardEditor, but rather a custom Screen. Due to this, there is no way to retrieve the Validation errors from outside of the screen. also not for the test.</p>
+The validation is performed manually in the <code>CreateDiseaseWarningMailing</code> screen, as it is not a StandardEditor, but rather a custom Screen. Due to this, there is no way to retrieve the Validation errors from outside of the screen. also not for the test.</p>
 </div>
 <div class="paragraph">
-<p>Therefore, a dedicated method in the production Screen was introduced: <code>CreateDiseaseWarningMailing.validationResult()</code>, which looks like this:</p>
+<p>Therefore, a dedicated method in the production Screen was introduced - <code>CreateDiseaseWarningMailing.validationResult()</code>, which looks like this:</p>
 </div>
 <div class="listingblock">
 <div class="title">CreateDiseaseWarningMailing.java</div>
@@ -1450,7 +1443,7 @@ The validation performed manually in the <code>CreateDiseaseWarningMailing</code
 </div>
 </div>
 <div class="paragraph">
-<p>This method is used inside the Controller to perform the validation. But it is also accessible to the test case, to retrieve the <code>ValidationErrors</code> object from the outside, in order to make assertions on it.</p>
+<p>This method is used inside the Controller to perform the validation. But it is also accessible for the test case, to retrieve the <code>ValidationErrors</code> object from the outside in order to make assertions on it.</p>
 </div>
 <div class="paragraph">
 <p>The second test case <code>When_SubmitValidDialogInput.then_mailingIsSend()</code> uses the <code>DiseaseWarningMailingService</code> mock to verify that the System under test (<code>CreateDiseaseWarningMailing</code>) is interacting with the dependency in the correct way.</p>
@@ -1479,7 +1472,7 @@ The validation performed manually in the <code>CreateDiseaseWarningMailing</code
 </blockquote>
 </div>
 <div class="paragraph">
-<p>Mockito takes that interaction expectation and makes sure that this is true. If during the test case this interaction does not occur the test fails.</p>
+<p>Mockito takes that interaction expectation and makes sure that this is true. If during the test case this interaction does not occur, the test fails.</p>
 </div>
 <div class="paragraph">
 <p>With that we have successfully tested the UI code that is part of the overall "Create Disease Warning Mailing" functionality. The Middleware integration test verifies that the <code>warnAboutDisease</code> method itself works as expected.</p>
@@ -1494,8 +1487,7 @@ The validation performed manually in the <code>CreateDiseaseWarningMailing</code
 <p>After seeing different implementations of web integration tests, you should have a basic idea on how to interact with the UI through a web integration testing. CUBAs UI APIs are for the most part capable of interacting with the various UI components and screens programmatically.</p>
 </div>
 <div class="paragraph">
-<p>But as these APIs are optimized for production application code, using them
-for remote-controlling CUBA UIs (this is what tests oftentimes do) is not their main focus. This results in some boilerplate code in the web integration tests like this:</p>
+<p>But as these APIs are optimized for production application code, using them for remote-controlling CUBA UIs (this is what tests oftentimes do) is not their main focus. This results in some boilerplate code in the web integration tests like this:</p>
 </div>
 <div class="listingblock">
 <div class="title">OwnerBrowseTest.java</div>
@@ -1520,7 +1512,7 @@ for remote-controlling CUBA UIs (this is what tests oftentimes do) is not their 
 <p>Writing this code takes away the developer from the main task at hand: write test cases to verify the correct behavior of the application.</p>
 </div>
 <div class="paragraph">
-<p>Sneferu is a testing library designed to make writing web integration tests for CUBA easier in order to concentrate on writing verification test cases. With its specific DSL and the ability to create higher level abstractions on your own, it also allows to express the test cases with a higher level language. This helps to create a more maintainable test suite.</p>
+<p>Sneferu is a testing library designed to make writing web integration tests for CUBA easier in order to concentrate on writing verification test cases. With its specific DSL and the ability to create higher level abstractions on your own, it also allows us to express the test cases with a higher level language. This helps to create a more maintainable test suite.</p>
 </div>
 <div class="paragraph">
 <p>In order to understand the difference between a regular CUBA web integration test and a Sneferu web integration test, let&#8217;s revisit two test cases of the <code>OwnerBrowseTest</code> and <code>CreateDiseaseWarningMailingTest</code>.</p>
@@ -1528,7 +1520,7 @@ for remote-controlling CUBA UIs (this is what tests oftentimes do) is not their 
 <div class="sect2">
 <h3 id="owner_browse_revisited"><a class="anchor" href="#owner_browse_revisited"></a><a class="link" href="#owner_browse_revisited">Owner Browse - Revisited</a></h3>
 <div class="paragraph">
-<p>The Owner Browse Test contains a test case, that verified the correct interaction between the <code>OwnerBrowse</code> Screen
+<p>The Owner Browse Test contains a test case that verifies the correct interaction between the <code>OwnerBrowse</code> Screen
 and the <code>OwnerEdit</code> Screen. The test case written with the help of Sneferu looks like this:</p>
 </div>
 <div class="listingblock">
@@ -1571,22 +1563,21 @@ and the <code>OwnerEdit</code> Screen. The test case written with the help of Sn
 </div>
 </div>
 <div class="paragraph">
-<p>The Test UI environment in this case is a special Sneferu class: <code>SneferuTestUiEnvironment</code>, which adds certain capabilities
-to the environment.</p>
+<p>The Test UI environment in this case is a special Sneferu class: <code>SneferuTestUiEnvironment</code>, which adds certain capabilities to the environment.</p>
 </div>
 <div class="paragraph">
-<p>The test case itself declares two parameters. This is a particular feature of JUnit 5, which allows to express test dependencies that are required for the test. In this case, the first parameter is annotated with <code>@StartScreen</code>, which means that Sneferu will automatically open the screen and when the test starts, it is possible to directly interact with the screen. The type: <code>StandardLookupTestAPI&lt;Owner, OwnerBrowse&gt; ownerBrowse</code> defines what kind of Screen the test expects.</p>
+<p>The test case itself declares two parameters. This is a particular feature of JUnit 5, which allows expressing test dependencies required for the test. In this case, the first parameter is annotated with <code>@StartScreen</code>, which means that Sneferu will automatically open the screen and when the test starts, it is possible to directly interact with the screen. The type: <code>StandardLookupTestAPI&lt;Owner, OwnerBrowse&gt; ownerBrowse</code> defines what kind of Screen the test expects.</p>
 </div>
 <div class="paragraph">
 <p>Under the hood, an instance of <code>OwnerBrowse</code> will be shown and is wrapped in a class called <code>StandardLookupTestAPI</code> that provides further abstractions relevant for test case interactions with the Screen.</p>
 </div>
 <div class="paragraph">
-<p>The second parameter is the <code>OwnerEdit</code> Screen, that we need in this test case. Different to the Owner Browser, this screen is not the start screen for our test-screen-interaction. Instead it is a screen that will be opened automatically by the application. But the test cases needs to get a reference to it in order to interact with this Screen afterwards as well. For this scenario the <code>@SubsequentScreen</code> annotation is used.</p>
+<p>The second parameter is the <code>OwnerEdit</code> Screen, that we need in this test case. Unlike the Owner Browser, this screen is not the start screen for our test-screen-interaction. Instead it is a screen to be opened automatically by the application. But the test case needs to get a reference to it in order to interact with this Screen afterwards as well. For this scenario the <code>@SubsequentScreen</code> annotation is used.</p>
 </div>
 <div class="paragraph">
 <p>In order to interact with a Screen, the <code>ScreenTestAPI</code> wrapper classes provide various methods to do so.
 <code>ownerBrowse.interact(&#8230;&#8203;)</code> is used for that kind of interaction. It expects an interaction object as a parameter.
-Sneferu provides a lot of Interactions out of the box. The static import <code>de.diedavids.sneferu.Interactions.*;</code> allows to access methods like <code>selectInList</code> directly, so that the test case is expressed with little friction.</p>
+Sneferu provides a lot of Interactions out-of-the-box. The static import <code>de.diedavids.sneferu.Interactions.*;</code> allows access to methods like <code>selectInList</code> directly, so that the test case is expressed with little friction.</p>
 </div>
 <div class="paragraph">
 <p>In this case the Interaction <code>Interactions.selectInList(table("ownersTable"), ash)</code> selects a particular entity
@@ -1596,7 +1587,7 @@ in a List component. It takes two parameters: the first is a reference to a comp
 <p>Interactions can be chained via <code>interact(&#8230;&#8203;).andThen(&#8230;&#8203;)</code> in order to perform multiple interactions one after another.</p>
 </div>
 <div class="paragraph">
-<p>After the interaction is performed, the application should have opened the Owner Editor Screen. <code>ownerEdit</code> now acts as a reference to this just opened screen. So it is possible to interact with that screen now. In this case the underlying Screen object is retrieved in order to compare the edited entity via <code>ownerEdit.screen().getEditedEntity()</code>.</p>
+<p>After the interaction is performed, the application should have opened the Owner Editor Screen. <code>ownerEdit</code> now acts as a reference to this recently opened screen. So it is possible to interact with this screen now. In this case the underlying Screen object is retrieved to compare the edited entity via <code>ownerEdit.screen().getEditedEntity()</code>.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1641,7 +1632,7 @@ in a List component. It takes two parameters: the first is a reference to a comp
 Then interactions are performed against the screen. Afterwards the same assertion is expressed as seen before: the <code>diseaseWarningMailingService</code> should be called once.</p>
 </div>
 <div class="paragraph">
-<p>As we have seen, Sneferu allows to ease the programmatic interactions with the focused Interaction API. Furthermore it removes the need to write a lot of boilerplate code with the CUBA UI APIs.</p>
+<p>As we have seen, Sneferu allows us to ease the programmatic interactions with the focused Interaction API. Furthermore, it removes the need to write a lot of boilerplate code with the CUBA UI APIs.</p>
 </div>
 <div class="paragraph">
 <p>More information on the library can be found in the <a href="https://www.cuba-platform.com/marketplace/sneferu/">CUBA Marketplace: Sneferu</a> or on <a href="https://github.com/mariodavid/sneferu">Github: mariodavid/sneferu</a>.</p>
