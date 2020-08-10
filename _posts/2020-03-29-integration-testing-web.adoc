@@ -563,7 +563,7 @@ After that there are four test cases that would cover the functionality of the D
 1. when the form is correctly filled, it contains no validation errors
 2. when the form is correctly filled, the Mailing is send out
 3. when the form is _not_ correctly filled, it contains validation errors
-4. when the form is _not_ correctly filled, the Mailing not is send out
+4. when the form is _not_ correctly filled, the Mailing is not send out
 
 In the following listing, only the 1. and 2. test cases are shown. The complete listing can be found on Github: https://github.com/cuba-guides/cuba-petclinic-testing-web/blob/master/modules/web/test/com/haulmont/sample/petclinic/web/pet/CreateDiseaseWarningMailingTest.java[CreateDiseaseWarningMailingTest.java]
 
