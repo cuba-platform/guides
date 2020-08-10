@@ -855,7 +855,7 @@ class DiseaseWarningMailingSneferuTest {
 }
 ----
 
-It is similar tho the first test case. Once again, the start screen is injected (in this case it is of type `StandardScreenTestAPI`).
+It is similar to the first test case. Once again, the start screen is injected (in this case it is of type `StandardScreenTestAPI`).
 Then interactions are performed against the screen. Afterwards the same assertion is expressed as seen before: the `diseaseWarningMailingService` should be called once.
 
 As we have seen, Sneferu allows us to ease the programmatic interactions with the focused Interaction API. Furthermore, it removes the need to write a lot of boilerplate code with the CUBA UI APIs.
