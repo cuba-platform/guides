@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Introduction to Working with Data in CUBA</title>
-    <meta name="description" content="Overview on how to read and write data in a CUBA application">
+    <meta name="description" content="The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.">
     <meta name="author" content="Haulmont">
 
     <meta name="twitter:card" content="summary_large_image">
@@ -14,13 +14,13 @@
     <meta name="twitter:creator" content="@CubaPlatform">
     <meta name="twitter:title" content="Introduction to Working with Data in CUBA">
     <meta name="twitter:description" content="Overview on how to read and write data in a CUBA application">
-    <meta name="twitter:image" content="images/intro-to-working-with-data-in-CUBA/create-visit-for-pet.png">
+    <meta name="twitter:image" content="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-visit-for-pet.png">
 
     <meta property="og:type" content="article">
     <meta property="og:title" content="Introduction to Working with Data in CUBA">
     <meta property="og:description" content="Overview on how to read and write data in a CUBA application">
     <meta property="og:url" content="https://www.cuba-platform.com/guides/intro-working-with-data-in-cuba">
-    <meta property="og:image" content="images/intro-to-working-with-data-in-CUBA/create-visit-for-pet.png">
+    <meta property="og:image" content="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-visit-for-pet.png">
 
     <link rel="shortcut icon" href="/guides/images/favicon.png" type="image/png" />
     <link rel="stylesheet" href="/guides/css/foundation.css">
@@ -66,24 +66,6 @@
                 <li class="header_menu_item"><a href="/discuss/" class="header_menu_link">Forum</a></li>
                 <li class="header_menu_item"><a href="/blog/" class="header_menu_link">Blog</a></li>
             </ul>
-            <div class="lang-switch">
-                <div class="multiselect-wrapper select-wrapper" onclick="langSwitch()">
-                    <div tabindex="0" class="multiselect">
-                        <div class="multiselect__select"></div>
-                        <div class="multiselect__tags">
-                            <span class="multiselect__single">EN</span>
-                        </div>
-                        <div tabindex="-1" class="multiselect__content-wrapper" style="max-height: 300px; display: none;">
-                            <ul class="multiselect__content" style="display: inline-block;">
-                                <li class="multiselect__element"><span class="multiselect__option multiselect__option--highlight">EN</span></li>
-                                <li class="multiselect__element"><span class="multiselect__option"><a href="http://cuba-platform.ru/">RU</a></span></li>
-                                <li class="multiselect__element"><span class="multiselect__option"><a href="https://cuba-platform.cn/">CN</a></span> </li>
-                                <li class="multiselect__element"><span class="multiselect__option"><a href="http://cuba-platform.it/">IT</a></span></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="header-support">
                 <button class="header-support_toggle">
                 <img src="images/users.svg" class="header-support_toggle_icon">
@@ -173,29 +155,6 @@
     </nav>
 </header>
 
-<script>
-    function langSwitch() {
-        var el = document.querySelector('.multiselect');
-        var el1 = document.querySelector('.multiselect__content-wrapper');
-        if(el.classList.contains("multiselect--active")) {
-            el.classList.remove("multiselect--active");
-            el1.style.display = 'none';
-        } else {
-            el.classList.add("multiselect--active");
-            el1.style.display = 'block';
-        }
-    }
-    document.addEventListener('click', function(event) {
-        var e = document.querySelector('.lang-switch');
-        var el = document.querySelector('.multiselect');
-        var el1 = document.querySelector('.multiselect__content-wrapper');
-
-        if (!e.contains(event.target)) {
-            el1.style.display='none';
-            el.classList.remove("multiselect--active");
-        }
-    });
-</script>
 <style>
     .upper-header .header-options {
         display: none;
@@ -204,222 +163,6 @@
     .upper-header .upper-header-wrapper .header-menu div .nav > li:last-child > a {
         padding-right: 0;
     }
-
-    .header-support {
-        margin-left: 20px;
-    }
-
-    /* lang-switch*/
-     .lang-switch {
-         flex: 0 0 auto;
-         margin-left: auto;
-     }
-
-    @media screen and (max-width: 1000px) {
-        .lang-switch {
-           display: none;
-        }
-    }
-
-    .lang-switch .multiselect__select {
-        display: none;
-    }
-
-    .lang-switch .multiselect__tags {
-        border: none;
-        cursor: pointer;
-    }
-
-    .lang-switch .multiselect__content-wrapper {
-        top: 49px;
-        left: -7px;
-        width: 45px;
-        overflow: hidden;
-        border-radius: 0;
-        background: #FFF;
-        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.25);
-    }
-
-    .lang-switch .multiselect__content-wrapper ul li:first-child {
-        display: none;
-    }
-
-    .lang-switch .multiselect-wrapper .multiselect {
-        min-height: 22px;
-    }
-
-    .lang-switch .multiselect__option:hover {
-        background: #E8F2FB;
-    }
-
-    .lang-switch .multiselect__option a:hover {
-        color: #0784E3!important;
-        text-decoration: none;
-    }
-
-    .lang-switch .multiselect__option {
-        width: 45px;
-        height: 34px;
-        min-height: 34px;
-        padding: 0;
-    }
-
-    .lang-switch .multiselect__option a {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        width: 43px;
-        height: 34px;
-        font-size: 13px;
-        line-height: 22px;
-        color: #9B9B9B;
-        font-weight: bold;
-        text-decoration: none;
-    }
-
-    .lang-switch .multiselect__tags {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        width: 27px;
-        height: 22px;
-        min-height: 22px;
-        padding: 0;
-    }
-
-    .lang-switch .multiselect__tags:hover {
-        color: #0784E3;
-    }
-
-    .lang-switch .multiselect__single {
-        display: block;
-        font-size: 13px;
-        line-height: 22px;
-        color: #9B9B9B;
-        margin: 0;
-        padding: 0;
-        background: transparent;
-        border-radius: 0;
-        font-weight: bold;
-        text-align: center;
-    }
-
-    .lang-switch .multiselect__single:hover {
-        border: none;
-        color: #0784E3;
-    }
-
-    .lang-switch .multiselect__element {
-        overflow: hidden;
-        height: 34px;
-        min-height: 34px;
-    }
-
-    .lang-switch .multiselect--active .multiselect__single {
-        color: #0784E3;
-    }
-
-    .multiselect {
-        box-sizing: content-box;
-        display: block;
-        position: relative;
-        width: 100%;
-        min-height: 40px;
-        text-align: left;
-        color: #35495e;
-    }
-    .multiselect, .multiselect__single {
-        font-family: inherit;
-        font-size: 16px;
-        touch-action: manipulation;
-    }
-    .multiselect__select {
-        position: absolute;
-        width: 40px;
-        height: 38px;
-        right: 1px;
-        top: 1px;
-        padding: 4px 8px;
-        text-align: center;
-        transition: transform .2s ease;
-    }
-    .multiselect__select {
-        line-height: 16px;
-        box-sizing: border-box;
-        display: block;
-        margin: 0;
-        text-decoration: none;
-        cursor: pointer;
-    }
-    .multiselect__tags {
-        min-height: 40px;
-        display: block;
-        padding: 8px 40px 0 8px;
-        border-radius: 5px;
-        border: 1px solid #e8e8e8;
-        background: #fff;
-        font-size: 14px;
-    }
-
-    .multiselect * {
-        box-sizing: border-box;
-    }
-
-    .multiselect__single {
-        position: relative;
-        display: inline-block;
-        min-height: 20px;
-        line-height: 20px;
-        border: none;
-        border-radius: 5px;
-        background: #fff;
-        padding: 0 0 0 5px;
-        width: 100%;
-        transition: border .1s ease;
-        box-sizing: border-box;
-        margin-bottom: 8px;
-        vertical-align: top;
-    }
-
-    .multiselect__content-wrapper {
-        position: absolute;
-        display: block;
-        background: #fff;
-        width: 100%;
-        max-height: 240px;
-        overflow: auto;
-        border: 1px solid #e8e8e8;
-        border-top: none;
-        border-bottom-left-radius: 5px;
-        border-bottom-right-radius: 5px;
-        z-index: 50;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .multiselect__content {
-        list-style: none;
-        display: inline-block;
-        padding: 0;
-        margin: 0;
-        min-width: 100%;
-        vertical-align: top;
-    }
-
-    .multiselect__option {
-        display: block;
-        padding: 12px;
-        min-height: 40px;
-        line-height: 16px;
-        text-decoration: none;
-        text-transform: none;
-        vertical-align: middle;
-        position: relative;
-        cursor: pointer;
-        white-space: nowrap;
-    }
-    /* end lang-switch*/
 </style>
 
     <!-- Main Page Content and Sidebar -->
@@ -465,7 +208,7 @@
 </div>
 <div class="sect2">
 <h3 id="final_application"><a class="anchor" href="#final_application"></a><a class="link" href="#final_application">Final Application</a></h3>
-<a href="images/intro-to-working-with-data-in-CUBA/adjustments-cuba-petclinic-overview.gif"><img src="images/intro-to-working-with-data-in-CUBA/login-screen.png"/></a>
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/login-screen.png"/></a>
 </div>
 <div class="sect2">
 <h3 id="requirements"><a class="anchor" href="#requirements"></a><a class="link" href="#requirements">Requirements</a></h3>
@@ -508,7 +251,7 @@
 <div class="paragraph">
 <p>The main entities are <strong>Pet</strong> and <strong>Visit</strong>. A Pet is visiting the petclinic and during this Visit a Vet is taking care of it. A Pet belongs to an Owner, which can hold multiple pets. The visit describes the act of a pet visiting the clinic with the help of its owner.</p>
 </div>
-<a href="images/intro-to-working-with-data-in-CUBA/cuba-petclinic-overview.gif"><img src="images/intro-to-working-with-data-in-CUBA/login-screen.png"/></a>
+<a href="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-platform/cuba-petclinic/master/img/login-screen.png"/></a>
 </div>
 </div>
 <div class="sect1">
@@ -543,7 +286,7 @@ a lot of cases where data has to be loaded from the database or stored in the da
 <div class="paragraph">
 <p>In the case of the Petclinic example, there is some business logic which should create a new Visit for a given Pet by its Identification Number.</p>
 </div>
-<a href="images/intro-to-working-with-data-in-CUBA/create-visit-for-pet.png"><img src="images/intro-to-working-with-data-in-CUBA/create-visit-for-pet.png"/></a>
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-visit-for-pet.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-visit-for-pet.png"/></a>
 <div class="paragraph">
 <p>The source code that loads the Pet instance by its Identification Number is located in <a href="https://github.com/cuba-guides/cuba-petclinic-intro-to-datamanager/blob/master/modules/core/src/com/cubaplatform/petclinic/service/visit/VisitServiceBean.java#L47">VisitServiceBean.java</a> in the example application. The usage of the DataManager API looks like this:</p>
 </div>
@@ -557,33 +300,27 @@ a lot of cases where data has to be loaded from the database or stored in the da
  * loads a Pet by its Identification Number
  *
  * @param identificationNumber the Identification Number to load
- * @return the Pet for the given Identification Number if found
+ * @return the Pet for the given Identification Number
  */</span>
-<span class="directive">private</span> Optional&lt;Pet&gt; loadPetByIdentificationNumber(<span class="predefined-type">String</span> identificationNumber) {
+<span class="directive">private</span> Pet loadPetByIdentificationNumber(<span class="predefined-type">String</span> identificationNumber) {
     <span class="keyword">return</span> dataManager.load(Pet.class)
             .query(<span class="string"><span class="delimiter">&quot;</span><span class="content">select e from petclinic$Pet e where e.identificationNumber = :identificationNumber</span><span class="delimiter">&quot;</span></span>)
             .parameter(<span class="string"><span class="delimiter">&quot;</span><span class="content">identificationNumber</span><span class="delimiter">&quot;</span></span>, identificationNumber)
-            .optional();
+            .one();
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>DataManager has a <a href="https://martinfowler.com/bliki/FluentInterface.html">fluent API</a> which allows chaining operations on the load operation in order to define parameters to the execution. In this case, the interaction starts with <code>dataManager.load(Pet.class)</code>. Then the JPQL query is defined, and the associated parameters are configured with the parameter values.</p>
+<p>DataManager has a <a href="https://martinfowler.com/bliki/FluentInterface.html">fluent API</a> which allows to chain operations on the load operation in order to define parameters to the execution. In this case, the interaction starts with <code>dataManager.load(Pet.class)</code>. Then the JPQL query is defined and the associated parameters are configured with the parameter values. The <code>one()</code> method executes the load operation and fetches exactly one item that matches the criteria. If there are no results the corresponding exception is thrown.</p>
 </div>
 <div class="paragraph">
-<p>The <code>optional()</code> method executes the load operation and fetches exactly one item that matches the criteria. If there are no results the corresponding result is <code>Optional.empty()</code>.</p>
-</div>
-<div class="paragraph">
-<p>Alternatively it is possible to use <code>one()</code> instead of <code>optional()</code>. In this case the <code>Pet</code> instance is returned directly. But in case no result is found the method throws an <code>IllegalStateException</code>.</p>
-</div>
-<div class="paragraph">
-<p>It is up to the application developer to decide if the query can return one or possibly multiple results. In this case, it is only possible to create an Identification Number once, we can be sure that the query will return at most one item.</p>
+<p>It is up to the application developer to decide if the query can return one or possibly multiple results. In this case, it is only possible to create an Identification Number once, we can be sure that the query will return at the most one item.</p>
 </div>
 <div class="paragraph">
 <p>In this case, the attribute <code>identificationNumber</code> is not the primary key of the entity. But it represents a globally unique identification number given by proper Pet authorities - therefore it is modeled uniquely within the application.</p>
 </div>
 <div class="paragraph">
-<p>If the task is to load a Pet by its primary key (<code>id</code>) the query is easier to create as the query part is not needed: <code>dataManager.load(Pet.class).id(id).optional();</code></p>
+<p>If the task is to load a Pet by its primary key (<code>id</code>) the query is easier to create as the query part is not needed: <code>dataManager.load(Pet.class).id(id).one();</code></p>
 </div>
 </div>
 <div class="sect2">
@@ -594,9 +331,9 @@ a lot of cases where data has to be loaded from the database or stored in the da
 <div class="paragraph">
 <p>The Petclinic application has the capability to let the user send out Disease Warning Mailings. The user has to define the location of a known disease as well as the type of Pet that is endangered by this disease. The system will find all endangered Pets and send out a Mailing to the owners.</p>
 </div>
-<a href="images/intro-to-working-with-data-in-CUBA/create-disease-warning-mailing.png"><img src="images/intro-to-working-with-data-in-CUBA/create-disease-warning-mailing.png"/></a>
+<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-disease-warning-mailing.png"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-datamanager/master/img/create-disease-warning-mailing.png"/></a>
 <div class="paragraph">
-<p>The part which finds the endangered Pets looks like this with the use of the DataManager API:</p>
+<p>The part that finds the endangered Pets looks like this with the use of the DataManager API:</p>
 </div>
 <div class="listingblock">
 <div class="title">DiseaseWarningMailingServiceBean.java</div>
@@ -616,18 +353,6 @@ a lot of cases where data has to be loaded from the database or stored in the da
 </div>
 <div class="paragraph">
 <p>The query part is a little more complicated compared to above, but the same pattern applies. The differences in this example are the usage of the <code>list()</code> method as we expect multiple Pets from the database query. Also, a specific view has been used, because not only the Pet data but also the Owner data has to be loaded in order to send out the Mailings.</p>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-the <code>query</code> methods also supports different shortcut variants for defining the JPQL query like <code>query("e.owner.city = ?1", ownerCity)</code>. More information on the shortcuts can be found in the <a href="https://doc.cuba-platform.com/manual-7.0/dataManager.html#dm_query">docs</a>.
-</td>
-</tr>
-</table>
 </div>
 </div>
 </div>
