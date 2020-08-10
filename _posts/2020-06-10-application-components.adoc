@@ -160,8 +160,195 @@ As described in the beginning, we will do certain extensions to the different cu
 
 === Kanto-Petclinic
 
-We will start of with the Kanto-Petclinic. This project only needs slight adjustments to the Petclinic core. There is one additional information to store for a Visit, which described previous illnesses. Additionally, in the Kanto Petlinic there are a lot of emergency visits. This requires the nurses to oftentimes create Visits of a particular type for today. In order to support this use-case, there should be a shortcut way of creating this kind of visit.
+We will start of with the Kanto-Petclinic. This project only needs slight adjustments to the Petclinic core. There is one additional information to store for a Visit, which described previous illnesses. Additionally, in the Kanto-Petlinic there are a lot of emergency visits. This requires the nurses to oftentimes create Visits of a particular type for today. In order to support this use-case, there should be a shortcut way of creating this kind of visit.
 
+==== Extending the Visit Entity
+
+In order to achieve the first requirement of storing previous illnesses to the Visit, the `Visit` entity has to be extend. CUBA allows to extend screens from application components or the framework itself via the `@Extends` annotation on the JPA entity. For the Kanto-Petclinic adding attribute looks like this:
+
+
+.RockyMountVisit.java
+[source,java]
+----
+@Extends(Visit.class)
+@Entity(name = "rockymountpetclinic_RockyMountVisit")
+@DiscriminatorValue("RockyMountVisit")
+public class RockyMountVisit extends Visit {
+
+    @Column(name = "PREVIOUS_ILLNESSES", length = 4000)
+    private String previousIllnesses;
+
+    public String getPreviousIllnesses() {
+        return previousIllnesses;
+    }
+
+    public void setPreviousIllnesses(String previousIllnesses) {
+        this.previousIllnesses = previousIllnesses;
+    }
+}
+----
+
+The `@Extends` annotation replaces all occurences of the `Visit` entity with its new extension  `RockyMountVisit`. As the subclass can still be treated as a `Visit` this also means, all existing logic / screens that is inside the application component will continue to work.
+
+After that addition, CUBA Studio will generate the corresponding database update scripts. This will alter the original table instead of defining a new one.
+
+The second part of that feature requirement is that the attribute `previousIllnesses` can also be managed in the UI. For this, we will extend the existing UI screen of a Visit. CUBA Studio guides you through the process of extending a screen via `Screens > New > Screen > Extend an existing Screen`. The field should only be added to the Entity editor screen, so extending `VisitEdit` is sufficient.
+
+In order to add a field to an existing `form` component, the "delta" XML (containing all the new attributes) has to be put in the XML screen descriptor of the new extension screen. Here you will see how it looks when extending the Visit Editor screen to add the `previousIllnesses` field to it:
+
+
+.rocky-mount-visit-edit.xml
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+  messagesPack="com.rockymount.petclinic.web.screens.visit"
+  xmlns:ext="http://schemas.haulmont.com/cuba/window-ext.xsd"
+  extends="com/haulmont/sample/petclinic/web/screens/visit/visit-edit.xml"> // <1>
+  <layout>
+    <form id="fieldGroup">
+      <column id="column1">
+        <textArea
+          id="previousIllnessesField"
+          rows="5"
+          property="previousIllnesses"
+          colspan="2"
+          width="100%"/>
+      </column>
+    </form>
+  </layout>
+</window>
+----
+<1> the extends attribute declares on which screen this screen extension is based upon
+
+In this case, the text area for the new field is appended at the bottom of the form component with the ID `fieldGroup`. It is also possible to further specify the placement of the component inside its parent component via the `ext` namespace.
+
+==== Create Visits for Today from Pet Browse
+
+The second extension that the Kanto-Petclinic requests is to have a shortcut on creating a Visit for today.
+
+This can be achieved by creating another screen extension to the Pet Browse screen. The extension adds one action to the Pet Table called `Create Visit`. The extension of the screen in the XML screen descriptor looks like this:
+
+
+.rocky-mount-pet-browse.xml
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+  messagesPack="com.rockymount.petclinic.web.screens.pet"
+  extends="com/haulmont/sample/petclinic/web/pet/pet/pet-browse.xml">
+  <facets>
+    <inputDialog // <1>
+      id="createVisitForPetDialog"
+      defaultActions="OK_CANCEL"
+      caption="msg://createVisitForPetCaption"
+      onAction="petTable.createVisit"
+    >
+      <parameters>
+        <enumParameter
+          id="visitType"
+          enumClass="com.haulmont.sample.petclinic.entity.visit.VisitType"
+          caption="msg://com.rockymount.petclinic.web.screens.pet/visitType"
+        />
+      </parameters>
+    </inputDialog>
+  </facets>
+  <layout>
+    <groupTable id="petsTable"> // <2>
+      <actions>
+        <action id="createVisit"
+          trackSelection="true"
+          caption="msg://createVisit"
+          icon="USER_MD"
+        />
+      </actions>
+      <buttonsPanel id="buttonsPanel">
+        <button id="createVisitBtn" action="petsTable.createVisit"/> // <3>
+      </buttonsPanel>
+    </groupTable>
+  </layout>
+</window>
+----
+<1> a input dialog facet is used for requesting certain information before the visit is created
+<2> by redefining the `groupTable` with the same ID as in the parent screen: "petsTable", the merging of the two screen descriptors is initiated
+<3> the button is appended to the existing `buttonsPanel` component
+
+The business logic of the screen is also extended accordingly. The controller subscribes to the close event of the input dialog.
+
+
+.RockyMountPetBrowse.java
+[source,java]
+----
+@UiController("petclinic_Pet.browse")
+@UiDescriptor("rocky-mount-pet-browse.xml")
+public class RockyMountPetBrowse extends PetBrowse {
+
+    @Inject
+    protected GroupTable<Pet> petsTable;
+    @Inject
+    protected Notifications notifications;
+    @Inject
+    protected VisitCreationService visitCreationService;
+    @Inject
+    protected ScreenBuilders screenBuilders;
+    @Inject
+    protected MessageBundle messageBundle;
+
+    @Subscribe("createVisitForPetDialog")
+    protected void onCreateVisitForPetDialogClose(CloseEvent event) {
+        if (event.getCloseAction().equals(InputDialog.INPUT_DIALOG_OK_ACTION)) {
+            final VisitType visitType = (VisitType) event.getValues().get("visitType");
+
+            final Visit createdVisit = visitCreationService
+                .createVisitForPet(petsTable.getSingleSelected(), visitType); // <1>
+
+            notifications.create(NotificationType.TRAY)
+                            .withCaption(messageBundle.getMessage("visitCreated"))
+                            .show();
+
+            screenBuilders.editor(Visit.class, this)
+                .editEntity(createdVisit)
+                .withOpenMode(OpenMode.DIALOG)
+                .show();
+
+        }
+    }
+}
+----
+<1> the creation of the Visit is delegated to the `VisitCreationService`, which is only part of the Kanto-Petclinic project.
+
+The `VisitCreationService` is a new CUBA Service that is not part of the original Petclinic platform. Instead, we create this service exclusievely for the Kanto-Petclinic project:
+
+
+.VisitCreationServiceBean.java
+[source,java]
+----
+
+@Service(VisitCreationService.NAME)
+public class VisitCreationServiceBean implements VisitCreationService {
+
+    @Inject
+    protected DataManager dataManager;
+    @Inject
+    protected TimeSource timeSource;
+
+    @Override
+    public Visit createVisitForPet(Pet pet, VisitType visitType) {
+
+        final Visit visitForPet = dataManager.create(Visit.class);
+
+        visitForPet.setPet(pet);
+        visitForPet.setVisitStart(timeSource.now().toLocalDateTime());
+        visitForPet.setVisitEnd(timeSource.now().toLocalDateTime().plusHours(1));
+
+        visitForPet.setType(visitType);
+
+        return dataManager.commit(visitForPet);
+    }
+}
+----
+
+With this code in place, the customizations for the Kanto-Petclinic are finished. The application can now be shipped to the customer. Let's look at the second customer "Alabastia-Petclinic" so see some other extensions in action.
 
 === Alabastia-Petclinic
 
@@ -170,3 +357,129 @@ The Alabastia Petclinic extends the original Project with the following customer
 * give users the ability to assign Treatment Rooms to Visits
 * automatically pre-select the Assigned Nurse based on the current user when creating a new Visit
 * automatically pre-select the Nurses Treatment Room for a new Visit
+
+
+Those changes require some more invasive additions to the Petclinic product. The assignment of the treatment rooms needs to be stored in two additional Entities, that we are going to create only for this project. Additionally, it requires some UI adjustments that will take care of the automatic pre-selection.
+
+==== Treatment Rooms for Visits
+
+In order to assign treatment rooms to visits, the rooms itself need to be managed in a dedicated entity:
+
+
+.TreatmentRoom.java
+[source,java]
+----
+@Table(name = "LANCASTERPETCLINIC_TREATMENT_ROOM")
+@Entity(name = "lancasterpetclinic_TreatmentRoom")
+public class TreatmentRoom extends NamedEntity {
+
+    @Column(name = "ROOM_NUMBER", nullable = false)
+    private String roomNumber;
+
+}
+----
+
+The entity annotation assigns the `TreatmentRoom` entity the namespace of the Alabastia Petclinic project, which helps to differentiate between the Petclinic core entites and the additional entities.
+
+Nevertheless, it is e.g. possible to mix and match with entities of the Petclinic platform project. In this case the `TreatmentRoom` entity extends the mapped superclass `NamedEntity` which is defined in the Petclinic platform.
+
+After storing the information of the Rooms itself, it is required to store the information of which treatment room is the default one for each Nurse. Therefore, we will create a mapping entity called `DefaultTreatmentRoom` which links to a treatment room and a user entity:
+
+
+.DefaultTreatmentRoom.java
+[source,java]
+----
+@Entity(name = "lancasterpetclinic_DefaultTreatmentRoom")
+public class DefaultTreatmentRoom extends StandardEntity {
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "USER_ID")
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "TREATMENT_ROOM_ID")
+    private TreatmentRoom treatmentRoom;
+
+}
+----
+
+Now the last entity extension that needs to be made is to link a Visit with a Treatment Room. This is done via Entity extensions as we have already seen in the Kanto-Petclinic example:
+
+
+.LancasterVisit.java
+[source,java]
+----
+@Extends(Visit.class)
+@Entity(name = "lancasterpetclinic_LancasterVisit")
+@DiscriminatorValue("LancasterVisit")
+public class LancasterVisit extends Visit {
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "TREATMENT_ROOM_ID")
+    private TreatmentRoom treatmentRoom;
+
+    public TreatmentRoom getTreatmentRoom() {
+        return treatmentRoom;
+    }
+
+    public void setTreatmentRoom(TreatmentRoom treatmentRoom) {
+        this.treatmentRoom = treatmentRoom;
+    }
+}
+----
+
+With those entity changes, we have everything in place to allow the UI automatically pre-populate the correct values for `assignedNurse` and `treatmentRoom`. The assigned nurse will just be the current user, whereas the treatmentRoom is looked up by the room assigned in the `DefaultTreatmentRoom` for the current user.
+
+
+.LancasterVisitEdit.java
+[source,java]
+----
+@UiController("petclinic_Visit.edit")
+@UiDescriptor("lancaster-visit-edit.xml")
+public class LancasterVisitEdit extends VisitEdit {
+
+    @Inject
+    protected DataManager dataManager;
+    @Inject
+    protected UserSession userSession;
+    @Inject
+    protected EntityStates entityStates;
+
+    @Subscribe
+    protected void onAfterShow(AfterShowEvent event) {
+
+        if (entityStates.isNew(getEditedEntity())) {
+            getEditedEntity().setAssignedNurse(
+                currentUser()
+            );
+
+            defaultTreatmentRoomFor(
+                currentUser()
+            ).ifPresent(defaultTreatmentRoom -> // <1>
+                initTreatmentRoom(defaultTreatmentRoom.getTreatmentRoom())
+            );
+        }
+    }
+
+    private void initTreatmentRoom(TreatmentRoom treatmentRoom) {
+        final LancasterVisit visit = (LancasterVisit) getEditedEntity(); // <2>
+        visit.setTreatmentRoom(treatmentRoom);
+    }
+
+    private User currentUser() {
+        return userSession.getCurrentOrSubstitutedUser();
+    }
+
+    private Optional<DefaultTreatmentRoom> defaultTreatmentRoomFor(User user) {
+        return dataManager
+            .load(DefaultTreatmentRoom.class)
+            .query("e.user = ?1", user)
+            .view(viewBuilder ->
+                viewBuilder.add("treatmentRoom", View.MINIMAL)
+            )
+            .optional();
+    }
+}
+----
+<1> the default treatment room is looked up via the dataManager. If there is a mapping defined for the current user the room will be set for the visit.
+<2> in order to use the methods of the extension, the Visit entity has to be casted to `LancasterVisit`. As we have extended the entity, we can be sure that CUBA will always use `LancasterVisit` instead of `Visit`. Therefore it is safe to cast here.
