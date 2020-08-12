@@ -324,7 +324,7 @@
 <h2 id="petclinic_as_a_product_line"><a class="anchor" href="#petclinic_as_a_product_line"></a><a class="link" href="#petclinic_as_a_product_line">Petclinic as a Product Line</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Picking up the Petlinic example from above, what we will do in this guide is to make the Petclinic product not a standalone software anymore, but rather a Product Line. The base product is the Petclinic example as we know it. Additionally there are extensions made for particular customer type or even a particular customer.</p>
+<p>Picking up the Petlinic example from above, what we will do in this guide is to make the Petclinic product not a standalone software anymore, but rather a Product Line. The base product is the Petclinic example as we know it. Additionally there are extensions made for particular customer types or even a particular customerss.</p>
 </div>
 <div class="paragraph">
 <p>Those extensions are itself CUBA applications (<code>Kanto-Petclinic</code> and <code>Alabastia-Petclinic</code>) that uses the Petclinic base product as an application component. With that we will leverage the compile-time extension mechanism for a CUBA application.</p>
@@ -418,7 +418,7 @@ Through CUBA Studio it is possible to generate the application component descrip
 </div>
 </div>
 <div class="paragraph">
-<p>In order to use it, the dependency can be installed through CUBA Studio. Via <code>CUBA &gt; Marketplace&#8230;&#8203;</code> an application component can be found. In this case, the petclinic application component is not in the public CUBA Marketplace, but rather in our local computer. Therefore, it does not appear in the list. On the top right, there is a button called <code>Install add-on manually</code>, which allows to enter the coordinates of the application component: <code>com.haulmont.sample.petclinic:petclinic-global:2.0</code>.</p>
+<p>In order to use it, the dependency can be installed through CUBA Studio. Via <code>CUBA &gt; Marketplace&#8230;&#8203;</code> an application component can be found. In this case, the petclinic application component is not in the public CUBA Marketplace, but rather in our local computer. Therefore, it does not appear in the list. On the top right, there is a button called <code>Install add-on manually</code>, which allows to enter the coordinates of the application component: <code>com.haulmont.sample.petclinic:petclinic-global:2.0.0</code>.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -574,7 +574,7 @@ When using a development approach within a team the normal way of handling such 
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>a input dialog facet is used for requesting certain information before the visit is created</td>
+<td>a input dialog facet is used for requesting the visit type before the visit is created</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
