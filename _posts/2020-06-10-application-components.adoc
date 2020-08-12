@@ -1,8 +1,8 @@
 ---
 compatible_cuba_versions: 7.1+
 compatible_java_versions: 8+
-project_id: cuba-petclinic-unit-testing
-permalink: unit-testing
+project_id: cuba-petclinic-product-line-platform
+permalink: product-customizations-with-app-components
 ---
 = Product Customizations with Application Components
 :showtitle:
@@ -11,7 +11,7 @@ permalink: unit-testing
 :page-navtitle: Product Customizations with Application Components
 :page-excerpt:In this guide you will learn how customer-specific solutions can be created based on a standard product. We will leverage the capabilities of CUBAs application components to modularize the overall application.
 :page-root: ../../../
-:project_id: cuba-petclinic-unit-testing
+:project_id: cuba-petclinic-product-line-platform
 :java_version: 8
 :cuba_version: 7.1
 :page-icone: images/unit-testing/guide_icone.svg
@@ -167,13 +167,13 @@ We will start of with the Kanto-Petclinic. This project only needs slight adjust
 In order to achieve the first requirement of storing previous illnesses to the Visit, the `Visit` entity has to be extend. CUBA allows to extend screens from application components or the framework itself via the `@Extends` annotation on the JPA entity. For the Kanto-Petclinic adding attribute looks like this:
 
 
-.RockyMountVisit.java
+.KantoVisit.java
 [source,java]
 ----
 @Extends(Visit.class)
-@Entity(name = "rockymountpetclinic_RockyMountVisit")
-@DiscriminatorValue("RockyMountVisit")
-public class RockyMountVisit extends Visit {
+@Entity(name = "kantopetclinic_KantoVisit")
+@DiscriminatorValue("KantoVisit")
+public class KantoVisit extends Visit {
 
     @Column(name = "PREVIOUS_ILLNESSES", length = 4000)
     private String previousIllnesses;
@@ -188,7 +188,7 @@ public class RockyMountVisit extends Visit {
 }
 ----
 
-The `@Extends` annotation replaces all occurences of the `Visit` entity with its new extension  `RockyMountVisit`. As the subclass can still be treated as a `Visit` this also means, all existing logic / screens that is inside the application component will continue to work.
+The `@Extends` annotation replaces all occurences of the `Visit` entity with its new extension  `KantoVisit`. As the subclass can still be treated as a `Visit` this also means, all existing logic / screens that is inside the application component will continue to work.
 
 After that addition, CUBA Studio will generate the corresponding database update scripts. This will alter the original table instead of defining a new one.
 
@@ -276,12 +276,12 @@ This can be achieved by creating another screen extension to the Pet Browse scre
 The business logic of the screen is also extended accordingly. The controller subscribes to the close event of the input dialog.
 
 
-.RockyMountPetBrowse.java
+.KantoPetBrowse.java
 [source,java]
 ----
 @UiController("petclinic_Pet.browse")
 @UiDescriptor("rocky-mount-pet-browse.xml")
-public class RockyMountPetBrowse extends PetBrowse {
+public class KantoPetBrowse extends PetBrowse {
 
     @Inject
     protected GroupTable<Pet> petsTable;
@@ -370,7 +370,7 @@ In order to assign treatment rooms to visits, the rooms itself need to be manage
 [source,java]
 ----
 @Table(name = "LANCASTERPETCLINIC_TREATMENT_ROOM")
-@Entity(name = "lancasterpetclinic_TreatmentRoom")
+@Entity(name = "alabastiapetclinic_TreatmentRoom")
 public class TreatmentRoom extends NamedEntity {
 
     @Column(name = "ROOM_NUMBER", nullable = false)
@@ -389,7 +389,7 @@ After storing the information of the Rooms itself, it is required to store the i
 .DefaultTreatmentRoom.java
 [source,java]
 ----
-@Entity(name = "lancasterpetclinic_DefaultTreatmentRoom")
+@Entity(name = "alabastiapetclinic_DefaultTreatmentRoom")
 public class DefaultTreatmentRoom extends StandardEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -406,13 +406,13 @@ public class DefaultTreatmentRoom extends StandardEntity {
 Now the last entity extension that needs to be made is to link a Visit with a Treatment Room. This is done via Entity extensions as we have already seen in the Kanto-Petclinic example:
 
 
-.LancasterVisit.java
+.AlabastiaVisit.java
 [source,java]
 ----
 @Extends(Visit.class)
-@Entity(name = "lancasterpetclinic_LancasterVisit")
-@DiscriminatorValue("LancasterVisit")
-public class LancasterVisit extends Visit {
+@Entity(name = "alabastiapetclinic_AlabastiaVisit")
+@DiscriminatorValue("AlabastiaVisit")
+public class AlabastiaVisit extends Visit {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TREATMENT_ROOM_ID")
@@ -431,12 +431,12 @@ public class LancasterVisit extends Visit {
 With those entity changes, we have everything in place to allow the UI automatically pre-populate the correct values for `assignedNurse` and `treatmentRoom`. The assigned nurse will just be the current user, whereas the treatmentRoom is looked up by the room assigned in the `DefaultTreatmentRoom` for the current user.
 
 
-.LancasterVisitEdit.java
+.AlabastiaVisitEdit.java
 [source,java]
 ----
 @UiController("petclinic_Visit.edit")
-@UiDescriptor("lancaster-visit-edit.xml")
-public class LancasterVisitEdit extends VisitEdit {
+@UiDescriptor("alabastia-visit-edit.xml")
+public class AlabastiaVisitEdit extends VisitEdit {
 
     @Inject
     protected DataManager dataManager;
@@ -462,7 +462,7 @@ public class LancasterVisitEdit extends VisitEdit {
     }
 
     private void initTreatmentRoom(TreatmentRoom treatmentRoom) {
-        final LancasterVisit visit = (LancasterVisit) getEditedEntity(); // <2>
+        final AlabastiaVisit visit = (AlabastiaVisit) getEditedEntity(); // <2>
         visit.setTreatmentRoom(treatmentRoom);
     }
 
@@ -482,4 +482,5 @@ public class LancasterVisitEdit extends VisitEdit {
 }
 ----
 <1> the default treatment room is looked up via the dataManager. If there is a mapping defined for the current user the room will be set for the visit.
-<2> in order to use the methods of the extension, the Visit entity has to be casted to `LancasterVisit`. As we have extended the entity, we can be sure that CUBA will always use `LancasterVisit` instead of `Visit`. Therefore it is safe to cast here.
+<2> in order to use the methods of the extension, the Visit entity has to be casted to `AlabastiaVisit`. As we have extended the entity, we can be sure that CUBA will always use `AlabastiaVisit` instead of `Visit`. Therefore, it is safe to cast here.
+
