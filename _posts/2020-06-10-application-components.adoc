@@ -198,23 +198,21 @@ After that addition, CUBA Studio will generate the corresponding database update
 
 More information on the Entity extension mechanism can be found in the CUBA docs: https://doc.cuba-platform.com/manual-latest/entity_extension.html[Entity Extensions]
 
-TODO: continue review...
-
 The second part of that feature requirement is that the attribute `previousIllnesses` can also be managed in the UI. For this, we will extend the existing UI screen of a Visit. CUBA Studio guides you through the process of extending a screen via `Screens > New > Screen > Extend an existing Screen`. The field should only be added to the Entity editor screen, so extending `VisitEdit` is sufficient.
 
 In order to add a field to an existing `form` component, the "delta" XML (containing all the new attributes) has to be put in the XML screen descriptor of the new extension screen. Here you will see how it looks when extending the Visit Editor screen to add the `previousIllnesses` field to it:
 
 
-.rocky-mount-visit-edit.xml
+.kanto-visit-edit.xml
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
-  messagesPack="com.rockymount.petclinic.web.screens.visit"
+  messagesPack="com.kanto.petclinic.web.screens.visit"
   xmlns:ext="http://schemas.haulmont.com/cuba/window-ext.xsd"
   extends="com/haulmont/sample/petclinic/web/screens/visit/visit-edit.xml"> // <1>
   <layout>
-    <form id="fieldGroup">
+    <form id="fieldGroup"> // <2>
       <column id="column1">
         <textArea
           id="previousIllnessesField"
@@ -228,6 +226,7 @@ In order to add a field to an existing `form` component, the "delta" XML (contai
 </window>
 ----
 <1> the extends attribute declares on which screen this screen extension is based upon
+<2> by adding another form component with the same ID "fieldGroup" the component will be merged with the parent one
 
 In this case, the text area for the new field is appended at the bottom of the form component with the ID `fieldGroup`. It is also possible to further specify the placement of the component inside its parent component via the `ext` namespace.
 
@@ -238,12 +237,12 @@ The second extension that the Kanto-Petclinic requests is to have a shortcut on 
 This can be achieved by creating another screen extension to the Pet Browse screen. The extension adds one action to the Pet Table called `Create Visit`. The extension of the screen in the XML screen descriptor looks like this:
 
 
-.rocky-mount-pet-browse.xml
+.kanto-pet-browse.xml
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
-  messagesPack="com.rockymount.petclinic.web.screens.pet"
+  messagesPack="com.kanto.petclinic.web.screens.pet"
   extends="com/haulmont/sample/petclinic/web/pet/pet/pet-browse.xml">
   <facets>
     <inputDialog // <1>
@@ -256,10 +255,13 @@ This can be achieved by creating another screen extension to the Pet Browse scre
         <enumParameter
           id="visitType"
           enumClass="com.haulmont.sample.petclinic.entity.visit.VisitType"
-          caption="msg://com.rockymount.petclinic.web.screens.pet/visitType"
+          caption="msg://com.kanto.petclinic.web.screens.pet/visitType"
         />
       </parameters>
     </inputDialog>
+    <notification id="visitCreatedNotification"
+      type="TRAY"
+      caption="msg://visitCreated" />
   </facets>
   <layout>
     <groupTable id="petsTable"> // <2>
@@ -288,7 +290,7 @@ The business logic of the screen is also extended accordingly. The controller su
 [source,java]
 ----
 @UiController("petclinic_Pet.browse")
-@UiDescriptor("rocky-mount-pet-browse.xml")
+@UiDescriptor("kanto-pet-browse.xml")
 public class KantoPetBrowse extends PetBrowse {
 
     @Inject
@@ -301,6 +303,8 @@ public class KantoPetBrowse extends PetBrowse {
     protected ScreenBuilders screenBuilders;
     @Inject
     protected MessageBundle messageBundle;
+    @Inject
+    protected NotificationFacet visitCreatedNotification;
 
     @Subscribe("createVisitForPetDialog")
     protected void onCreateVisitForPetDialogClose(CloseEvent event) {
@@ -310,9 +314,7 @@ public class KantoPetBrowse extends PetBrowse {
             final Visit createdVisit = visitCreationService
                 .createVisitForPet(petsTable.getSingleSelected(), visitType); // <1>
 
-            notifications.create(NotificationType.TRAY)
-                            .withCaption(messageBundle.getMessage("visitCreated"))
-                            .show();
+            visitCreatedNotification.show();
 
             screenBuilders.editor(Visit.class, this)
                 .editEntity(createdVisit)
@@ -325,7 +327,7 @@ public class KantoPetBrowse extends PetBrowse {
 ----
 <1> the creation of the Visit is delegated to the `VisitCreationService`, which is only part of the Kanto-Petclinic project.
 
-The `VisitCreationService` is a new CUBA Service that is not part of the original Petclinic platform. Instead, we create this service exclusievely for the Kanto-Petclinic project:
+The `VisitCreationService` is a new CUBA Service that is not part of the original Petclinic platform. Instead, we create this service exclusively for the Kanto-Petclinic project:
 
 
 .VisitCreationServiceBean.java
@@ -346,10 +348,11 @@ public class VisitCreationServiceBean implements VisitCreationService {
         final Visit visitForPet = dataManager.create(Visit.class);
 
         visitForPet.setPet(pet);
-        visitForPet.setVisitStart(timeSource.now().toLocalDateTime());
-        visitForPet.setVisitEnd(timeSource.now().toLocalDateTime().plusHours(1));
-
         visitForPet.setType(visitType);
+
+        final LocalDateTime now = timeSource.now().toLocalDateTime();
+        visitForPet.setVisitStart(now);
+        visitForPet.setVisitEnd(now.plusHours(1));
 
         return dataManager.commit(visitForPet);
     }
@@ -493,11 +496,38 @@ public class AlabastiaVisitEdit extends VisitEdit {
 <2> in order to use the methods of the extension, the Visit entity has to be casted to `AlabastiaVisit`. As we have extended the entity, we can be sure that CUBA will always use `AlabastiaVisit` instead of `Visit`. Therefore, it is safe to cast here.
 
 
+When opening the screen now, there will be an un-fetched attribute error of the attribute `treatmentRoom`. The reason for this is, because the view (`visit-with-pet`) as it is defined and used for the Visit entity does not include the `treatmentRoom` attribute. CUBA allows to override view definitions for an entity extension. This is what we need to do in order to also load the `treatmentRoom` for the `AlabastiaVisit` entity:
+
+
+.views.xml
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<views xmlns="http://schemas.haulmont.com/cuba/view.xsd">
+
+  <view class="com.alabastia.petclinic.entity.AlabastiaVisit"  // <1>
+    name="visit-with-pet" extends="visit-with-pet"> //<2>
+    <property name="treatmentRoom" view="_minimal"/>
+  </view>
+
+</views>
+----
+<1> the view definition targets the extended class `AlabastiaVisit`
+<2> the name of the view has to match the original name and also mention that it extends this original view
+
+With that adjustment in place, the extended view will be taken into consideration when opening the screen and the un-fetched attribute error will go away.
+
 === Summary
 
-In this guide we have learned about the different options on how to implement product customizations via extension mechanisms. Then we explored what to do in order to make the Petclinic an application component in order to use it in customization projects.
+In this guide we have learned about the different options on how to implement product customizations via various extension mechanisms. Mainly there are the two options Runtime extensions as well as Compile-Time extensions. CUBAs application components fall under the category of Compile-Time extensions, which we used throughout the Petclinic example. They mainly differentiate in their capabilities to adjust the original software. It is a trade-off between adjustment needs and deployment flexibility. Runtime extensions can be changed at deployment / runtime, where compile-time extensions do not have this possibility.
 
-Then we took a look into different extension use-cases that either extend the existing data model or change the existing UI of the Petclinic project.
+When switching to the concrete example of the Petclinic, we explored what to do in order to make the Petclinic an application component in order to use it in customization projects.
+
+Then we took a look into different extension use-cases that either extend the existing data model or change the existing UI of the Petclinic project. Furthermore, we have seen how to create additional business logic that is independent of the original solution.
+
+The extensions mechanisms CUBA provides for the UI layer allows highly customizable product extensions without the need to duplicate a lot of source-code.
+
+The ability to extend (and replace) entities is quite unique in the Persistence Framework space. It allows the developer to replace the usage of an Entity in the overall application and adding additional attributes to the entity. CUBA Studio additionally takes away the need to manually deal with the special case of altering the existing DB table of the parent entity.
 
 
 == Further Information
