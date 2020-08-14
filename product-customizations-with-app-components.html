@@ -518,24 +518,21 @@ When using a development approach within a team the normal way of handling such 
 <p>More information on the Entity extension mechanism can be found in the CUBA docs: <a href="https://doc.cuba-platform.com/manual-latest/entity_extension.html">Entity Extensions</a></p>
 </div>
 <div class="paragraph">
-<p>TODO: continue review&#8230;&#8203;</p>
-</div>
-<div class="paragraph">
 <p>The second part of that feature requirement is that the attribute <code>previousIllnesses</code> can also be managed in the UI. For this, we will extend the existing UI screen of a Visit. CUBA Studio guides you through the process of extending a screen via <code>Screens &gt; New &gt; Screen &gt; Extend an existing Screen</code>. The field should only be added to the Entity editor screen, so extending <code>VisitEdit</code> is sufficient.</p>
 </div>
 <div class="paragraph">
 <p>In order to add a field to an existing <code>form</code> component, the "delta" XML (containing all the new attributes) has to be put in the XML screen descriptor of the new extension screen. Here you will see how it looks when extending the Visit Editor screen to add the <code>previousIllnesses</code> field to it:</p>
 </div>
 <div class="listingblock">
-<div class="title">rocky-mount-visit-edit.xml</div>
+<div class="title">kanto-visit-edit.xml</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;</span>
 <span class="tag">&lt;window</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://schemas.haulmont.com/cuba/screen/window.xsd</span><span class="delimiter">&quot;</span></span>
-  <span class="attribute-name">messagesPack</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.rockymount.petclinic.web.screens.visit</span><span class="delimiter">&quot;</span></span>
+  <span class="attribute-name">messagesPack</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.kanto.petclinic.web.screens.visit</span><span class="delimiter">&quot;</span></span>
   <span class="attribute-name">xmlns:ext</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://schemas.haulmont.com/cuba/window-ext.xsd</span><span class="delimiter">&quot;</span></span>
   <span class="attribute-name">extends</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com/haulmont/sample/petclinic/web/screens/visit/visit-edit.xml</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
   <span class="tag">&lt;layout&gt;</span>
-    <span class="tag">&lt;form</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">fieldGroup</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;form</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">fieldGroup</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
       <span class="tag">&lt;column</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">column1</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
         <span class="tag">&lt;textArea</span>
           <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">previousIllnessesField</span><span class="delimiter">&quot;</span></span>
@@ -555,6 +552,10 @@ When using a development approach within a team the normal way of handling such 
 <td><i class="conum" data-value="1"></i><b>1</b></td>
 <td>the extends attribute declares on which screen this screen extension is based upon</td>
 </tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>by adding another form component with the same ID "fieldGroup" the component will be merged with the parent one</td>
+</tr>
 </table>
 </div>
 <div class="paragraph">
@@ -570,11 +571,11 @@ When using a development approach within a team the normal way of handling such 
 <p>This can be achieved by creating another screen extension to the Pet Browse screen. The extension adds one action to the Pet Table called <code>Create Visit</code>. The extension of the screen in the XML screen descriptor looks like this:</p>
 </div>
 <div class="listingblock">
-<div class="title">rocky-mount-pet-browse.xml</div>
+<div class="title">kanto-pet-browse.xml</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;</span>
 <span class="tag">&lt;window</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://schemas.haulmont.com/cuba/screen/window.xsd</span><span class="delimiter">&quot;</span></span>
-  <span class="attribute-name">messagesPack</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.rockymount.petclinic.web.screens.pet</span><span class="delimiter">&quot;</span></span>
+  <span class="attribute-name">messagesPack</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.kanto.petclinic.web.screens.pet</span><span class="delimiter">&quot;</span></span>
   <span class="attribute-name">extends</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com/haulmont/sample/petclinic/web/pet/pet/pet-browse.xml</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
   <span class="tag">&lt;facets&gt;</span>
     <span class="tag">&lt;inputDialog</span> <i class="conum" data-value="1"></i><b>(1)</b>
@@ -587,10 +588,13 @@ When using a development approach within a team the normal way of handling such 
         <span class="tag">&lt;enumParameter</span>
           <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">visitType</span><span class="delimiter">&quot;</span></span>
           <span class="attribute-name">enumClass</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.haulmont.sample.petclinic.entity.visit.VisitType</span><span class="delimiter">&quot;</span></span>
-          <span class="attribute-name">caption</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">msg://com.rockymount.petclinic.web.screens.pet/visitType</span><span class="delimiter">&quot;</span></span>
+          <span class="attribute-name">caption</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">msg://com.kanto.petclinic.web.screens.pet/visitType</span><span class="delimiter">&quot;</span></span>
         <span class="tag">/&gt;</span>
       <span class="tag">&lt;/parameters&gt;</span>
     <span class="tag">&lt;/inputDialog&gt;</span>
+    <span class="tag">&lt;notification</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">visitCreatedNotification</span><span class="delimiter">&quot;</span></span>
+      <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">TRAY</span><span class="delimiter">&quot;</span></span>
+      <span class="attribute-name">caption</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">msg://visitCreated</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
   <span class="tag">&lt;/facets&gt;</span>
   <span class="tag">&lt;layout&gt;</span>
     <span class="tag">&lt;groupTable</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">petsTable</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
@@ -632,7 +636,7 @@ When using a development approach within a team the normal way of handling such 
 <div class="title">KantoPetBrowse.java</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@UiController</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_Pet.browse</span><span class="delimiter">&quot;</span></span>)
-<span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">rocky-mount-pet-browse.xml</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">kanto-pet-browse.xml</span><span class="delimiter">&quot;</span></span>)
 <span class="directive">public</span> <span class="type">class</span> <span class="class">KantoPetBrowse</span> <span class="directive">extends</span> PetBrowse {
 
     <span class="annotation">@Inject</span>
@@ -645,6 +649,8 @@ When using a development approach within a team the normal way of handling such 
     <span class="directive">protected</span> ScreenBuilders screenBuilders;
     <span class="annotation">@Inject</span>
     <span class="directive">protected</span> MessageBundle messageBundle;
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> NotificationFacet visitCreatedNotification;
 
     <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">createVisitForPetDialog</span><span class="delimiter">&quot;</span></span>)
     <span class="directive">protected</span> <span class="type">void</span> onCreateVisitForPetDialogClose(CloseEvent event) {
@@ -654,9 +660,7 @@ When using a development approach within a team the normal way of handling such 
             <span class="directive">final</span> Visit createdVisit = visitCreationService
                 .createVisitForPet(petsTable.getSingleSelected(), visitType); <i class="conum" data-value="1"></i><b>(1)</b>
 
-            notifications.create(NotificationType.TRAY)
-                            .withCaption(messageBundle.getMessage(<span class="string"><span class="delimiter">&quot;</span><span class="content">visitCreated</span><span class="delimiter">&quot;</span></span>))
-                            .show();
+            visitCreatedNotification.show();
 
             screenBuilders.editor(Visit.class, <span class="local-variable">this</span>)
                 .editEntity(createdVisit)
@@ -677,7 +681,7 @@ When using a development approach within a team the normal way of handling such 
 </table>
 </div>
 <div class="paragraph">
-<p>The <code>VisitCreationService</code> is a new CUBA Service that is not part of the original Petclinic platform. Instead, we create this service exclusievely for the Kanto-Petclinic project:</p>
+<p>The <code>VisitCreationService</code> is a new CUBA Service that is not part of the original Petclinic platform. Instead, we create this service exclusively for the Kanto-Petclinic project:</p>
 </div>
 <div class="listingblock">
 <div class="title">VisitCreationServiceBean.java</div>
@@ -696,10 +700,11 @@ When using a development approach within a team the normal way of handling such 
         <span class="directive">final</span> Visit visitForPet = dataManager.create(Visit.class);
 
         visitForPet.setPet(pet);
-        visitForPet.setVisitStart(timeSource.now().toLocalDateTime());
-        visitForPet.setVisitEnd(timeSource.now().toLocalDateTime().plusHours(<span class="integer">1</span>));
-
         visitForPet.setType(visitType);
+
+        <span class="directive">final</span> LocalDateTime now = timeSource.now().toLocalDateTime();
+        visitForPet.setVisitStart(now);
+        visitForPet.setVisitEnd(now.plusHours(<span class="integer">1</span>));
 
         <span class="keyword">return</span> dataManager.commit(visitForPet);
     }
@@ -867,15 +872,56 @@ When using a development approach within a team the normal way of handling such 
 </tr>
 </table>
 </div>
+<div class="paragraph">
+<p>When opening the screen now, there will be an un-fetched attribute error of the attribute <code>treatmentRoom</code>. The reason for this is, because the view (<code>visit-with-pet</code>) as it is defined and used for the Visit entity does not include the <code>treatmentRoom</code> attribute. CUBA allows to override view definitions for an entity extension. This is what we need to do in order to also load the <code>treatmentRoom</code> for the <code>AlabastiaVisit</code> entity:</p>
+</div>
+<div class="listingblock">
+<div class="title">views.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;</span>
+<span class="tag">&lt;views</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://schemas.haulmont.com/cuba/view.xsd</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+
+  <span class="tag">&lt;view</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.alabastia.petclinic.entity.AlabastiaVisit</span><span class="delimiter">&quot;</span></span>  <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">visit-with-pet</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">extends</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">visit-with-pet</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">treatmentRoom</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">view</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">_minimal</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+  <span class="tag">&lt;/view&gt;</span>
+
+<span class="tag">&lt;/views&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the view definition targets the extended class <code>AlabastiaVisit</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the name of the view has to match the original name and also mention that it extends this original view</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>With that adjustment in place, the extended view will be taken into consideration when opening the screen and the un-fetched attribute error will go away.</p>
+</div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h3>
 <div class="paragraph">
-<p>In this guide we have learned about the different options on how to implement product customizations via extension mechanisms. Then we explored what to do in order to make the Petclinic an application component in order to use it in customization projects.</p>
+<p>In this guide we have learned about the different options on how to implement product customizations via various extension mechanisms. Mainly there are the two options Runtime extensions as well as Compile-Time extensions. CUBAs application components fall under the category of Compile-Time extensions, which we used throughout the Petclinic example. They mainly differentiate in their capabilities to adjust the original software. It is a trade-off between adjustment needs and deployment flexibility. Runtime extensions can be changed at deployment / runtime, where compile-time extensions do not have this possibility.</p>
 </div>
 <div class="paragraph">
-<p>Then we took a look into different extension use-cases that either extend the existing data model or change the existing UI of the Petclinic project.</p>
+<p>When switching to the concrete example of the Petclinic, we explored what to do in order to make the Petclinic an application component in order to use it in customization projects.</p>
+</div>
+<div class="paragraph">
+<p>Then we took a look into different extension use-cases that either extend the existing data model or change the existing UI of the Petclinic project. Furthermore, we have seen how to create additional business logic that is independent of the original solution.</p>
+</div>
+<div class="paragraph">
+<p>The extensions mechanisms CUBA provides for the UI layer allows highly customizable product extensions without the need to duplicate a lot of source-code.</p>
+</div>
+<div class="paragraph">
+<p>The ability to extend (and replace) entities is quite unique in the Persistence Framework space. It allows the developer to replace the usage of an Entity in the overall application and adding additional attributes to the entity. CUBA Studio additionally takes away the need to manually deal with the special case of altering the existing DB table of the parent entity.</p>
 </div>
 </div>
 </div>
