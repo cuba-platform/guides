@@ -13,14 +13,12 @@
     <meta name="twitter:site" content="@CubaPlatform">
     <meta name="twitter:creator" content="@CubaPlatform">
     <meta name="twitter:title" content="Product Customizations with Application Components">
-    <meta name="twitter:description" content="<h1>Product Customizations with Application Components</h1>
-">
+    <meta name="twitter:description" content="In this guide you will learn how customer-specific solutions can be created based on a standard product. We will leverage the capabilities of CUBAs application components to customize the project and add customer-specific functionalities.">
     <meta name="twitter:image" content="">
 
     <meta property="og:type" content="article">
     <meta property="og:title" content="Product Customizations with Application Components">
-    <meta property="og:description" content="<h1>Product Customizations with Application Components</h1>
-">
+    <meta property="og:description" content="In this guide you will learn how customer-specific solutions can be created based on a standard product. We will leverage the capabilities of CUBAs application components to customize the project and add customer-specific functionalities.">
     <meta property="og:url" content="https://www.cuba-platform.com/guides/product-customizations-with-app-components">
     <meta property="og:image" content="">
 
@@ -188,7 +186,7 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this guide you will learn how customer-specific solutions can be created based on a standard product. We will leverage the capabilities of CUBAs application components to customize the project and add customer-specific functionalities.</p>
+<p>In this guide you will learn how automated testing in a CUBA application works. In particular, this guide deals with the question of how unit tests can be executed and when it makes sense to use them over integration testing.</p>
 </div>
 </div>
 </div>
@@ -529,10 +527,9 @@ When using a development approach within a team the normal way of handling such 
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;</span>
 <span class="tag">&lt;window</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://schemas.haulmont.com/cuba/screen/window.xsd</span><span class="delimiter">&quot;</span></span>
   <span class="attribute-name">messagesPack</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.kanto.petclinic.web.screens.visit</span><span class="delimiter">&quot;</span></span>
-  <span class="attribute-name">xmlns:ext</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://schemas.haulmont.com/cuba/window-ext.xsd</span><span class="delimiter">&quot;</span></span>
   <span class="attribute-name">extends</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com/haulmont/sample/petclinic/web/screens/visit/visit-edit.xml</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
   <span class="tag">&lt;layout&gt;</span>
-    <span class="tag">&lt;form</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">fieldGroup</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="tag">&lt;form</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">form</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
       <span class="tag">&lt;column</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">column1</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
         <span class="tag">&lt;textArea</span>
           <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">previousIllnessesField</span><span class="delimiter">&quot;</span></span>
@@ -554,12 +551,12 @@ When using a development approach within a team the normal way of handling such 
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>by adding another form component with the same ID "fieldGroup" the component will be merged with the parent one</td>
+<td>by adding another form component with the same ID "form" the component will be merged with the parent one</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>In this case, the text area for the new field is appended at the bottom of the form component with the ID <code>fieldGroup</code>. It is also possible to further specify the placement of the component inside its parent component via the <code>ext</code> namespace.</p>
+<p>In this case, the text area for the new field is appended at the bottom of the form component with the ID <code>for</code>.</p>
 </div>
 </div>
 <div class="sect3">
@@ -745,7 +742,7 @@ When using a development approach within a team the normal way of handling such 
 <div class="listingblock">
 <div class="title">TreatmentRoom.java</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Table</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">LANCASTERPETCLINIC_TREATMENT_ROOM</span><span class="delimiter">&quot;</span></span>)
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Table</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">ALABASTIAPETCLINIC_TREATMENT_ROOM</span><span class="delimiter">&quot;</span></span>)
 <span class="annotation">@Entity</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">alabastiapetclinic_TreatmentRoom</span><span class="delimiter">&quot;</span></span>)
 <span class="directive">public</span> <span class="type">class</span> <span class="class">TreatmentRoom</span> <span class="directive">extends</span> NamedEntity {
 
@@ -873,6 +870,63 @@ When using a development approach within a team the normal way of handling such 
 </table>
 </div>
 <div class="paragraph">
+<p>In order to see the new attribute <code>treatmentRoom</code> in the Visit editor, we also extend the screen descriptor:</p>
+</div>
+<div class="paragraph">
+<p>alabastia-visit-edit.xml</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;</span>
+<span class="tag">&lt;window</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://schemas.haulmont.com/cuba/screen/window.xsd</span><span class="delimiter">&quot;</span></span>
+  <span class="attribute-name">messagesPack</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.alabastia.petclinic.web.screens.visit</span><span class="delimiter">&quot;</span></span>
+  <span class="attribute-name">xmlns:ext</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://schemas.haulmont.com/cuba/window-ext.xsd</span><span class="delimiter">&quot;</span></span>
+  <span class="attribute-name">extends</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com/haulmont/sample/petclinic/web/screens/visit/visit-edit.xml</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+  <span class="tag">&lt;data&gt;</span>
+    <span class="tag">&lt;collection</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">treatmentRoomsDc</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.alabastia.petclinic.entity.TreatmentRoom</span><span class="delimiter">&quot;</span></span>
+      <span class="attribute-name">view</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">_minimal</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="tag">&lt;loader&gt;</span>
+        <span class="tag">&lt;query&gt;</span>
+          <span class="inline-delimiter">&lt;![CDATA[</span>select e from alabastiapetclinic_TreatmentRoom e<span class="inline-delimiter">]]&gt;</span>
+        <span class="tag">&lt;/query&gt;</span>
+      <span class="tag">&lt;/loader&gt;</span>
+    <span class="tag">&lt;/collection&gt;</span>
+  <span class="tag">&lt;/data&gt;</span>
+  <span class="tag">&lt;layout&gt;</span>
+    <span class="tag">&lt;form</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">form</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="tag">&lt;column</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">column2</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;lookupField</span>
+                <span class="attribute-name">ext:index</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">2</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="1"></i><b>(1)</b>
+                <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">treatmentRoomField</span><span class="delimiter">&quot;</span></span>
+                <span class="attribute-name">property</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">treatmentRoom</span><span class="delimiter">&quot;</span></span>
+                <span class="attribute-name">optionsContainer</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">treatmentRoomsDc</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+      <span class="tag">&lt;/column&gt;</span>
+    <span class="tag">&lt;/form&gt;</span>
+  <span class="tag">&lt;/layout&gt;</span>
+<span class="tag">&lt;/window&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>ext:index</code> determines the position of the element within the second column of the <code>form</code> component</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+In order to use the <code>ext</code> attributes, the namespace has to be defined in the beginning of the XML file: <code>xmlns:ext="http://schemas.haulmont.com/cuba/window-ext.xsd"</code>. CUBA Studio automatically configures the index value when the lookupField is placed via the visual representation of the screen descriptor.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
 <p>When opening the screen now, there will be an un-fetched attribute error of the attribute <code>treatmentRoom</code>. The reason for this is, because the view (<code>visit-with-pet</code>) as it is defined and used for the Visit entity does not include the <code>treatmentRoom</code> attribute. CUBA allows to override view definitions for an entity extension. This is what we need to do in order to also load the <code>treatmentRoom</code> for the <code>AlabastiaVisit</code> entity:</p>
 </div>
 <div class="listingblock">
@@ -909,19 +963,22 @@ When using a development approach within a team the normal way of handling such 
 <div class="sect2">
 <h3 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h3>
 <div class="paragraph">
-<p>In this guide we have learned about the different options on how to implement product customizations via various extension mechanisms. Mainly there are the two options Runtime extensions as well as Compile-Time extensions. CUBAs application components fall under the category of Compile-Time extensions, which we used throughout the Petclinic example. They mainly differentiate in their capabilities to adjust the original software. It is a trade-off between adjustment needs and deployment flexibility. Runtime extensions can be changed at deployment / runtime, where compile-time extensions do not have this possibility.</p>
+<p>In this guide we have learned about the different options on how to implement product customizations via various extension mechanisms. Mainly there are the two categories of customization possibilities: Runtime extensions as well as Compile-Time extensions.</p>
 </div>
 <div class="paragraph">
-<p>When switching to the concrete example of the Petclinic, we explored what to do in order to make the Petclinic an application component in order to use it in customization projects.</p>
+<p>CUBAs application components fall under the category of Compile-Time extensions, which we used throughout the Petclinic example. They mainly differ in their capabilities on how much the original software can be adjusted. It is a trade-off between adjustment needs and deployment flexibility. Runtime extensions can be changed at deployment / runtime, where compile-time extensions do not have this possibility.</p>
+</div>
+<div class="paragraph">
+<p>When switching to the concrete example of the Petclinic, we explored how to make the Petclinic an application component in order to use it in customization projects.</p>
 </div>
 <div class="paragraph">
 <p>Then we took a look into different extension use-cases that either extend the existing data model or change the existing UI of the Petclinic project. Furthermore, we have seen how to create additional business logic that is independent of the original solution.</p>
 </div>
 <div class="paragraph">
-<p>The extensions mechanisms CUBA provides for the UI layer allows highly customizable product extensions without the need to duplicate a lot of source-code.</p>
+<p>The extensions mechanisms CUBA provides for the UI layer allows highly customizable product extensions without the need to duplicate a lot of source-code. The usage of XML extensions to adjust the existing screen definitions as well as the positioning mechanisms via the <code>ext:index</code> attribute make this possible.</p>
 </div>
 <div class="paragraph">
-<p>The ability to extend (and replace) entities is quite unique in the Persistence Framework space. It allows the developer to replace the usage of an Entity in the overall application and adding additional attributes to the entity. CUBA Studio additionally takes away the need to manually deal with the special case of altering the existing DB table of the parent entity.</p>
+<p>The ability to extend (and replace) entities is quite unique in the landscape of full-stack frameworks. It allows the developer to replace the usage of an entity in the overall application and adding additional attributes to it. CUBA Studio as always takes care of creating the corresponding DB update scripts. This feature is particularly valuable when using product customizations, because it allows to share an already working common data-model that can be adjusted to the specific needs of the customer.</p>
 </div>
 </div>
 </div>
@@ -932,7 +989,10 @@ When using a development approach within a team the normal way of handling such 
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://doc.cuba-platform.com/manual-latest/entity_extension.html">CUBA docs: Entity Extensions</a></p>
+<p><a href="https://doc.cuba-platform.com/manual-latest/extension.html">CUBA docs: Functionality Extensions</a></p>
+</li>
+<li>
+<p><a href="https://doc.cuba-platform.com/manual-latest/app_components.html">CUBA docs: Application components</a></p>
 </li>
 </ul>
 </div>
@@ -952,7 +1012,34 @@ When using a development approach within a team the normal way of handling such 
 
                         <div class="guide-panel">
                             <h3 class="header-table-content">Table of contents</h3>
-                            
+                            <ul class="sectlevel1">
+<li><a href="#what_we_are_going_to_build">What we are going to build</a>
+<ul class="sectlevel2">
+<li><a href="#kanto_petclinic">Kanto-Petclinic</a></li>
+<li><a href="#alabastia_petclinic">Alabastia-Petclinic</a></li>
+<li><a href="#requirements">Requirements</a></li>
+</ul>
+</li>
+<li><a href="#overview">Overview</a>
+<ul class="sectlevel2">
+<li><a href="#different_extension_mechanisms">Different Extension Mechanisms</a></li>
+</ul>
+</li>
+<li><a href="#petclinic_as_a_product_line">Petclinic as a Product Line</a>
+<ul class="sectlevel2">
+<li><a href="#making_the_petclinic_project_an_application_component">Making the Petclinic Project an Application Component</a></li>
+<li><a href="#using_the_petclinic_application_component_in_a_cuba_application">Using the Petclinic Application Component in a CUBA Application</a></li>
+</ul>
+</li>
+<li><a href="#petclinic_extensions">Petclinic Extensions</a>
+<ul class="sectlevel2">
+<li><a href="#kanto_petclinic_2">Kanto-Petclinic</a></li>
+<li><a href="#alabastia_petclinic_2">Alabastia-Petclinic</a></li>
+<li><a href="#summary">Summary</a></li>
+</ul>
+</li>
+<li><a href="#further_information">Further Information</a></li>
+</ul>
                         </div>
 
                         <div class="sidebar-razd"></div>
