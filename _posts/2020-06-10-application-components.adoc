@@ -9,16 +9,17 @@ permalink: product-customizations-with-app-components
 :sectlinks:
 :sectanchors:
 :page-navtitle: Product Customizations with Application Components
-:page-excerpt:In this guide you will learn how customer-specific solutions can be created based on a standard product. We will leverage the capabilities of CUBAs application components to customize the project and add customer-specific functionalities.
+:page-excerpt: In this guide you will learn how customer-specific solutions can be created based on a standard product. We will leverage the capabilities of CUBAs application components to customize the project and add customer-specific functionalities.
 :page-root: ../../../
 :project_id: cuba-petclinic-product-line-platform
 :java_version: 8
-:cuba_version: 7.2
+:cuba_version: 7.1
 :page-icone: images/unit-testing/guide_icone.svg
 
-In this guide you will learn how customer-specific solutions can be created based on a standard product. We will leverage the capabilities of CUBAs application components to customize the project and add customer-specific functionalities.
+In this guide you will learn how automated testing in a CUBA application works. In particular, this guide deals with the question of how unit tests can be executed and when it makes sense to use them over integration testing.
 
 == What we are going to build
+
 
 This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA Petclinic] example to show how two customer-specific extensions `Kanto-Petclinic` and `Alabastia-Petclinic` can be created and how specific extensions are created:
 
@@ -209,10 +210,9 @@ In order to add a field to an existing `form` component, the "delta" XML (contai
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
   messagesPack="com.kanto.petclinic.web.screens.visit"
-  xmlns:ext="http://schemas.haulmont.com/cuba/window-ext.xsd"
   extends="com/haulmont/sample/petclinic/web/screens/visit/visit-edit.xml"> // <1>
   <layout>
-    <form id="fieldGroup"> // <2>
+    <form id="form"> // <2>
       <column id="column1">
         <textArea
           id="previousIllnessesField"
@@ -226,9 +226,9 @@ In order to add a field to an existing `form` component, the "delta" XML (contai
 </window>
 ----
 <1> the extends attribute declares on which screen this screen extension is based upon
-<2> by adding another form component with the same ID "fieldGroup" the component will be merged with the parent one
+<2> by adding another form component with the same ID "form" the component will be merged with the parent one
 
-In this case, the text area for the new field is appended at the bottom of the form component with the ID `fieldGroup`. It is also possible to further specify the placement of the component inside its parent component via the `ext` namespace.
+In this case, the text area for the new field is appended at the bottom of the form component with the ID `for`.
 
 ==== Create Visits for Today from Pet Browse
 
@@ -380,7 +380,7 @@ In order to assign treatment rooms to visits, the rooms itself need to be manage
 .TreatmentRoom.java
 [source,java]
 ----
-@Table(name = "LANCASTERPETCLINIC_TREATMENT_ROOM")
+@Table(name = "ALABASTIAPETCLINIC_TREATMENT_ROOM")
 @Entity(name = "alabastiapetclinic_TreatmentRoom")
 public class TreatmentRoom extends NamedEntity {
 
@@ -495,6 +495,42 @@ public class AlabastiaVisitEdit extends VisitEdit {
 <1> the default treatment room is looked up via the dataManager. If there is a mapping defined for the current user the room will be set for the visit.
 <2> in order to use the methods of the extension, the Visit entity has to be casted to `AlabastiaVisit`. As we have extended the entity, we can be sure that CUBA will always use `AlabastiaVisit` instead of `Visit`. Therefore, it is safe to cast here.
 
+In order to see the new attribute `treatmentRoom` in the Visit editor, we also extend the screen descriptor:
+
+alabastia-visit-edit.xml
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+  messagesPack="com.alabastia.petclinic.web.screens.visit"
+  xmlns:ext="http://schemas.haulmont.com/cuba/window-ext.xsd"
+  extends="com/haulmont/sample/petclinic/web/screens/visit/visit-edit.xml">
+  <data>
+    <collection id="treatmentRoomsDc" class="com.alabastia.petclinic.entity.TreatmentRoom"
+      view="_minimal">
+      <loader>
+        <query>
+          <![CDATA[select e from alabastiapetclinic_TreatmentRoom e]]>
+        </query>
+      </loader>
+    </collection>
+  </data>
+  <layout>
+    <form id="form">
+      <column id="column2">
+        <lookupField
+                ext:index="2" // <1>
+                id="treatmentRoomField"
+                property="treatmentRoom"
+                optionsContainer="treatmentRoomsDc"/>
+      </column>
+    </form>
+  </layout>
+</window>
+----
+<1> `ext:index` determines the position of the element within the second column of the `form` component
+
+WARNING: In order to use the `ext` attributes, the namespace has to be defined in the beginning of the XML file: `xmlns:ext="http://schemas.haulmont.com/cuba/window-ext.xsd"`. CUBA Studio automatically configures the index value when the lookupField is placed via the visual representation of the screen descriptor.
 
 When opening the screen now, there will be an un-fetched attribute error of the attribute `treatmentRoom`. The reason for this is, because the view (`visit-with-pet`) as it is defined and used for the Visit entity does not include the `treatmentRoom` attribute. CUBA allows to override view definitions for an entity extension. This is what we need to do in order to also load the `treatmentRoom` for the `AlabastiaVisit` entity:
 
@@ -519,17 +555,20 @@ With that adjustment in place, the extended view will be taken into consideratio
 
 === Summary
 
-In this guide we have learned about the different options on how to implement product customizations via various extension mechanisms. Mainly there are the two options Runtime extensions as well as Compile-Time extensions. CUBAs application components fall under the category of Compile-Time extensions, which we used throughout the Petclinic example. They mainly differentiate in their capabilities to adjust the original software. It is a trade-off between adjustment needs and deployment flexibility. Runtime extensions can be changed at deployment / runtime, where compile-time extensions do not have this possibility.
+In this guide we have learned about the different options on how to implement product customizations via various extension mechanisms. Mainly there are the two categories of customization possibilities: Runtime extensions as well as Compile-Time extensions.
 
-When switching to the concrete example of the Petclinic, we explored what to do in order to make the Petclinic an application component in order to use it in customization projects.
+CUBAs application components fall under the category of Compile-Time extensions, which we used throughout the Petclinic example. They mainly differ in their capabilities on how much the original software can be adjusted. It is a trade-off between adjustment needs and deployment flexibility. Runtime extensions can be changed at deployment / runtime, where compile-time extensions do not have this possibility.
+
+When switching to the concrete example of the Petclinic, we explored how to make the Petclinic an application component in order to use it in customization projects.
 
 Then we took a look into different extension use-cases that either extend the existing data model or change the existing UI of the Petclinic project. Furthermore, we have seen how to create additional business logic that is independent of the original solution.
 
-The extensions mechanisms CUBA provides for the UI layer allows highly customizable product extensions without the need to duplicate a lot of source-code.
+The extensions mechanisms CUBA provides for the UI layer allows highly customizable product extensions without the need to duplicate a lot of source-code. The usage of XML extensions to adjust the existing screen definitions as well as the positioning mechanisms via the `ext:index` attribute make this possible.
 
-The ability to extend (and replace) entities is quite unique in the Persistence Framework space. It allows the developer to replace the usage of an Entity in the overall application and adding additional attributes to the entity. CUBA Studio additionally takes away the need to manually deal with the special case of altering the existing DB table of the parent entity.
+The ability to extend (and replace) entities is quite unique in the landscape of full-stack frameworks. It allows the developer to replace the usage of an entity in the overall application and adding additional attributes to it. CUBA Studio as always takes care of creating the corresponding DB update scripts. This feature is particularly valuable when using product customizations, because it allows to share an already working common data-model that can be adjusted to the specific needs of the customer.
 
 
 == Further Information
 
-* https://doc.cuba-platform.com/manual-latest/entity_extension.html[CUBA docs: Entity Extensions]
+* https://doc.cuba-platform.com/manual-latest/extension.html[CUBA docs: Functionality Extensions]
+* https://doc.cuba-platform.com/manual-latest/app_components.html[CUBA docs: Application components]

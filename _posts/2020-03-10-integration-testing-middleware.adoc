@@ -20,7 +20,7 @@ Test automation is the key to every successful application development process s
 
 First you will understand how testing in general works in a CUBA application. Afterwards, this guide will concentrate on the area of integration testing in the middleware layer.
 
-== What Will be Built
+== What we are going to build
 
 This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA Petclinic] example to show how existing features can be tested in an automated fashion:
 

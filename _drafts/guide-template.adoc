@@ -19,7 +19,7 @@ One (max. two) sentence(s) that outlines the guide and the scope of it.
 Example:
 This guide walks you through the CUBA APIs for programmatically interacting with the database through the DataManager API.
 
-== What Will Be Built
+== What we are going to build
 
 This guides enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to...
 

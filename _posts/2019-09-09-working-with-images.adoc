@@ -20,7 +20,7 @@ permalink: working-with-images
 
 There are several ways to interact with images in a CUBA application. In this guide, we'll demonstrate how to upload and display images in the application on live examples. You'll also learn how to attach those images to entities and how to enable users to download the image files from the application.
 
-== What Will be Built
+== What we are going to build
 
 This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA Petclinic] example to allow users to attach images to entities and interact with them. In particular, we'll make the following:
 

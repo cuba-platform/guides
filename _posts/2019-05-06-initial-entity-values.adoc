@@ -22,7 +22,7 @@ This guide demonstrates different options on how initial values can be set for a
 In the petclinic example there are use cases, where certain default values for entities should be set either globally or on a per use-case basis.
 
 
-== What Will be Built
+== What we are going to build
 
 This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show the different ways to set initial values for entity instances. In particular, the following use cases will be covered:
 

@@ -19,7 +19,7 @@ permalink: data-modelling-composition
 
 In this guide the Composition relationship between entities will be covered. It will be shown where are the differences between Associations and Compositions. The two different kinds of Compositions: One-to-Many Compositions as well as One-to-One Compositions will be explored with different examples.
 
-== What Will be Built
+== What we are going to build
 
 This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show various examples of a composition relationship between entities. In particular, the following use cases will be covered:
 
