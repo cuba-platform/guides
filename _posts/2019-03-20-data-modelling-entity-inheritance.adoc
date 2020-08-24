@@ -13,7 +13,7 @@ permalink: data-modelling-entity-inheritance
 :page-icone: images/data-model-entity-inheritance/guide_icone.svg
 :page-root: ../../../
 :project_id: cuba-petclinic-data-model-entity-inheritance
-:page-url-first-image: https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-data-model-entity-inheritance/master/img/login-screen.png
+:page-url-first-image: images/data-model-entity-inheritance/login-screen.png
 :java_version: 8
 :cuba_version: 7.0
 
@@ -34,7 +34,7 @@ This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA pet
 === Final Application
 
 ++++
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-data-model-entity-inheritance/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-data-model-entity-inheritance/master/img/login-screen.png"/></a>
+<a href="images/data-model-entity-inheritance/adjustments-cuba-petclinic-overview.gif"><img src="images/data-model-entity-inheritance/login-screen.png"/></a>
 ++++
 
 include::includes/guide_requirements.adoc[]

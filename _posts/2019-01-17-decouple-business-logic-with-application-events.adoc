@@ -11,7 +11,7 @@ permalink: decouple-business-logic-with-app-events
 :page-navtitle: Decouple Business Logic with Application Events
 :page-excerpt: Overview on how application events can be used in a CUBA application to decouple business logic
 :page-icone: images/decouple-business-logic-with-application-events/guide_icone.svg
-:page-url-first-image: https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-application-events/master/img/login-screen.png
+:page-url-first-image: images/decouple-business-logic-with-application-events/login-screen.png
 :page-root: ../../../
 :project_id: cuba-petclinic-intro-to-application-events
 :java_version: 8
@@ -32,7 +32,7 @@ This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA pet
 === Final Application
 
 ++++
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-application-events/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-application-events/master/img/login-screen.png"/></a>
+<a href="images/decouple-business-logic-with-application-events/adjustments-cuba-petclinic-overview.gif"><img src="images/decouple-business-logic-with-application-events/login-screen.png"/></a>
 ++++
 
 include::includes/guide_requirements.adoc[]
@@ -308,7 +308,7 @@ There are several Events to subscribe that deal with the lifecycle of a controll
 CUBA studio has the ability to get an overview of the available events for a controller. It looks like this:
 
 ++++
-<img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-application-events/master/img/studio-subscribe-to-events.png"/>
+<img src="images/decouple-business-logic-with-application-events/studio-subscribe-to-events.png"/>
 ++++
 
 For the petclinic, the VisitEdit controller leverages the `InitEntityEvent` for generating a Room keycode when a new entity is going to be created:

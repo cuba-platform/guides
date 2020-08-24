@@ -13,7 +13,7 @@ permalink: working-with-images
 :page-icone: images/working-with-images/guide_icone.svg
 :page-root: ../../../
 :project_id: cuba-petclinic-working-with-images
-:page-url-first-image: https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-working-with-images/master/img/login-screen.png
+:page-url-first-image: images/working-with-images/login-screen.png
 :java_version: 8
 :cuba_version: 7.0
 
@@ -32,7 +32,7 @@ This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA Pet
 === Final Application
 
 ++++
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-working-with-images/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-working-with-images/master/img/login-screen.png"/></a>
+<a href="images/working-with-images/adjustments-cuba-petclinic-overview.gif"><img src="images/working-with-images/login-screen.png"/></a>
 ++++
 
 include::includes/guide_requirements.adoc[]

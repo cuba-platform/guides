@@ -33,7 +33,7 @@ This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA Pet
 === Final Application
 
 ++++
-<a href="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-reports/master/img/adjustments-cuba-petclinic-overview.gif"><img src="https://raw.githubusercontent.com/cuba-guides/cuba-petclinic-intro-to-reports/master/img/login-screen.png"/></a>
+<a href="images/intro-to-reports/adjustments-cuba-petclinic-overview.gif"><img src="images/intro-to-reports/login-screen.png"/></a>
 ++++
 
 include::includes/guide_requirements.adoc[]
