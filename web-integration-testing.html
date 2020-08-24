@@ -1,0 +1,2005 @@
+<!doctype html>
+<!--[if IE 9]>
+<html class="lt-ie10" lang="en"> <![endif]-->
+<html class="no-js" lang="en" data-useragent="Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Integration Testing in CUBA Applications</title>
+    <meta name="description" content="In this guide you will learn how automated testing in a CUBA application works. In particular this guide deals with the integration testing of the UI within the web layer.">
+    <meta name="author" content="Haulmont">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@CubaPlatform">
+    <meta name="twitter:creator" content="@CubaPlatform">
+    <meta name="twitter:title" content="Web Integration Testing in CUBA Applications">
+    <meta name="twitter:description" content="In this guide you will learn how automated testing in a CUBA application works. In particular this guide deals with the integration testing of the UI within the web layer.">
+    <meta name="twitter:image" content="">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Web Integration Testing in CUBA Applications">
+    <meta property="og:description" content="In this guide you will learn how automated testing in a CUBA application works. In particular this guide deals with the integration testing of the UI within the web layer.">
+    <meta property="og:url" content="https://www.cuba-platform.com/guides/web-integration-testing">
+    <meta property="og:image" content="">
+
+    <link rel="shortcut icon" href="/guides/images/favicon.png" type="image/png" />
+    <link rel="stylesheet" href="/guides/css/foundation.css">
+    <link rel="stylesheet" href="/guides/css/font-awesome.css">
+    <link rel="stylesheet" href="/guides/css/coderay.css">
+    <link rel="stylesheet" href="/guides/css/bootstrap.css">
+    <link rel="stylesheet" href="https://www.cuba-platform.com/sites/all/themes/cuba_adaptive/css/reset.css">
+    <link rel="stylesheet" href="https://www.cuba-platform.com/sites/all/themes/cuba_adaptive/css/animate.css">
+    <link rel="stylesheet" href="/guides/css/extra.css">
+    <link rel="stylesheet" href="/guides/css/extra2.css">
+    <link rel="stylesheet" href="/guides/css/cuba-new.css">
+    <link rel="stylesheet" href="/guides/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/guides/css/guides.css">
+    <script src="/guides/js/jquery_v2.1.min.js"></script>
+    <link rel="stylesheet" href="/guides/css/main.css" />
+    <!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-MH3DTWV');</script>
+<!-- End Google Tag Manager -->
+</head>
+<body class="html not-front not-logged-in no-sidebars page-node page-node- page-node-962 node-type-blog-post i18n-en">
+
+<section id="wrapper">
+    
+<header role="banner" fragment="14269c1b298" class="header">
+    <nav class="header_nav">
+        <input id="mobile-menu-open" type="checkbox" class="header_checkbox">
+        <div class="container header_container">
+            <div class="header_toggle">
+                <label for="mobile-menu-open"
+                       class="header_toggle-label toggle-label">
+                    <span>CUBA.platform</span>
+                </label>
+            </div>
+            <a href="/" class="header_logo nuxt-link-active"></a>
+            <ul class="header_menu">
+                <li class="header_menu_item"><a href="/framework/" class="header_menu_link">Framework</a></li>
+                <li class="header_menu_item"><a href="/learn/" class="header_menu_link nuxt-link-active">Learn</a></li>
+                <li class="header_menu_item"><a href="/documentation/" class="header_menu_link">Documentation</a></li>
+                <li class="header_menu_item"><a href="/discuss/" class="header_menu_link">Forum</a></li>
+                <li class="header_menu_item"><a href="/blog/" class="header_menu_link">Blog</a></li>
+            </ul>
+            <div class="lang-switch">
+                <div class="multiselect-wrapper select-wrapper" onclick="langSwitch()">
+                    <div tabindex="0" class="multiselect">
+                        <div class="multiselect__select"></div>
+                        <div class="multiselect__tags">
+                            <span class="multiselect__single">EN</span>
+                        </div>
+                        <div tabindex="-1" class="multiselect__content-wrapper" style="max-height: 300px; display: none;">
+                            <ul class="multiselect__content" style="display: inline-block;">
+                                <li class="multiselect__element"><span class="multiselect__option multiselect__option--highlight">EN</span></li>
+                                <li class="multiselect__element"><span class="multiselect__option"><a href="http://cuba-platform.ru/">RU</a></span></li>
+                                <li class="multiselect__element"><span class="multiselect__option"><a href="https://cuba-platform.cn/">CN</a></span> </li>
+                                <li class="multiselect__element"><span class="multiselect__option"><a href="http://cuba-platform.it/">IT</a></span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="header-support">
+                <button class="header-support_toggle">
+                <img src="images/users.svg" class="header-support_toggle_icon">
+                <span class="header-support_toggle_text">Services</span></button>
+                <div class="header-support_popup">
+                    <div class="support-popup">
+                        <div class="support-popup_services">
+                            <h3 class="support-popup_services_title">Commercial services for your project</h3>
+                            <ul class="services-list">
+                                <li class="services-list_item"><a href="/support-options/"><strong
+                                        class="services-list_title">Consultancy &amp; Support</strong>
+                                    <div class="services-list_text">
+                                        <div><p>Commercial consulting requests have a guaranteed response
+                                            time.</p>
+                                        </div>
+                                    </div>
+                                </a></li>
+                                <li class="services-list_item"><a href="/development/"><strong
+                                        class="services-list_title">Custom Development</strong>
+                                    <div class="services-list_text">
+                                        <div><p>We can deliver a turn key solution or contribute to your
+                                            project</p>
+                                        </div>
+                                    </div>
+                                </a></li>
+                                <li class="services-list_item"><a href="/training/"><strong
+                                        class="services-list_title">Training</strong>
+                                    <div class="services-list_text">
+                                        <div><p>For fast and deep dive into framework features to shift your
+                                            team productivity.</p>
+                                        </div>
+                                    </div>
+                                </a></li>
+                            </ul>
+                        </div>
+                        <div class="support-popup_haulmont">
+                            <div class="support-popup_haulmont_header"><h3 class="support-popup_haulmont_title">
+                                Haulmont</h3>
+                                <div class="support-popup_haulmont_subtitle">we develop modern enterprise
+                                    solutions
+                                </div>
+                            </div>
+                            <ul class="haulmont-list">
+                                <li class="haulmont-list_item">
+                                    <div><p>Experts in Enterprise software</p>
+                                    </div>
+                                </li>
+                                <li class="haulmont-list_item">
+                                    <div><p>Creators of the CUBA Platform</p>
+                                    </div>
+                                </li>
+                                <li class="haulmont-list_item">
+                                    <div><p>Established in 2008</p>
+                                    </div>
+                                </li>
+                            </ul>
+                            <ul class="numbers-list">
+                                <li class="numbers-list_item"><strong class="numbers-list_number">300+</strong>
+                                    <div class="numbers-list_text">developers</div>
+                                </li>
+                                <li class="numbers-list_item"><strong class="numbers-list_number">400+</strong>
+                                    <div class="numbers-list_text">projects</div>
+                                </li>
+                                <li class="numbers-list_item">
+                                    <div class="numbers-list_text">Customers in</div>
+                                    <strong class="numbers-list_number">60+</strong>
+                                    <div class="numbers-list_text">countries</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <a href="/user/" class="header_profile">
+                <svg xmlns="http://www.w3.org/2000/svg" id="i-profile" class="icon header_profile_src" viewBox="0 0 563.43 563.43" width="100%" height="100%">
+                    <path d="M280.79 314.559c83.266 0 150.803-67.538 150.803-150.803S364.055 13.415 280.79 13.415 129.987 80.953 129.987 163.756s67.537 150.803 150.803 150.803zm0-261.824c61.061 0 111.021 49.959 111.021 111.021s-49.96 111.02-111.021 111.02-111.021-49.959-111.021-111.021 49.959-111.02 111.021-111.02zM19.891 550.015h523.648c11.102 0 19.891-8.789 19.891-19.891 0-104.082-84.653-189.198-189.198-189.198H189.198C85.116 340.926 0 425.579 0 530.124c0 11.102 8.789 19.891 19.891 19.891zm169.307-169.307h185.034c75.864 0 138.313 56.436 148.028 129.524H41.17c9.714-72.625 72.164-129.524 148.028-129.524z"></path>
+                </svg>
+            </a>
+        </div>
+    </nav>
+    <nav class="header-submenu">
+        <div class="container header-submenu_container">
+            <a href="/learn/quickstart/" class="header-submenu_link">Quick Start</a>
+            <a href="/learn/live-demo/" class="header-submenu_link">Live Demo</a>
+            <a href="/guides/" class="header-submenu_link nuxt-link-exact-active nuxt-link-active">Guides</a>
+        </div>
+    </nav>
+</header>
+
+<script>
+    function langSwitch() {
+        var el = document.querySelector('.multiselect');
+        var el1 = document.querySelector('.multiselect__content-wrapper');
+        if(el.classList.contains("multiselect--active")) {
+            el.classList.remove("multiselect--active");
+            el1.style.display = 'none';
+        } else {
+            el.classList.add("multiselect--active");
+            el1.style.display = 'block';
+        }
+    }
+    document.addEventListener('click', function(event) {
+        var e = document.querySelector('.lang-switch');
+        var el = document.querySelector('.multiselect');
+        var el1 = document.querySelector('.multiselect__content-wrapper');
+
+        if (!e.contains(event.target)) {
+            el1.style.display='none';
+            el.classList.remove("multiselect--active");
+        }
+    });
+</script>
+<style>
+    .upper-header .header-options {
+        display: none;
+    }
+
+    .upper-header .upper-header-wrapper .header-menu div .nav > li:last-child > a {
+        padding-right: 0;
+    }
+
+    .header-support {
+        margin-left: 20px;
+    }
+
+    /* lang-switch*/
+     .lang-switch {
+         flex: 0 0 auto;
+         margin-left: auto;
+     }
+
+    @media screen and (max-width: 1000px) {
+        .lang-switch {
+           display: none;
+        }
+    }
+
+    .lang-switch .multiselect__select {
+        display: none;
+    }
+
+    .lang-switch .multiselect__tags {
+        border: none;
+        cursor: pointer;
+    }
+
+    .lang-switch .multiselect__content-wrapper {
+        top: 49px;
+        left: -7px;
+        width: 45px;
+        overflow: hidden;
+        border-radius: 0;
+        background: #FFF;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.25);
+    }
+
+    .lang-switch .multiselect__content-wrapper ul li:first-child {
+        display: none;
+    }
+
+    .lang-switch .multiselect-wrapper .multiselect {
+        min-height: 22px;
+    }
+
+    .lang-switch .multiselect__option:hover {
+        background: #E8F2FB;
+    }
+
+    .lang-switch .multiselect__option a:hover {
+        color: #0784E3!important;
+        text-decoration: none;
+    }
+
+    .lang-switch .multiselect__option {
+        width: 45px;
+        height: 34px;
+        min-height: 34px;
+        padding: 0;
+    }
+
+    .lang-switch .multiselect__option a {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 43px;
+        height: 34px;
+        font-size: 13px;
+        line-height: 22px;
+        color: #9B9B9B;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .lang-switch .multiselect__tags {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 27px;
+        height: 22px;
+        min-height: 22px;
+        padding: 0;
+    }
+
+    .lang-switch .multiselect__tags:hover {
+        color: #0784E3;
+    }
+
+    .lang-switch .multiselect__single {
+        display: block;
+        font-size: 13px;
+        line-height: 22px;
+        color: #9B9B9B;
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        border-radius: 0;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .lang-switch .multiselect__single:hover {
+        border: none;
+        color: #0784E3;
+    }
+
+    .lang-switch .multiselect__element {
+        overflow: hidden;
+        height: 34px;
+        min-height: 34px;
+    }
+
+    .lang-switch .multiselect--active .multiselect__single {
+        color: #0784E3;
+    }
+
+    .multiselect {
+        box-sizing: content-box;
+        display: block;
+        position: relative;
+        width: 100%;
+        min-height: 40px;
+        text-align: left;
+        color: #35495e;
+    }
+    .multiselect, .multiselect__single {
+        font-family: inherit;
+        font-size: 16px;
+        touch-action: manipulation;
+    }
+    .multiselect__select {
+        position: absolute;
+        width: 40px;
+        height: 38px;
+        right: 1px;
+        top: 1px;
+        padding: 4px 8px;
+        text-align: center;
+        transition: transform .2s ease;
+    }
+    .multiselect__select {
+        line-height: 16px;
+        box-sizing: border-box;
+        display: block;
+        margin: 0;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    .multiselect__tags {
+        min-height: 40px;
+        display: block;
+        padding: 8px 40px 0 8px;
+        border-radius: 5px;
+        border: 1px solid #e8e8e8;
+        background: #fff;
+        font-size: 14px;
+    }
+
+    .multiselect * {
+        box-sizing: border-box;
+    }
+
+    .multiselect__single {
+        position: relative;
+        display: inline-block;
+        min-height: 20px;
+        line-height: 20px;
+        border: none;
+        border-radius: 5px;
+        background: #fff;
+        padding: 0 0 0 5px;
+        width: 100%;
+        transition: border .1s ease;
+        box-sizing: border-box;
+        margin-bottom: 8px;
+        vertical-align: top;
+    }
+
+    .multiselect__content-wrapper {
+        position: absolute;
+        display: block;
+        background: #fff;
+        width: 100%;
+        max-height: 240px;
+        overflow: auto;
+        border: 1px solid #e8e8e8;
+        border-top: none;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+        z-index: 50;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .multiselect__content {
+        list-style: none;
+        display: inline-block;
+        padding: 0;
+        margin: 0;
+        min-width: 100%;
+        vertical-align: top;
+    }
+
+    .multiselect__option {
+        display: block;
+        padding: 12px;
+        min-height: 40px;
+        line-height: 16px;
+        text-decoration: none;
+        text-transform: none;
+        vertical-align: middle;
+        position: relative;
+        cursor: pointer;
+        white-space: nowrap;
+    }
+    /* end lang-switch*/
+</style>
+
+    <!-- Main Page Content and Sidebar -->
+    <div class="content-wrapper">
+        <div class="cuba-container text-node blog">
+
+
+
+            <!-- Main content (left column) -->
+            <div class="region region-content">
+
+
+
+                <section id="block-system-main" class="block block-system clearfix">
+                    <div id="node-962" class="article node node-blog-post node-promoted clearfix">
+                        <div class="content">
+                            <div class="field field-name-body field-type-text-with-summary field-label-hidden">
+                                <div class="field-items">
+                                    <div class="field-item even" property="content: encoded">
+                                        <h1>Web Integration Testing in CUBA Applications</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this guide you will learn how automated testing in a CUBA application works. In particular, this guide deals with the integration testing of the UI within the web layer.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="what_will_be_built"><a class="anchor" href="#what_will_be_built"></a><a class="link" href="#what_will_be_built">What Will be Built</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a> example to show how existing features can be tested in an automated fashion via web integration testing:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Owner Browse &#8594; Edit Interaction</p>
+</li>
+<li>
+<p>Sending out Disease Warning Mailing</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="requirements"><a class="anchor" href="#requirements"></a><a class="link" href="#requirements">Requirements</a></h3>
+<div class="paragraph">
+<p>Your development environment requires to contain the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://adoptopenjdk.net/">JDK 8</a></p>
+</li>
+<li>
+<p><a href="https://www.cuba-platform.com/download">CUBA Studio</a> as standalone IDE or as an IntelliJ IDEA plugin</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-testing-web/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
+</div>
+<div class="paragraph">
+<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-testing-web.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-testing-web.git</a></code></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="overview"><a class="anchor" href="#overview"></a><a class="link" href="#overview">Overview</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this third guide about testing you will learn how to test logic in the user interface. This is similar to the variant of middleware integration testing (see <a href="https://www.cuba-platform.com/guides/integration-testing-middleware">CUBA guide: middleware integration testing</a>), where a close-to-production test environment is created for the test to run.</p>
+</div>
+<div class="paragraph">
+<p>The difference in this case is that the provided environment starts only a part of a CUBA application that is inside the <a href="https://doc.cuba-platform.com/manual-latest/app_tiers.html">Client tier</a> of the architecture diagram.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/integration-testing-web/AppTiers.svg" alt="AppTiers">
+</div>
+</div>
+<div class="paragraph">
+<p>In particular, the <em>Web client block</em> is the part that is tested in a web integration test.</p>
+</div>
+<div class="paragraph">
+<p>The <em>Middleware block</em>, on the other side, is <em>not</em> a part of the test environment. Instead Stub implementations are provided for all functionality in the block. This includes the CUBA standard APIs like DataManager and custom Services that contain business logic.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="web_integration_test_environment"><a class="anchor" href="#web_integration_test_environment"></a><a class="link" href="#web_integration_test_environment">Web Integration Test Environment</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this environment the production application is started partially, just like in the middleware integration test. All the CUBA Platform based UI APIs work the same way as in the production code of the application. In the <em>Web client block</em> we have a big part of declarative definitions of the UI implemented via XML screen descriptors. These definitions are also covered and executed within the test environment.</p>
+</div>
+<div class="sect2">
+<h3 id="coverage_example"><a class="anchor" href="#coverage_example"></a><a class="link" href="#coverage_example">Coverage Example</a></h3>
+<div class="paragraph">
+<p>To understand the question of coverage let&#8217;s take a look at one example within the Petclinic application and identify which parts are included, which ones are mocked, and which ones are not covered by the test environment at all.</p>
+</div>
+<div class="paragraph">
+<p>For this example let&#8217;s take a look at the List of Owners from the Petclinic. It consists of the XML descriptor part and the UI controller. In the following listing generally everything is covered and executed just as in the production environment. Therefore, it is not mentioning everything that is covered, but only the most important parts as well as the parts where the coverage ends.</p>
+</div>
+<div class="listingblock">
+<div class="title">pet-browse.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;window&gt;</span>
+    <span class="tag">&lt;data</span> <span class="attribute-name">readOnly</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;collection</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">petsDc</span><span class="delimiter">&quot;</span></span>
+                    <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.haulmont.sample.petclinic.entity.pet.Pet</span><span class="delimiter">&quot;</span></span>
+                    <span class="attribute-name">view</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">pet-with-owner-and-type-and-visits</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+            <span class="tag">&lt;loader</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">petsDl</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+                <span class="tag">&lt;query&gt;</span>
+                    <span class="inline-delimiter">&lt;![CDATA[</span>select e from petclinic_Pet e<span class="inline-delimiter">]]&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
+                <span class="tag">&lt;/query&gt;</span>
+            <span class="tag">&lt;/loader&gt;</span>
+        <span class="tag">&lt;/collection&gt;</span>
+    <span class="tag">&lt;/data&gt;</span>
+    <span class="tag">&lt;layout</span> <span class="attribute-name">expand</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">petsTable</span><span class="delimiter">&quot;</span></span>
+            <span class="attribute-name">spacing</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;groupTable</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">petsTable</span><span class="delimiter">&quot;</span></span>
+                    <span class="attribute-name">dataContainer</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">petsDc</span><span class="delimiter">&quot;</span></span>
+                    <span class="attribute-name">width</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">100%</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+            <span class="tag">&lt;actions&gt;</span>
+                <span class="tag">&lt;action</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">calculateDiscount</span><span class="delimiter">&quot;</span></span>
+                    <span class="attribute-name">trackSelection</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span>
+                    <span class="attribute-name">caption</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">msg://calculateDiscount</span><span class="delimiter">&quot;</span></span>
+                    <span class="attribute-name">icon</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">MONEY</span><span class="delimiter">&quot;</span></span>
+                  <span class="tag">/&gt;</span>
+                  <span class="tag">&lt;action</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">createDiseaseWarningMailing</span><span class="delimiter">&quot;</span></span>
+                    <span class="attribute-name">caption</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">msg://createDiseaseWarningMailing</span><span class="delimiter">&quot;</span></span>
+                    <span class="attribute-name">icon</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">font-icon:BULLHORN</span><span class="delimiter">&quot;</span></span>
+                  <span class="tag">/&gt;</span>
+            <span class="tag">&lt;/actions&gt;</span>
+            <span class="tag">&lt;buttonsPanel</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">buttonsPanel</span><span class="delimiter">&quot;</span></span>
+                          <span class="attribute-name">alwaysVisible</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+                <span class="tag">&lt;button</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">calculateDiscountBtn</span><span class="delimiter">&quot;</span></span>
+                        <span class="attribute-name">action</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">petsTable.calculateDiscount</span><span class="delimiter">&quot;</span></span>
+                        <span class="tag">/&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
+                <span class="tag">&lt;button</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">createDiseaseWarningMailingBtn</span><span class="delimiter">&quot;</span></span>
+                        <span class="attribute-name">action</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">petsTable.createDiseaseWarningMailing</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+            <span class="tag">&lt;/buttonsPanel&gt;</span>
+        <span class="tag">&lt;/groupTable&gt;</span>
+    <span class="tag">&lt;/layout&gt;</span>
+<span class="tag">&lt;/window&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the data loading mechanism is available, but the data has to be returned in the test manually via mocking</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>all buttons and actions are covered and can be executed in the test</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The test environment behaves almost like the production environment. The XML Screen descriptor is loaded and the complete lifecycle of the Screen is executed.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The main difference for the UI descriptor is the data loader section. Instead of performing the query against the database, the environment of the web integration test requires configuring the entity instances that should be returned.</p>
+</div>
+<div class="paragraph">
+<p>Next to the UI Screen descriptor, the programmatic sibling is the UI controller. Let&#8217;s take a look at the coverage for the corresponding <code>PetBrowse</code> UI controller:</p>
+</div>
+<div class="listingblock">
+<div class="title">PetBrowse.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">PetBrowse</span> <span class="directive">extends</span> StandardLookup&lt;Pet&gt; {
+    <span class="annotation">@Inject</span>
+    <span class="directive">private</span> Screens screens; <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="annotation">@Inject</span>
+    <span class="directive">private</span> Notifications notifications;
+    <span class="annotation">@Inject</span>
+    <span class="directive">private</span> GroupTable&lt;Pet&gt; petsTable; <i class="conum" data-value="2"></i><b>(2)</b>
+
+    <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petsTable.calculateDiscount</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="3"></i><b>(3)</b>
+    <span class="directive">public</span> <span class="type">void</span> calculateDiscount(
+            <span class="predefined-type">Action</span>.ActionPerformedEvent actionPerformedEvent
+    ) {
+        Pet pet = petsTable.getSingleSelected();
+
+        <span class="predefined-type">String</span> discountMessage = <span class="predefined-type">String</span>.format(
+                <span class="string"><span class="delimiter">&quot;</span><span class="content">Discount for %s: %s</span><span class="delimiter">&quot;</span></span>,
+                pet.getName(),
+                pet.calculateDiscount() <i class="conum" data-value="4"></i><b>(4)</b>
+        );
+
+        notifications.create(Notifications.NotificationType.TRAY)
+            .withCaption(discountMessage)
+            .show();
+    }
+
+    <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petsTable.createDiseaseWarningMailing</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">public</span> <span class="type">void</span> createDiseaseWarningMailing(
+            <span class="predefined-type">Action</span>.ActionPerformedEvent actionPerformedEvent
+    ) {
+        screens
+            .create(
+                CreateDiseaseWarningMailing.class,
+                OpenMode.DIALOG
+            )
+            .show(); <i class="conum" data-value="5"></i><b>(5)</b>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>CUBA UI APIs are covered and work as in production environment</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>UI Components injections that are defined in the XML Screen Descriptor are covered</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Action Subscriptions that interact with the XML Screen Descriptor are covered and performed in case a button is clicked in the test</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Business logic in the <code>global</code> module (e.g. <code>pet.calculateDiscount()</code>) is part of the test environment as well</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The Screens API is executed correctly and the <code>CreateDiseaseWarningMailing</code> screen is opened</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In the UI Controller it once again behaves like in the production environment. All injections (UI components and CUBA APIs) work as expected. All business logic in the <code>web</code> and <code>global</code> modules is performed just as in the production environment.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="coverage_of_the_web_integration_test"><a class="anchor" href="#coverage_of_the_web_integration_test"></a><a class="link" href="#coverage_of_the_web_integration_test">Coverage of the Web integration test</a></h3>
+<div class="paragraph">
+<p>Based on the example above, you can see the coverage of the web integration test environment in this overview diagram:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/guides/images/integration-testing-web/coverage.svg" alt="coverage">
+</div>
+</div>
+<div class="paragraph">
+<p>The solid arrows represent the connections that are part of the coverage, whereas the dashed arrows perform the not covered ones and have to be mocked / emulated by the test case.</p>
+</div>
+<div class="paragraph">
+<p>As explained in the example, all Screen Controller code as well as the XML Screen descriptor definitions are covered. Additionally, all business logic located in the <code>web</code> and the <code>global</code> module is covered and executed.</p>
+</div>
+<div class="paragraph">
+<p>On the upper border of the diagram the code executed in the browser is not part of the environment. This JavaScript code is part of Vaadin and is not covered.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+The web integration test environment does <em>not</em> interact with the application via a real web browser. To cover this area in a test case, a functional end-to-end test through tools like <a href="https://www.cuba-platform.com/marketplace/masquerade/">Masquerade</a> has to be performed.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The borders at the bottom of the layered diagram for the web integration test environment are the Middleware Services.
+The service interfaces themselves act as the point where the test case has to provide a stub implementation that returns the expected values.</p>
+</div>
+<div class="paragraph">
+<p>The same is true for the declarative data loading in the XML Screen descriptor. Internally the declarative data interaction as well as the <code>DataManager</code> API uses the <code>DataService</code> Service to provide the data. This means that inside the test case, this <code>DataService</code> interface has to be replaced with a Stub implementation that provides the data to be used by the UI components. The detailed information about the <code>DataService</code> API can be found in the <a href="https://files.cuba-platform.com/javadoc/cuba/7.2/com/haulmont/cuba/core/app/DataService.html">CUBA API Reference: DataService</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="benefits_limitations"><a class="anchor" href="#benefits_limitations"></a><a class="link" href="#benefits_limitations">Benefits &amp; Limitations</a></h3>
+<div class="paragraph">
+<p>Using web integration tests allows developers to automatically verify if the majority of the UI screen definitions and their business logic are correct. For the UI parts relying primarily on unit test would require to use a lot of mocking of the CUBA UI APIs as well as letting go the verification of the declarative part.</p>
+</div>
+<div class="paragraph">
+<p>In the beginning we&#8217;ve learnt that web integration tests provide a close-to-production environment for the tests. This means that for a lot of UI logic verification it is not necessary to run an end-to-end black box test case through the browser via Selenium e.g.</p>
+</div>
+<div class="paragraph">
+<p>Automated Testing through the web browser is inherently more complex to do. The asynchronicity of the browser interaction, the much more complicated test data setup, the speed of the execution are the examples of that.</p>
+</div>
+<div class="paragraph">
+<p>Web integration tests do not have those problems. Instead, running the tests is orders of magnitude faster compared to running a selenium based test. A regular web integration test takes a sub second to run, whereas a Selenium based test easily can take half a minute to perform the same operation. Also, a lot of false positive tests runs that oftentimes occur in a selenium based test suite are not a problem of a web integration test. It happens because of the asynchronous nature of the browser which is not used in this case.</p>
+</div>
+<div class="paragraph">
+<p>On the other hand, there are limitations on what a web integration test can do and verify. By the fact that we have to stub out data operations, it is impossible to find many scenarios that occur during that process. Here are some examples which can&#8217;t be caught during web integration tests:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>a unique violation on the order ID field through the save in the Order editor</p>
+</li>
+<li>
+<p>the customer name should be displayed in the orders table, but it is not part of the view</p>
+</li>
+<li>
+<p>the JPQL query in the orders data loader is a valid statement</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For all those examples (and more) it is not possible to verify the behavior with an integration test.</p>
+</div>
+<div class="paragraph">
+<p>The same is true for the correct interaction with custom Services that are used in the UI. As those Services are stubbed out, so there is a potential to miss some scenarios in the mocking, which results in that the production application differs from the web integration test behavior.</p>
+</div>
+<div class="paragraph">
+<p>These are limitations with a web integration test. To overcome them, you need a black-box end-to-end test case. CUBA has a dedicated library called <a href="https://www.cuba-platform.com/marketplace/masquerade/">Masquerade</a> that makes creating those test cases easier. It is based on Selenium and therefore performs real browser based tests that interact with the application from the UI to the database.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="petclinic_web_integration_tests"><a class="anchor" href="#petclinic_web_integration_tests"></a><a class="link" href="#petclinic_web_integration_tests">Petclinic Web Integration Tests</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>After looking through the theoretical ways on what a web integration test is and where its functionality boundaries are, let&#8217;s shift gears here a little bit and take a look at how a web integration test looks. We will do that based on the Petclinic example.</p>
+</div>
+<div class="sect2">
+<h3 id="first_web_integration_test"><a class="anchor" href="#first_web_integration_test"></a><a class="link" href="#first_web_integration_test">First Web Integration Test</a></h3>
+<div class="paragraph">
+<p>In order to run a web integration test you have to install and register as a JUnit extension an instance of <a href="https://files.cuba-platform.com/javadoc/cuba/7.2/com/haulmont/cuba/web/testsupport/TestUiEnvironment.html">TestUiEnvironment</a>. The <code>TestUiEnvironment</code> is similar to the <a href="https://www.cuba-platform.com/guides/integration-testing-middleware#test_container">Test Container</a> in the middleware integration tests. It acts as the running environment to interact with the application.</p>
+</div>
+<div class="listingblock">
+<div class="title">PetEditTest.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="type">class</span> <span class="class">PetEditTest</span> {
+
+    <span class="annotation">@RegisterExtension</span>
+    TestUiEnvironment environment =
+            <span class="keyword">new</span> TestUiEnvironment(PetclinicWebTestContainer.Common.INSTANCE)
+                    .withScreenPackages(
+                            <span class="string"><span class="delimiter">&quot;</span><span class="content">com.haulmont.cuba.web.app.main</span><span class="delimiter">&quot;</span></span>,
+                            <span class="string"><span class="delimiter">&quot;</span><span class="content">com.haulmont.sample.petclinic.web</span><span class="delimiter">&quot;</span></span>
+                    )
+                    .withUserLogin(<span class="string"><span class="delimiter">&quot;</span><span class="content">admin</span><span class="delimiter">&quot;</span></span>);  <i class="conum" data-value="1"></i><b>(1)</b>
+
+    <span class="directive">private</span> TestEntityFactory&lt;Pet&gt; petsFactory;
+
+    <span class="annotation">@BeforeEach</span>
+    <span class="type">void</span> setUp() {
+        Screens screens = environment.getScreens(); <i class="conum" data-value="2"></i><b>(2)</b>
+
+        petsFactory = environment
+            .getContainer()
+            .getEntityFactory(Pet.class, TestEntityState.NEW); <i class="conum" data-value="3"></i><b>(3)</b>
+    }
+
+    <span class="comment">// ...</span>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>TestUiEnvironment</code> is instantiated and directly configured</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>It is possible to retrieve CUBA APIs like <code>Screens</code> through the environment</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The <code>EntityFactory</code> allows creating entity objects specifically for tests</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>With the Entity Factory, it is possible to create Entities for the specific needs of automated tests (like the definition of the desired state). Besides, the majority of the CUBA APIs can be retrieved either directly from the <code>environment</code> or from the <code>environment.getContainer()</code> web test container.</p>
+</div>
+<div class="paragraph">
+<p>With that setup part in place, let&#8217;s have a look at the first web integration test case. The test verifies that the <code>PetEdit</code> editor can be opened correctly and the <code>identificationNumber</code> property is bound to corresponding UI component.</p>
+</div>
+<div class="listingblock">
+<div class="title">PetEditorTest.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="type">class</span> <span class="class">PetEditTest</span> {
+    <span class="comment">// ...</span>
+    <span class="directive">private</span> Screens screens;
+    <span class="directive">private</span> TestEntityFactory&lt;Pet&gt; petsFactory;
+
+    <span class="annotation">@BeforeEach</span>
+    <span class="type">void</span> openMainScreen() {
+        screens = environment.getScreens();
+        screens.create(MainScreen.class, OpenMode.ROOT).show(); <i class="conum" data-value="4"></i><b>(4)</b>
+    }
+
+    <span class="annotation">@Test</span>
+    <span class="type">void</span> identificationNumberIsCorrectlyBoundInTheInputField() {
+
+        Pet pet = petsFactory.create(
+                <span class="predefined-type">Collections</span>.singletonMap(<span class="string"><span class="delimiter">&quot;</span><span class="content">identificationNumber</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">019</span><span class="delimiter">&quot;</span></span>)
+        ); <i class="conum" data-value="1"></i><b>(1)</b>
+
+        PetEdit petEdit = showPetEditorFor(pet);
+
+        TextInputField inputField = identificationNumberField(petEdit);
+
+        assertThat(inputField.getValue()) <i class="conum" data-value="4"></i><b>(4)</b>
+            .isEqualTo(<span class="string"><span class="delimiter">&quot;</span><span class="content">019</span><span class="delimiter">&quot;</span></span>);
+    }
+
+    <span class="directive">private</span> PetEdit showPetEditorFor(Pet pet) {
+        PetEdit petEdit = screens.create(PetEdit.class); <i class="conum" data-value="2"></i><b>(2)</b>
+        petEdit.setEntityToEdit(pet);
+        petEdit.show();
+        <span class="keyword">return</span> petEdit;
+    }
+
+    <span class="directive">private</span> TextInputField identificationNumberField(PetEdit petEdit) {
+        <span class="keyword">return</span> (TextInputField) petEdit
+            .getWindow()
+            .getComponent(<span class="string"><span class="delimiter">&quot;</span><span class="content">identificationNumberField</span><span class="delimiter">&quot;</span></span>); <i class="conum" data-value="3"></i><b>(3)</b>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>a new Pet Entity is created via its test data factory</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the CUBA UI APIs are used to open screens</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td><code>getComponent</code> allows to retrieve references of Components of the opened screen</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>CUBA&#8217;s Component APIs can be used to perform assertions</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This first test shows an example on how to programmatically open screens and interact with the components of the screen.
+In this example, we verify that the data binding in the form component is behaving correctly.</p>
+</div>
+<div class="paragraph">
+<p>We neither check any controller logic nor check <em>explicitly</em> if CUBA&#8217;s internal data binding works as expected. Instead, we are verifying that the Screen descriptor contains a field named <code>identificationNumberField</code>. This field should be wired to the <code>petDc</code> data container and also to the <code>identificationNumber</code> entity attribute.</p>
+</div>
+<div class="paragraph">
+<p>In particular, it is this part of the XML screen descriptor that is verified for correct usage:</p>
+</div>
+<div class="listingblock">
+<div class="title">pet-edit.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;form</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">fieldGroup</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">dataContainer</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">petDc</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;column</span> <span class="attribute-name">width</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">250px</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;textField</span>
+            <span class="attribute-name">property</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>
+            <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">nameField</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+        <span class="tag">&lt;textField</span>
+            <span class="attribute-name">property</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">identificationNumber</span><span class="delimiter">&quot;</span></span>
+            <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">identificationNumberField</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
+        <span class="tag">&lt;dateField</span>
+            <span class="attribute-name">property</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">birthDate</span><span class="delimiter">&quot;</span></span>
+            <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">birthDateField</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+    <span class="tag">&lt;/column&gt;</span>
+<span class="tag">&lt;/form&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the declaration of the <code>identificationNumberField</code> with the correct property binding and type is the relevant part for the test</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>There are a couple of other areas of the overall code that are also verified <em>implicitly</em>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the <code>PetEdit</code> java controller has the correct annotation(s) to act as an Editor for the <code>Pet</code> entity</p>
+</li>
+<li>
+<p>the XML definition of the Screen Descriptor <code>pet-edit.xml</code> is well-formed</p>
+</li>
+<li>
+<p>the screen could be opened without any errors (e.g. lifecycle events are performed correctly)</p>
+</li>
+<li>
+<p>the entity was correctly bound to the <code>petDc</code> data container</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>As the web integration test environment is a kind of a grey-box test, it is possible to use the same APIs that are used in the production code. This simplifies test case implementation a lot, because all the knowledge of the CUBA APIs can directly be used in the integration test.</p>
+</div>
+<div class="paragraph">
+<p>Interacting with UI components is also the same as in production code. The only difference is the retrieval of the component instances, as no dependency injection mechanism is available.</p>
+</div>
+<div class="paragraph">
+<p>In this example, the data binding is manually handled by passing in the instance through <code>petEdit.setEntityToEdit(pet)</code>. In the next example, we will take a look at the situation where the screen tries to automatically load data from the <code>DataService</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="owner_browse"><a class="anchor" href="#owner_browse"></a><a class="link" href="#owner_browse">Owner Browse</a></h3>
+<div class="paragraph">
+<p>The second example is a web integration test that deals with the interaction between the Owner Browser and the Owner Editor. In this case the data loading happens automatically as the Controller is annotated with <code>@LoadDataBeforeShow</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">OwnerBrowse.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@LoadDataBeforeShow</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">OwnerBrowse</span> <span class="directive">extends</span> StandardLookup&lt;<span class="predefined-type">Owner</span>&gt; {
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The controller embodies no further UI/business logic. The <code>OwnerBrowseTest</code> web integration test consists of two test cases:</p>
+</div>
+<div class="paragraph">
+<p>The first test case verifies that the loaded data will be displayed correctly in the Table. The second test case goes a step further and checks the interaction between two screens: <code>OwnerBrowse</code> and <code>OwnerEdit</code>. Once an Owner is selected in the Table and the edit action is performed, the Owner Editor should be visible and the data of the selected Owner should be displayed.</p>
+</div>
+<div class="sect3">
+<h4 id="test_declarative_data_loading"><a class="anchor" href="#test_declarative_data_loading"></a><a class="link" href="#test_declarative_data_loading">Test: Declarative Data Loading</a></h4>
+<div class="paragraph">
+<p>Let&#8217;s look at the first test case: <code>when_ownerListIsDisplayed_then_ownersAreShownInTheTable</code>.</p>
+</div>
+<div class="paragraph">
+<p>To provide data to the data container, the result of the Data Service has to be mocked. For the web integration test environment a special DataService implementation is available: <code>DataServiceProxy</code>. This class mimics parts of the behavior of the regular <code>DataService</code> implementation. See the information from the <a href="https://doc.cuba-platform.com/manual-latest/integration_tests_client.html">CUBA Documentation</a>:</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<em>DataServiceProxy</em> - default stub for DataManager. It contains an implementation for commit() method which mimics the behavior of the real data store: makes new entities detached, increments versions, etc. The loading methods return null and empty collections.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In this case we would like the <code>DataServiceProxy</code> to return a pre-defined set of data when <code>loadList</code> is called. Also we would like to utilize the other parts of the <code>DataServiceProxy</code> implementation. This means, we have to only partially provide a different implementation of the class. Mockito allows us to achieve this partial mocking with a <code>Spy</code>. A spy is similar to a mock object, but the difference is that it calls the real methods except for the ones that are mocked out.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s look at the complete test case first and then go though the details of the implementation:</p>
+</div>
+<div class="listingblock">
+<div class="title">OwnerBrowseTest.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="type">class</span> <span class="class">OwnerBrowseTest</span> {
+
+
+    <span class="comment">//...</span>
+
+    <span class="annotation">@BeforeEach</span>
+    <span class="directive">public</span> <span class="type">void</span> setUp() {
+        mockDataService();
+        data = <span class="keyword">new</span> PetclinicData(environment.getContainer());
+    }
+
+    <span class="directive">private</span> <span class="type">void</span> mockDataService() {
+        dataService = Mockito.spy(
+                <span class="keyword">new</span> DataServiceProxy(environment.getContainer())
+        );
+        TestServiceProxy.mock(DataService.class, dataService);
+    }
+
+    <span class="annotation">@Test</span>
+    <span class="type">void</span> when_ownerListIsDisplayed_thenOwnersAreShownInTheTable() {
+
+        when(ownerListIsLoaded())
+                .thenReturn(ashAndMisty);
+
+        OwnerBrowse ownerBrowse = openScreen(OwnerBrowse.class);
+
+        Table&lt;<span class="predefined-type">Owner</span>&gt; ownersTable = ownersTable(ownerBrowse);
+
+        assertThat(ownersTable.getItems().getItems())
+                .hasSize(<span class="integer">2</span>);
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">List</span>&lt;<span class="predefined-type">Owner</span>&gt; ownerListIsLoaded() {
+        LoadContext&lt;<span class="predefined-type">Owner</span>&gt; loadOwnerList = Mockito.argThat(loadContext -&gt;
+                loadContext.getEntityMetaClass().equals(<span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_Owner</span><span class="delimiter">&quot;</span></span>)
+        );
+        <span class="keyword">return</span> dataService.loadList(loadOwnerList);
+    }
+
+    <span class="comment">// ...</span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the setup part <code>Mockito.spy(&#8230;&#8203;)</code> creates a new Spy Instance of the DataServiceProxy, where we can re-configure the behavior of the <code>loadList</code> method.</p>
+</div>
+<div class="paragraph">
+<p>After creation of the Spy, we have to register the service instance as the <code>DataService</code> API implementation for the test in the test case. This happens through the static <code>mock</code> method of the TestServiceProxy.</p>
+</div>
+<div class="paragraph">
+<p>The remaining part of the manual data configuration is the definition of the mock call and the expected result. For that we use the Mockito API: <code>when(&#8230;&#8203;).thenReturn(&#8230;&#8203;)</code>. In this case, we need to be a little more precise, because we don&#8217;t want to mock all calls to <code>DataService.loadList(&#8230;&#8203;)</code> but instead only the one where the load of the <code>Owner</code> entity happens.</p>
+</div>
+<div class="paragraph">
+<p>The helper method <code>ownerListIsLoaded</code> defines this situation. <code>Mockito.argThat</code> is the API that lets the test define a Predicate lambda expression that determines if the method call parameters (<code>loadList</code> in this case) are matching against the call that we want to mock. Basically it acts as a filter, to pinpoint the call that we are searching for.</p>
+</div>
+<div class="paragraph">
+<p>The Lambda gets passed in the original parameter of the method: <code>LoadContext</code>. <code>loadContext.getEntityMetaClass().equals("petclinic_Owner")</code> is our filter criteria to verify that the entity class is the <code>Owner</code> entity.</p>
+</div>
+<div class="paragraph">
+<p>The usage of the method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>when(ownerListIsLoaded())
+                .thenReturn(ashAndMisty);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>defines the combination of the mock with the return values. In case the owner list is loaded, Ash and Misty should be returned.</p>
+</div>
+<div class="paragraph">
+<p>With this information we can take a look at the actual test case once again:</p>
+</div>
+<div class="listingblock">
+<div class="title">OwnerBrowseTest.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="type">class</span> <span class="class">OwnerBrowseTest</span> {
+    <span class="comment">// ...</span>
+    <span class="annotation">@Test</span>
+    <span class="type">void</span> when_ownerListIsDisplayed_then_ownersAreShownInTheTable() {
+
+        when(ownerListIsLoaded())
+                .thenReturn(ashAndMisty); <i class="conum" data-value="1"></i><b>(1)</b>
+
+        OwnerBrowse ownerBrowse = openScreen(OwnerBrowse.class);
+
+        Table&lt;<span class="predefined-type">Owner</span>&gt; ownersTable = ownersTable(ownerBrowse); <i class="conum" data-value="2"></i><b>(2)</b>
+
+        assertThat(ownersTable.getItems().getItems())
+                .hasSize(<span class="integer">2</span>); <i class="conum" data-value="3"></i><b>(3)</b>
+    }
+
+    <span class="directive">private</span> Table&lt;<span class="predefined-type">Owner</span>&gt; ownersTable(OwnerBrowse ownerBrowse) {
+        <span class="keyword">return</span> (Table&lt;<span class="predefined-type">Owner</span>&gt;) ownerBrowse
+            .getWindow()
+            .getComponent(<span class="string"><span class="delimiter">&quot;</span><span class="content">ownersTable</span><span class="delimiter">&quot;</span></span>);
+    }
+
+    <span class="directive">private</span> &lt;T <span class="directive">extends</span> Screen&gt; T openScreen(<span class="predefined-type">Class</span>&lt;T&gt; screenClass) {
+        T screen = screens.create(screenClass);
+        screen.show();
+        <span class="keyword">return</span> screen;
+    }
+    <span class="comment">// ...</span>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The manual data loading is configured</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The screen is opened and the table component is retrieved from the screen</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>An assertion is made on the items of the owners table size</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>There are once again a couple of related points that are also implicitly verified:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the <code>OwnerBrowse</code> java controller has the correct Annotation to automatically load the data when the screen is opened</p>
+</li>
+<li>
+<p>the XML definition of the Screen Descriptor <code>owner-browse.xml</code> is well-formed</p>
+</li>
+<li>
+<p>the screen could be opened without any errors (e.g. lifecycle events are performed correctly)</p>
+</li>
+<li>
+<p>the table was correctly bound to the <code>ownersDc</code> data container</p>
+</li>
+<li>
+<p>the data container performed a declarative data load for the list of Owner entities</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="test_screen_interaction_from_owner_browse_to_owner_editor"><a class="anchor" href="#test_screen_interaction_from_owner_browse_to_owner_editor"></a><a class="link" href="#test_screen_interaction_from_owner_browse_to_owner_editor">Test: Screen Interaction from Owner Browse to Owner Editor</a></h4>
+<div class="paragraph">
+<p>The second test case is built on the fundamentals of the first one that we just explored. In this case the goal is to test the correct interaction between two screens. The test performs the following steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>the Owner Browser is opened and <code>Ash</code> and <code>Misty</code> are injected as owner test data</p>
+</li>
+<li>
+<p><code>Ash</code> is selected in the Table</p>
+</li>
+<li>
+<p>the <code>edit</code> action is performed (and with it implicitly the Owner Editor is opened)</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The assertion is based on the question if the entity that is edited in the Owner Editor is really <code>Ash</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">OwnerBrowseTest.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="type">class</span> <span class="class">OwnerBrowseTest</span> {
+    <span class="comment">// ...</span>
+    <span class="annotation">@Test</span>
+    <span class="type">void</span> given_ownerIsSelected_when_editIsPerformed_then_ownerEditorIsOpened() {
+
+        when(ownerListIsLoaded())
+                .thenReturn(ashAndMisty);
+
+        OwnerBrowse ownerBrowse = openScreen(OwnerBrowse.class);
+
+        Table&lt;<span class="predefined-type">Owner</span>&gt; ownersTable = ownersTable(ownerBrowse);
+
+        ownersTable.setSelected(ash); <i class="conum" data-value="1"></i><b>(1)</b>
+
+        ownersTable
+                .getAction(<span class="string"><span class="delimiter">&quot;</span><span class="content">edit</span><span class="delimiter">&quot;</span></span>)
+                .actionPerform(editButton(ownerBrowse)); <i class="conum" data-value="2"></i><b>(2)</b>
+
+        OwnerEdit ownerEdit = findOpenScreen(OwnerEdit.class);
+
+        assertThat(ownerEdit.getEditedEntity()) <i class="conum" data-value="4"></i><b>(4)</b>
+                .isEqualTo(ash);
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">Component</span> editButton(OwnerBrowse ownerBrowse) {
+        <span class="keyword">return</span> ownerBrowse.getWindow().getComponent(<span class="string"><span class="delimiter">&quot;</span><span class="content">editBtn</span><span class="delimiter">&quot;</span></span>);
+    }
+
+    <span class="directive">private</span> &lt;T <span class="directive">extends</span> Screen&gt; T findOpenScreen(<span class="predefined-type">Class</span>&lt;T&gt; screenClass) {
+        <span class="keyword">return</span> (T) screens
+                .getOpenedScreens()
+                .getAll() <i class="conum" data-value="3"></i><b>(3)</b>
+                .stream()
+                .filter(openedScreen -&gt;
+                    openedScreen.getClass().isAssignableFrom(screenClass)
+                )
+                .findFirst()
+                .orElseThrow(<span class="exception">RuntimeException</span>::<span class="keyword">new</span>);
+    }
+
+    <span class="directive">private</span> Table&lt;<span class="predefined-type">Owner</span>&gt; ownersTable(OwnerBrowse ownerBrowse) {
+        <span class="keyword">return</span> (Table&lt;<span class="predefined-type">Owner</span>&gt;) ownerBrowse
+            .getWindow()
+            .getComponent(<span class="string"><span class="delimiter">&quot;</span><span class="content">ownersTable</span><span class="delimiter">&quot;</span></span>);
+    }
+
+    <span class="directive">private</span> &lt;T <span class="directive">extends</span> Screen&gt; T openScreen(<span class="predefined-type">Class</span>&lt;T&gt; screenClass) {
+        T screen = screens.create(screenClass);
+        screen.show();
+        <span class="keyword">return</span> screen;
+    }
+    <span class="comment">// ...</span>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>table.setSelected(&#8230;&#8203;)</code> selects Ash in the table</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the <code>edit</code> action of the owners table is performed via the Edit Button</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>the <code>Screens</code> API lets iterate over the opened screens and filter for a particular type</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td><code>editor.getEditedEntity()</code> is used to fetch the bound entity that the editor is working on</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In this test case we used additional parts of the CUBA UI API to interact with the application e.g. via <code>ownersTable.setSelected(&#8230;&#8203;)</code>. Also, we used it to retrieve some information that is necessary in the test, like the search for an opened screen.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="create_disease_warning_mailing"><a class="anchor" href="#create_disease_warning_mailing"></a><a class="link" href="#create_disease_warning_mailing">Create Disease Warning Mailing</a></h3>
+<div class="paragraph">
+<p>The third and last test that we want to take a look at, is the logic implemented in <a href="https://www.cuba-platform.com/guides/create-business-logic-in-cuba">CUBA Guide: Create Business Logic in CUBA</a>:
+the "Disease Warning Mailing" functionality. For the middleware logic of the functionality, we have already created a middleware integration test as described in the <a href="https://www.cuba-platform.com/guides/integration-testing-middleware#disease_warning_mailing">CUBA Guide: Middleware Integration Testing</a>.</p>
+</div>
+<div class="paragraph">
+<p>In the middleware integration test, we covered everything from the Service Interface and below, but left out the UI part.
+In this guide, we will now do the opposite. We will create a web integration test that interacts with the UI but mocks out the behavior of the service interface. This way we can control the behavior of this dependency (<code>DiseaseWarningMailingService</code>) and ensure that the UI code interacts with it according to our expectations.</p>
+</div>
+<div class="paragraph">
+<p>The resulting UI dialog is accessible from the Pet Browser:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="images/integration-testing-web/create-disease-warning-mailing.png"><img src="/guides/images/integration-testing-web/create-disease-warning-mailing.png" alt="create disease warning mailing"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>The Test contains the following preconditions:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>mock dependency <code>DiseaseWarningMailingService</code></p>
+</li>
+<li>
+<p>open DiseaseWarningMailing Dialog through the Pet Browser</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>After that there are four test cases that would cover the functionality of the Dialog:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>when the form is correctly filled, it contains no validation errors</p>
+</li>
+<li>
+<p>when the form is correctly filled, the Mailing is send out</p>
+</li>
+<li>
+<p>when the form is <em>not</em> correctly filled, it contains validation errors</p>
+</li>
+<li>
+<p>when the form is <em>not</em> correctly filled, the Mailing is not send out</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>In the following listing, only the 1. and 2. test cases are shown. The complete listing can be found on Github: <a href="https://github.com/cuba-guides/cuba-petclinic-testing-web/blob/master/modules/web/test/com/haulmont/sample/petclinic/web/pet/CreateDiseaseWarningMailingTest.java">CreateDiseaseWarningMailingTest.java</a></p>
+</div>
+<div class="listingblock">
+<div class="title">CreateDiseaseWarningMailingTest.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="type">class</span> <span class="class">CreateDiseaseWarningMailingTest</span> {
+    <span class="comment">// ...</span>
+    <span class="directive">private</span> Screens screens;
+    <span class="directive">private</span> DiseaseWarningMailingService diseaseWarningMailingService;
+    <span class="directive">private</span> PetType electricType;
+
+    <span class="directive">private</span> CreateDiseaseWarningMailing dialog;
+
+    <span class="annotation">@BeforeEach</span>
+    <span class="type">void</span> setUp() {
+        setupTestData();
+        mockDiseaseWarningMailingService();
+        openWarningMailingDialogFromPetBrowse();
+    }
+
+    <span class="comment">// ...</span>
+
+    <span class="directive">private</span> <span class="type">void</span> mockDiseaseWarningMailingService() {
+
+        diseaseWarningMailingService = Mockito.mock(
+                DiseaseWarningMailingService.class
+        );
+
+        TestServiceProxy.mock(
+                DiseaseWarningMailingService.class,
+                diseaseWarningMailingService
+        ); <i class="conum" data-value="1"></i><b>(1)</b>
+    }
+
+    <span class="directive">private</span> <span class="type">void</span> openWarningMailingDialogFromPetBrowse() {
+        screens = environment.getScreens();
+        screens.create(MainScreen.class, OpenMode.ROOT).show();
+
+        PetBrowse petBrowse = openScreen(PetBrowse.class);
+
+        petTable(petBrowse)
+                .getAction(<span class="string"><span class="delimiter">&quot;</span><span class="content">createDiseaseWarningMailing</span><span class="delimiter">&quot;</span></span>)
+                .actionPerform(createDiseaseWarningMailingBtn(petBrowse));
+
+        dialog = findOpenScreen(CreateDiseaseWarningMailing.class); <i class="conum" data-value="2"></i><b>(2)</b>
+
+    }
+
+    <span class="annotation">@Nested</span>
+    <span class="annotation">@DisplayName</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">When Valid Dialog Input Data, then...</span><span class="delimiter">&quot;</span></span>)
+    <span class="type">class</span> <span class="class">When_SubmitValidDialogInput</span> {
+
+        <span class="annotation">@BeforeEach</span>
+        <span class="type">void</span> fillFields() {
+            city(dialog).setValue(<span class="string"><span class="delimiter">&quot;</span><span class="content">Alabastia</span><span class="delimiter">&quot;</span></span>);
+            disease(dialog).setValue(<span class="string"><span class="delimiter">&quot;</span><span class="content">Fever</span><span class="delimiter">&quot;</span></span>);
+            petType(dialog).setValue(electricType);
+        }
+
+        <span class="annotation">@Test</span>
+        <span class="annotation">@DisplayName</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">Form is valid</span><span class="delimiter">&quot;</span></span>)
+        <span class="type">void</span> then_formIsValid() {
+
+            submitDialog(dialog);
+
+            assertThat(dialog.validationResult().getAll()) <i class="conum" data-value="3"></i><b>(3)</b>
+                    .isEmpty();
+        }
+
+        <span class="annotation">@Test</span>
+        <span class="annotation">@DisplayName</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">Mailing is send</span><span class="delimiter">&quot;</span></span>)
+        <span class="type">void</span> then_mailingIsSend() {
+
+            submitDialog(dialog);
+
+            verify(diseaseWarningMailingService, times(<span class="integer">1</span>))
+                    .warnAboutDisease(
+                            electricType,
+                            <span class="string"><span class="delimiter">&quot;</span><span class="content">Fever</span><span class="delimiter">&quot;</span></span>,
+                            <span class="string"><span class="delimiter">&quot;</span><span class="content">Alabastia</span><span class="delimiter">&quot;</span></span>
+                    ); <i class="conum" data-value="4"></i><b>(4)</b>
+        }
+
+    }
+
+    <span class="directive">private</span> <span class="type">void</span> submitDialog(CreateDiseaseWarningMailing dialog) {
+        dialog
+                .getWindow()
+                .getAction(<span class="string"><span class="delimiter">&quot;</span><span class="content">createDiseaseWarningMailing</span><span class="delimiter">&quot;</span></span>)
+                .actionPerform(createMailingBtn(dialog));
+    }
+
+
+    <span class="directive">private</span> <span class="predefined-type">Component</span> createMailingBtn(CreateDiseaseWarningMailing dialog) {
+        <span class="keyword">return</span> component(dialog, <span class="string"><span class="delimiter">&quot;</span><span class="content">createDiseaseWarningMailingBtn</span><span class="delimiter">&quot;</span></span>);
+    }
+
+    <span class="directive">private</span> TextInputField&lt;<span class="predefined-type">String</span>&gt; city(CreateDiseaseWarningMailing dialog) {
+        <span class="keyword">return</span> (TextInputField&lt;<span class="predefined-type">String</span>&gt;) component(dialog, <span class="string"><span class="delimiter">&quot;</span><span class="content">city</span><span class="delimiter">&quot;</span></span>);
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">Component</span> component(Screen screen, <span class="predefined-type">String</span> componentId) {
+        <span class="keyword">return</span> screen
+                .getWindow()
+                .getComponent(componentId);
+    }
+
+    <span class="comment">//...</span>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>DiseaseWarningMailingService</code> is mocked and registered in the environment</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Dialog Screen is opened from the Pet Browser</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Assertion that the validation results of the form contains no error</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Mockito&#8217;s <code>verify</code> method allows asserting on the interaction with the dependency</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In the assertion parts of the tests, there are two things relevant that haven&#8217;t been discovered until now.</p>
+</div>
+<div class="paragraph">
+<p>The first test case <code>When_SubmitValidDialogInput.then_formIsValid()</code> checks if the dialog contains any validation errors.
+The validation is performed manually in the <code>CreateDiseaseWarningMailing</code> screen, as it is not a StandardEditor, but rather a custom Screen. Due to this, there is no way to retrieve the Validation errors from outside of the screen. also not for the test.</p>
+</div>
+<div class="paragraph">
+<p>Therefore, a dedicated method in the production Screen was introduced - <code>CreateDiseaseWarningMailing.validationResult()</code>, which looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">CreateDiseaseWarningMailing.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">CreateDiseaseWarningMailing</span> <span class="directive">extends</span> Screen {
+    <span class="comment">// ...</span>
+    ValidationErrors validationResult() {
+        <span class="keyword">return</span> screenValidation.validateUiComponents(
+                asList(city, disease, petType)
+        );
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This method is used inside the Controller to perform the validation. But it is also accessible for the test case, to retrieve the <code>ValidationErrors</code> object from the outside in order to make assertions on it.</p>
+</div>
+<div class="paragraph">
+<p>The second test case <code>When_SubmitValidDialogInput.then_mailingIsSend()</code> uses the <code>DiseaseWarningMailingService</code> mock to verify that the System under test (<code>CreateDiseaseWarningMailing</code>) is interacting with the dependency in the correct way.</p>
+</div>
+<div class="paragraph">
+<p>In the test case the expected interaction with the dependency is expressed. Mockito provides a <code>verify</code> method for that:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>verify(diseaseWarningMailingService, times(1))
+        .warnAboutDisease(
+                electricType,
+                &quot;Fever&quot;,
+                &quot;Alabastia&quot;
+        );</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It translates to the following interaction expectation:</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Verify that on the <code>diseaseWarningMailingService</code> object the method <code>warnAboutDisease</code> with the three parameters <code>electricType, "Fever", "Alabastia"</code> is called exactly once.</p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>Mockito takes that interaction expectation and makes sure that this is true. If during the test case this interaction does not occur, the test fails.</p>
+</div>
+<div class="paragraph">
+<p>With that we have successfully tested the UI code that is part of the overall "Create Disease Warning Mailing" functionality. The Middleware integration test verifies that the <code>warnAboutDisease</code> method itself works as expected.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="sneferu"><a class="anchor" href="#sneferu"></a><a class="link" href="#sneferu">Sneferu</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>After seeing different implementations of web integration tests, you should have a basic idea on how to interact with the UI through a web integration testing. CUBAs UI APIs are for the most part capable of interacting with the various UI components and screens programmatically.</p>
+</div>
+<div class="paragraph">
+<p>But as these APIs are optimized for production application code, using them for remote-controlling CUBA UIs (this is what tests oftentimes do) is not their main focus. This results in some boilerplate code in the web integration tests like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">OwnerBrowseTest.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="type">class</span> <span class="class">OwnerBrowseTest</span> {
+    <span class="comment">// ...</span>
+    <span class="directive">private</span> &lt;T <span class="directive">extends</span> Screen&gt; T findOpenScreen(<span class="predefined-type">Class</span>&lt;T&gt; screenClass) {
+        <span class="keyword">return</span> (T) screens
+                .getOpenedScreens()
+                .getAll()
+                .stream()
+                .filter(openedScreen -&gt;
+                    openedScreen.getClass().isAssignableFrom(screenClass)
+                )
+                .findFirst()
+                .orElseThrow(<span class="exception">RuntimeException</span>::<span class="keyword">new</span>);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Writing this code takes away the developer from the main task at hand: write test cases to verify the correct behavior of the application.</p>
+</div>
+<div class="paragraph">
+<p>Sneferu is a testing library designed to make writing web integration tests for CUBA easier in order to concentrate on writing verification test cases. With its specific DSL and the ability to create higher level abstractions on your own, it also allows us to express the test cases with a higher level language. This helps to create a more maintainable test suite.</p>
+</div>
+<div class="paragraph">
+<p>In order to understand the difference between a regular CUBA web integration test and a Sneferu web integration test, let&#8217;s revisit two test cases of the <code>OwnerBrowseTest</code> and <code>CreateDiseaseWarningMailingTest</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="owner_browse_revisited"><a class="anchor" href="#owner_browse_revisited"></a><a class="link" href="#owner_browse_revisited">Owner Browse - Revisited</a></h3>
+<div class="paragraph">
+<p>The Owner Browse Test contains a test case that verifies the correct interaction between the <code>OwnerBrowse</code> Screen
+and the <code>OwnerEdit</code> Screen. The test case written with the help of Sneferu looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">OwnerBrowseSneferuTest.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">static</span> <span class="include">de.diedavids.sneferu.ComponentDescriptors</span>.*;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">de.diedavids.sneferu.Interactions</span>.*;
+
+<span class="type">class</span> <span class="class">OwnerBrowseSneferuTest</span> {
+
+    <span class="annotation">@RegisterExtension</span>
+    SneferuTestUiEnvironment environment =
+            <span class="keyword">new</span> SneferuTestUiEnvironment(PetclinicWebTestContainer.Common.INSTANCE)
+                    .withScreenPackages(
+                            <span class="string"><span class="delimiter">&quot;</span><span class="content">com.haulmont.cuba.web.app.main</span><span class="delimiter">&quot;</span></span>,
+                            <span class="string"><span class="delimiter">&quot;</span><span class="content">com.haulmont.sample.petclinic.web</span><span class="delimiter">&quot;</span></span>
+                    )
+                    .withUserLogin(<span class="string"><span class="delimiter">&quot;</span><span class="content">admin</span><span class="delimiter">&quot;</span></span>)
+                    .withMainScreen(MainScreen.class);
+
+    <span class="comment">// ...</span>
+
+    <span class="annotation">@Test</span>
+    <span class="type">void</span> given_ownerIsSelected_when_editIsPerformed_then_ownerEditorIsOpened(
+        <span class="annotation">@StartScreen</span> StandardLookupTestAPI&lt;<span class="predefined-type">Owner</span>, OwnerBrowse&gt; ownerBrowse,
+        <span class="annotation">@SubsequentScreen</span> StandardEditorTestAPI&lt;<span class="predefined-type">Owner</span>, OwnerEdit&gt; ownerEdit
+    ) {
+
+        ownerBrowse
+                .interact(selectInList(table(<span class="string"><span class="delimiter">&quot;</span><span class="content">ownersTable</span><span class="delimiter">&quot;</span></span>), ash))
+                .andThen(click(button(<span class="string"><span class="delimiter">&quot;</span><span class="content">editBtn</span><span class="delimiter">&quot;</span></span>)));
+
+        assertThat(ownerEdit.screen().getEditedEntity())
+                .isEqualTo(ash);
+    }
+
+    <span class="comment">//...</span>
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The Test UI environment in this case is a special Sneferu class: <code>SneferuTestUiEnvironment</code>, which adds certain capabilities to the environment.</p>
+</div>
+<div class="paragraph">
+<p>The test case itself declares two parameters. This is a particular feature of JUnit 5, which allows expressing test dependencies required for the test. In this case, the first parameter is annotated with <code>@StartScreen</code>, which means that Sneferu will automatically open the screen and when the test starts, it is possible to directly interact with the screen. The type: <code>StandardLookupTestAPI&lt;Owner, OwnerBrowse&gt; ownerBrowse</code> defines what kind of Screen the test expects.</p>
+</div>
+<div class="paragraph">
+<p>Under the hood, an instance of <code>OwnerBrowse</code> will be shown and is wrapped in a class called <code>StandardLookupTestAPI</code> that provides further abstractions relevant for test case interactions with the Screen.</p>
+</div>
+<div class="paragraph">
+<p>The second parameter is the <code>OwnerEdit</code> Screen, that we need in this test case. Unlike the Owner Browser, this screen is not the start screen for our test-screen-interaction. Instead it is a screen to be opened automatically by the application. But the test case needs to get a reference to it in order to interact with this Screen afterwards as well. For this scenario the <code>@SubsequentScreen</code> annotation is used.</p>
+</div>
+<div class="paragraph">
+<p>In order to interact with a Screen, the <code>ScreenTestAPI</code> wrapper classes provide various methods to do so.
+<code>ownerBrowse.interact(&#8230;&#8203;)</code> is used for that kind of interaction. It expects an interaction object as a parameter.
+Sneferu provides a lot of Interactions out-of-the-box. The static import <code>de.diedavids.sneferu.Interactions.*;</code> allows access to methods like <code>selectInList</code> directly, so that the test case is expressed with little friction.</p>
+</div>
+<div class="paragraph">
+<p>In this case the Interaction <code>Interactions.selectInList(table("ownersTable"), ash)</code> selects a particular entity
+in a List component. It takes two parameters: the first is a reference to a component that the interaction should be acted upon, while the second parameter defines the entity that should be selected.</p>
+</div>
+<div class="paragraph">
+<p>Interactions can be chained via <code>interact(&#8230;&#8203;).andThen(&#8230;&#8203;)</code> in order to perform multiple interactions one after another.</p>
+</div>
+<div class="paragraph">
+<p>After the interaction is performed, the application should have opened the Owner Editor Screen. <code>ownerEdit</code> now acts as a reference to this recently opened screen. So it is possible to interact with this screen now. In this case the underlying Screen object is retrieved to compare the edited entity via <code>ownerEdit.screen().getEditedEntity()</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="disease_warning_mailing_revisited"><a class="anchor" href="#disease_warning_mailing_revisited"></a><a class="link" href="#disease_warning_mailing_revisited">Disease Warning Mailing - Revisited</a></h3>
+<div class="paragraph">
+<p>The second example with the Disease Warning Mailing written in Sneferu looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">DiseaseWarningMailingSneferuTest.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="type">class</span> <span class="class">DiseaseWarningMailingSneferuTest</span> {
+    <span class="comment">//...</span>
+    <span class="annotation">@Nested</span>
+    <span class="annotation">@DisplayName</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">When Valid Dialog Input Data, then...</span><span class="delimiter">&quot;</span></span>)
+    <span class="type">class</span> <span class="class">When_SubmitValidDialogInput</span> {
+        <span class="comment">// ...</span>
+        <span class="annotation">@Test</span>
+        <span class="annotation">@DisplayName</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">Mailing is send</span><span class="delimiter">&quot;</span></span>)
+        <span class="type">void</span> then_mailingIsSend(
+            <span class="annotation">@StartScreen</span> StandardScreenTestAPI&lt;CreateDiseaseWarningMailing&gt; dialog
+        ) {
+
+            dialog
+                    .interact(enter(textInputField(<span class="string"><span class="delimiter">&quot;</span><span class="content">city</span><span class="delimiter">&quot;</span></span>), <span class="string"><span class="delimiter">&quot;</span><span class="content">Alabastia</span><span class="delimiter">&quot;</span></span>))
+                    .andThen(enter(textInputField(<span class="string"><span class="delimiter">&quot;</span><span class="content">disease</span><span class="delimiter">&quot;</span></span>), <span class="string"><span class="delimiter">&quot;</span><span class="content">Fever</span><span class="delimiter">&quot;</span></span>))
+                    .andThen(select(lookupField(<span class="string"><span class="delimiter">&quot;</span><span class="content">petType</span><span class="delimiter">&quot;</span></span>), electricType))
+                    .andThen(click(button(<span class="string"><span class="delimiter">&quot;</span><span class="content">createDiseaseWarningMailingBtn</span><span class="delimiter">&quot;</span></span>)));
+
+            verify(diseaseWarningMailingService, times(<span class="integer">1</span>))
+                    .warnAboutDisease(
+                            electricType,
+                            <span class="string"><span class="delimiter">&quot;</span><span class="content">Fever</span><span class="delimiter">&quot;</span></span>,
+                            <span class="string"><span class="delimiter">&quot;</span><span class="content">Alabastia</span><span class="delimiter">&quot;</span></span>
+                    );
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It is similar to the first test case. Once again, the start screen is injected (in this case it is of type <code>StandardScreenTestAPI</code>).
+Then interactions are performed against the screen. Afterwards the same assertion is expressed as seen before: the <code>diseaseWarningMailingService</code> should be called once.</p>
+</div>
+<div class="paragraph">
+<p>As we have seen, Sneferu allows us to ease the programmatic interactions with the focused Interaction API. Furthermore, it removes the need to write a lot of boilerplate code with the CUBA UI APIs.</p>
+</div>
+<div class="paragraph">
+<p>More information on the library can be found in the <a href="https://www.cuba-platform.com/marketplace/sneferu/">CUBA Marketplace: Sneferu</a> or on <a href="https://github.com/mariodavid/sneferu">Github: mariodavid/sneferu</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this guide we learned about the way on how to write and execute web integration tests for CUBA. In the beginning we walked through the coverage area that a web integration test has as well as its limitations.</p>
+</div>
+<div class="paragraph">
+<p>A web integration test contains the UI Logic with its Java Controllers and the corresponding XML Screen descriptors. It does not cover execution of the middleware parts like Service Implementations or Data Loading.</p>
+</div>
+<div class="paragraph">
+<p>After that we took a look into three example web integration tests: <code>PetEditTest</code>, <code>OwnerBrowseTest</code> and <code>CreateDiseaseWarningMailingTest</code>.
+These tests showed how to programmatically open screens via the <code>TestUiEnvironment</code> as well as various techniques
+to interact with the components on the screen. Additionally we mocked the boundaries of the web integration test and verified that the interactions with the dependency are performed correctly.</p>
+</div>
+<div class="paragraph">
+<p>Finally, we looked into an alternative way of expressing web integration tests in CUBA: Sneferu. A library specifically designed for the purpose of writing web integration tests fast, easy and more expressive.</p>
+</div>
+<div class="paragraph">
+<p>The combination of Web integration tests and Middleware integration tests (as learned in the guide: <a href="https://www.cuba-platform.com/guides/integration-testing-middleware">Middleware Integration Testing in CUBA Applications</a>) provides a solid safety-net. With the verified interactions between the Service boundaries the overall test coverage can be quite good. With that it enables you to iterate fast on your application, but at the same time be sure that the functionality is still working as expected.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="further_information"><a class="anchor" href="#further_information"></a><a class="link" href="#further_information">Further Information</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://files.cuba-platform.com/javadoc/cuba/7.2/com/haulmont/cuba/core/app/DataService.html">CUBA API Reference: DataService</a></p>
+</li>
+<li>
+<p><a href="https://doc.cuba-platform.com/manual-latest/integration_tests_client.html">CUBA Documentation: Web Integration Tests</a></p>
+</li>
+<li>
+<p><a href="https://www.cuba-platform.com/marketplace/sneferu/">CUBA Marketplace: Sneferu - Web Integration Testing Library</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!-- Sidebar (right column) -->
+            <div id="blog-sidebar">
+                <div class="region region-sidebar ">
+                    <section id="block-block-29" class="block block-block clearfix">
+
+                        <div class="guide-panel">
+                            <h3 class="header-table-content">Table of contents</h3>
+                            <ul class="sectlevel1">
+<li><a href="#what_will_be_built">What Will be Built</a>
+<ul class="sectlevel2">
+<li><a href="#requirements">Requirements</a></li>
+</ul>
+</li>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#web_integration_test_environment">Web Integration Test Environment</a>
+<ul class="sectlevel2">
+<li><a href="#coverage_example">Coverage Example</a></li>
+<li><a href="#coverage_of_the_web_integration_test">Coverage of the Web integration test</a></li>
+<li><a href="#benefits_limitations">Benefits &amp; Limitations</a></li>
+</ul>
+</li>
+<li><a href="#petclinic_web_integration_tests">Petclinic Web Integration Tests</a>
+<ul class="sectlevel2">
+<li><a href="#first_web_integration_test">First Web Integration Test</a></li>
+<li><a href="#owner_browse">Owner Browse</a></li>
+<li><a href="#create_disease_warning_mailing">Create Disease Warning Mailing</a></li>
+</ul>
+</li>
+<li><a href="#sneferu">Sneferu</a>
+<ul class="sectlevel2">
+<li><a href="#owner_browse_revisited">Owner Browse - Revisited</a></li>
+<li><a href="#disease_warning_mailing_revisited">Disease Warning Mailing - Revisited</a></li>
+</ul>
+</li>
+<li><a href="#summary">Summary</a></li>
+<li><a href="#further_information">Further Information</a></li>
+</ul>
+                        </div>
+
+                        <div class="sidebar-razd"></div>
+                        <div class="guide-panel download">
+                            <a href="https://github.com/cuba-guides/cuba-petclinic-testing-web" class="github-link" target="_blank">Example code on Github</a>
+                        </div>
+                        <div class="guide-panel cuba-version">Supported versions: CUBA 7.1+; Java 8+</div>
+
+                    </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer fragment="14269c1b298" class="footer">
+    <div class="container footer_container">
+        <div class="footer_columns">
+            <div class="footer_column">
+                <div class="footer-menu"><h4 class="footer-menu_label">Framework</h4>
+                    <ul class="footer-menu_nav">
+                        <li><a href="/framework/">Framework</a></li>
+                        <li><a href="/tools/">Tools</a></li>
+                        <li><a href="/marketplace/">Addons</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer_column">
+                <div class="footer-menu"><h4 class="footer-menu_label">Learn</h4>
+                    <ul class="footer-menu_nav">
+                        <li><a href="/learn/quickstart/">Quick Start</a></li>
+                        <li><a href="/learn/live-demo/">Live Demo</a></li>
+                        <li><a href="/guides/">Guides</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer_column">
+                <div class="footer-menu"><h4 class="footer-menu_label">Documentation</h4>
+                    <ul class="footer-menu_nav">
+                        <li><a href="/documentation/">Documentation</a></li>
+                        <li><a href="/api-reference/">API References</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer_column">
+                <div class="footer-menu"><h4 class="footer-menu_label">Community</h4>
+                    <ul class="footer-menu_nav">
+                        <li><a href="/discuss/">Forum</a></li>
+                        <li><a href="/blog/">Blog</a></li>
+                        <li><a href="/contacts/">Contacts</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer_bottom">
+            <div class="footer_copyright">
+                Developed and sponsored by Haulmont
+                <a href="https://www.cuba-platform.com/terms-of-use/" class="footer_terms">Terms of Use</a></div>
+            <ul class="social footer_social">
+                <li class="social_item">
+                    <a href="https://github.com/cuba-platform/cuba" target="_blank" class="social_link">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon -github social_icon">
+                        <path d="M3.047 3.188C5.109 1.062 7.594 0 10.5 0c2.906 0 5.383 1.055 7.43 3.164C19.977 5.274 21 7.812 21 10.781c0 2.344-.672 4.453-2.016 6.328-1.343 1.875-3.062 3.172-5.156 3.891h-.187c-.375 0-.563-.187-.563-.563l.024-1.054c.015-.672.023-1.29.023-1.852 0-.906-.25-1.578-.75-2.015 1.438-.188 2.602-.649 3.492-1.383.89-.735 1.336-2.04 1.336-3.914 0-1.125-.36-2.094-1.078-2.906.313-.907.281-1.86-.094-2.86h-.234c-.719 0-1.61.375-2.672 1.125a9.858 9.858 0 0 0-2.625-.375c-.844 0-1.719.125-2.625.375-1.063-.75-1.953-1.125-2.672-1.125H4.97c-.375 1-.407 1.953-.094 2.86-.719.812-1.078 1.78-1.078 2.906 0 1.875.437 3.18 1.312 3.914s2.032 1.195 3.47 1.383c-.345.343-.563.828-.657 1.453a2.687 2.687 0 0 1-1.219.281c-.781 0-1.39-.39-1.828-1.172-.406-.687-.953-1.062-1.64-1.125-.657 0-.673.219-.047.656.468.25.859.782 1.171 1.594.032.125.094.274.188.445.094.172.351.399.773.68.422.281.93.422 1.524.422.437 0 .781-.031 1.031-.094v1.828c0 .344-.172.516-.516.516h-.187c-2.125-.719-3.852-2.008-5.18-3.867C.664 15.273 0 13.156 0 10.78c0-2.969 1.016-5.5 3.047-7.594z" fill="currentColor" fill-rule="evenodd"></path>
+                    </svg>
+                </a></li>
+                <li class="social_item">
+                    <a href="https://www.linkedin.com/company/cuba-platform" target="_blank" class="social_link">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon -linkedin social_icon">
+                        <path d="M19.305 0c.474 0 .875.155 1.203.465.328.31.492.702.492 1.176v17.554c0 .474-.164.894-.492 1.258-.328.365-.73.547-1.203.547h-17.5c-.474 0-.894-.182-1.258-.547C.182 20.09 0 19.67 0 19.195V1.641C0 1.167.173.775.52.465.866.155 1.294 0 1.805 0h17.5zM6.775 17.613V8.129h-2.71v9.484h2.71zM4.431 6.407c.245.245.566.367.964.367s.728-.13.988-.39.39-.574.39-.942c0-.398-.122-.727-.367-.987s-.567-.39-.965-.39-.727.13-.987.39-.39.59-.39.987c0 .368.122.69.367.965zm13.18 11.206v-5.42c0-1.336-.305-2.348-.916-3.034-.612-.687-1.407-1.03-2.386-1.03-1.048 0-1.922.506-2.62 1.517v-1.3H8.806v9.267h2.884v-5.257c0-.361.034-.614.104-.759.28-.722.77-1.083 1.468-1.083.979 0 1.468.668 1.468 2.005v5.094h2.883z" fill="currentColor" fill-rule="evenodd"></path>
+                    </svg>
+                </a></li>
+                <li class="social_item">
+                    <a href="https://www.facebook.com/CUBAplatform" target="_blank" class="social_link">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon -facebook social_icon">
+                        <path d="M17.063 0A3.939 3.939 0 0 1 21 3.938v13.124A3.939 3.939 0 0 1 17.062 21h-2.57v-8.135h2.72l.411-3.172h-3.13V7.67c0-.916.245-1.531 1.571-1.531l1.668-.014v-2.83c-.287-.041-1.285-.123-2.433-.123-2.42 0-4.088 1.476-4.088 4.183v2.338H8.477v3.172h2.734V21H3.937A3.939 3.939 0 0 1 0 17.062V3.938A3.939 3.939 0 0 1 3.938 0h13.124z" fill="currentColor" fill-rule="evenodd"></path>
+                    </svg>
+                </a></li>
+                <li class="social_item">
+                    <a href="https://twitter.com/CubaPlatform" target="_blank" class="social_link">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon -twitter social_icon">
+                            <path d="M17.5 6.59a6.058 6.058 0 0 1-1.654.465 2.903 2.903 0 0 0 1.271-1.6 5.717 5.717 0 0 1-1.832.697 2.847 2.847 0 0 0-2.092-.902 2.87 2.87 0 0 0-2.87 2.871c0 .219.013.451.068.656A8.158 8.158 0 0 1 4.457 5.77c-.246.423-.396.93-.396 1.449 0 .998.464 1.873 1.244 2.392-.479-.013-.93-.15-1.367-.355v.027c0 1.395 1.052 2.557 2.365 2.817-.246.068-.438.109-.698.109-.177 0-.355-.027-.533-.055a2.889 2.889 0 0 0 2.68 1.996A5.782 5.782 0 0 1 3.5 15.34a8.183 8.183 0 0 0 4.402 1.285c5.278 0 8.176-4.375 8.176-8.176 0-.123 0-.246-.014-.369A5.521 5.521 0 0 0 17.5 6.59zM21 3.938v13.124A3.939 3.939 0 0 1 17.062 21H3.938A3.939 3.939 0 0 1 0 17.062V3.938A3.939 3.939 0 0 1 3.938 0h13.124A3.939 3.939 0 0 1 21 3.938z" fill="currentColor" fill-rule="evenodd"></path>
+                        </svg>
+                    </a>
+                </li>
+                <li class="social_item">
+                    <a href="https://www.youtube.com/c/CubaPlatform" target="_blank" class="social_link">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon -youtube social_icon">
+                        <path d="M27.836 4.648c.11 1.97.164 3.92.164 5.852 0 1.932-.055 3.883-.164 5.852 0 1.24-.392 2.287-1.176 3.144-.784.857-1.74 1.285-2.87 1.285-2.808.146-6.071.219-9.79.219-3.719 0-6.982-.073-9.79-.219-1.13 0-2.086-.428-2.87-1.285C.556 18.64.164 17.591.164 16.352.054 14.382 0 12.432 0 10.5c0-1.276.073-3.227.219-5.852 0-1.24.383-2.287 1.148-3.144C2.133.647 3.081.219 4.211.219 6.872.073 9.97 0 13.508 0h.984c3.537 0 6.636.073 9.297.219 1.13 0 2.087.428 2.871 1.285.784.857 1.176 1.905 1.176 3.144zM11.32 15.86l7.93-5.359-7.93-5.414v10.773z" fill="currentColor" fill-rule="evenodd"></path>
+                    </svg>
+                </a></li>
+                <li class="social_item">
+                    <a href="/rss.xml" class="social_link">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon -rss social_icon">
+                            <path d="M.857 15.91C1.464 15.305 2.18 15 3 15c.821 0 1.527.295 2.116.884.59.59.884 1.295.884 2.116 0 .821-.295 1.527-.884 2.116-.59.59-1.295.884-2.116.884-.821 0-1.527-.295-2.116-.884C.294 19.526 0 18.821 0 18c0-.821.286-1.518.857-2.09zM0 7c3.828 0 7.118 1.376 9.871 4.129C12.624 13.882 14 17.172 14 21H9.625c0-2.917-.875-5.25-2.625-7s-4.083-2.625-7-2.625V7zm0-7c5.797 0 10.746 2.05 14.848 6.152C18.949 10.254 21 15.203 21 21h-4.375c0-4.667-1.604-8.604-4.813-11.813C8.604 5.98 4.668 4.375 0 4.375V0z" fill="currentColor" fill-rule="evenodd"></path>
+                        </svg>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</footer>
+<!--<script src="https://cuba-nuxt.demo.haulmont.com/_nuxt/83f852ef4b5c91802566.js" defer></script>
+<script src="https://cuba-nuxt.demo.haulmont.com/_nuxt/d3a40ea16eeb2e16777d.js" defer></script>
+<script src="https://cuba-nuxt.demo.haulmont.com/_nuxt/9bd7e05c04e06e762b47.js" defer></script>
+<script src="https://cuba-nuxt.demo.haulmont.com/_nuxt/70ff0a2e2f971caf4892.js" defer></script>
+<script src="https://cuba-nuxt.demo.haulmont.com/_nuxt/cf082d0abe0e606c10b9.js" defer></script>-->
+<style>
+    [class*="column"] + [class*="column"]:last-child {
+        float: none;
+    }
+</style>
+
+
+<!-- BEGIN FOOTER -->
+<!--<footer id="footer">
+    <div class="footer-wrapper cuba-container">
+        <div class="region region-footer-sitemap">
+            <section id="block-footer-sitemap-footer-sitemap" class="block block-footer-sitemap clearfix">
+                <div id="footer-sitemap" class="clearfix">
+                    <div class="fs-block-content">
+                        <div class="menu-footer-sitemap">
+                            <ul class="footer_links_menu-footer-sitemap total-items-5 parent-items-0 single-items-0">
+                                <li class="menu-1466 depth-1 total-children-4 parent-children-0 single-children-4  first">
+                                    <a href="/framework" class="fs-root-link">Platform</a>
+                                    <ul class="footer_links_menu-footer-sitemap total-items-4 parent-items-0 single-items-0">
+                                        <li class="menu-2770 depth-2 fs-no-children  first"><a href="/framework">The Framework</a></li>
+                                        <li class="menu-1473 depth-2 fs-no-children"><a href="/development-tools">Development Tools</a></li>
+                                        <li class="menu-2838 depth-2 fs-no-children last"><a href="/marketplace">Marketplace</a></li>
+                                    </ul>
+                                </li>
+                                <li class="menu-1469 depth-1 total-children-7 parent-children-0 single-children-7">
+                                    <a href="/online-demo" class="fs-root-link">Learn</a>
+                                    <ul class="footer_links_menu-footer-sitemap total-items-7 parent-items-0 single-items-0">
+                                        <li class="menu-1479 depth-2 fs-no-children first"><a href="/online-demo">Online demo</a></li>
+                                        <li class="menu-1477 depth-2 fs-no-children"><a href="/quickstart">Quick start</a></li>
+                                        <li class="menu-1478 depth-2 fs-no-children"><a href="/documentation">Documentation</a></li>
+                                        <li class="menu-1731 depth-2 fs-no-children"><a href="/guides">Guides</a></li>
+                                        <li class="menu-1773 depth-2 fs-no-children"><a href="/webinars">Webinars</a></li>
+                                        <li class="menu-1602 depth-2 fs-no-children last"><a href="/faq">FAQ</a></li>
+                                    </ul>
+                                </li>
+                                <li class="menu-1603 depth-1 total-children-3 parent-children-0 single-children-3"><a
+                                        href="https://www.cuba-platform.com/discuss/" class="fs-root-link">Community</a>
+                                    <ul class="footer_links_menu-footer-sitemap total-items-3 parent-items-0 single-items-0">
+                                        <li class="menu-1604 depth-2 fs-no-children first"><a href="https://www.cuba-platform.com/discuss/">Forum</a></li>
+                                        <li class="menu-1692 depth-2 fs-no-children"><a href="/testimonials">Customer stories</a></li>
+                                        <li class="menu-1615 depth-2 fs-no-children last"><a href="/blog">Blog</a></li>
+                                    </ul>
+                                </li>
+                                <li class="menu-1663 depth-1 total-children-3 parent-children-0 single-children-3"><a
+                                        href="/training" class="fs-root-link">Services</a>
+                                    <ul class="footer_links_menu-footer-sitemap total-items-3 parent-items-0 single-items-0">
+                                        <li class="menu-1756 depth-2 fs-no-children first"><a href="/training">Training</a></li>
+                                        <li class="menu-1757 depth-2 fs-no-children"><a href="/support-options">Support</a></li>
+                                        <li class="menu-1758 depth-2 fs-no-children last"><a href="/deployment">Development</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="menu-1612 depth-1 total-children-3 parent-children-0 single-children-3  last">
+                                    <a href="/download" class="fs-root-link">More</a>
+                                    <ul class="footer_links_menu-footer-sitemap total-items-3 parent-items-0 single-items-0">
+                                        <li class="menu-2773 depth-2 fs-no-children first"><a href="/download">Download</a></li>
+                                        <li class="menu-2775 depth-2 fs-no-children"><a href="/store">Store</a></li>
+                                        <li class="menu-1480 depth-2 fs-no-children last"><a href="/contacts">Contacts</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+        </div>
+        <div class="region region-footer-copyright">
+            <section id="block-block-14" class="block block-block clearfix">
+                <div class="footer-copyright">
+                    <div class="copyright">Copyright &copy; 2008-2018 Haulmont</div>
+                    <div class="licences"><a href="/terms-of-use">Terms of Use</a></div>
+                    <div class="socials">
+                        <ul>
+                            <li><a href="https://github.com/cuba-platform/cuba" class="socials-icon github"></a></li>
+                            <li><a href="https://www.youtube.com/c/CubaPlatform" class="socials-icon youtube"></a></li>
+                            <li><a href="https://www.facebook.com/CUBAplatform" class="socials-icon facebook"></a></li>
+                            <li><a href="https://twitter.com/CubaPlatform" class="socials-icon twitter"></a></li>
+                            <li><a href="https://www.linkedin.com/company/cuba-platform" class="socials-icon linkedin"></a></li>
+                            <li><a href="https://www.cuba-platform.com/rss.xml" class="socials-icon rss"></a></li>
+                        </ul>
+                    </div>
+                </div>
+                <script async defer src="https://buttons.github.io/buttons.js"></script>
+            </section>
+        </div>
+    </div>
+</footer>-->
+<!-- END FOOTER -->
+<div class="scrollTop"></div>
+</section>
+
+<script src="/guides/js/foundation.min.js"></script>
+<script src="https://unpkg.com/isotope-layout@3.0/dist/isotope.pkgd.js"></script>
+<script src="/guides/js/vendor/modernizr.js"></script>
+<script src="/guides/js/toc.js"></script>
+<script src="/guides/js/navigation.js"></script>
+<script src="/guides/js/navbar.js"></script>
+<script src="/guides/js/extra.js"></script>
+<script src="/guides/js/extra2.js"></script>
+<script src="/guides/js/cuba-new.js"></script>
+<script>
+(function ($) {
+  $(document).foundation();
+  var doc = document.documentElement;
+  doc.setAttribute('data-useragent', navigator.userAgent)
+
+  /* Issue #24 */
+  $(".blog .content img").each(function() {
+    var imgMarkup = $(this)[0].outerHTML;
+    console.log(imgMarkup);
+    $(this).replaceWith('<div class="img-center">' + imgMarkup + '</div>');
+  });
+
+})(jQuery);
+
+// Cache selectors
+var lastId,
+    topMenu = $(".sectlevel1"),
+    topMenuHeight = topMenu.outerHeight()+1,
+
+    // All list items
+    menuItems = topMenu.find("a"),
+    // Anchors corresponding to menu items
+    scrollItems = menuItems.map(function(){
+        var item = $($(this).attr("href"));
+        if (item.length) { return item; }
+    });
+console.log(topMenuHeight );
+menuItems.click(function(e){
+    var href = $(this).attr("href"),
+        offsetTop = href === "#" ? 0 : $(href).offset().top - 85;
+    $('html, body').stop().animate({
+        scrollTop: offsetTop
+    }, 850);
+    e.preventDefault();
+    window.location =  href;
+});
+
+$( document ).ready(function() {
+    const hash = location.hash.replace('#','');
+    if(hash !== ''){
+        $('html, body').stop().animate({ scrollTop: $('a[href=#' + hash + ']').offset().top - 85}, 850);
+    }
+});
+
+// Bind to scroll
+$(window).scroll(function(){
+    // Get container scroll position
+    var fromTop = $(this).scrollTop()+topMenuHeight;
+
+    // Get id of current scroll item
+    var cur = scrollItems.map(function(){
+        if ($(this).offset().top < fromTop)
+            return this;
+    });
+    // Get the id of the current element
+    cur = cur[cur.length-1];
+    var id = cur && cur.length ? cur[0].id : "";
+
+    if (lastId !== id) {
+        lastId = id;
+        // Set/remove active class
+        menuItems
+            .parent().removeClass("active")
+            .end().filter("[href=#"+id+"]").parent().addClass("active");
+    }
+});
+
+</script>
+</body>
+</html>
