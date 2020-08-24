@@ -9,12 +9,12 @@ permalink: product-customizations-with-app-components
 :sectlinks:
 :sectanchors:
 :page-navtitle: Product Customizations with Application Components
-:page-excerpt: In this guide you will learn how customer-specific solutions can be created based on a standard product. We will leverage the capabilities of CUBAs application components to customize the project and add customer-specific functionalities.
+:page-excerpt: Learn about capabilities of CUBAs application components to customize a product and add customer-specific functionalities.
 :page-root: ../../../
 :project_id: cuba-petclinic-product-line-platform
 :java_version: 8
 :cuba_version: 7.1
-:page-icone: images/unit-testing/guide_icone.svg
+:page-icone: images/application-components/guide_icone.svg
 
 In this guide you will learn how customer-specific solutions can be created based on a standard product. We will leverage the capabilities of CUBAs application components to customize the project and add customer-specific functionalities.
 
