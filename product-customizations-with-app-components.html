@@ -803,7 +803,20 @@ When using a development approach within a team the normal way of handling such 
 </div>
 </div>
 <div class="paragraph">
-<p>With those entity changes, we have everything in place to allow the UI automatically pre-populate the correct values for <code>assignedNurse</code> and <code>treatmentRoom</code>. The assigned nurse will just be the current user, whereas the treatmentRoom is looked up by the room assigned in the <code>DefaultTreatmentRoom</code> for the current user.</p>
+<p>With those entity changes as well as the corresponding management screens for the new entities, we have everything in place to allow the UI automatically pre-populate the correct values for <code>assignedNurse</code> and <code>treatmentRoom</code>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/application-components/alabastia-treatment-rooms.png"><img src="/guides/images/application-components/alabastia-treatment-rooms.png" alt="Management of Treatment Rooms"></a>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/application-components/alabastia-default-treatment-room-configuration.png"><img src="/guides/images/application-components/alabastia-default-treatment-room-configuration.png" alt="Configuration of Default Treatment Rooms for Users"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>The assigned nurse will just be the current user, whereas the treatmentRoom is looked up by the room assigned in the <code>DefaultTreatmentRoom</code> for the current user.</p>
 </div>
 <div class="listingblock">
 <div class="title">AlabastiaVisitEdit.java</div>
@@ -956,6 +969,11 @@ In order to use the <code>ext</code> attributes, the namespace has to be defined
 </div>
 <div class="paragraph">
 <p>With that adjustment in place, the extended view will be taken into consideration when opening the screen and the un-fetched attribute error will go away.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/application-components/alabastia-preselected-user-and-treatment-room.png"><img src="/guides/images/application-components/alabastia-preselected-user-and-treatment-room.png" alt="Pre-selected User and Treatment Room"></a>
+</div>
 </div>
 </div>
 </div>
