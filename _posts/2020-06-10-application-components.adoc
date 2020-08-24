@@ -438,7 +438,14 @@ public class AlabastiaVisit extends Visit {
 }
 ----
 
-With those entity changes, we have everything in place to allow the UI automatically pre-populate the correct values for `assignedNurse` and `treatmentRoom`. The assigned nurse will just be the current user, whereas the treatmentRoom is looked up by the room assigned in the `DefaultTreatmentRoom` for the current user.
+With those entity changes as well as the corresponding management screens for the new entities, we have everything in place to allow the UI automatically pre-populate the correct values for `assignedNurse` and `treatmentRoom`.
+
+image::application-components/alabastia-treatment-rooms.png[Management of Treatment Rooms, link="images/application-components/alabastia-treatment-rooms.png"]
+
+image::application-components/alabastia-default-treatment-room-configuration.png[Configuration of Default Treatment Rooms for Users, link="images/application-components/alabastia-default-treatment-room-configuration.png"]
+
+
+The assigned nurse will just be the current user, whereas the treatmentRoom is looked up by the room assigned in the `DefaultTreatmentRoom` for the current user.
 
 
 .AlabastiaVisitEdit.java
@@ -551,6 +558,11 @@ When opening the screen now, there will be an un-fetched attribute error of the 
 <2> the name of the view has to match the original name and also mention that it extends this original view
 
 With that adjustment in place, the extended view will be taken into consideration when opening the screen and the un-fetched attribute error will go away.
+
+
+image::application-components/alabastia-preselected-user-and-treatment-room.png[Pre-selected User and Treatment Room, link="images/application-components/alabastia-preselected-user-and-treatment-room.png"]
+
+
 
 === Summary
 
