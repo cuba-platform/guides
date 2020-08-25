@@ -286,10 +286,10 @@ The UI controller usage is very similar to the invocation of a client tier bean.
 public class CreateDiseaseWarningMailing extends Screen {
 
     @Inject
-    private DiseaseWarningMailingService diseaseWarningMailingService; // <1>
+    protected DiseaseWarningMailingService diseaseWarningMailingService; // <1>
 
     @Inject
-    private Notifications notifications;
+    protected Notifications notifications;
 
     @Subscribe("createDiseaseWarningMailing")
     protected void createDiseaseWarningMailing(Action.ActionPerformedEvent event) {
@@ -297,10 +297,11 @@ public class CreateDiseaseWarningMailing extends Screen {
         int endangeredPets = diseaseWarningMailingService.warnAboutDisease(petType.getValue(),
                 disease.getValue(), city.getValue()); // <2>
 
-        closeWithCommit().then(() ->
-                notifications.create(Notifications.NotificationType.TRAY)
-                        .withCaption(endangeredPets + " Owner(s) of endangered Pets have been notified")
-                        .show()
+
+        close(new StandardCloseAction(EditorScreen.WINDOW_COMMIT_AND_CLOSE)).then(() ->
+            notifications.create(Notifications.NotificationType.TRAY)
+                .withCaption(endangeredPets + " Owner(s) of endangered Pets have been notified")
+                .show()
         );
     }
 }
