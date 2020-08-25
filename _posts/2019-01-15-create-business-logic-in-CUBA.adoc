@@ -192,7 +192,7 @@ public class PetEdit extends StandardEditor<Pet> {
     private PetContactDisplay petContactDisplay;
 
     @Subscribe("fetchContact")
-    public void fetchContact() {
+    public void fetchContact(Action.ActionPerformedEvent event) {
 
         Pet pet = getEditedEntity();
 
