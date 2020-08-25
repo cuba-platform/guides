@@ -38,10 +38,9 @@ Logging information about the running application is essential in order to get i
 
 Logging is a common tool of application development and operation. The developer writes statements into the application source code indicating that certain actions happened.
 
-In the following petclinic example two possible log messages are written. In case of successful storage of the `Pet` instance, an informal message is written with the details of the pet that has been stored. In case of a failure of storing the Pet, an error message is written with information about the failure.
+In the following example two possible log messages are written. In case of successful storage of the `Pet` instance, an info message is logged with the details of the pet, which has been stored. In case of a failure of storing the Pet, an error message is logged with information about the failure.
 
 
-.PetServiceBean.java
 [source,java]
 ----
 private Pet savePet(Pet pet) {
