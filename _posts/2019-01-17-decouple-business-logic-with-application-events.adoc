@@ -379,11 +379,10 @@ public class VisitBrowse extends StandardLookup<Visit> {
 
     @EventListener // <3>
     protected void updateDataOnVisitCompleted(VisitCompletedClickedEvent event) {
-        loadData(); // <4>
+        getScreenData().loadAll(); // <4>
 
-        notifications.create()
-                .setCaption(messages.formatMessage(this.getClass(), "visitCompleteSuccessful"))
-                .setType(Notifications.NotificationType.TRAY)
+        notifications.create(Notifications.NotificationType.TRAY)
+                .withCaption(messages.formatMessage(this.getClass(), "visitCompleteSuccessful"))
                 .show();
     }
 }
