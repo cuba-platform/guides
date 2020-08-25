@@ -96,9 +96,8 @@ public class PetBrowse extends StandardLookup<Pet> {
 
         String discountMessage = "Discount for " + petName + ": " + discount + "%";
 
-        notifications.create()
-                .setCaption(discountMessage)
-                .setType(Notifications.NotificationType.TRAY)
+        notifications.create(Notifications.NotificationType.TRAY)
+                .withCaption(discountMessage)
                 .show();
     }
 }
@@ -299,9 +298,8 @@ public class CreateDiseaseWarningMailing extends Screen {
                 disease.getValue(), city.getValue()); // <2>
 
         closeWithCommit().then(() ->
-                notifications.create()
-                        .setCaption(endangeredPets + " Owner(s) of endangered Pets have been notified")
-                        .setType(Notifications.NotificationType.TRAY)
+                notifications.create(Notifications.NotificationType.TRAY)
+                        .withCaption(endangeredPets + " Owner(s) of endangered Pets have been notified")
                         .show()
         );
     }
