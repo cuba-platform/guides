@@ -343,7 +343,7 @@ Just like for custom application events, custom UI events allow sending notifica
 The first step is once again to define a
 
 
-.VisitCompletedUiEvent.java
+.VisitCompletedClickedEvent.java
 [source,java]
 ----
 public class VisitCompletedClickedEvent extends ApplicationEvent implements UiEvent { // <1>
@@ -356,7 +356,7 @@ public class VisitCompletedClickedEvent extends ApplicationEvent implements UiEv
 <1> Marks the application event as a UI event by implementing the interface `UiEvent`
 
 
-.VisitEdit.java
+.VisitBrowse.java
 [source,java]
 ----
 public class VisitBrowse extends StandardLookup<Visit> {
