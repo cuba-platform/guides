@@ -154,9 +154,9 @@ The report will have the following default settings:
 
 === Defining the Attributes
 
-The direct master data of the pet is similar to the one selected in the `recent-visits` report, basically the data of the Pet entity and the associated Owner entity.
+The direct master data of the pet is similar to the one selected in the `recent-visits` report, basically the data of the Pet entity and the associated Owner entity. Those attributes are configured in a so-called "simple region".
 
-To display a list of associated visits of this Pet entity, we'll create another data band. This is possible during the initial Reporting wizard.
+To display a list of associated visits of this Pet entity, we'll create another data band. This is possible during the initial Reporting wizard. Those associations (one-to-many or many-to-many) are configured in "tabulated region" in the Report Wizard.
 
 In the second step after initially defining the direct attributes of the entity, we can create additional "regions" in the report. Those regions are basically translated to a particular data bands generated out of those selections.
 
