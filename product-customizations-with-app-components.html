@@ -1,0 +1,1595 @@
+<!doctype html>
+<!--[if IE 9]>
+<html class="lt-ie10" lang="en"> <![endif]-->
+<html class="no-js" lang="en" data-useragent="Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Customizations with Application Components</title>
+    <meta name="description" content="Learn about capabilities of CUBAs application components to customize a product and add customer-specific functionalities.">
+    <meta name="author" content="Haulmont">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@CubaPlatform">
+    <meta name="twitter:creator" content="@CubaPlatform">
+    <meta name="twitter:title" content="Product Customizations with Application Components">
+    <meta name="twitter:description" content="Learn about capabilities of CUBAs application components to customize a product and add customer-specific functionalities.">
+    <meta name="twitter:image" content="">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Product Customizations with Application Components">
+    <meta property="og:description" content="Learn about capabilities of CUBAs application components to customize a product and add customer-specific functionalities.">
+    <meta property="og:url" content="https://www.cuba-platform.com/guides/product-customizations-with-app-components">
+    <meta property="og:image" content="">
+
+    <link rel="shortcut icon" href="/guides/images/favicon.png" type="image/png" />
+    <link rel="stylesheet" href="/guides/css/foundation.css">
+    <link rel="stylesheet" href="/guides/css/font-awesome.css">
+    <link rel="stylesheet" href="/guides/css/coderay.css">
+    <link rel="stylesheet" href="/guides/css/bootstrap.css">
+    <link rel="stylesheet" href="https://www.cuba-platform.com/sites/all/themes/cuba_adaptive/css/reset.css">
+    <link rel="stylesheet" href="https://www.cuba-platform.com/sites/all/themes/cuba_adaptive/css/animate.css">
+    <link rel="stylesheet" href="/guides/css/extra.css">
+    <link rel="stylesheet" href="/guides/css/extra2.css">
+    <link rel="stylesheet" href="/guides/css/cuba-new.css">
+    <link rel="stylesheet" href="/guides/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/guides/css/guides.css">
+    <script src="/guides/js/jquery_v2.1.min.js"></script>
+    <link rel="stylesheet" href="/guides/css/main.css" />
+    <!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-MH3DTWV');</script>
+<!-- End Google Tag Manager -->
+</head>
+<body class="html not-front not-logged-in no-sidebars page-node page-node- page-node-962 node-type-blog-post i18n-en">
+
+<section id="wrapper">
+    
+<header role="banner" fragment="14269c1b298" class="header">
+    <nav class="header_nav">
+        <input id="mobile-menu-open" type="checkbox" class="header_checkbox">
+        <div class="container header_container">
+            <div class="header_toggle">
+                <label for="mobile-menu-open"
+                       class="header_toggle-label toggle-label">
+                    <span>CUBA.platform</span>
+                </label>
+            </div>
+            <a href="/" class="header_logo nuxt-link-active"></a>
+            <ul class="header_menu">
+                <li class="header_menu_item"><a href="/framework/" class="header_menu_link">Framework</a></li>
+                <li class="header_menu_item"><a href="/learn/" class="header_menu_link nuxt-link-active">Learn</a></li>
+                <li class="header_menu_item"><a href="/documentation/" class="header_menu_link">Documentation</a></li>
+                <li class="header_menu_item"><a href="/discuss/" class="header_menu_link">Forum</a></li>
+                <li class="header_menu_item"><a href="/blog/" class="header_menu_link">Blog</a></li>
+            </ul>
+            <div class="lang-switch">
+                <div class="multiselect-wrapper select-wrapper" onclick="langSwitch()">
+                    <div tabindex="0" class="multiselect">
+                        <div class="multiselect__select"></div>
+                        <div class="multiselect__tags">
+                            <span class="multiselect__single">EN</span>
+                        </div>
+                        <div tabindex="-1" class="multiselect__content-wrapper" style="max-height: 300px; display: none;">
+                            <ul class="multiselect__content" style="display: inline-block;">
+                                <li class="multiselect__element"><span class="multiselect__option multiselect__option--highlight">EN</span></li>
+                                <li class="multiselect__element"><span class="multiselect__option"><a href="http://cuba-platform.ru/">RU</a></span></li>
+                                <li class="multiselect__element"><span class="multiselect__option"><a href="https://cuba-platform.cn/">CN</a></span> </li>
+                                <li class="multiselect__element"><span class="multiselect__option"><a href="http://cuba-platform.it/">IT</a></span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="header-support">
+                <button class="header-support_toggle">
+                <img src="images/users.svg" class="header-support_toggle_icon">
+                <span class="header-support_toggle_text">Services</span></button>
+                <div class="header-support_popup">
+                    <div class="support-popup">
+                        <div class="support-popup_services">
+                            <h3 class="support-popup_services_title">Commercial services for your project</h3>
+                            <ul class="services-list">
+                                <li class="services-list_item"><a href="/support-options/"><strong
+                                        class="services-list_title">Consultancy &amp; Support</strong>
+                                    <div class="services-list_text">
+                                        <div><p>Commercial consulting requests have a guaranteed response
+                                            time.</p>
+                                        </div>
+                                    </div>
+                                </a></li>
+                                <li class="services-list_item"><a href="/development/"><strong
+                                        class="services-list_title">Custom Development</strong>
+                                    <div class="services-list_text">
+                                        <div><p>We can deliver a turn key solution or contribute to your
+                                            project</p>
+                                        </div>
+                                    </div>
+                                </a></li>
+                                <li class="services-list_item"><a href="/training/"><strong
+                                        class="services-list_title">Training</strong>
+                                    <div class="services-list_text">
+                                        <div><p>For fast and deep dive into framework features to shift your
+                                            team productivity.</p>
+                                        </div>
+                                    </div>
+                                </a></li>
+                            </ul>
+                        </div>
+                        <div class="support-popup_haulmont">
+                            <div class="support-popup_haulmont_header"><h3 class="support-popup_haulmont_title">
+                                Haulmont</h3>
+                                <div class="support-popup_haulmont_subtitle">we develop modern enterprise
+                                    solutions
+                                </div>
+                            </div>
+                            <ul class="haulmont-list">
+                                <li class="haulmont-list_item">
+                                    <div><p>Experts in Enterprise software</p>
+                                    </div>
+                                </li>
+                                <li class="haulmont-list_item">
+                                    <div><p>Creators of the CUBA Platform</p>
+                                    </div>
+                                </li>
+                                <li class="haulmont-list_item">
+                                    <div><p>Established in 2008</p>
+                                    </div>
+                                </li>
+                            </ul>
+                            <ul class="numbers-list">
+                                <li class="numbers-list_item"><strong class="numbers-list_number">300+</strong>
+                                    <div class="numbers-list_text">developers</div>
+                                </li>
+                                <li class="numbers-list_item"><strong class="numbers-list_number">400+</strong>
+                                    <div class="numbers-list_text">projects</div>
+                                </li>
+                                <li class="numbers-list_item">
+                                    <div class="numbers-list_text">Customers in</div>
+                                    <strong class="numbers-list_number">60+</strong>
+                                    <div class="numbers-list_text">countries</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <a href="/user/" class="header_profile">
+                <svg xmlns="http://www.w3.org/2000/svg" id="i-profile" class="icon header_profile_src" viewBox="0 0 563.43 563.43" width="100%" height="100%">
+                    <path d="M280.79 314.559c83.266 0 150.803-67.538 150.803-150.803S364.055 13.415 280.79 13.415 129.987 80.953 129.987 163.756s67.537 150.803 150.803 150.803zm0-261.824c61.061 0 111.021 49.959 111.021 111.021s-49.96 111.02-111.021 111.02-111.021-49.959-111.021-111.021 49.959-111.02 111.021-111.02zM19.891 550.015h523.648c11.102 0 19.891-8.789 19.891-19.891 0-104.082-84.653-189.198-189.198-189.198H189.198C85.116 340.926 0 425.579 0 530.124c0 11.102 8.789 19.891 19.891 19.891zm169.307-169.307h185.034c75.864 0 138.313 56.436 148.028 129.524H41.17c9.714-72.625 72.164-129.524 148.028-129.524z"></path>
+                </svg>
+            </a>
+        </div>
+    </nav>
+    <nav class="header-submenu">
+        <div class="container header-submenu_container">
+            <a href="/learn/quickstart/" class="header-submenu_link">Quick Start</a>
+            <a href="/learn/live-demo/" class="header-submenu_link">Live Demo</a>
+            <a href="/guides/" class="header-submenu_link nuxt-link-exact-active nuxt-link-active">Guides</a>
+        </div>
+    </nav>
+</header>
+
+<script>
+    function langSwitch() {
+        var el = document.querySelector('.multiselect');
+        var el1 = document.querySelector('.multiselect__content-wrapper');
+        if(el.classList.contains("multiselect--active")) {
+            el.classList.remove("multiselect--active");
+            el1.style.display = 'none';
+        } else {
+            el.classList.add("multiselect--active");
+            el1.style.display = 'block';
+        }
+    }
+    document.addEventListener('click', function(event) {
+        var e = document.querySelector('.lang-switch');
+        var el = document.querySelector('.multiselect');
+        var el1 = document.querySelector('.multiselect__content-wrapper');
+
+        if (!e.contains(event.target)) {
+            el1.style.display='none';
+            el.classList.remove("multiselect--active");
+        }
+    });
+</script>
+<style>
+    .upper-header .header-options {
+        display: none;
+    }
+
+    .upper-header .upper-header-wrapper .header-menu div .nav > li:last-child > a {
+        padding-right: 0;
+    }
+
+    .header-support {
+        margin-left: 20px;
+    }
+
+    /* lang-switch*/
+     .lang-switch {
+         flex: 0 0 auto;
+         margin-left: auto;
+     }
+
+    @media screen and (max-width: 1000px) {
+        .lang-switch {
+           display: none;
+        }
+    }
+
+    .lang-switch .multiselect__select {
+        display: none;
+    }
+
+    .lang-switch .multiselect__tags {
+        border: none;
+        cursor: pointer;
+    }
+
+    .lang-switch .multiselect__content-wrapper {
+        top: 49px;
+        left: -7px;
+        width: 45px;
+        overflow: hidden;
+        border-radius: 0;
+        background: #FFF;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.25);
+    }
+
+    .lang-switch .multiselect__content-wrapper ul li:first-child {
+        display: none;
+    }
+
+    .lang-switch .multiselect-wrapper .multiselect {
+        min-height: 22px;
+    }
+
+    .lang-switch .multiselect__option:hover {
+        background: #E8F2FB;
+    }
+
+    .lang-switch .multiselect__option a:hover {
+        color: #0784E3!important;
+        text-decoration: none;
+    }
+
+    .lang-switch .multiselect__option {
+        width: 45px;
+        height: 34px;
+        min-height: 34px;
+        padding: 0;
+    }
+
+    .lang-switch .multiselect__option a {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 43px;
+        height: 34px;
+        font-size: 13px;
+        line-height: 22px;
+        color: #9B9B9B;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .lang-switch .multiselect__tags {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 27px;
+        height: 22px;
+        min-height: 22px;
+        padding: 0;
+    }
+
+    .lang-switch .multiselect__tags:hover {
+        color: #0784E3;
+    }
+
+    .lang-switch .multiselect__single {
+        display: block;
+        font-size: 13px;
+        line-height: 22px;
+        color: #9B9B9B;
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        border-radius: 0;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .lang-switch .multiselect__single:hover {
+        border: none;
+        color: #0784E3;
+    }
+
+    .lang-switch .multiselect__element {
+        overflow: hidden;
+        height: 34px;
+        min-height: 34px;
+    }
+
+    .lang-switch .multiselect--active .multiselect__single {
+        color: #0784E3;
+    }
+
+    .multiselect {
+        box-sizing: content-box;
+        display: block;
+        position: relative;
+        width: 100%;
+        min-height: 40px;
+        text-align: left;
+        color: #35495e;
+    }
+    .multiselect, .multiselect__single {
+        font-family: inherit;
+        font-size: 16px;
+        touch-action: manipulation;
+    }
+    .multiselect__select {
+        position: absolute;
+        width: 40px;
+        height: 38px;
+        right: 1px;
+        top: 1px;
+        padding: 4px 8px;
+        text-align: center;
+        transition: transform .2s ease;
+    }
+    .multiselect__select {
+        line-height: 16px;
+        box-sizing: border-box;
+        display: block;
+        margin: 0;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    .multiselect__tags {
+        min-height: 40px;
+        display: block;
+        padding: 8px 40px 0 8px;
+        border-radius: 5px;
+        border: 1px solid #e8e8e8;
+        background: #fff;
+        font-size: 14px;
+    }
+
+    .multiselect * {
+        box-sizing: border-box;
+    }
+
+    .multiselect__single {
+        position: relative;
+        display: inline-block;
+        min-height: 20px;
+        line-height: 20px;
+        border: none;
+        border-radius: 5px;
+        background: #fff;
+        padding: 0 0 0 5px;
+        width: 100%;
+        transition: border .1s ease;
+        box-sizing: border-box;
+        margin-bottom: 8px;
+        vertical-align: top;
+    }
+
+    .multiselect__content-wrapper {
+        position: absolute;
+        display: block;
+        background: #fff;
+        width: 100%;
+        max-height: 240px;
+        overflow: auto;
+        border: 1px solid #e8e8e8;
+        border-top: none;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+        z-index: 50;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .multiselect__content {
+        list-style: none;
+        display: inline-block;
+        padding: 0;
+        margin: 0;
+        min-width: 100%;
+        vertical-align: top;
+    }
+
+    .multiselect__option {
+        display: block;
+        padding: 12px;
+        min-height: 40px;
+        line-height: 16px;
+        text-decoration: none;
+        text-transform: none;
+        vertical-align: middle;
+        position: relative;
+        cursor: pointer;
+        white-space: nowrap;
+    }
+    /* end lang-switch*/
+</style>
+
+    <!-- Main Page Content and Sidebar -->
+    <div class="content-wrapper">
+        <div class="cuba-container text-node blog">
+
+
+
+            <!-- Main content (left column) -->
+            <div class="region region-content">
+
+
+
+                <section id="block-system-main" class="block block-system clearfix">
+                    <div id="node-962" class="article node node-blog-post node-promoted clearfix">
+                        <div class="content">
+                            <div class="field field-name-body field-type-text-with-summary field-label-hidden">
+                                <div class="field-items">
+                                    <div class="field-item even" property="content: encoded">
+                                        <h1>Product Customizations with Application Components</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this guide you will learn how customer-specific solutions can be created based on a standard product. We will leverage the capabilities of CUBAs application components to customize the project and add customer-specific functionalities.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="what_we_are_going_to_build"><a class="anchor" href="#what_we_are_going_to_build"></a><a class="link" href="#what_we_are_going_to_build">What we are going to build</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a> example to show how two customer-specific extensions <code>Kanto-Petclinic</code> and <code>Alabastia-Petclinic</code> can be created and how specific extensions are created:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>convert the Petclinic project into a CUBA application component</p>
+</li>
+<li>
+<p>create two CUBA applications: <code>Kanto-Petclinic</code> and <code>Alabastia-Petclinic</code> that use the CUBA Petclinic as a basis</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="kanto_petclinic"><a class="anchor" href="#kanto_petclinic"></a><a class="link" href="#kanto_petclinic">Kanto-Petclinic</a></h3>
+<div class="paragraph">
+<p>The Kanto Petclinic extends the original Project with the following customer specific behavior:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>additional attribute <code>previousIllnesses</code> to the Visit Entity</p>
+</li>
+<li>
+<p>allow users to create a Visit for today from the Pet Browse screen</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="alabastia_petclinic"><a class="anchor" href="#alabastia_petclinic"></a><a class="link" href="#alabastia_petclinic">Alabastia-Petclinic</a></h3>
+<div class="paragraph">
+<p>The Alabastia Petclinic extends the original Project with the following customer specific behavior:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>give users the ability to assign Treatment Rooms to Visits</p>
+</li>
+<li>
+<p>automatically pre-select the Assigned Nurse based on the current user when creating a new Visit</p>
+</li>
+<li>
+<p>automatically pre-select the Nurses Treatment Room for a new Visit</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="requirements"><a class="anchor" href="#requirements"></a><a class="link" href="#requirements">Requirements</a></h3>
+<div class="paragraph">
+<p>Your development environment requires to contain the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://adoptopenjdk.net/">JDK 8</a></p>
+</li>
+<li>
+<p><a href="https://www.cuba-platform.com/download">CUBA Studio</a> as standalone IDE or as an IntelliJ IDEA plugin</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-product-line-platform/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
+</div>
+<div class="paragraph">
+<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-product-line-platform.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-product-line-platform.git</a></code></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="overview"><a class="anchor" href="#overview"></a><a class="link" href="#overview">Overview</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Application components in CUBA can be used to create reusable components of functionality that can be leveraged in other CUBA applications. Depending on how much functionality the application component contains, it can have a form of a small addon, that enriches your application with a particular aspect.</p>
+</div>
+<div class="paragraph">
+<p>But application components can also be used to represent a complete application. In this case, the application component contains all the entities, screens and business logic that the standard application consists of. Then the actual application just uses the application component and only slightly adjusts it.</p>
+</div>
+<div class="paragraph">
+<p>This second scenario is what this guide covers in particular. In the example we will convert the Petclinic application into an application component. Then we will create two applications that use this application component and adjust it to their customer-specific needs.</p>
+</div>
+<div class="paragraph">
+<p>With this approach we can incorporate requirements from customers that would like the standard product (Petclinic) to be adjusted for their purposes. Application components give us a compile-time extension mechanism for this case.</p>
+</div>
+<div class="sect2">
+<h3 id="different_extension_mechanisms"><a class="anchor" href="#different_extension_mechanisms"></a><a class="link" href="#different_extension_mechanisms">Different Extension Mechanisms</a></h3>
+<div class="paragraph">
+<p>Before we dive into the concrete example of the Petclinic, let&#8217;s explore the differences between compile-time and runtime extensions. Depending on the required capabilities, deployment and distribution mechanisms of the product, one or the other might be more suitable.</p>
+</div>
+<div class="sect3">
+<h4 id="runtime_extensions_plugins_scripting_configuration"><a class="anchor" href="#runtime_extensions_plugins_scripting_configuration"></a><a class="link" href="#runtime_extensions_plugins_scripting_configuration">Runtime Extensions: Plugins, Scripting &amp; Configuration</a></h4>
+<div class="paragraph">
+<p>The first extension mechanism of a CUBA application is a runtime extension. The main characteristic of this extension is that during the build process one application artifact like a <code>war</code> binary is created. This binary is always the same and distributed to all customers. The extension part of the application does not change the original binary e.g. by replacing certain classes.</p>
+</div>
+<div class="paragraph">
+<p>Instead, the extensions are added at runtime / deployment time of the application. This can be done in various forms. One example is a plugin architecture. In this case it would be additional jar files which contain the plugins for the application. Those jar files are placed to the application server. Oftentimes it is required to restart the application to pick up those plugins.</p>
+</div>
+<div class="paragraph">
+<p>Such a jar file plugin can contain source code. Oftentimes it is used for implementing certain interfaces which are pre-defined within the main application to fulfil or replace a particular functionality.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+There is a dedicated blog post called <a href="https://www.cuba-platform.com/blog/in-any-incomprehensible-situation-go-scripting/">In any incomprehensible situation go scripting</a> in the <a href="https://www.cuba-platform.com/blog/">CUBA Platform Blog</a> which explains the plugin approach in more details.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The next step, which is less powerful, is scripting. In CUBA there are several built-in mechanisms / examples for scripting. Scripting allows us to programmatically define particular pre-defined areas of the functionality in the application. One example of this inside CUBA itself is the Constraint definition within the security groups administration. It is possible to define a groovy script that will determine if a particular user has access to a particular resource like an entity record.</p>
+</div>
+<div class="paragraph">
+<p>Oftentimes scripting is combined with configuration. Taking the Constraint definition once again: the groovy script is just one part of the dynamic configuration. It actually belongs to a bigger "Constraint configuration" which includes a link to an Entity, a type of operation, etc.</p>
+</div>
+<div class="paragraph">
+<p>Configuration also allows certain extension capabilities. In contrast to a plugin, normally those extension points are more narrowed in terms of the overall impact.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+You can find more information on the topic of different customization options in the blog post <a href="https://www.cuba-platform.com/blog/how-to-develop-a-highly-customizable-product/">How to develop a highly customizable product</a> from the <a href="https://www.cuba-platform.com/blog/">CUBA Platform Blog</a>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="compile_time_extension_application_component"><a class="anchor" href="#compile_time_extension_application_component"></a><a class="link" href="#compile_time_extension_application_component">Compile-Time Extension: Application Component</a></h4>
+<div class="paragraph">
+<p>The second extension mechanism of a product is a compile-time extension. This type of extensions emerge during the production process of the software. It may appear at the development time through customer specific extensions / adjustments of the standard product. Alternatively, it can also be created at the time the binary is created, e.g. by adding certain additional <code>jar</code> files into the binary.</p>
+</div>
+<div class="paragraph">
+<p>In this case, almost everything can be changed by these extensions, because it is too early in the software production process. Additional entities can be created, business logic can be overridden and customer-specific UIs can be created.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="petclinic_as_a_product_line"><a class="anchor" href="#petclinic_as_a_product_line"></a><a class="link" href="#petclinic_as_a_product_line">Petclinic as a Product Line</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Picking up the Petlinic example from above, in this guide we will make the Petclinic product not a standalone software anymore, but rather a Product Line. The base product is the Petclinic example as we know it. Additionally, we will create customer-specific projects / products for particular customer types or even a single customer.</p>
+</div>
+<div class="paragraph">
+<p>Those extensions are CUBA applications (<code>Kanto-Petclinic</code> and <code>Alabastia-Petclinic</code> in our example) that use the Petclinic base product as an application component. With this we will leverage the compile-time extension mechanism for a CUBA application.</p>
+</div>
+<div class="sect2">
+<h3 id="making_the_petclinic_project_an_application_component"><a class="anchor" href="#making_the_petclinic_project_an_application_component"></a><a class="link" href="#making_the_petclinic_project_an_application_component">Making the Petclinic Project an Application Component</a></h3>
+<div class="paragraph">
+<p>To leverage the Petclinic project as a product line, it is required to understand what makes up a CUBA application component and where it differs from a regular CUBA application. In fact, the difference is not very big - only one particular file called <code>app-component.xml</code>. This application component descriptor file marks a CUBA application additionally to be used as an application component. This means it can be used by other CUBA applications.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+In order to prevent a module naming collision between the application component and the application that uses it, it is required to change the module prefix of the Petclinic project from <code>app</code> to <code>petclinic</code> via the Project Properties window in CUBA Studio.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Besides that, nothing is really changed. The application component can still be used as a regular CUBA application. It can be started in CUBA Studio, business logic can be created, UIs can be generated, etc.</p>
+</div>
+<div class="paragraph">
+<p>"Used by other CUBA applications" in this case means not only that the functionality of the application component shows up in the resulting application. Also, it is possible to interact with any part of the application component from inside the target application. Entities (like the <code>Pet</code> entity) can be referenced, Spring beans can be called or overridden, UI screens can be extended or replaced, etc.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s look into the <code>app-component.xml</code> of the Petclinic example:</p>
+</div>
+<div class="listingblock">
+<div class="title">app-component.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;</span>
+<span class="tag">&lt;app-component</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://schemas.haulmont.com/cuba/app-component.xsd</span><span class="delimiter">&quot;</span></span>
+  <span class="attribute-name">dependsOn</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.haulmont.cuba, com.haulmont.addon.helium</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+
+  <span class="tag">&lt;module</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">global</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">blocks</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">*</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;artifact</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic-global</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">appJar</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+
+    <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">cuba.persistenceConfig</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">value</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">+com/haulmont/sample/petclinic/persistence.xml</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">cuba.metadataConfig</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">value</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">+com/haulmont/sample/petclinic/metadata.xml</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">cuba.viewsConfig</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">value</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">+com/haulmont/sample/petclinic/views.xml</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+  <span class="tag">&lt;/module&gt;</span>
+  <span class="tag">&lt;module</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">core</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">dependsOn</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">global</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">blocks</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">core</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;artifact</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic-core</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">appJar</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">cuba.mainMessagePack</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">value</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">+com.haulmont.sample.petclinic.core</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="comment">&lt;!-- ... --&gt;</span>
+  <span class="tag">&lt;/module&gt;</span>
+  <span class="comment">&lt;!-- ... --&gt;</span>
+<span class="tag">&lt;/app-component&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This file contains a formal description of the application component structure. It exposes a couple of <code>module</code> elements. Those modules can declare <code>artifact</code> elements as well as <code>property</code> elements that should be exposed for this application component.</p>
+</div>
+<div class="paragraph">
+<p>CUBA uses this information for configuring the right application properties (and values) and define which artifacts are packed into each application block (core / web). Normally, this file does not need to be changed manually at all, because it only contains static information about the application component structure.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Through CUBA Studio it is possible to generate the application component descriptor via the Menu: <code>CUBA &gt; Advanced &gt; App Component Descriptor</code>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="using_the_petclinic_application_component_in_a_cuba_application"><a class="anchor" href="#using_the_petclinic_application_component_in_a_cuba_application"></a><a class="link" href="#using_the_petclinic_application_component_in_a_cuba_application">Using the Petclinic Application Component in a CUBA Application</a></h3>
+<div class="paragraph">
+<p>After making the Petclinic project an application component, it is necessary to install it to a maven repository, so that the dependency mechanisms from CUBA (in particular from Gradle) can download the application component to the target application.</p>
+</div>
+<div class="paragraph">
+<p>For installing there is a dedicated gradle task that should be performed in the application component project: <code>./gradlew install</code> (the equivalent Menu entry in CUBA Studio is <code>CUBA &gt; Advanced &gt; Install App Component</code>).</p>
+</div>
+<div class="paragraph">
+<p>With this task, the application component is built and put to the local maven repository, in particular to the <code>.m2</code> directory within the users home directory:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/guides/images/application-components/local-maven-repository.png" alt="local maven repository">
+</div>
+</div>
+<div class="paragraph">
+<p>After installing the application component, it can be used in the target application. One prerequisite for using an application component from the local maven repository is that inside the <code>repositories</code> block of the <code>build.gradle</code> file the maven local repository needs to be mentioned:</p>
+</div>
+<div class="listingblock">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">repositories {
+    mavenLocal()
+    <span class="comment">//...</span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In order to use it, the dependency can be installed through CUBA Studio. Via <code>CUBA &gt; Marketplace&#8230;&#8203;</code> the application component can be found. In this case, the Petclinic application component is not in the public CUBA Marketplace, but rather in our local machine. Therefore, it does not appear in the list. On the top right, there is a button called <code>Install add-on manually</code>, which allows entering the coordinates of the application component: <code>com.haulmont.sample.petclinic:petclinic-global:2.0</code>.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+When using a development approach within a team, the normal way of handling such a dependency is to use a dedicated maven repository like <code>Nexus</code>, <code>Artifactory</code> or <code>Github Packages</code> where the application component binaries are stored. In this case the application component does not need to be installed locally on everyone&#8217;s machine.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>With those preconditions in place, the target application is ready to start using the application component.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="petclinic_extensions"><a class="anchor" href="#petclinic_extensions"></a><a class="link" href="#petclinic_extensions">Petclinic Extensions</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As described in the beginning, we will do certain extensions to the different customers and their dedicated applications. We will start with the Kanto-Petclinic.</p>
+</div>
+<div class="sect2">
+<h3 id="kanto_petclinic_2"><a class="anchor" href="#kanto_petclinic_2"></a><a class="link" href="#kanto_petclinic_2">Kanto-Petclinic</a></h3>
+<div class="paragraph">
+<p>This project only needs slight adjustments to the Petclinic core. There is additional information to store for a Visit, which previously described illnesses. Additionally, in the Kanto-Petlinic there are a lot of emergency visits. This requires the nurses to create Visits of a particular type for today. In order to support this use case, there should be a shortcut way of creating this kind of visit.</p>
+</div>
+<div class="sect3">
+<h4 id="extending_the_visit_entity"><a class="anchor" href="#extending_the_visit_entity"></a><a class="link" href="#extending_the_visit_entity">Extending the Visit Entity</a></h4>
+<div class="paragraph">
+<p>In order to achieve the first requirement of storing previous illnesses to the Visit, the <code>Visit</code> entity must be extended. CUBA allows extending screens from application components or the framework itself via the <code>@Extends</code> annotation on the JPA entity. For the Kanto-Petclinic adding an attribute looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">KantoVisit.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Extends</span>(Visit.class)
+<span class="annotation">@Entity</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">kantopetclinic_KantoVisit</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@DiscriminatorValue</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">KantoVisit</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">KantoVisit</span> <span class="directive">extends</span> Visit {
+
+    <span class="annotation">@Column</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">PREVIOUS_ILLNESSES</span><span class="delimiter">&quot;</span></span>, length = <span class="integer">4000</span>)
+    <span class="directive">private</span> <span class="predefined-type">String</span> previousIllnesses;
+
+    <span class="directive">public</span> <span class="predefined-type">String</span> getPreviousIllnesses() {
+        <span class="keyword">return</span> previousIllnesses;
+    }
+
+    <span class="directive">public</span> <span class="type">void</span> setPreviousIllnesses(<span class="predefined-type">String</span> previousIllnesses) {
+        <span class="local-variable">this</span>.previousIllnesses = previousIllnesses;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>@Extends</code> annotation replaces all occurrences of the <code>Visit</code> entity with its new extension <code>KantoVisit</code>. As the subclass can still be treated as a <code>Visit</code>, this also means, all existing logic / screens inside the application component will continue to work.</p>
+</div>
+<div class="paragraph">
+<p>After this addition, CUBA Studio will generate the corresponding database update scripts. This will alter the original table instead of defining a new one.</p>
+</div>
+<div class="paragraph">
+<p>More information on the Entity extension mechanism can be found in the CUBA docs: <a href="https://doc.cuba-platform.com/manual-latest/entity_extension.html">Entity Extensions</a></p>
+</div>
+<div class="paragraph">
+<p>The second part of that feature requirement is that the attribute <code>previousIllnesses</code> can also be managed in the UI. For this, we will extend the existing UI screen of a Visit. CUBA Studio guides you through the process of extending a screen via <code>Screens &gt; New &gt; Screen &gt; Extend an existing Screen</code>. The field should only be added to the Entity editor screen, so extending <code>VisitEdit</code> is sufficient.</p>
+</div>
+<div class="paragraph">
+<p>In order to add a field to an existing <code>form</code> component, the "delta" XML (containing all the new attributes) has to be put in the XML screen descriptor of the new extension screen. Here you will see how it looks when extending the Visit Editor screen to add the <code>previousIllnesses</code> field to it:</p>
+</div>
+<div class="listingblock">
+<div class="title">kanto-visit-edit.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;</span>
+<span class="tag">&lt;window</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://schemas.haulmont.com/cuba/screen/window.xsd</span><span class="delimiter">&quot;</span></span>
+  <span class="attribute-name">messagesPack</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.kanto.petclinic.web.screens.visit</span><span class="delimiter">&quot;</span></span>
+  <span class="attribute-name">extends</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com/haulmont/sample/petclinic/web/screens/visit/visit-edit.xml</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
+  <span class="tag">&lt;layout&gt;</span>
+    <span class="tag">&lt;form</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">form</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
+      <span class="tag">&lt;column</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">column1</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;textArea</span>
+          <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">previousIllnessesField</span><span class="delimiter">&quot;</span></span>
+          <span class="attribute-name">rows</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">5</span><span class="delimiter">&quot;</span></span>
+          <span class="attribute-name">property</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">previousIllnesses</span><span class="delimiter">&quot;</span></span>
+          <span class="attribute-name">colspan</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">2</span><span class="delimiter">&quot;</span></span>
+          <span class="attribute-name">width</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">100%</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+      <span class="tag">&lt;/column&gt;</span>
+    <span class="tag">&lt;/form&gt;</span>
+  <span class="tag">&lt;/layout&gt;</span>
+<span class="tag">&lt;/window&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the <code>extends</code> attribute declares which screen this screen extension is based on</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>by adding another form component with the same ID "form" the component will be merged with the parent one</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In this case, the text area for the new field is appended at the bottom of the form component with the ID <code>for</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="create_visits_for_today_from_pet_browse"><a class="anchor" href="#create_visits_for_today_from_pet_browse"></a><a class="link" href="#create_visits_for_today_from_pet_browse">Create Visits for Today from Pet Browse</a></h4>
+<div class="paragraph">
+<p>The second extension that the Kanto-Petclinic requests is to have a shortcut on creating a Visit for today.</p>
+</div>
+<div class="paragraph">
+<p>This can be achieved by creating another screen extension to the Pet Browse screen. The extension adds one action to the Pet Table called <code>Create Visit</code>. The extension of the screen in the XML screen descriptor looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">kanto-pet-browse.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;</span>
+<span class="tag">&lt;window</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://schemas.haulmont.com/cuba/screen/window.xsd</span><span class="delimiter">&quot;</span></span>
+  <span class="attribute-name">messagesPack</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.kanto.petclinic.web.screens.pet</span><span class="delimiter">&quot;</span></span>
+  <span class="attribute-name">extends</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com/haulmont/sample/petclinic/web/pet/pet/pet-browse.xml</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+  <span class="tag">&lt;facets&gt;</span>
+    <span class="tag">&lt;inputDialog</span> <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">createVisitForPetDialog</span><span class="delimiter">&quot;</span></span>
+      <span class="attribute-name">defaultActions</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">OK_CANCEL</span><span class="delimiter">&quot;</span></span>
+      <span class="attribute-name">caption</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">msg://createVisitForPetCaption</span><span class="delimiter">&quot;</span></span>
+      <span class="attribute-name">onAction</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">petTable.createVisit</span><span class="delimiter">&quot;</span></span>
+    <span class="tag">&gt;</span>
+      <span class="tag">&lt;parameters&gt;</span>
+        <span class="tag">&lt;enumParameter</span>
+          <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">visitType</span><span class="delimiter">&quot;</span></span>
+          <span class="attribute-name">enumClass</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.haulmont.sample.petclinic.entity.visit.VisitType</span><span class="delimiter">&quot;</span></span>
+          <span class="attribute-name">caption</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">msg://com.kanto.petclinic.web.screens.pet/visitType</span><span class="delimiter">&quot;</span></span>
+        <span class="tag">/&gt;</span>
+      <span class="tag">&lt;/parameters&gt;</span>
+    <span class="tag">&lt;/inputDialog&gt;</span>
+    <span class="tag">&lt;notification</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">visitCreatedNotification</span><span class="delimiter">&quot;</span></span>
+      <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">TRAY</span><span class="delimiter">&quot;</span></span>
+      <span class="attribute-name">caption</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">msg://visitCreated</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+  <span class="tag">&lt;/facets&gt;</span>
+  <span class="tag">&lt;layout&gt;</span>
+    <span class="tag">&lt;groupTable</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">petsTable</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
+      <span class="tag">&lt;actions&gt;</span>
+        <span class="tag">&lt;action</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">createVisit</span><span class="delimiter">&quot;</span></span>
+          <span class="attribute-name">trackSelection</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span>
+          <span class="attribute-name">caption</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">msg://createVisit</span><span class="delimiter">&quot;</span></span>
+          <span class="attribute-name">icon</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">USER_MD</span><span class="delimiter">&quot;</span></span>
+        <span class="tag">/&gt;</span>
+      <span class="tag">&lt;/actions&gt;</span>
+      <span class="tag">&lt;buttonsPanel</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">buttonsPanel</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;button</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">createVisitBtn</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">action</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">petsTable.createVisit</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span> <i class="conum" data-value="3"></i><b>(3)</b>
+      <span class="tag">&lt;/buttonsPanel&gt;</span>
+    <span class="tag">&lt;/groupTable&gt;</span>
+  <span class="tag">&lt;/layout&gt;</span>
+<span class="tag">&lt;/window&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>a input dialog facet is used for requesting the visit type before the visit is created</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>by redefining the <code>groupTable</code> with the same ID as in the parent screen: "petsTable", the merging of the two screen descriptors is initiated</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>the button is appended to the existing <code>buttonsPanel</code> component</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The business logic of the screen is also extended accordingly. The controller subscribes to the close event of the input dialog.</p>
+</div>
+<div class="listingblock">
+<div class="title">KantoPetBrowse.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@UiController</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_Pet.browse</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">kanto-pet-browse.xml</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">KantoPetBrowse</span> <span class="directive">extends</span> PetBrowse {
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> GroupTable&lt;Pet&gt; petsTable;
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> Notifications notifications;
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> VisitCreationService visitCreationService;
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> ScreenBuilders screenBuilders;
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> MessageBundle messageBundle;
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> NotificationFacet visitCreatedNotification;
+
+    <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">createVisitForPetDialog</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">protected</span> <span class="type">void</span> onCreateVisitForPetDialogClose(CloseEvent event) {
+        <span class="keyword">if</span> (event.getCloseAction().equals(InputDialog.INPUT_DIALOG_OK_ACTION)) {
+            <span class="directive">final</span> VisitType visitType = (VisitType) event.getValues().get(<span class="string"><span class="delimiter">&quot;</span><span class="content">visitType</span><span class="delimiter">&quot;</span></span>);
+
+            <span class="directive">final</span> Visit createdVisit = visitCreationService
+                .createVisitForPet(petsTable.getSingleSelected(), visitType); <i class="conum" data-value="1"></i><b>(1)</b>
+
+            visitCreatedNotification.show();
+
+            screenBuilders.editor(Visit.class, <span class="local-variable">this</span>)
+                .editEntity(createdVisit)
+                .withOpenMode(OpenMode.DIALOG)
+                .show();
+
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the creation of the Visit is delegated to the <code>VisitCreationService</code> which is only part of the Kanto-Petclinic project.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The <code>VisitCreationService</code> is a new CUBA Service that is not part of the original Petclinic platform. Instead, we create this service exclusively for the Kanto-Petclinic project:</p>
+</div>
+<div class="listingblock">
+<div class="title">VisitCreationServiceBean.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Service</span>(VisitCreationService.NAME)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">VisitCreationServiceBean</span> <span class="directive">implements</span> VisitCreationService {
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> DataManager dataManager;
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> TimeSource timeSource;
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> Visit createVisitForPet(Pet pet, VisitType visitType) {
+
+        <span class="directive">final</span> Visit visitForPet = dataManager.create(Visit.class);
+
+        visitForPet.setPet(pet);
+        visitForPet.setType(visitType);
+
+        <span class="directive">final</span> LocalDateTime now = timeSource.now().toLocalDateTime();
+        visitForPet.setVisitStart(now);
+        visitForPet.setVisitEnd(now.plusHours(<span class="integer">1</span>));
+
+        <span class="keyword">return</span> dataManager.commit(visitForPet);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With this code in place, the customizations for the Kanto-Petclinic are finished. The application can now be shipped to the customer. Let&#8217;s look at the second customer "Alabastia-Petclinic" so see some other extensions in action.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="alabastia_petclinic_2"><a class="anchor" href="#alabastia_petclinic_2"></a><a class="link" href="#alabastia_petclinic_2">Alabastia-Petclinic</a></h3>
+<div class="paragraph">
+<p>The Alabastia Petclinic extends the original Project with the following customer-specific behavior:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>give users the ability to assign Treatment Rooms to Visits</p>
+</li>
+<li>
+<p>automatically pre-select the assigned Nurse based on the current user when creating a new Visit</p>
+</li>
+<li>
+<p>automatically pre-select the Nurses Treatment Room for a new Visit</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Those changes require some more invasive additions to the Petclinic product. The assignment of the treatment rooms needs to be stored in two additional Entities that we are going to create only for this project. Additionally, it requires some UI adjustments that will take care of the automatic pre-selection.</p>
+</div>
+<div class="sect3">
+<h4 id="treatment_rooms_for_visits"><a class="anchor" href="#treatment_rooms_for_visits"></a><a class="link" href="#treatment_rooms_for_visits">Treatment Rooms for Visits</a></h4>
+<div class="paragraph">
+<p>To assign treatment rooms to visits, the rooms themselves need to be managed in a dedicated entity:</p>
+</div>
+<div class="listingblock">
+<div class="title">TreatmentRoom.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Table</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">ALABASTIAPETCLINIC_TREATMENT_ROOM</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@Entity</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">alabastiapetclinic_TreatmentRoom</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">TreatmentRoom</span> <span class="directive">extends</span> NamedEntity {
+
+    <span class="annotation">@Column</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">ROOM_NUMBER</span><span class="delimiter">&quot;</span></span>, nullable = <span class="predefined-constant">false</span>)
+    <span class="directive">private</span> <span class="predefined-type">String</span> roomNumber;
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The entity annotation assigns the <code>TreatmentRoom</code> entity to the namespace of the Alabastia Petclinic project, which helps to differentiate between the Petclinic core entities and the additional entities.</p>
+</div>
+<div class="paragraph">
+<p>Nevertheless, it is e.g. possible to mix and match with entities of the Petclinic platform project. In this case the <code>TreatmentRoom</code> entity extends the mapped superclass <code>NamedEntity</code> which is defined in the Petclinic platform.</p>
+</div>
+<div class="paragraph">
+<p>After storing the information of the Rooms, it is required to store the information about the treatment room to be  the default one for each Nurse. Therefore, we will create a mapping entity called <code>DefaultTreatmentRoom</code> which links to a treatment room and a user entity:</p>
+</div>
+<div class="listingblock">
+<div class="title">DefaultTreatmentRoom.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Entity</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">alabastiapetclinic_DefaultTreatmentRoom</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">DefaultTreatmentRoom</span> <span class="directive">extends</span> StandardEntity {
+
+    <span class="annotation">@ManyToOne</span>(fetch = FetchType.LAZY, optional = <span class="predefined-constant">false</span>)
+    <span class="annotation">@JoinColumn</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">USER_ID</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">private</span> User user;
+
+    <span class="annotation">@ManyToOne</span>(fetch = FetchType.LAZY, optional = <span class="predefined-constant">false</span>)
+    <span class="annotation">@JoinColumn</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">TREATMENT_ROOM_ID</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">private</span> TreatmentRoom treatmentRoom;
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now the last entity extension that needs to be made is to link a Visit to a Treatment Room. This can be done via Entity extensions as we have already seen in the Kanto-Petclinic example:</p>
+</div>
+<div class="listingblock">
+<div class="title">AlabastiaVisit.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Extends</span>(Visit.class)
+<span class="annotation">@Entity</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">alabastiapetclinic_AlabastiaVisit</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@DiscriminatorValue</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">AlabastiaVisit</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">AlabastiaVisit</span> <span class="directive">extends</span> Visit {
+
+    <span class="annotation">@ManyToOne</span>(fetch = FetchType.LAZY)
+    <span class="annotation">@JoinColumn</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">TREATMENT_ROOM_ID</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">private</span> TreatmentRoom treatmentRoom;
+
+    <span class="directive">public</span> TreatmentRoom getTreatmentRoom() {
+        <span class="keyword">return</span> treatmentRoom;
+    }
+
+    <span class="directive">public</span> <span class="type">void</span> setTreatmentRoom(TreatmentRoom treatmentRoom) {
+        <span class="local-variable">this</span>.treatmentRoom = treatmentRoom;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With those entity changes as well as the corresponding management screens for the new entities, we have everything in place to allow the UI to automatically pre-populate the correct values for <code>assignedNurse</code> and <code>treatmentRoom</code>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/application-components/alabastia-treatment-rooms.png"><img src="/guides/images/application-components/alabastia-treatment-rooms.png" alt="Management of Treatment Rooms"></a>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/application-components/alabastia-default-treatment-room-configuration.png"><img src="/guides/images/application-components/alabastia-default-treatment-room-configuration.png" alt="Configuration of Default Treatment Rooms for Users"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>The assigned nurse will just be the current user, whereas the treatmentRoom is looked up by the room assigned in the <code>DefaultTreatmentRoom</code> for the current user.</p>
+</div>
+<div class="listingblock">
+<div class="title">AlabastiaVisitEdit.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@UiController</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_Visit.edit</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@UiDescriptor</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">alabastia-visit-edit.xml</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">AlabastiaVisitEdit</span> <span class="directive">extends</span> VisitEdit {
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> DataManager dataManager;
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> UserSession userSession;
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> EntityStates entityStates;
+
+    <span class="annotation">@Subscribe</span>
+    <span class="directive">protected</span> <span class="type">void</span> onAfterShow(AfterShowEvent event) {
+
+        <span class="keyword">if</span> (entityStates.isNew(getEditedEntity())) {
+            getEditedEntity().setAssignedNurse(
+                currentUser()
+            );
+
+            defaultTreatmentRoomFor(
+                currentUser()
+            ).ifPresent(defaultTreatmentRoom -&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+                initTreatmentRoom(defaultTreatmentRoom.getTreatmentRoom())
+            );
+        }
+    }
+
+    <span class="directive">private</span> <span class="type">void</span> initTreatmentRoom(TreatmentRoom treatmentRoom) {
+        <span class="directive">final</span> AlabastiaVisit visit = (AlabastiaVisit) getEditedEntity(); <i class="conum" data-value="2"></i><b>(2)</b>
+        visit.setTreatmentRoom(treatmentRoom);
+    }
+
+    <span class="directive">private</span> User currentUser() {
+        <span class="keyword">return</span> userSession.getCurrentOrSubstitutedUser();
+    }
+
+    <span class="directive">private</span> Optional&lt;DefaultTreatmentRoom&gt; defaultTreatmentRoomFor(User user) {
+        <span class="keyword">return</span> dataManager
+            .load(DefaultTreatmentRoom.class)
+            .query(<span class="string"><span class="delimiter">&quot;</span><span class="content">e.user = ?1</span><span class="delimiter">&quot;</span></span>, user)
+            .view(viewBuilder -&gt;
+                viewBuilder.add(<span class="string"><span class="delimiter">&quot;</span><span class="content">treatmentRoom</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">View</span>.MINIMAL)
+            )
+            .optional();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the default treatment room is looked up via the dataManager. If there is a mapping defined for the current user, the room will be set for the visit.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>to use the methods of the extension, the Visit entity has to be casted to <code>AlabastiaVisit</code>. As we have extended the entity, we can be sure that CUBA will always use <code>AlabastiaVisit</code> instead of <code>Visit</code>. Therefore, it is safe to cast here.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In order to see the new attribute <code>treatmentRoom</code> in the Visit editor, we should also extend the screen descriptor:</p>
+</div>
+<div class="paragraph">
+<p>alabastia-visit-edit.xml</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;</span>
+<span class="tag">&lt;window</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://schemas.haulmont.com/cuba/screen/window.xsd</span><span class="delimiter">&quot;</span></span>
+  <span class="attribute-name">messagesPack</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.alabastia.petclinic.web.screens.visit</span><span class="delimiter">&quot;</span></span>
+  <span class="attribute-name">xmlns:ext</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://schemas.haulmont.com/cuba/window-ext.xsd</span><span class="delimiter">&quot;</span></span>
+  <span class="attribute-name">extends</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com/haulmont/sample/petclinic/web/screens/visit/visit-edit.xml</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+  <span class="tag">&lt;data&gt;</span>
+    <span class="tag">&lt;collection</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">treatmentRoomsDc</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.alabastia.petclinic.entity.TreatmentRoom</span><span class="delimiter">&quot;</span></span>
+      <span class="attribute-name">view</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">_minimal</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="tag">&lt;loader&gt;</span>
+        <span class="tag">&lt;query&gt;</span>
+          <span class="inline-delimiter">&lt;![CDATA[</span>select e from alabastiapetclinic_TreatmentRoom e<span class="inline-delimiter">]]&gt;</span>
+        <span class="tag">&lt;/query&gt;</span>
+      <span class="tag">&lt;/loader&gt;</span>
+    <span class="tag">&lt;/collection&gt;</span>
+  <span class="tag">&lt;/data&gt;</span>
+  <span class="tag">&lt;layout&gt;</span>
+    <span class="tag">&lt;form</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">form</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="tag">&lt;column</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">column2</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;lookupField</span>
+                <span class="attribute-name">ext:index</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">2</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="1"></i><b>(1)</b>
+                <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">treatmentRoomField</span><span class="delimiter">&quot;</span></span>
+                <span class="attribute-name">property</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">treatmentRoom</span><span class="delimiter">&quot;</span></span>
+                <span class="attribute-name">optionsContainer</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">treatmentRoomsDc</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+      <span class="tag">&lt;/column&gt;</span>
+    <span class="tag">&lt;/form&gt;</span>
+  <span class="tag">&lt;/layout&gt;</span>
+<span class="tag">&lt;/window&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>ext:index</code> determines the position of the element within the second column of the <code>form</code> component</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+In order to use the <code>ext</code> attributes, the namespace must be defined in the beginning of the XML file: <code>xmlns:ext="http://schemas.haulmont.com/cuba/window-ext.xsd"</code>. CUBA Studio automatically configures the index value when the lookupField is placed via the visual representation of the screen descriptor.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>When opening the screen now, we will see an unfetched attribute error of the attribute <code>treatmentRoom</code>. The reason for this is that because the view (<code>visit-with-pet</code>), as it is defined and used for the Visit entity, does not include the <code>treatmentRoom</code> attribute. CUBA allows overriding view definitions for an entity extension. This is what we need to do in order to load the <code>treatmentRoom</code> for the <code>AlabastiaVisit</code> entity:</p>
+</div>
+<div class="listingblock">
+<div class="title">views.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;</span>
+<span class="tag">&lt;views</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://schemas.haulmont.com/cuba/view.xsd</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+
+  <span class="tag">&lt;view</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.alabastia.petclinic.entity.AlabastiaVisit</span><span class="delimiter">&quot;</span></span>  <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">visit-with-pet</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">extends</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">visit-with-pet</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">treatmentRoom</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">view</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">_minimal</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+  <span class="tag">&lt;/view&gt;</span>
+
+<span class="tag">&lt;/views&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the view definition targets the extended class <code>AlabastiaVisit</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the name of the view must match the original name and also mention that it extends this original view</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>With this adjustment in place, the extended view will be taken into consideration when opening the screen and the unfetched attribute error will go away.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/application-components/alabastia-preselected-user-and-treatment-room.png"><img src="/guides/images/application-components/alabastia-preselected-user-and-treatment-room.png" alt="Pre-selected User and Treatment Room"></a>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h3>
+<div class="paragraph">
+<p>In this guide we have learned about the different options of how to implement product customizations via various extension mechanisms. Mainly there are the two categories of customization possibilities: Runtime extensions as well as Compile-Time extensions.</p>
+</div>
+<div class="paragraph">
+<p>CUBA application components fall under the category of Compile-Time extensions which we used throughout the Petclinic example. They mainly differ in their capabilities on how much the original software can be adjusted. It is a trade-off between the adjustment needs and deployment flexibility. Runtime extensions can be changed at deployment / runtime, where compile-time extensions do not have this possibility.</p>
+</div>
+<div class="paragraph">
+<p>When switching to the concrete example of the Petclinic, we explored how to make the Petclinic an application component in order to use it for projects customization.</p>
+</div>
+<div class="paragraph">
+<p>Then we took a look into different extension use cases that either extend the existing data model or change the existing UI of the Petclinic project. Furthermore, we have seen how to create additional business logic that is independent of the original solution.</p>
+</div>
+<div class="paragraph">
+<p>The extensions mechanisms CUBA provides for the UI layer allows highly customizable product extensions without the need to duplicate a lot of source-code. The usage of XML extensions to adjust the existing screen definitions as well as the positioning mechanisms via the <code>ext:index</code> attribute makes this possible.</p>
+</div>
+<div class="paragraph">
+<p>The ability to extend (and replace) entities is quite unique in the landscape of full-stack frameworks. It allows the developer to replace the usage of an entity in the overall application and to add additional attributes to it. CUBA Studio, as always, takes care of creating the corresponding DB update scripts. This feature is particularly valuable when using product customizations, because it allows sharing an already working common data-model that can be adjusted to the specific needs of the customer.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="further_information"><a class="anchor" href="#further_information"></a><a class="link" href="#further_information">Further Information</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://doc.cuba-platform.com/manual-latest/extension.html">CUBA docs: Functionality Extensions</a></p>
+</li>
+<li>
+<p><a href="https://doc.cuba-platform.com/manual-latest/app_components.html">CUBA docs: Application components</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!-- Sidebar (right column) -->
+            <div id="blog-sidebar">
+                <div class="region region-sidebar ">
+                    <section id="block-block-29" class="block block-block clearfix">
+
+                        <div class="guide-panel">
+                            <h3 class="header-table-content">Table of contents</h3>
+                            <ul class="sectlevel1">
+<li><a href="#what_we_are_going_to_build">What we are going to build</a>
+<ul class="sectlevel2">
+<li><a href="#kanto_petclinic">Kanto-Petclinic</a></li>
+<li><a href="#alabastia_petclinic">Alabastia-Petclinic</a></li>
+<li><a href="#requirements">Requirements</a></li>
+</ul>
+</li>
+<li><a href="#overview">Overview</a>
+<ul class="sectlevel2">
+<li><a href="#different_extension_mechanisms">Different Extension Mechanisms</a></li>
+</ul>
+</li>
+<li><a href="#petclinic_as_a_product_line">Petclinic as a Product Line</a>
+<ul class="sectlevel2">
+<li><a href="#making_the_petclinic_project_an_application_component">Making the Petclinic Project an Application Component</a></li>
+<li><a href="#using_the_petclinic_application_component_in_a_cuba_application">Using the Petclinic Application Component in a CUBA Application</a></li>
+</ul>
+</li>
+<li><a href="#petclinic_extensions">Petclinic Extensions</a>
+<ul class="sectlevel2">
+<li><a href="#kanto_petclinic_2">Kanto-Petclinic</a></li>
+<li><a href="#alabastia_petclinic_2">Alabastia-Petclinic</a></li>
+<li><a href="#summary">Summary</a></li>
+</ul>
+</li>
+<li><a href="#further_information">Further Information</a></li>
+</ul>
+                        </div>
+
+                        <div class="sidebar-razd"></div>
+                        <div class="guide-panel download">
+                            <a href="https://github.com/cuba-guides/cuba-petclinic-product-line-platform" class="github-link" target="_blank">Example code on Github</a>
+                        </div>
+                        <div class="guide-panel cuba-version">Supported versions: CUBA 7.1+; Java 8+</div>
+
+                    </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer fragment="14269c1b298" class="footer">
+    <div class="container footer_container">
+        <div class="footer_columns">
+            <div class="footer_column">
+                <div class="footer-menu"><h4 class="footer-menu_label">Framework</h4>
+                    <ul class="footer-menu_nav">
+                        <li><a href="/framework/">Framework</a></li>
+                        <li><a href="/tools/">Tools</a></li>
+                        <li><a href="/marketplace/">Addons</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer_column">
+                <div class="footer-menu"><h4 class="footer-menu_label">Learn</h4>
+                    <ul class="footer-menu_nav">
+                        <li><a href="/learn/quickstart/">Quick Start</a></li>
+                        <li><a href="/learn/live-demo/">Live Demo</a></li>
+                        <li><a href="/guides/">Guides</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer_column">
+                <div class="footer-menu"><h4 class="footer-menu_label">Documentation</h4>
+                    <ul class="footer-menu_nav">
+                        <li><a href="/documentation/">Documentation</a></li>
+                        <li><a href="/api-reference/">API References</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer_column">
+                <div class="footer-menu"><h4 class="footer-menu_label">Community</h4>
+                    <ul class="footer-menu_nav">
+                        <li><a href="/discuss/">Forum</a></li>
+                        <li><a href="/blog/">Blog</a></li>
+                        <li><a href="/contacts/">Contacts</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer_bottom">
+            <div class="footer_copyright">
+                Developed and sponsored by Haulmont
+                <a href="https://www.cuba-platform.com/terms-of-use/" class="footer_terms">Terms of Use</a></div>
+            <ul class="social footer_social">
+                <li class="social_item">
+                    <a href="https://github.com/cuba-platform/cuba" target="_blank" class="social_link">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon -github social_icon">
+                        <path d="M3.047 3.188C5.109 1.062 7.594 0 10.5 0c2.906 0 5.383 1.055 7.43 3.164C19.977 5.274 21 7.812 21 10.781c0 2.344-.672 4.453-2.016 6.328-1.343 1.875-3.062 3.172-5.156 3.891h-.187c-.375 0-.563-.187-.563-.563l.024-1.054c.015-.672.023-1.29.023-1.852 0-.906-.25-1.578-.75-2.015 1.438-.188 2.602-.649 3.492-1.383.89-.735 1.336-2.04 1.336-3.914 0-1.125-.36-2.094-1.078-2.906.313-.907.281-1.86-.094-2.86h-.234c-.719 0-1.61.375-2.672 1.125a9.858 9.858 0 0 0-2.625-.375c-.844 0-1.719.125-2.625.375-1.063-.75-1.953-1.125-2.672-1.125H4.97c-.375 1-.407 1.953-.094 2.86-.719.812-1.078 1.78-1.078 2.906 0 1.875.437 3.18 1.312 3.914s2.032 1.195 3.47 1.383c-.345.343-.563.828-.657 1.453a2.687 2.687 0 0 1-1.219.281c-.781 0-1.39-.39-1.828-1.172-.406-.687-.953-1.062-1.64-1.125-.657 0-.673.219-.047.656.468.25.859.782 1.171 1.594.032.125.094.274.188.445.094.172.351.399.773.68.422.281.93.422 1.524.422.437 0 .781-.031 1.031-.094v1.828c0 .344-.172.516-.516.516h-.187c-2.125-.719-3.852-2.008-5.18-3.867C.664 15.273 0 13.156 0 10.78c0-2.969 1.016-5.5 3.047-7.594z" fill="currentColor" fill-rule="evenodd"></path>
+                    </svg>
+                </a></li>
+                <li class="social_item">
+                    <a href="https://www.linkedin.com/company/cuba-platform" target="_blank" class="social_link">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon -linkedin social_icon">
+                        <path d="M19.305 0c.474 0 .875.155 1.203.465.328.31.492.702.492 1.176v17.554c0 .474-.164.894-.492 1.258-.328.365-.73.547-1.203.547h-17.5c-.474 0-.894-.182-1.258-.547C.182 20.09 0 19.67 0 19.195V1.641C0 1.167.173.775.52.465.866.155 1.294 0 1.805 0h17.5zM6.775 17.613V8.129h-2.71v9.484h2.71zM4.431 6.407c.245.245.566.367.964.367s.728-.13.988-.39.39-.574.39-.942c0-.398-.122-.727-.367-.987s-.567-.39-.965-.39-.727.13-.987.39-.39.59-.39.987c0 .368.122.69.367.965zm13.18 11.206v-5.42c0-1.336-.305-2.348-.916-3.034-.612-.687-1.407-1.03-2.386-1.03-1.048 0-1.922.506-2.62 1.517v-1.3H8.806v9.267h2.884v-5.257c0-.361.034-.614.104-.759.28-.722.77-1.083 1.468-1.083.979 0 1.468.668 1.468 2.005v5.094h2.883z" fill="currentColor" fill-rule="evenodd"></path>
+                    </svg>
+                </a></li>
+                <li class="social_item">
+                    <a href="https://www.facebook.com/CUBAplatform" target="_blank" class="social_link">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon -facebook social_icon">
+                        <path d="M17.063 0A3.939 3.939 0 0 1 21 3.938v13.124A3.939 3.939 0 0 1 17.062 21h-2.57v-8.135h2.72l.411-3.172h-3.13V7.67c0-.916.245-1.531 1.571-1.531l1.668-.014v-2.83c-.287-.041-1.285-.123-2.433-.123-2.42 0-4.088 1.476-4.088 4.183v2.338H8.477v3.172h2.734V21H3.937A3.939 3.939 0 0 1 0 17.062V3.938A3.939 3.939 0 0 1 3.938 0h13.124z" fill="currentColor" fill-rule="evenodd"></path>
+                    </svg>
+                </a></li>
+                <li class="social_item">
+                    <a href="https://twitter.com/CubaPlatform" target="_blank" class="social_link">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon -twitter social_icon">
+                            <path d="M17.5 6.59a6.058 6.058 0 0 1-1.654.465 2.903 2.903 0 0 0 1.271-1.6 5.717 5.717 0 0 1-1.832.697 2.847 2.847 0 0 0-2.092-.902 2.87 2.87 0 0 0-2.87 2.871c0 .219.013.451.068.656A8.158 8.158 0 0 1 4.457 5.77c-.246.423-.396.93-.396 1.449 0 .998.464 1.873 1.244 2.392-.479-.013-.93-.15-1.367-.355v.027c0 1.395 1.052 2.557 2.365 2.817-.246.068-.438.109-.698.109-.177 0-.355-.027-.533-.055a2.889 2.889 0 0 0 2.68 1.996A5.782 5.782 0 0 1 3.5 15.34a8.183 8.183 0 0 0 4.402 1.285c5.278 0 8.176-4.375 8.176-8.176 0-.123 0-.246-.014-.369A5.521 5.521 0 0 0 17.5 6.59zM21 3.938v13.124A3.939 3.939 0 0 1 17.062 21H3.938A3.939 3.939 0 0 1 0 17.062V3.938A3.939 3.939 0 0 1 3.938 0h13.124A3.939 3.939 0 0 1 21 3.938z" fill="currentColor" fill-rule="evenodd"></path>
+                        </svg>
+                    </a>
+                </li>
+                <li class="social_item">
+                    <a href="https://www.youtube.com/c/CubaPlatform" target="_blank" class="social_link">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon -youtube social_icon">
+                        <path d="M27.836 4.648c.11 1.97.164 3.92.164 5.852 0 1.932-.055 3.883-.164 5.852 0 1.24-.392 2.287-1.176 3.144-.784.857-1.74 1.285-2.87 1.285-2.808.146-6.071.219-9.79.219-3.719 0-6.982-.073-9.79-.219-1.13 0-2.086-.428-2.87-1.285C.556 18.64.164 17.591.164 16.352.054 14.382 0 12.432 0 10.5c0-1.276.073-3.227.219-5.852 0-1.24.383-2.287 1.148-3.144C2.133.647 3.081.219 4.211.219 6.872.073 9.97 0 13.508 0h.984c3.537 0 6.636.073 9.297.219 1.13 0 2.087.428 2.871 1.285.784.857 1.176 1.905 1.176 3.144zM11.32 15.86l7.93-5.359-7.93-5.414v10.773z" fill="currentColor" fill-rule="evenodd"></path>
+                    </svg>
+                </a></li>
+                <li class="social_item">
+                    <a href="/rss.xml" class="social_link">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon -rss social_icon">
+                            <path d="M.857 15.91C1.464 15.305 2.18 15 3 15c.821 0 1.527.295 2.116.884.59.59.884 1.295.884 2.116 0 .821-.295 1.527-.884 2.116-.59.59-1.295.884-2.116.884-.821 0-1.527-.295-2.116-.884C.294 19.526 0 18.821 0 18c0-.821.286-1.518.857-2.09zM0 7c3.828 0 7.118 1.376 9.871 4.129C12.624 13.882 14 17.172 14 21H9.625c0-2.917-.875-5.25-2.625-7s-4.083-2.625-7-2.625V7zm0-7c5.797 0 10.746 2.05 14.848 6.152C18.949 10.254 21 15.203 21 21h-4.375c0-4.667-1.604-8.604-4.813-11.813C8.604 5.98 4.668 4.375 0 4.375V0z" fill="currentColor" fill-rule="evenodd"></path>
+                        </svg>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</footer>
+<!--<script src="https://cuba-nuxt.demo.haulmont.com/_nuxt/83f852ef4b5c91802566.js" defer></script>
+<script src="https://cuba-nuxt.demo.haulmont.com/_nuxt/d3a40ea16eeb2e16777d.js" defer></script>
+<script src="https://cuba-nuxt.demo.haulmont.com/_nuxt/9bd7e05c04e06e762b47.js" defer></script>
+<script src="https://cuba-nuxt.demo.haulmont.com/_nuxt/70ff0a2e2f971caf4892.js" defer></script>
+<script src="https://cuba-nuxt.demo.haulmont.com/_nuxt/cf082d0abe0e606c10b9.js" defer></script>-->
+<style>
+    [class*="column"] + [class*="column"]:last-child {
+        float: none;
+    }
+</style>
+
+
+<!-- BEGIN FOOTER -->
+<!--<footer id="footer">
+    <div class="footer-wrapper cuba-container">
+        <div class="region region-footer-sitemap">
+            <section id="block-footer-sitemap-footer-sitemap" class="block block-footer-sitemap clearfix">
+                <div id="footer-sitemap" class="clearfix">
+                    <div class="fs-block-content">
+                        <div class="menu-footer-sitemap">
+                            <ul class="footer_links_menu-footer-sitemap total-items-5 parent-items-0 single-items-0">
+                                <li class="menu-1466 depth-1 total-children-4 parent-children-0 single-children-4  first">
+                                    <a href="/framework" class="fs-root-link">Platform</a>
+                                    <ul class="footer_links_menu-footer-sitemap total-items-4 parent-items-0 single-items-0">
+                                        <li class="menu-2770 depth-2 fs-no-children  first"><a href="/framework">The Framework</a></li>
+                                        <li class="menu-1473 depth-2 fs-no-children"><a href="/development-tools">Development Tools</a></li>
+                                        <li class="menu-2838 depth-2 fs-no-children last"><a href="/marketplace">Marketplace</a></li>
+                                    </ul>
+                                </li>
+                                <li class="menu-1469 depth-1 total-children-7 parent-children-0 single-children-7">
+                                    <a href="/online-demo" class="fs-root-link">Learn</a>
+                                    <ul class="footer_links_menu-footer-sitemap total-items-7 parent-items-0 single-items-0">
+                                        <li class="menu-1479 depth-2 fs-no-children first"><a href="/online-demo">Online demo</a></li>
+                                        <li class="menu-1477 depth-2 fs-no-children"><a href="/quickstart">Quick start</a></li>
+                                        <li class="menu-1478 depth-2 fs-no-children"><a href="/documentation">Documentation</a></li>
+                                        <li class="menu-1731 depth-2 fs-no-children"><a href="/guides">Guides</a></li>
+                                        <li class="menu-1773 depth-2 fs-no-children"><a href="/webinars">Webinars</a></li>
+                                        <li class="menu-1602 depth-2 fs-no-children last"><a href="/faq">FAQ</a></li>
+                                    </ul>
+                                </li>
+                                <li class="menu-1603 depth-1 total-children-3 parent-children-0 single-children-3"><a
+                                        href="https://www.cuba-platform.com/discuss/" class="fs-root-link">Community</a>
+                                    <ul class="footer_links_menu-footer-sitemap total-items-3 parent-items-0 single-items-0">
+                                        <li class="menu-1604 depth-2 fs-no-children first"><a href="https://www.cuba-platform.com/discuss/">Forum</a></li>
+                                        <li class="menu-1692 depth-2 fs-no-children"><a href="/testimonials">Customer stories</a></li>
+                                        <li class="menu-1615 depth-2 fs-no-children last"><a href="/blog">Blog</a></li>
+                                    </ul>
+                                </li>
+                                <li class="menu-1663 depth-1 total-children-3 parent-children-0 single-children-3"><a
+                                        href="/training" class="fs-root-link">Services</a>
+                                    <ul class="footer_links_menu-footer-sitemap total-items-3 parent-items-0 single-items-0">
+                                        <li class="menu-1756 depth-2 fs-no-children first"><a href="/training">Training</a></li>
+                                        <li class="menu-1757 depth-2 fs-no-children"><a href="/support-options">Support</a></li>
+                                        <li class="menu-1758 depth-2 fs-no-children last"><a href="/deployment">Development</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="menu-1612 depth-1 total-children-3 parent-children-0 single-children-3  last">
+                                    <a href="/download" class="fs-root-link">More</a>
+                                    <ul class="footer_links_menu-footer-sitemap total-items-3 parent-items-0 single-items-0">
+                                        <li class="menu-2773 depth-2 fs-no-children first"><a href="/download">Download</a></li>
+                                        <li class="menu-2775 depth-2 fs-no-children"><a href="/store">Store</a></li>
+                                        <li class="menu-1480 depth-2 fs-no-children last"><a href="/contacts">Contacts</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+        </div>
+        <div class="region region-footer-copyright">
+            <section id="block-block-14" class="block block-block clearfix">
+                <div class="footer-copyright">
+                    <div class="copyright">Copyright &copy; 2008-2018 Haulmont</div>
+                    <div class="licences"><a href="/terms-of-use">Terms of Use</a></div>
+                    <div class="socials">
+                        <ul>
+                            <li><a href="https://github.com/cuba-platform/cuba" class="socials-icon github"></a></li>
+                            <li><a href="https://www.youtube.com/c/CubaPlatform" class="socials-icon youtube"></a></li>
+                            <li><a href="https://www.facebook.com/CUBAplatform" class="socials-icon facebook"></a></li>
+                            <li><a href="https://twitter.com/CubaPlatform" class="socials-icon twitter"></a></li>
+                            <li><a href="https://www.linkedin.com/company/cuba-platform" class="socials-icon linkedin"></a></li>
+                            <li><a href="https://www.cuba-platform.com/rss.xml" class="socials-icon rss"></a></li>
+                        </ul>
+                    </div>
+                </div>
+                <script async defer src="https://buttons.github.io/buttons.js"></script>
+            </section>
+        </div>
+    </div>
+</footer>-->
+<!-- END FOOTER -->
+<div class="scrollTop"></div>
+</section>
+
+<script src="/guides/js/foundation.min.js"></script>
+<script src="https://unpkg.com/isotope-layout@3.0/dist/isotope.pkgd.js"></script>
+<script src="/guides/js/vendor/modernizr.js"></script>
+<script src="/guides/js/toc.js"></script>
+<script src="/guides/js/navigation.js"></script>
+<script src="/guides/js/navbar.js"></script>
+<script src="/guides/js/extra.js"></script>
+<script src="/guides/js/extra2.js"></script>
+<script src="/guides/js/cuba-new.js"></script>
+<script>
+(function ($) {
+  $(document).foundation();
+  var doc = document.documentElement;
+  doc.setAttribute('data-useragent', navigator.userAgent)
+
+  /* Issue #24 */
+  $(".blog .content img").each(function() {
+    var imgMarkup = $(this)[0].outerHTML;
+    console.log(imgMarkup);
+    $(this).replaceWith('<div class="img-center">' + imgMarkup + '</div>');
+  });
+
+})(jQuery);
+
+// Cache selectors
+var lastId,
+    topMenu = $(".sectlevel1"),
+    topMenuHeight = topMenu.outerHeight()+1,
+
+    // All list items
+    menuItems = topMenu.find("a"),
+    // Anchors corresponding to menu items
+    scrollItems = menuItems.map(function(){
+        var item = $($(this).attr("href"));
+        if (item.length) { return item; }
+    });
+console.log(topMenuHeight );
+menuItems.click(function(e){
+    var href = $(this).attr("href"),
+        offsetTop = href === "#" ? 0 : $(href).offset().top - 85;
+    $('html, body').stop().animate({
+        scrollTop: offsetTop
+    }, 850);
+    e.preventDefault();
+    window.location =  href;
+});
+
+$( document ).ready(function() {
+    const hash = location.hash.replace('#','');
+    if(hash !== ''){
+        $('html, body').stop().animate({ scrollTop: $('a[href=#' + hash + ']').offset().top - 85}, 850);
+    }
+});
+
+// Bind to scroll
+$(window).scroll(function(){
+    // Get container scroll position
+    var fromTop = $(this).scrollTop()+topMenuHeight;
+
+    // Get id of current scroll item
+    var cur = scrollItems.map(function(){
+        if ($(this).offset().top < fromTop)
+            return this;
+    });
+    // Get the id of the current element
+    cur = cur[cur.length-1];
+    var id = cur && cur.length ? cur[0].id : "";
+
+    if (lastId !== id) {
+        lastId = id;
+        // Set/remove active class
+        menuItems
+            .parent().removeClass("active")
+            .end().filter("[href=#"+id+"]").parent().addClass("active");
+    }
+});
+
+</script>
+</body>
+</html>
