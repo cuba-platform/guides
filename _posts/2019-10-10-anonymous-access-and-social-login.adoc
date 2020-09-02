@@ -19,7 +19,7 @@ permalink: anonymous-access-and-social-login
 
 Applications such as online stores provide users the ability to view a list of available products, read their description, or compare with each other without logging in. But in order to make a purchase, users usually have to register, and using a social network account is the most convenient way to do it.
 
-== What Will Be Built
+== What we are going to build
 
 This guide enhances the CUBA Petclinic example to demonstrate how to enable application public access and allow users to register via social services.
 

@@ -18,7 +18,7 @@ permalink: unit-testing
 
 In this guide you will learn how automated testing in a CUBA application works. In particular, this guide deals with the question of how unit tests can be executed and when it makes sense to use them over integration testing.
 
-== What Will be Built
+== What we are going to build
 
 This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA Petclinic] example to show how existing features can be tested in an automated fashion via unit testing:
 

@@ -22,7 +22,7 @@ CUBA applications have a build-in support for localized messages for different l
 properties files to have a clear separation between the application code and the actual translations.
 
 
-== What Will be Built
+== What we are going to build
 
 This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA Petclinic] example to show how localized messages within the CUBA application can be defined and used:
 

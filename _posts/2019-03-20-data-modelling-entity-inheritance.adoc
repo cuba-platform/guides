@@ -22,7 +22,7 @@ This guide demonstrates how to use entity inheritance in CUBA applications.
 In the petclinic example different types of Pets are groomed during their stay in the clinic - cats, birds and rats. All these types of pets have some common attributes. The application should store common attributes within one table and use separate linked tables to store specific attributes for the different pet types.
 
 
-== What Will be Built
+== What we are going to build
 
 This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show the mechanism to define entity inheritance. In particular, the following use cases will be covered:
 

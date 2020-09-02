@@ -20,7 +20,7 @@ permalink: logging-in-cuba-applications
 
 In order to get insights into a running CUBA application, Logging is one crucial part to get in place. The Java ecosystem has very mature mechanisms to do application logging. This guide shows how this ecosystem can be leveraged in a CUBA application.
 
-== What Will Be Built
+== What we are going to build
 
 This guides enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA petclinic] example to show how logging can be integrated, configured and viewed as part of the application itself or with the help of external tools.
 

@@ -22,7 +22,7 @@ It is easy to enhance CUBA applications with a directly embedded comprehensive r
 
 In this guide we'll tell you about the `Reporting` add-on and how to interact with it through the UI and programmatically.
 
-== What Will be Built
+== What we are going to build
 
 This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA Petclinic] example to show how to embed the reporting capabilities into the application:
 
