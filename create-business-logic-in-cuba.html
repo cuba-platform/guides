@@ -557,9 +557,8 @@
 
         <span class="predefined-type">String</span> discountMessage = <span class="string"><span class="delimiter">&quot;</span><span class="content">Discount for </span><span class="delimiter">&quot;</span></span> + petName + <span class="string"><span class="delimiter">&quot;</span><span class="content">: </span><span class="delimiter">&quot;</span></span> + discount + <span class="string"><span class="delimiter">&quot;</span><span class="content">%</span><span class="delimiter">&quot;</span></span>;
 
-        notifications.create()
-                .setCaption(discountMessage)
-                .setType(Notifications.NotificationType.TRAY)
+        notifications.create(Notifications.NotificationType.TRAY)
+                .withCaption(discountMessage)
                 .show();
     }
 }</code></pre>
@@ -675,7 +674,7 @@ This approach is acceptable if the logic is invoked from a single point and it i
     <span class="directive">private</span> PetContactDisplay petContactDisplay;
 
     <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">fetchContact</span><span class="delimiter">&quot;</span></span>)
-    <span class="directive">public</span> <span class="type">void</span> fetchContact() {
+    <span class="directive">public</span> <span class="type">void</span> fetchContact(<span class="predefined-type">Action</span>.ActionPerformedEvent event) {
 
         Pet pet = getEditedEntity();
 
@@ -804,10 +803,10 @@ This approach is acceptable if the logic is invoked from a single point and it i
 <span class="directive">public</span> <span class="type">class</span> <span class="class">CreateDiseaseWarningMailing</span> <span class="directive">extends</span> Screen {
 
     <span class="annotation">@Inject</span>
-    <span class="directive">private</span> DiseaseWarningMailingService diseaseWarningMailingService; <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="directive">protected</span> DiseaseWarningMailingService diseaseWarningMailingService; <i class="conum" data-value="1"></i><b>(1)</b>
 
     <span class="annotation">@Inject</span>
-    <span class="directive">private</span> Notifications notifications;
+    <span class="directive">protected</span> Notifications notifications;
 
     <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">createDiseaseWarningMailing</span><span class="delimiter">&quot;</span></span>)
     <span class="directive">protected</span> <span class="type">void</span> createDiseaseWarningMailing(<span class="predefined-type">Action</span>.ActionPerformedEvent event) {
@@ -815,11 +814,11 @@ This approach is acceptable if the logic is invoked from a single point and it i
         <span class="type">int</span> endangeredPets = diseaseWarningMailingService.warnAboutDisease(petType.getValue(),
                 disease.getValue(), city.getValue()); <i class="conum" data-value="2"></i><b>(2)</b>
 
-        closeWithCommit().then(() -&gt;
-                notifications.create()
-                        .setCaption(endangeredPets + <span class="string"><span class="delimiter">&quot;</span><span class="content"> Owner(s) of endangered Pets have been notified</span><span class="delimiter">&quot;</span></span>)
-                        .setType(Notifications.NotificationType.TRAY)
-                        .show()
+
+        close(<span class="keyword">new</span> StandardCloseAction(EditorScreen.WINDOW_COMMIT_AND_CLOSE)).then(() -&gt;
+            notifications.create(Notifications.NotificationType.TRAY)
+                .withCaption(endangeredPets + <span class="string"><span class="delimiter">&quot;</span><span class="content"> Owner(s) of endangered Pets have been notified</span><span class="delimiter">&quot;</span></span>)
+                .show()
         );
     }
 }</code></pre>

@@ -604,7 +604,7 @@
     <span class="annotation">@Subscribe</span>
     <span class="directive">protected</span> <span class="type">void</span> initRegularCheckupVisit(InitEntityEvent&lt;Visit&gt; event) { <i class="conum" data-value="1"></i><b>(1)</b>
         Visit visit = event.getEntity();
-
+        visit.setType(VisitType.REGULAR_CHECKUP);
         visit.setPaid(<span class="predefined-constant">false</span>); <i class="conum" data-value="2"></i><b>(2)</b>
     }
 
@@ -619,7 +619,7 @@
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td><code>event.getEntity()</code> returns the Visit instance that can be changed during screen initialization</td>
+<td><code>event.getEntity()</code> returns the Visit instance that can be adjusted during screen initialization.</td>
 </tr>
 </table>
 </div>
@@ -630,10 +630,10 @@
 <div class="sect2">
 <h3 id="external_initialization_via_screen_builders"><a class="anchor" href="#external_initialization_via_screen_builders"></a><a class="link" href="#external_initialization_via_screen_builders">External Initialization via Screen Builders</a></h3>
 <div class="paragraph">
-<p>On the frontend layer with CUBA 7 the <code>ScreenBuilders</code> API was introduced. It allows programmatic creation and screen opening via a Builder pattern, which exposes various options for further configuration.</p>
+<p>With CUBA 7 the <code>ScreenBuilders</code> UI-API was introduced. It allows programmatic creation and screen opening via a Builder pattern, which exposes various options for further configuration.</p>
 </div>
 <div class="paragraph">
-<p>One of this options is the possibility to define an initializer method that gets executed before opening the screen, where it is possible for an Editor screen to change attributes of the entity that will be displayed.</p>
+<p>One of the options from this API is the possibility to define an initializer method that gets executed before opening the screen, where it is possible for an Editor screen to change attributes of the entity that will be displayed.</p>
 </div>
 <div class="paragraph">
 <p>In the Petclinic example there is a screen that creates a particular visit instance. This visit is a "regular checkup", as this checkup is always the same in the sense that it requires some checklist kind of description. Furthermore, it is always paid upfront. Since it is a burden for the users to create those special kinds of visits over and over again, a screen, that comes with sensible defaults for this kind of use-case, was implemented.</p>

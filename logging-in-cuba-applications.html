@@ -507,10 +507,9 @@
 <p>Logging is a common tool of application development and operation. The developer writes statements into the application source code indicating that certain actions happened.</p>
 </div>
 <div class="paragraph">
-<p>In the following petclinic example two possible log messages are written. In case of successful storage of the <code>Pet</code> instance, an informal message is written with the details of the pet that has been stored. In case of a failure of storing the Pet, an error message is written with information about the failure.</p>
+<p>In the following example two possible log messages are written. In case of successful storage of the <code>Pet</code> instance, an info message is logged with the details of the pet, which has been stored. In case of a failure of storing the Pet, an error message is logged with information about the failure.</p>
 </div>
 <div class="listingblock">
-<div class="title">PetServiceBean.java</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="directive">private</span> Pet savePet(Pet pet) {
     <span class="keyword">try</span> {

@@ -941,7 +941,7 @@ There are two ways to listen to events. Above <code>@TransactionalEventListener<
 <p>The first step is once again to define a</p>
 </div>
 <div class="listingblock">
-<div class="title">VisitCompletedUiEvent.java</div>
+<div class="title">VisitCompletedClickedEvent.java</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VisitCompletedClickedEvent</span> <span class="directive">extends</span> ApplicationEvent <span class="directive">implements</span> UiEvent { <i class="conum" data-value="1"></i><b>(1)</b>
 
@@ -960,7 +960,7 @@ There are two ways to listen to events. Above <code>@TransactionalEventListener<
 </table>
 </div>
 <div class="listingblock">
-<div class="title">VisitEdit.java</div>
+<div class="title">VisitBrowse.java</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VisitBrowse</span> <span class="directive">extends</span> StandardLookup&lt;Visit&gt; {
 
@@ -982,11 +982,10 @@ There are two ways to listen to events. Above <code>@TransactionalEventListener<
 
     <span class="annotation">@EventListener</span> <i class="conum" data-value="3"></i><b>(3)</b>
     <span class="directive">protected</span> <span class="type">void</span> updateDataOnVisitCompleted(VisitCompletedClickedEvent event) {
-        loadData(); <i class="conum" data-value="4"></i><b>(4)</b>
+        getScreenData().loadAll(); <i class="conum" data-value="4"></i><b>(4)</b>
 
-        notifications.create()
-                .setCaption(messages.formatMessage(<span class="local-variable">this</span>.getClass(), <span class="string"><span class="delimiter">&quot;</span><span class="content">visitCompleteSuccessful</span><span class="delimiter">&quot;</span></span>))
-                .setType(Notifications.NotificationType.TRAY)
+        notifications.create(Notifications.NotificationType.TRAY)
+                .withCaption(messages.formatMessage(<span class="local-variable">this</span>.getClass(), <span class="string"><span class="delimiter">&quot;</span><span class="content">visitCompleteSuccessful</span><span class="delimiter">&quot;</span></span>))
                 .show();
     }
 }</code></pre>
