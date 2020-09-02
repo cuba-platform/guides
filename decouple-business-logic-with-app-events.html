@@ -448,7 +448,7 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="what_will_be_built"><a class="anchor" href="#what_will_be_built"></a><a class="link" href="#what_will_be_built">What Will Be Built</a></h2>
+<h2 id="what_we_are_going_to_build"><a class="anchor" href="#what_we_are_going_to_build"></a><a class="link" href="#what_we_are_going_to_build">What we are going to build</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA petclinic</a> example to show different use cases of application events. In particular, the following use cases will be covered:</p>
@@ -941,7 +941,7 @@ There are two ways to listen to events. Above <code>@TransactionalEventListener<
 <p>The first step is once again to define a</p>
 </div>
 <div class="listingblock">
-<div class="title">VisitCompletedClickedEvent.java</div>
+<div class="title">VisitCompletedUiEvent.java</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VisitCompletedClickedEvent</span> <span class="directive">extends</span> ApplicationEvent <span class="directive">implements</span> UiEvent { <i class="conum" data-value="1"></i><b>(1)</b>
 
@@ -960,7 +960,7 @@ There are two ways to listen to events. Above <code>@TransactionalEventListener<
 </table>
 </div>
 <div class="listingblock">
-<div class="title">VisitBrowse.java</div>
+<div class="title">VisitEdit.java</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VisitBrowse</span> <span class="directive">extends</span> StandardLookup&lt;Visit&gt; {
 
@@ -982,10 +982,11 @@ There are two ways to listen to events. Above <code>@TransactionalEventListener<
 
     <span class="annotation">@EventListener</span> <i class="conum" data-value="3"></i><b>(3)</b>
     <span class="directive">protected</span> <span class="type">void</span> updateDataOnVisitCompleted(VisitCompletedClickedEvent event) {
-        getScreenData().loadAll(); <i class="conum" data-value="4"></i><b>(4)</b>
+        loadData(); <i class="conum" data-value="4"></i><b>(4)</b>
 
-        notifications.create(Notifications.NotificationType.TRAY)
-                .withCaption(messages.formatMessage(<span class="local-variable">this</span>.getClass(), <span class="string"><span class="delimiter">&quot;</span><span class="content">visitCompleteSuccessful</span><span class="delimiter">&quot;</span></span>))
+        notifications.create()
+                .setCaption(messages.formatMessage(<span class="local-variable">this</span>.getClass(), <span class="string"><span class="delimiter">&quot;</span><span class="content">visitCompleteSuccessful</span><span class="delimiter">&quot;</span></span>))
+                .setType(Notifications.NotificationType.TRAY)
                 .show();
     }
 }</code></pre>
@@ -1075,7 +1076,7 @@ There are two ways to listen to events. Above <code>@TransactionalEventListener<
                         <div class="guide-panel">
                             <h3 class="header-table-content">Table of contents</h3>
                             <ul class="sectlevel1">
-<li><a href="#what_will_be_built">What Will Be Built</a>
+<li><a href="#what_we_are_going_to_build">What we are going to build</a>
 <ul class="sectlevel2">
 <li><a href="#final_application">Final Application</a></li>
 <li><a href="#requirements">Requirements</a></li>
