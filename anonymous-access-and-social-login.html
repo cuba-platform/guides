@@ -448,7 +448,7 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="what_we_are_going_to_build"><a class="anchor" href="#what_we_are_going_to_build"></a><a class="link" href="#what_we_are_going_to_build">What we are going to build</a></h2>
+<h2 id="what_will_be_built"><a class="anchor" href="#what_will_be_built"></a><a class="link" href="#what_will_be_built">What Will Be Built</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This guide enhances the CUBA Petclinic example to demonstrate how to enable application public access and allow users to register via social services.</p>
@@ -782,8 +782,8 @@
 <span class="annotation">@UiController</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">LoginDialog</span><span class="delimiter">&quot;</span></span>)
 <span class="directive">public</span> <span class="type">class</span> <span class="class">LoginDialog</span> <span class="directive">extends</span> LoginScreen {
 
-    <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">loginButton</span><span class="delimiter">&quot;</span></span>)
-    <span class="directive">private</span> <span class="type">void</span> onLoginButtonClick(<span class="predefined-type">Button</span>.ClickEvent event) {
+    <span class="annotation">@Subscribe</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">submit</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">protected</span> <span class="type">void</span> onLoginButtonClick(ActionPerformedEvent event) {
         login();
 
         <span class="keyword">if</span> (connection.isAuthenticated()) {
@@ -1563,27 +1563,25 @@ library to perform request:</p>
                 getUserDataFields(socialService));
         <span class="predefined-type">String</span> url = userDataEndpoint + params;
 
-        <span class="keyword">return</span> requestUserData(url);
+        <span class="keyword">return</span> performRequest(<span class="keyword">new</span> HttpGet(url));;
     }
 
-    <span class="directive">private</span> <span class="predefined-type">String</span> requestUserData(<span class="predefined-type">String</span> url) {
+    <span class="directive">private</span> <span class="predefined-type">String</span> performRequest(HttpRequestBase request) {
         HttpClientConnectionManager cm = <span class="keyword">new</span> BasicHttpClientConnectionManager();
-        HttpClient httpClient = HttpClientBuilder.create().setConnectionManager(cm)
+        HttpClient httpClient = HttpClientBuilder.create()
+                .setConnectionManager(cm)
                 .build();
-
-        HttpGet getRequest = <span class="keyword">new</span> HttpGet(url);
         <span class="keyword">try</span> {
-            HttpResponse httpResponse = httpClient.execute(getRequest);
+            HttpResponse httpResponse = httpClient.execute(request);
             <span class="keyword">if</span> (httpResponse.getStatusLine().getStatusCode() != <span class="integer">200</span>) {
-                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">RuntimeException</span>(
-                        <span class="string"><span class="delimiter">&quot;</span><span class="content">Unable to access Google API. Response HTTP status: </span><span class="delimiter">&quot;</span></span> +
-                        httpResponse.getStatusLine().getStatusCode());
+                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">RuntimeException</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">Unable to perform request. Response HTTP status: </span><span class="delimiter">&quot;</span></span>
+                        + httpResponse.getStatusLine().getStatusCode());
             }
             <span class="keyword">return</span> EntityUtils.toString(httpResponse.getEntity());
         } <span class="keyword">catch</span> (<span class="exception">IOException</span> e) {
             <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">RuntimeException</span>(e.getMessage());
         } <span class="keyword">finally</span> {
-            getRequest.releaseConnection();
+            request.releaseConnection();
         }
     }
 
@@ -1984,7 +1982,7 @@ that supports such type of credentials.</p>
                         <div class="guide-panel">
                             <h3 class="header-table-content">Table of contents</h3>
                             <ul class="sectlevel1">
-<li><a href="#what_we_are_going_to_build">What we are going to build</a>
+<li><a href="#what_will_be_built">What Will Be Built</a>
 <ul class="sectlevel2">
 <li><a href="#final_application">Final Application</a></li>
 <li><a href="#requirements">Requirements</a></li>

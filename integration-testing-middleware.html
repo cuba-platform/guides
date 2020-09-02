@@ -451,7 +451,7 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="what_we_are_going_to_build"><a class="anchor" href="#what_we_are_going_to_build"></a><a class="link" href="#what_we_are_going_to_build">What we are going to build</a></h2>
+<h2 id="what_will_be_built"><a class="anchor" href="#what_will_be_built"></a><a class="link" href="#what_will_be_built">What Will be Built</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a> example to show how existing features can be tested in an automated fashion:</p>
@@ -1372,7 +1372,7 @@ Try to avoid double-test functionality provided by the framework <em>in integrat
             .isEqualTo(<span class="integer">1</span>);
         <span class="comment">// and: there is one outgoing Email for CUBAs Email Sending Functionality</span>
         assertThat(db.outgoingEmails())
-            .hasSize(<span class="integer">1</span>);  <i class="conum" data-value="4"></i><b>(4)</b>
+            .hasSize(<span class="integer">1</span>);  <i class="conum" data-value="3"></i><b>(3)</b>
     }
     <span class="comment">// ...</span>
 }</code></pre>
@@ -1387,6 +1387,10 @@ Try to avoid double-test functionality provided by the framework <em>in integrat
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
 <td>execution of the SUT for <code>Alabastia</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>the amount of outgoing emails in the DB is one</td>
 </tr>
 </table>
 </div>
@@ -1477,7 +1481,7 @@ Try to avoid double-test functionality provided by the framework <em>in integrat
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>guard verification to check for <code>Cerulean City</code> that no Pets are in the DB</td>
+<td>this nested test class focuses on the disease mailing with additional test data</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -1549,7 +1553,7 @@ Try to avoid double-test functionality provided by the framework <em>in integrat
                         <div class="guide-panel">
                             <h3 class="header-table-content">Table of contents</h3>
                             <ul class="sectlevel1">
-<li><a href="#what_we_are_going_to_build">What we are going to build</a>
+<li><a href="#what_will_be_built">What Will be Built</a>
 <ul class="sectlevel2">
 <li><a href="#requirements">Requirements</a></li>
 <li><a href="#additional_testing_dependencies">Additional Testing Dependencies</a></li>

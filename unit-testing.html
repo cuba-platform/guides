@@ -448,7 +448,7 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="what_we_are_going_to_build"><a class="anchor" href="#what_we_are_going_to_build"></a><a class="link" href="#what_we_are_going_to_build">What we are going to build</a></h2>
+<h2 id="what_will_be_built"><a class="anchor" href="#what_will_be_built"></a><a class="link" href="#what_will_be_built">What Will be Built</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a> example to show how existing features can be tested in an automated fashion via unit testing:</p>
@@ -724,7 +724,7 @@ Since Spring is not involved in managing the instantiation of the class, depende
 <p>The implementation logic is located in the Owner Entity class itself:</p>
 </div>
 <div class="listingblock">
-<div class="title">Pet.java</div>
+<div class="title">Owner.java</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="type">class</span> <span class="class">Owner</span> <span class="directive">extends</span> Person {
     <span class="comment">// ...</span>
@@ -1360,7 +1360,7 @@ The JUnit Annotation <code>@DisplayName</code> is used to better describe the te
 
   <span class="directive">private</span> Pet electricPet;
 
-  <span class="annotation">@BeforeAll</span>
+  <span class="annotation">@BeforeEach</span>
   <span class="type">void</span> createTestEnvironment() {
     data = <span class="keyword">new</span> PetclinicData();
     calculator = <span class="keyword">new</span> ElectricPetTypeCalculator();
@@ -1594,7 +1594,7 @@ The JUnit Annotation <code>@DisplayName</code> is used to better describe the te
                         <div class="guide-panel">
                             <h3 class="header-table-content">Table of contents</h3>
                             <ul class="sectlevel1">
-<li><a href="#what_we_are_going_to_build">What we are going to build</a>
+<li><a href="#what_will_be_built">What Will be Built</a>
 <ul class="sectlevel2">
 <li><a href="#requirements">Requirements</a></li>
 </ul>
