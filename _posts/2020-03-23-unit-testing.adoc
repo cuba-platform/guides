@@ -174,7 +174,7 @@ The following business rules describe the functionality:
 
 The implementation logic is located in the Owner Entity class itself:
 
-.Pet.java
+.Owner.java
 [source,java]
 ----
 class Owner extends Person {
@@ -667,7 +667,7 @@ class ElectricPetTypeCalculatorTest {
 
   private Pet electricPet;
 
-  @BeforeAll
+  @BeforeEach
   void createTestEnvironment() {
     data = new PetclinicData();
     calculator = new ElectricPetTypeCalculator();

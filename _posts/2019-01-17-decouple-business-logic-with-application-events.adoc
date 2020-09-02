@@ -343,7 +343,7 @@ Just like for custom application events, custom UI events allow sending notifica
 The first step is once again to define a
 
 
-.VisitCompletedUiEvent.java
+.VisitCompletedClickedEvent.java
 [source,java]
 ----
 public class VisitCompletedClickedEvent extends ApplicationEvent implements UiEvent { // <1>
@@ -356,7 +356,7 @@ public class VisitCompletedClickedEvent extends ApplicationEvent implements UiEv
 <1> Marks the application event as a UI event by implementing the interface `UiEvent`
 
 
-.VisitEdit.java
+.VisitBrowse.java
 [source,java]
 ----
 public class VisitBrowse extends StandardLookup<Visit> {
@@ -379,11 +379,10 @@ public class VisitBrowse extends StandardLookup<Visit> {
 
     @EventListener // <3>
     protected void updateDataOnVisitCompleted(VisitCompletedClickedEvent event) {
-        loadData(); // <4>
+        getScreenData().loadAll(); // <4>
 
-        notifications.create()
-                .setCaption(messages.formatMessage(this.getClass(), "visitCompleteSuccessful"))
-                .setType(Notifications.NotificationType.TRAY)
+        notifications.create(Notifications.NotificationType.TRAY)
+                .withCaption(messages.formatMessage(this.getClass(), "visitCompleteSuccessful"))
                 .show();
     }
 }

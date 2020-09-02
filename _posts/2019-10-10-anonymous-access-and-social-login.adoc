@@ -251,8 +251,8 @@ Set the dialog width and add a login button click listener:
 @UiController("LoginDialog")
 public class LoginDialog extends LoginScreen {
 
-    @Subscribe("loginButton")
-    private void onLoginButtonClick(Button.ClickEvent event) {
+    @Subscribe("submit")
+    protected void onLoginButtonClick(ActionPerformedEvent event) {
         login();
 
         if (connection.isAuthenticated()) {
@@ -914,27 +914,25 @@ public class SocialLoginServiceBean implements SocialLoginService {
                 getUserDataFields(socialService));
         String url = userDataEndpoint + params;
 
-        return requestUserData(url);
+        return performRequest(new HttpGet(url));;
     }
 
-    private String requestUserData(String url) {
+    private String performRequest(HttpRequestBase request) {
         HttpClientConnectionManager cm = new BasicHttpClientConnectionManager();
-        HttpClient httpClient = HttpClientBuilder.create().setConnectionManager(cm)
+        HttpClient httpClient = HttpClientBuilder.create()
+                .setConnectionManager(cm)
                 .build();
-
-        HttpGet getRequest = new HttpGet(url);
         try {
-            HttpResponse httpResponse = httpClient.execute(getRequest);
+            HttpResponse httpResponse = httpClient.execute(request);
             if (httpResponse.getStatusLine().getStatusCode() != 200) {
-                throw new RuntimeException(
-                        "Unable to access Google API. Response HTTP status: " +
-                        httpResponse.getStatusLine().getStatusCode());
+                throw new RuntimeException("Unable to perform request. Response HTTP status: "
+                        + httpResponse.getStatusLine().getStatusCode());
             }
             return EntityUtils.toString(httpResponse.getEntity());
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         } finally {
-            getRequest.releaseConnection();
+            request.releaseConnection();
         }
     }
 

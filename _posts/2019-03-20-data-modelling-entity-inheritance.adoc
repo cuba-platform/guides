@@ -132,7 +132,7 @@ Creating UIs based on entity inheritance needs some special treatment. In browse
 
 In the example case of the Petclinic, there is a main menu entry point `Petclinic > Pets`. In this screen, all pets independent of their concrete type should be displayed. This behavior is possible when using the superclass `Pet` in the JPQL query.
 
-.bet-browse.xml
+.pet-browse.xml
 [source, xml]
 ----
 <data readOnly="true">

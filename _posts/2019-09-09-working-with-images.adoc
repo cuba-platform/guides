@@ -241,7 +241,6 @@ public class VisitEdit extends StandardEditor<Visit> {
             new VetPreviewComponentFactory( // <1>
                 uiComponents,
                 screenBuilders,
-                messageBundle,
                 this
             );
 

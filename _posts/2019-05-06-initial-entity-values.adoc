@@ -108,22 +108,22 @@ public class RegularCheckup extends StandardEditor<Visit> {
     @Subscribe
     protected void initRegularCheckupVisit(InitEntityEvent<Visit> event) { // <1>
         Visit visit = event.getEntity();
-
+        visit.setType(VisitType.REGULAR_CHECKUP);
         visit.setPaid(false); // <2>
     }
 
 }
 ----
 <1> The `initRegularCheckupVisit` method subscribes to the `InitEntityEvent` of the newly created `Visit` instance
-<2> `event.getEntity()` returns the Visit instance that can be changed during screen initialization
+<2> `event.getEntity()` returns the Visit instance that can be adjusted during screen initialization.
 
 The upside of this kind of initialization is that it is very easy to achieve and requires very little overall code changes. The downside is that since it is scoped within the destination screen it is not so easy to react to external parameters that get passed into the screen. Therefore, it is a very good fit when particular attributes, that are not dynamic, should be initialized.
 
 === External Initialization via Screen Builders
 
-On the frontend layer with CUBA 7 the `ScreenBuilders` API was introduced. It allows programmatic creation and screen opening via a Builder pattern, which exposes various options for further configuration.
+With CUBA 7 the `ScreenBuilders` UI-API was introduced. It allows programmatic creation and screen opening via a Builder pattern, which exposes various options for further configuration.
 
-One of this options is the possibility to define an initializer method that gets executed before opening the screen, where it is possible for an Editor screen to change attributes of the entity that will be displayed.
+One of the options from this API is the possibility to define an initializer method that gets executed before opening the screen, where it is possible for an Editor screen to change attributes of the entity that will be displayed.
 
 In the Petclinic example there is a screen that creates a particular visit instance. This visit is a "regular checkup", as this checkup is always the same in the sense that it requires some checklist kind of description. Furthermore, it is always paid upfront. Since it is a burden for the users to create those special kinds of visits over and over again, a screen, that comes with sensible defaults for this kind of use-case, was implemented.
 
