@@ -10,7 +10,7 @@ permalink: initial-entity-values
 :sectanchors:
 :page-navtitle: Initial Values for Entity Instances
 :page-excerpt: This guide demonstrates different options on how initial values can be set for an entity
-:page-icone: images/initial-entity-values/guide_icone.svg
+:page-icone: https://www.cuba-platform.com/guides/images/initial-entity-values/guide_icone.svg
 :page-root: ../../../
 :project_id: cuba-petclinic-initial-entity-values
 :page-url-first-image: images/initial-entity-values/login-screen.png

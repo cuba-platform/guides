@@ -14,7 +14,7 @@ permalink: web-integration-testing
 :project_id: cuba-petclinic-testing-web
 :java_version: 8
 :cuba_version: 7.2
-:page-icone: images/integration-testing-web/guide_icone.svg
+:page-icone: https://www.cuba-platform.com/guides/images/integration-testing-web/guide_icone.svg
 
 In this guide you will learn how automated testing in a CUBA application works. In particular, this guide deals with the integration testing of the UI within the web layer.
 

@@ -10,7 +10,7 @@ permalink: data-modelling-entity-inheritance
 :sectanchors:
 :page-navtitle: Data Modelling: Entity Inheritance
 :page-excerpt: Data Modelling guide: How entity inheritance can be used in a CUBA application
-:page-icone: images/data-model-entity-inheritance/guide_icone.svg
+:page-icone: https://www.cuba-platform.com/guides/images/data-model-entity-inheritance/guide_icone.svg
 :page-root: ../../../
 :project_id: cuba-petclinic-data-model-entity-inheritance
 :page-url-first-image: images/data-model-entity-inheritance/login-screen.png
