@@ -27,15 +27,15 @@ include::includes/guide_requirements.adoc[]
 
 == Overview
 
->> Topic: Motivation on why an API is a good idea
+Topic: Motivation on why an API is a good idea. Explanation on the generic vs. custom REST API topic
 
 == What is a REST API
 
->> Topic: how do REST APIs in general work, small section
+Topic: how do REST APIs in general work, small section, HTTP verbs, Response codes etc.
 
 == How to create custom Controllers
 
->> Topic: a little bit Spring MVC Intro
+Topic: a little bit Spring MVC Intro, transferring the knowledge of e.g. HTTPs into Spring MVC
 
 
 == REST API for Petclinic
@@ -51,10 +51,24 @@ include::includes/guide_requirements.adoc[]
 
 ==== Variant 1: using REST addon for generic exposure of Visit entity
 
+* Using Visit Entity directly in Entity Endpoint
+* Using Visit Management Service for higher level API abstraction
+
 ==== Variant 2: Custom higher level API operations
 * Create custom Request Objects for Visit Management (CreateVisitRequest, FinishTreatmentRequest, GetTreatmentStatusRequest)
 
 ==== Pros & Cons of using generic vs. custom API
+
+Custom API:
+* Ability to control HTTP interaction (custom Status Code, error responses etc.)
+* Decoupling between entity model and API model when using custom REST API
+* Non CRUD possibilities when using custom REST API
+
+Generic API:
+* Speed of Development
+* additional functionality (search, views, queries, pagination, Swagger etc.)
+* Service Exposure for non-CRUD operations
+
 
 == Further Information
 
