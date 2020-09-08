@@ -5,9 +5,23 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CUBA Platform Guides</title>
-    <meta name="description" content="The CUBA Platform guides cover different aspects of the CUBA Platform and give you advice on how to work with CUBA Platform by giving you concrete examples.">
+    <title>Custom REST APIs for CUBA applications</title>
+    <meta name="description" content="In this guide you will learn how to create REST APIs for a CUBA application. We will explore mechanisms to create different types of APIs by adding Owner registration to the Petclinic as well as allow third-party applications to control the visit management.">
     <meta name="author" content="Haulmont">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@CubaPlatform">
+    <meta name="twitter:creator" content="@CubaPlatform">
+    <meta name="twitter:title" content="Custom REST APIs for CUBA applications">
+    <meta name="twitter:description" content="In this guide you will learn how to create REST APIs for a CUBA application. We will explore mechanisms to create different types of APIs by adding Owner registration to the Petclinic as well as allow third-party applications to control the visit management.">
+    <meta name="twitter:image" content="">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Custom REST APIs for CUBA applications">
+    <meta property="og:description" content="In this guide you will learn how to create REST APIs for a CUBA application. We will explore mechanisms to create different types of APIs by adding Owner registration to the Petclinic as well as allow third-party applications to control the visit management.">
+    <meta property="og:url" content="https://www.cuba-platform.com/guides/custom-rest-apis">
+    <meta property="og:image" content="">
+
     <link rel="shortcut icon" href="/guides/images/favicon.png" type="image/png" />
     <link rel="stylesheet" href="/guides/css/foundation.css">
     <link rel="stylesheet" href="/guides/css/font-awesome.css">
@@ -18,8 +32,8 @@
     <link rel="stylesheet" href="/guides/css/extra.css">
     <link rel="stylesheet" href="/guides/css/extra2.css">
     <link rel="stylesheet" href="/guides/css/cuba-new.css">
+    <link rel="stylesheet" href="/guides/css/font-awesome.min.css">
     <link rel="stylesheet" href="/guides/css/guides.css">
-    <script src="/guides/js/vendor/modernizr.js"></script>
     <script src="/guides/js/jquery_v2.1.min.js"></script>
     <link rel="stylesheet" href="/guides/css/main.css" />
     <!-- Google Tag Manager -->
@@ -30,7 +44,7 @@
 })(window,document,'script','dataLayer','GTM-MH3DTWV');</script>
 <!-- End Google Tag Manager -->
 </head>
-<body class="cuba-website-styles html not-front not-logged-in no-sidebars page-webinars service-booking i18n-en">
+<body class="html not-front not-logged-in no-sidebars page-node page-node- page-node-962 node-type-blog-post i18n-en">
 
 <section id="wrapper">
     
@@ -410,160 +424,164 @@
 
     <!-- Main Page Content and Sidebar -->
     <div class="content-wrapper">
-        <div class="text-node">
-            <div class="region region-content">
-                <section id="block-system-main" class="block block-system clearfix">
-                    <div class="panel-display panel-1col clearfix" id="webinars-page">
-                        <div class="container layout-main_container">
-                            <div>
-                                <!-- Title -->
-                                <div class="page-header">
-                                    <h1 class="page-header_title">Guides</h1>
-                                    <p class="page-header_description">Comprehensive articles about CUBA Platform specifics (version 7.0+)</p>
-                                </div>
+        <div class="cuba-container text-node blog">
 
-                                <!-- List Grid -->
-                                <div class="">
-                                    <div class="pane-content">
-                                        <div class="guides-list">
-                                            
-                                            <a href="/guides/intro-working-with-data-in-cuba" class="guides-list_item">
-                                                <div class="guides-list_icone_wrapper"><img src="https://www.cuba-platform.com/guides/images/intro-to-working-with-data-in-CUBA/guide_icone.svg"></div>
-                                                <div class="guides-list_wrapper">
-                                                    <div class="guides-list_title">Introduction to Working with Data in CUBA</div>
-                                                    <span class="guides-list_description">Overview on how to read and write data in a CUBA application</span>
-                                                </div>
-                                            </a>
-                                            
-                                            <a href="/guides/create-business-logic-in-cuba" class="guides-list_item">
-                                                <div class="guides-list_icone_wrapper"><img src="https://www.cuba-platform.com/guides/images/creating-business-logic-in-cuba/guide_icone.svg"></div>
-                                                <div class="guides-list_wrapper">
-                                                    <div class="guides-list_title">Create Business Logic in CUBA</div>
-                                                    <span class="guides-list_description">Guide on what options are available for putting business logic into a CUBA application</span>
-                                                </div>
-                                            </a>
-                                            
-                                            <a href="/guides/decouple-business-logic-with-app-events" class="guides-list_item">
-                                                <div class="guides-list_icone_wrapper"><img src="https://www.cuba-platform.com/guides/images/decouple-business-logic-with-application-events/guide_icone.svg"></div>
-                                                <div class="guides-list_wrapper">
-                                                    <div class="guides-list_title">Decouple Business Logic with Application Events</div>
-                                                    <span class="guides-list_description">Overview on how application events can be used in a CUBA application to decouple business logic</span>
-                                                </div>
-                                            </a>
-                                            
-                                            <a href="/guides/logging-in-cuba-applications" class="guides-list_item">
-                                                <div class="guides-list_icone_wrapper"><img src="https://www.cuba-platform.com/guides/images/application-logging-in-cuba/guide_icone.svg"></div>
-                                                <div class="guides-list_wrapper">
-                                                    <div class="guides-list_title">Logging in CUBA Applications</div>
-                                                    <span class="guides-list_description">Guide on why and how to use logging in a CUBA application in order to get insights</span>
-                                                </div>
-                                            </a>
-                                            
-                                            <a href="/guides/data-modelling-many-to-many-association" class="guides-list_item">
-                                                <div class="guides-list_icone_wrapper"><img src="https://www.cuba-platform.com/guides/images/data-model-many-to-many/guide_icone.svg"></div>
-                                                <div class="guides-list_wrapper">
-                                                    <div class="guides-list_title">Data Modelling: Many-to-Many Association</div>
-                                                    <span class="guides-list_description">Data modelling guide: what are Many-to-Many associations and when to use them</span>
-                                                </div>
-                                            </a>
-                                            
-                                            <a href="/guides/data-modelling-entity-inheritance" class="guides-list_item">
-                                                <div class="guides-list_icone_wrapper"><img src="https://www.cuba-platform.com/guides/images/data-model-entity-inheritance/guide_icone.svg"></div>
-                                                <div class="guides-list_wrapper">
-                                                    <div class="guides-list_title">Data Modelling: Entity Inheritance</div>
-                                                    <span class="guides-list_description">Data Modelling guide: How entity inheritance can be used in a CUBA application</span>
-                                                </div>
-                                            </a>
-                                            
-                                            <a href="/guides/data-modelling-composition" class="guides-list_item">
-                                                <div class="guides-list_icone_wrapper"><img src="https://www.cuba-platform.com/guides/images/data-model-composition/guide_icone.svg"></div>
-                                                <div class="guides-list_wrapper">
-                                                    <div class="guides-list_title">Data Modelling: Composition</div>
-                                                    <span class="guides-list_description">Data modelling guide: What are Compositions and when to use them over Associations</span>
-                                                </div>
-                                            </a>
-                                            
-                                            <a href="/guides/initial-entity-values" class="guides-list_item">
-                                                <div class="guides-list_icone_wrapper"><img src="https://www.cuba-platform.com/guides/images/initial-entity-values/guide_icone.svg"></div>
-                                                <div class="guides-list_wrapper">
-                                                    <div class="guides-list_title">Initial Values for Entity Instances</div>
-                                                    <span class="guides-list_description">This guide demonstrates different options on how initial values can be set for an entity</span>
-                                                </div>
-                                            </a>
-                                            
-                                            <a href="/guides/localization-in-cuba-applications" class="guides-list_item">
-                                                <div class="guides-list_icone_wrapper"><img src="https://www.cuba-platform.com/guides/images/i18n-messages/guide_icone.svg"></div>
-                                                <div class="guides-list_wrapper">
-                                                    <div class="guides-list_title">Localization in CUBA applications</div>
-                                                    <span class="guides-list_description">In this guide the localization features of a CUBA application are explained</span>
-                                                </div>
-                                            </a>
-                                            
-                                            <a href="/guides/working-with-images" class="guides-list_item">
-                                                <div class="guides-list_icone_wrapper"><img src="https://www.cuba-platform.com/guides/images/working-with-images/guide_icone.svg"></div>
-                                                <div class="guides-list_wrapper">
-                                                    <div class="guides-list_title">Working with Images in CUBA applications</div>
-                                                    <span class="guides-list_description">In this guide several ways will be explored on how to interact with images in a CUBA application</span>
-                                                </div>
-                                            </a>
-                                            
-                                            <a href="/guides/anonymous-access-and-social-login" class="guides-list_item">
-                                                <div class="guides-list_icone_wrapper"><img src="https://www.cuba-platform.com/guides/images/anonymous-access-and-social-login/guide_icone.svg"></div>
-                                                <div class="guides-list_wrapper">
-                                                    <div class="guides-list_title">Anonymous Access &amp; Social Login</div>
-                                                    <span class="guides-list_description">In this guide the anonymous access feature and social login implementation are explained</span>
-                                                </div>
-                                            </a>
-                                            
-                                            <a href="/guides/introduction-to-reporting" class="guides-list_item">
-                                                <div class="guides-list_icone_wrapper"><img src="https://www.cuba-platform.com/guides/images/intro-to-reports/guide_icone.svg"></div>
-                                                <div class="guides-list_wrapper">
-                                                    <div class="guides-list_title">Introduction to Report and Document generation</div>
-                                                    <span class="guides-list_description">In this guide, we introduce the Reporting add-on and ways to interact with it through the UI and programmatically</span>
-                                                </div>
-                                            </a>
-                                            
-                                            <a href="/guides/integration-testing-middleware" class="guides-list_item">
-                                                <div class="guides-list_icone_wrapper"><img src="https://www.cuba-platform.com/guides/images/integration-testing-middleware/testing_integration.svg"></div>
-                                                <div class="guides-list_wrapper">
-                                                    <div class="guides-list_title">Middleware Integration Testing in CUBA applications</div>
-                                                    <span class="guides-list_description">Testing Guide: Middleware integration testing of a CUBA application</span>
-                                                </div>
-                                            </a>
-                                            
-                                            <a href="/guides/unit-testing" class="guides-list_item">
-                                                <div class="guides-list_icone_wrapper"><img src="https://www.cuba-platform.com/guides/images/unit-testing/guide_icone.svg"></div>
-                                                <div class="guides-list_wrapper">
-                                                    <div class="guides-list_title">Unit Testing in CUBA applications</div>
-                                                    <span class="guides-list_description">In this guide you will learn how automated testing in a CUBA application works. In particular this guide deals with the question of how unit tests can be executed and when it makes sense to use them over integration testing.</span>
-                                                </div>
-                                            </a>
-                                            
-                                            <a href="/guides/web-integration-testing" class="guides-list_item">
-                                                <div class="guides-list_icone_wrapper"><img src="https://www.cuba-platform.com/guides/images/integration-testing-web/guide_icone.svg"></div>
-                                                <div class="guides-list_wrapper">
-                                                    <div class="guides-list_title">Web Integration Testing in CUBA Applications</div>
-                                                    <span class="guides-list_description">In this guide you will learn how automated testing in a CUBA application works. In particular this guide deals with the integration testing of the UI within the web layer.</span>
-                                                </div>
-                                            </a>
-                                            
-                                            <a href="/guides/product-customizations-with-app-components" class="guides-list_item">
-                                                <div class="guides-list_icone_wrapper"><img src="https://www.cuba-platform.com/guides/images/application-components/guide_icone.svg"></div>
-                                                <div class="guides-list_wrapper">
-                                                    <div class="guides-list_title">Product Customizations with Application Components</div>
-                                                    <span class="guides-list_description">Learn about capabilities of CUBAs application components to customize a product and add customer-specific functionalities.</span>
-                                                </div>
-                                            </a>
-                                            
-                                            <a href="/guides/custom-rest-apis" class="guides-list_item">
-                                                <div class="guides-list_icone_wrapper"><img src="https://www.cuba-platform.com/guides/images/application-components/guide_icone.svg"></div>
-                                                <div class="guides-list_wrapper">
-                                                    <div class="guides-list_title">Custom REST APIs for CUBA applications</div>
-                                                    <span class="guides-list_description">In this guide you will learn how to create REST APIs for a CUBA application. We will explore mechanisms to create different types of APIs by adding Owner registration to the Petclinic as well as allow third-party applications to control the visit management.</span>
-                                                </div>
-                                            </a>
-                                            
-                                        </div>
+
+
+            <!-- Main content (left column) -->
+            <div class="region region-content">
+
+
+
+                <section id="block-system-main" class="block block-system clearfix">
+                    <div id="node-962" class="article node node-blog-post node-promoted clearfix">
+                        <div class="content">
+                            <div class="field field-name-body field-type-text-with-summary field-label-hidden">
+                                <div class="field-items">
+                                    <div class="field-item even" property="content: encoded">
+                                        <h1>Custom REST APIs for CUBA applications</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this guide you will learn how to create REST APIs for a CUBA application. We will explore mechanisms to create different types of APIs by adding Owner registration to the Petclinic as well as allow third-party applications to control the visit management.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="what_we_are_going_to_build"><a class="anchor" href="#what_we_are_going_to_build"></a><a class="link" href="#what_we_are_going_to_build">What we are going to build</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a> example so that Owners can self-register online before the Visit. In the second example we will allow a third party Tablet application to do the Visit Management via a custom secured REST API.</p>
+</div>
+<div class="sect2">
+<h3 id="requirements"><a class="anchor" href="#requirements"></a><a class="link" href="#requirements">Requirements</a></h3>
+<div class="paragraph">
+<p>Your development environment requires to contain the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://adoptopenjdk.net/">JDK 8</a></p>
+</li>
+<li>
+<p><a href="https://www.cuba-platform.com/download">CUBA Studio</a> as standalone IDE or as an IntelliJ IDEA plugin</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-custom-rest-apis/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
+</div>
+<div class="paragraph">
+<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-custom-rest-apis.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-custom-rest-apis.git</a></code></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="overview"><a class="anchor" href="#overview"></a><a class="link" href="#overview">Overview</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Topic: Motivation on why an API is a good idea. Explanation on the generic vs. custom REST API topic</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="what_is_a_rest_api"><a class="anchor" href="#what_is_a_rest_api"></a><a class="link" href="#what_is_a_rest_api">What is a REST API</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Topic: how do REST APIs in general work, small section, HTTP verbs, Response codes etc.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="how_to_create_custom_controllers"><a class="anchor" href="#how_to_create_custom_controllers"></a><a class="link" href="#how_to_create_custom_controllers">How to create custom Controllers</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Topic: a little bit Spring MVC Intro, transferring the knowledge of e.g. HTTPs into Spring MVC</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="rest_api_for_petclinic"><a class="anchor" href="#rest_api_for_petclinic"></a><a class="link" href="#rest_api_for_petclinic">REST API for Petclinic</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="public_registration_endpoint_for_creating_owners_through_a_website_form_submit_json_request"><a class="anchor" href="#public_registration_endpoint_for_creating_owners_through_a_website_form_submit_json_request"></a><a class="link" href="#public_registration_endpoint_for_creating_owners_through_a_website_form_submit_json_request">Public Registration Endpoint for creating Owners through a Website (Form Submit / JSON request)</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Custom Spring MVC Endpoint</p>
+</li>
+<li>
+<p>Custom JSON POJO</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="secured_custom_partner_api_for_managing_visits_in_third_party_application"><a class="anchor" href="#secured_custom_partner_api_for_managing_visits_in_third_party_application"></a><a class="link" href="#secured_custom_partner_api_for_managing_visits_in_third_party_application">Secured Custom Partner API for managing Visits in third party application</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Using CUBAs OAuth2 security mechanism</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="variant_1_using_rest_addon_for_generic_exposure_of_visit_entity"><a class="anchor" href="#variant_1_using_rest_addon_for_generic_exposure_of_visit_entity"></a><a class="link" href="#variant_1_using_rest_addon_for_generic_exposure_of_visit_entity">Variant 1: using REST addon for generic exposure of Visit entity</a></h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Using Visit Entity directly in Entity Endpoint</p>
+</li>
+<li>
+<p>Using Visit Management Service for higher level API abstraction</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="variant_2_custom_higher_level_api_operations"><a class="anchor" href="#variant_2_custom_higher_level_api_operations"></a><a class="link" href="#variant_2_custom_higher_level_api_operations">Variant 2: Custom higher level API operations</a></h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Create custom Request Objects for Visit Management (CreateVisitRequest, FinishTreatmentRequest, GetTreatmentStatusRequest)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="pros_cons_of_using_generic_vs_custom_api"><a class="anchor" href="#pros_cons_of_using_generic_vs_custom_api"></a><a class="link" href="#pros_cons_of_using_generic_vs_custom_api">Pros &amp; Cons of using generic vs. custom API</a></h4>
+<div class="paragraph">
+<p>Custom API:
+* Ability to control HTTP interaction (custom Status Code, error responses etc.)
+* Decoupling between entity model and API model when using custom REST API
+* Non CRUD possibilities when using custom REST API</p>
+</div>
+<div class="paragraph">
+<p>Generic API:
+* Speed of Development
+* additional functionality (search, views, queries, pagination, Swagger etc.)
+* Service Exposure for non-CRUD operations</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="further_information"><a class="anchor" href="#further_information"></a><a class="link" href="#further_information">Further Information</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://doc.cuba-platform.com/manual-latest/extension.html">CUBA docs: Functionality Extensions</a></p>
+</li>
+<li>
+<p><a href="https://doc.cuba-platform.com/manual-latest/app_components.html">CUBA docs: Application components</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
                                     </div>
                                 </div>
                             </div>
@@ -571,9 +589,44 @@
                     </div>
                 </section>
             </div>
+            <!-- Sidebar (right column) -->
+            <div id="blog-sidebar">
+                <div class="region region-sidebar ">
+                    <section id="block-block-29" class="block block-block clearfix">
+
+                        <div class="guide-panel">
+                            <h3 class="header-table-content">Table of contents</h3>
+                            <ul class="sectlevel1">
+<li><a href="#what_we_are_going_to_build">What we are going to build</a>
+<ul class="sectlevel2">
+<li><a href="#requirements">Requirements</a></li>
+</ul>
+</li>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#what_is_a_rest_api">What is a REST API</a></li>
+<li><a href="#how_to_create_custom_controllers">How to create custom Controllers</a></li>
+<li><a href="#rest_api_for_petclinic">REST API for Petclinic</a>
+<ul class="sectlevel2">
+<li><a href="#public_registration_endpoint_for_creating_owners_through_a_website_form_submit_json_request">Public Registration Endpoint for creating Owners through a Website (Form Submit / JSON request)</a></li>
+<li><a href="#secured_custom_partner_api_for_managing_visits_in_third_party_application">Secured Custom Partner API for managing Visits in third party application</a></li>
+</ul>
+</li>
+<li><a href="#further_information">Further Information</a></li>
+</ul>
+                        </div>
+
+                        <div class="sidebar-razd"></div>
+                        <div class="guide-panel download">
+                            <a href="https://github.com/cuba-guides/cuba-petclinic-custom-rest-apis" class="github-link" target="_blank">Example code on Github</a>
+                        </div>
+                        <div class="guide-panel cuba-version">Supported versions: CUBA 7.1+; Java 8+</div>
+
+                    </section>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <!-- End Main Content and Sidebar -->
 
     <!-- Footer -->
     <footer fragment="14269c1b298" class="footer">
@@ -759,16 +812,82 @@
 <div class="scrollTop"></div>
 </section>
 
-<script src="/guides/js/toc.js"></script>
 <script src="/guides/js/foundation.min.js"></script>
+<script src="https://unpkg.com/isotope-layout@3.0/dist/isotope.pkgd.js"></script>
+<script src="/guides/js/vendor/modernizr.js"></script>
+<script src="/guides/js/toc.js"></script>
 <script src="/guides/js/navigation.js"></script>
+<script src="/guides/js/navbar.js"></script>
 <script src="/guides/js/extra.js"></script>
 <script src="/guides/js/extra2.js"></script>
 <script src="/guides/js/cuba-new.js"></script>
 <script>
-$(document).foundation();
-var doc = document.documentElement;
-doc.setAttribute('data-useragent', navigator.userAgent);
+(function ($) {
+  $(document).foundation();
+  var doc = document.documentElement;
+  doc.setAttribute('data-useragent', navigator.userAgent)
+
+  /* Issue #24 */
+  $(".blog .content img").each(function() {
+    var imgMarkup = $(this)[0].outerHTML;
+    console.log(imgMarkup);
+    $(this).replaceWith('<div class="img-center">' + imgMarkup + '</div>');
+  });
+
+})(jQuery);
+
+// Cache selectors
+var lastId,
+    topMenu = $(".sectlevel1"),
+    topMenuHeight = topMenu.outerHeight()+1,
+
+    // All list items
+    menuItems = topMenu.find("a"),
+    // Anchors corresponding to menu items
+    scrollItems = menuItems.map(function(){
+        var item = $($(this).attr("href"));
+        if (item.length) { return item; }
+    });
+console.log(topMenuHeight );
+menuItems.click(function(e){
+    var href = $(this).attr("href"),
+        offsetTop = href === "#" ? 0 : $(href).offset().top - 85;
+    $('html, body').stop().animate({
+        scrollTop: offsetTop
+    }, 850);
+    e.preventDefault();
+    window.location =  href;
+});
+
+$( document ).ready(function() {
+    const hash = location.hash.replace('#','');
+    if(hash !== ''){
+        $('html, body').stop().animate({ scrollTop: $('a[href=#' + hash + ']').offset().top - 85}, 850);
+    }
+});
+
+// Bind to scroll
+$(window).scroll(function(){
+    // Get container scroll position
+    var fromTop = $(this).scrollTop()+topMenuHeight;
+
+    // Get id of current scroll item
+    var cur = scrollItems.map(function(){
+        if ($(this).offset().top < fromTop)
+            return this;
+    });
+    // Get the id of the current element
+    cur = cur[cur.length-1];
+    var id = cur && cur.length ? cur[0].id : "";
+
+    if (lastId !== id) {
+        lastId = id;
+        // Set/remove active class
+        menuItems
+            .parent().removeClass("active")
+            .end().filter("[href=#"+id+"]").parent().addClass("active");
+    }
+});
 
 </script>
 </body>
