@@ -1,0 +1,62 @@
+---
+compatible_cuba_versions: 7.1+
+compatible_java_versions: 8+
+project_id: cuba-petclinic-custom-rest-apis
+permalink: custom-rest-apis
+---
+= Custom REST APIs for CUBA applications
+:showtitle:
+:sectlinks:
+:sectanchors:
+:page-navtitle: Custom REST APIs for CUBA applications
+:page-excerpt: In this guide you will learn how to create REST APIs for a CUBA application. We will explore mechanisms to create different types of APIs by adding Owner registration to the Petclinic as well as allow third-party applications to control the visit management.
+:page-root: ../../../
+:project_id: cuba-petclinic-custom-rest-apis
+:java_version: 8
+:cuba_version: 7.1
+:page-icone: https://www.cuba-platform.com/guides/images/application-components/guide_icone.svg
+
+In this guide you will learn how to create REST APIs for a CUBA application. We will explore mechanisms to create different types of APIs by adding Owner registration to the Petclinic as well as allow third-party applications to control the visit management.
+
+== What we are going to build
+
+
+This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA Petclinic] example so that Owners can self-register online before the Visit. In the second example we will allow a third party Tablet application to do the Visit Management via a custom secured REST API.
+
+include::includes/guide_requirements.adoc[]
+
+== Overview
+
+>> Topic: Motivation on why an API is a good idea
+
+== What is a REST API
+
+>> Topic: how do REST APIs in general work, small section
+
+== How to create custom Controllers
+
+>> Topic: a little bit Spring MVC Intro
+
+
+== REST API for Petclinic
+
+=== Public Registration Endpoint for creating Owners through a Website (Form Submit / JSON request)
+
+* Custom Spring MVC Endpoint
+* Custom JSON POJO
+
+
+=== Secured Custom Partner API for managing Visits in third party application
+* Using CUBAs OAuth2 security mechanism
+
+==== Variant 1: using REST addon for generic exposure of Visit entity
+
+==== Variant 2: Custom higher level API operations
+* Create custom Request Objects for Visit Management (CreateVisitRequest, FinishTreatmentRequest, GetTreatmentStatusRequest)
+
+==== Pros & Cons of using generic vs. custom API
+
+== Further Information
+
+* https://doc.cuba-platform.com/manual-latest/extension.html[CUBA docs: Functionality Extensions]
+* https://doc.cuba-platform.com/manual-latest/app_components.html[CUBA docs: Application components]
