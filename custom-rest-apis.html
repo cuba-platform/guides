@@ -481,7 +481,14 @@
 <h2 id="overview"><a class="anchor" href="#overview"></a><a class="link" href="#overview">Overview</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Topic: Motivation on why an API is a good idea. Explanation on the generic vs. custom REST API topic</p>
+<p>Providing an API for an application is oftentimes a good way to foster machine to machine communication. CUBA supports various forms of API technologies via its strong basis in form of the Spring Framework. Spring has native support for creating REST and SOAP-Webservice based APIs. Also, newer technology approaches like GraphQL are possible with the help of the wider Java ecosystem.</p>
+</div>
+<div class="paragraph">
+<p>Additionally, CUBA offers dedicated support for REST APIs via a generic API, which allows to manage the complete application entity model through automatically available endpoints.</p>
+</div>
+<div class="paragraph">
+<p>In this guide we will focus on creating multiple REST based HTTP APIs in order to allow other applications interact with the Petclinic example.
+During the examples we will work with both the generic API and custom HTTP endpoints based on the use-case at hand.</p>
 </div>
 </div>
 </div>
@@ -489,15 +496,128 @@
 <h2 id="what_is_a_rest_api"><a class="anchor" href="#what_is_a_rest_api"></a><a class="link" href="#what_is_a_rest_api">What is a REST API</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Topic: how do REST APIs in general work, small section, HTTP verbs, Response codes etc.</p>
+<p>Before exploring the details of the CUBA implementation of proving an API, let&#8217;s quickly talk about what a REST API looks like and what the concepts behind it are.</p>
+</div>
+<div class="paragraph">
+<p>A REST API is an HTTP based API (HTTP being the protocol, that is the underpinning of a big part of the Internet) with some specific usage of it. REST in particular has a couple of building blocks, that we will use throughout this guide.</p>
+</div>
+<div class="paragraph">
+<p>To get a better understanding about what an API is, take the analogy of a restaurant:</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The menu that the restaurant offers is the API. Once you order a piece from the menu, you are doing an API call with a more or less structured interaction format ("I take number 25", "Pizza is out, sorry!", "Something to drink?"). The response of that API call is the food which is delivered from the kitchen.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="resources"><a class="anchor" href="#resources"></a><a class="link" href="#resources">Resources</a></h3>
+<div class="paragraph">
+<p>A Resource is something that you can think of like an abstraction on the concept of any kind of information. Examples of a resource can be an image, a document, a dish in a menu or a Pet (or a virtual representation in the Petclinic). Resources are identified by something called a Resource Identifier. In its concrete form a resource identifier is something like a URL: <code><a href="https://petclinic.cuba-platform.com/pets/123" class="bare">https://petclinic.cuba-platform.com/pets/123</a></code> to identify the Resource: Pets with the Identification Number: 123.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="resource_verbs"><a class="anchor" href="#resource_verbs"></a><a class="link" href="#resource_verbs">Resource Verbs</a></h3>
+<div class="paragraph">
+<p>Verbs on Resources represent the "operations" that you can perform on a particular resource. In the abstract in REST those Verbs should form a uniform interface, in the concrete in HTTP there are a couple of Verbs, that can be used in order to interact with a resource:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>GET <a href="https://petclinic.cuba-platform.com/pets/123" class="bare">https://petclinic.cuba-platform.com/pets/123</a></code>: fetches information about the Pet with the Identification Number 123</p>
+</li>
+<li>
+<p><code>POST <a href="https://petclinic.cuba-platform.com/pets" class="bare">https://petclinic.cuba-platform.com/pets</a></code>: adds a new Pet to the list of existing Pets</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>There are a handful of verbs defined in HTTP that can be used. All of them have a particular meaning, although their interpretation and usage
+is oftentimes up to the provider of the API.</p>
+</div>
+<div class="paragraph">
+<p>Generally the Verbs have different characteristics / guarantees associated to it. E.g. the verb <code>GET</code> normally is used for loading data. By the HTTP specification a <code>GET</code> operation is <em>idempotent</em> and <em>safe</em>. Roughly speaking this means that the operation in the API should not have side effects. Also, applying the same operation twice should not lead to a different outcome. Loading information about a Pet is generally possible to do multiple times without having a side effect. Therefore, using the <code>GET</code> verb for this operation is matching the guarantees the <code>GET</code> verb offers.</p>
+</div>
+<div class="paragraph">
+<p>Registering a Pet on the other hand twice would lead to having two Pets stored in the application. Therefore, this operation is not side-effect free. Thus, it better fits the <code>POST</code> guarantees.</p>
+</div>
+<div class="paragraph">
+<p>There are several verbs defined in HTTP. The primary ones are <code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>DELETE</code>, <code>PATCH</code>.</p>
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="how_to_create_custom_controllers"><a class="anchor" href="#how_to_create_custom_controllers"></a><a class="link" href="#how_to_create_custom_controllers">How to create custom Controllers</a></h2>
+<h2 id="how_to_create_an_http_controller"><a class="anchor" href="#how_to_create_an_http_controller"></a><a class="link" href="#how_to_create_an_http_controller">How to create an HTTP Controller</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Topic: a little bit Spring MVC Intro, transferring the knowledge of e.g. HTTPs into Spring MVC</p>
+<p>In the next section, we will take a look into the concrete usage of the HTTP inside a CUBA application. CUBA is based on Spring, which offers dedicated support for providing HTTP APIs. In particular Spring MVC is responsible for offering that functionality.</p>
+</div>
+<div class="paragraph">
+<p>In order to create a HTTP endpoint it is necessary to create a Java class and annotate it with <code>@RestController</code>. In order to fulfil the implementation of the API operation <code>GET <a href="https://petclinic.cuba-platform.com/pets/123" class="bare">https://petclinic.cuba-platform.com/pets/123</a></code>, a method needs to be annotated with <code>@GetMapping</code> in order to connect it to a particular endpoint.</p>
+</div>
+<div class="paragraph">
+<p>Here you find an example of such a REST Controller in Spring MVC:</p>
+</div>
+<div class="listingblock">
+<div class="title">FetchPetController.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">org.springframework.http.ResponseEntity</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.GetMapping</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.PathVariable</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RestController</span>;
+
+<span class="annotation">@RestController</span> <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">FetchPetController</span> {
+
+    <span class="annotation">@GetMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/pets/{petId}</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="directive">public</span> ResponseEntity&lt;Pet&gt; fetchPet(
+        <span class="annotation">@PathVariable</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petId</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">String</span> petId <i class="conum" data-value="3"></i><b>(3)</b>
+    ) {
+
+        <span class="directive">final</span> Optional&lt;Pet&gt; possiblePet = dataManager.load(Pet.class)
+            .query(<span class="string"><span class="delimiter">&quot;</span><span class="content">e.identificationNumber = ?1</span><span class="delimiter">&quot;</span></span>, petId)
+            .optional();
+
+        <span class="keyword">return</span> ResponseEntity.of(possiblePet); <i class="conum" data-value="4"></i><b>(4)</b>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Registering the class as a HTTP / REST controller</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the <code>fetchPet</code> method links to the endpoint <code>GET /pets/{petId}</code> via the <code>@GetMapping</code> annotation</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>the <code>petId</code> part of the URL is dynamic and gets passed into the method as a parameter</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>ResponseEntity takes care of returning the correct HTTP status code and HTTP response body</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>For the different HTTP verbs Spring MVC provides the corresponding Annotations, as we will see in later code listings.</p>
+</div>
+<div class="paragraph">
+<p>The <code>ResponseEntity</code> is responsible for controlling what HTTP response codes are returned to the client. In HTTP there are several response codes, that are used to indicate the client different outcomes of the operation. The response code <code>200 - OK</code> is indicating a successful operation, whereas <code>404 - Not found</code> tells the client that the resource that was requested is not available. There are several response codes that can be used to very precisely describe the outcome of a request.</p>
+</div>
+<div class="paragraph">
+<p><code>ResponseEntity.of(Optional&lt;T&gt; body)</code> is one method that automatically responds either with <code>200</code> or <code>404</code> depending on the value of the passed in <code>Optional</code>.</p>
 </div>
 </div>
 </div>
@@ -603,8 +723,13 @@
 </ul>
 </li>
 <li><a href="#overview">Overview</a></li>
-<li><a href="#what_is_a_rest_api">What is a REST API</a></li>
-<li><a href="#how_to_create_custom_controllers">How to create custom Controllers</a></li>
+<li><a href="#what_is_a_rest_api">What is a REST API</a>
+<ul class="sectlevel2">
+<li><a href="#resources">Resources</a></li>
+<li><a href="#resource_verbs">Resource Verbs</a></li>
+</ul>
+</li>
+<li><a href="#how_to_create_an_http_controller">How to create an HTTP Controller</a></li>
 <li><a href="#rest_api_for_petclinic">REST API for Petclinic</a>
 <ul class="sectlevel2">
 <li><a href="#public_registration_endpoint_for_creating_owners_through_a_website_form_submit_json_request">Public Registration Endpoint for creating Owners through a Website (Form Submit / JSON request)</a></li>
