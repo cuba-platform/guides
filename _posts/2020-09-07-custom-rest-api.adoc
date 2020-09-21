@@ -20,23 +20,91 @@ In this guide you will learn how to create REST APIs for a CUBA application. We 
 
 == What we are going to build
 
-
 This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA Petclinic] example so that Owners can self-register online before the Visit. In the second example we will allow a third party Tablet application to do the Visit Management via a custom secured REST API.
 
 include::includes/guide_requirements.adoc[]
 
 == Overview
 
-Topic: Motivation on why an API is a good idea. Explanation on the generic vs. custom REST API topic
+Providing an API for an application is oftentimes a good way to foster machine to machine communication. CUBA supports various forms of API technologies via its strong basis in form of the Spring Framework. Spring has native support for creating REST and SOAP-Webservice based APIs. Also, newer technology approaches like GraphQL are possible with the help of the wider Java ecosystem.
+
+Additionally, CUBA offers dedicated support for REST APIs via a generic API, which allows to manage the complete application entity model through automatically available endpoints.
+
+In this guide we will focus on creating multiple REST based HTTP APIs in order to allow other applications interact with the Petclinic example.
+During the examples we will work with both the generic API and custom HTTP endpoints based on the use-case at hand.
 
 == What is a REST API
 
-Topic: how do REST APIs in general work, small section, HTTP verbs, Response codes etc.
+Before exploring the details of the CUBA implementation of proving an API, let's quickly talk about what a REST API looks like and what the concepts behind it are.
 
-== How to create custom Controllers
+A REST API is an HTTP based API (HTTP being the protocol, that is the underpinning of a big part of the Internet) with some specific usage of it. REST in particular has a couple of building blocks, that we will use throughout this guide.
 
-Topic: a little bit Spring MVC Intro, transferring the knowledge of e.g. HTTPs into Spring MVC
+To get a better understanding about what an API is, take the analogy of a restaurant:
 
+TIP: The menu that the restaurant offers is the API. Once you order a piece from the menu, you are doing an API call with a more or less structured interaction format ("I take number 25", "Pizza is out, sorry!", "Something to drink?"). The response of that API call is the food which is delivered from the kitchen.
+
+=== Resources
+
+A Resource is something that you can think of like an abstraction on the concept of any kind of information. Examples of a resource can be an image, a document, a dish in a menu or a Pet (or a virtual representation in the Petclinic). Resources are identified by something called a Resource Identifier. In its concrete form a resource identifier is something like a URL: `https://petclinic.cuba-platform.com/pets/123` to identify the Resource: Pets with the Identification Number: 123.
+
+=== Resource Verbs
+
+Verbs on Resources represent the "operations" that you can perform on a particular resource. In the abstract in REST those Verbs should form a uniform interface, in the concrete in HTTP there are a couple of Verbs, that can be used in order to interact with a resource:
+
+* `GET https://petclinic.cuba-platform.com/pets/123`: fetches information about the Pet with the Identification Number 123
+* `POST https://petclinic.cuba-platform.com/pets`: adds a new Pet to the list of existing Pets
+
+There are a handful of verbs defined in HTTP that can be used. All of them have a particular meaning, although their interpretation and usage
+is oftentimes up to the provider of the API.
+
+Generally the Verbs have different characteristics / guarantees associated to it. E.g. the verb `GET` normally is used for loading data. By the HTTP specification a `GET` operation is _idempotent_ and _safe_. Roughly speaking this means that the operation in the API should not have side effects. Also, applying the same operation twice should not lead to a different outcome. Loading information about a Pet is generally possible to do multiple times without having a side effect. Therefore, using the `GET` verb for this operation is matching the guarantees the `GET` verb offers.
+
+Registering a Pet on the other hand twice would lead to having two Pets stored in the application. Therefore, this operation is not side-effect free. Thus, it better fits the `POST` guarantees.
+
+There are several verbs defined in HTTP. The primary ones are `GET`, `POST`, `PUT`, `DELETE`, `PATCH`.
+
+== How to create an HTTP Controller
+
+In the next section, we will take a look into the concrete usage of the HTTP inside a CUBA application. CUBA is based on Spring, which offers dedicated support for providing HTTP APIs. In particular Spring MVC is responsible for offering that functionality.
+
+In order to create a HTTP endpoint it is necessary to create a Java class and annotate it with `@RestController`. In order to fulfil the implementation of the API operation `GET https://petclinic.cuba-platform.com/pets/123`, a method needs to be annotated with `@GetMapping` in order to connect it to a particular endpoint.
+
+Here you find an example of such a REST Controller in Spring MVC:
+
+.FetchPetController.java
+[source,java]
+----
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController // <1>
+public class FetchPetController {
+
+    @GetMapping("/pets/{petId}") // <2>
+    public ResponseEntity<Pet> fetchPet(
+        @PathVariable("petId") String petId // <3>
+    ) {
+
+        final Optional<Pet> possiblePet = dataManager.load(Pet.class)
+            .query("e.identificationNumber = ?1", petId)
+            .optional();
+
+        return ResponseEntity.of(possiblePet); // <4>
+    }
+}
+----
+<1> Registering the class as a HTTP / REST controller
+<2> the `fetchPet` method links to the endpoint `GET /pets/{petId}` via the `@GetMapping` annotation
+<3> the `petId` part of the URL is dynamic and gets passed into the method as a parameter
+<4> ResponseEntity takes care of returning the correct HTTP status code and HTTP response body
+
+For the different HTTP verbs Spring MVC provides the corresponding Annotations, as we will see in later code listings.
+
+The `ResponseEntity` is responsible for controlling what HTTP response codes are returned to the client. In HTTP there are several response codes, that are used to indicate the client different outcomes of the operation. The response code `200 - OK` is indicating a successful operation, whereas `404 - Not found` tells the client that the resource that was requested is not available. There are several response codes that can be used to very precisely describe the outcome of a request.
+
+`ResponseEntity.of(Optional<T> body)` is one method that automatically responds either with `200` or `404` depending on the value of the passed in `Optional`.
 
 == REST API for Petclinic
 
