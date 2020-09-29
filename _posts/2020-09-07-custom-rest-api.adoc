@@ -26,11 +26,11 @@ include::includes/guide_requirements.adoc[]
 
 == Overview
 
-Providing an API for an application is oftentimes a good way to foster machine to machine communication. CUBA supports various forms of API technologies via its strong basis in form of the Spring Framework. Spring has native support for creating REST and SOAP-Webservice based APIs. Also, newer technology approaches like GraphQL are possible with the help of the wider Java ecosystem.
+Providing an API for an application is oftentimes a good way to foster machine to machine communication. CUBA supports various forms of API technologies through its strong foundation in form of the Spring Framework. Spring has native support for creating REST and SOAP-Webservice based APIs. Also, newer technology approaches like GraphQL are possible with the help of the wider Java ecosystem.
 
 Additionally, CUBA offers dedicated support for REST APIs via a generic API, which allows to manage the complete application entity model through automatically available endpoints.
 
-In this guide we will focus on creating multiple REST based HTTP APIs in order to allow other applications interact with the Petclinic example.
+In this guide we will focus on creating multiple REST based HTTP APIs in order to allow other applications interact with the CUBA Petclinic.
 During the examples we will work with both the generic API and custom HTTP endpoints based on the use-case at hand.
 
 == What is a REST API
@@ -39,19 +39,23 @@ Before exploring the details of the CUBA implementation of proving an API, let's
 
 A REST API is an HTTP based API (HTTP being the protocol, that is the underpinning of a big part of the Internet) with some specific usage of it. REST in particular has a couple of building blocks, that we will use throughout this guide.
 
-To get a better understanding about what an API is, take the analogy of a restaurant:
+
+Generally speaking an API is a mechanism to let different systems communicate with each other and exchange data. The API then is the defined interaction mechanism in which those two applications can communicate. To make it more concrete, take the analogy of a restaurant:
 
 TIP: The menu that the restaurant offers is the API. Once you order a piece from the menu, you are doing an API call with a more or less structured interaction format ("I take number 25", "Pizza is out, sorry!", "Something to drink?"). The response of that API call is the food which is delivered from the kitchen.
 
+Let's unfold the concepts which REST defines as one particular style of an API:
+
 === Resources
 
-A Resource is something that you can think of like an abstraction on the concept of any kind of information. Examples of a resource can be an image, a document, a dish in a menu or a Pet (or a virtual representation in the Petclinic). Resources are identified by something called a Resource Identifier. In its concrete form a resource identifier is something like a URL: `https://petclinic.cuba-platform.com/pets/123` to identify the Resource: Pets with the Identification Number: 123.
+A Resource is something that you can think of like an abstraction on the concept of any kind of information. Examples of a resource can be an image, a document or a dish in a menu. In can also be a Pet, but not the actual Pet. It would be rather a virtual representation of it in the Petclinic application. Resources are identified by something called a Resource Identifier. In its concrete form a resource identifier is something like a URL: `https://petclinic.cuba-platform.com/pets/123` to identify the Resource: The pet with the Identification Number: 123.
 
 === Resource Verbs
 
-Verbs on Resources represent the "operations" that you can perform on a particular resource. In the abstract in REST those Verbs should form a uniform interface, in the concrete in HTTP there are a couple of Verbs, that can be used in order to interact with a resource:
+Verbs on Resources represent the "operations" that you can perform on a particular resource. In REST those Verbs should form a uniform interface (abstract definition). In the concrete in HTTP there are a couple of Verbs, that can be used in order to interact with a resource:
 
 * `GET https://petclinic.cuba-platform.com/pets/123`: fetches information about the Pet with the Identification Number 123
+* `PUT https://petclinic.cuba-platform.com/pets/123`: updates information about the Pet with the Identification Number 123
 * `POST https://petclinic.cuba-platform.com/pets`: adds a new Pet to the list of existing Pets
 
 There are a handful of verbs defined in HTTP that can be used. All of them have a particular meaning, although their interpretation and usage
@@ -59,9 +63,56 @@ is oftentimes up to the provider of the API.
 
 Generally the Verbs have different characteristics / guarantees associated to it. E.g. the verb `GET` normally is used for loading data. By the HTTP specification a `GET` operation is _idempotent_ and _safe_. Roughly speaking this means that the operation in the API should not have side effects. Also, applying the same operation twice should not lead to a different outcome. Loading information about a Pet is generally possible to do multiple times without having a side effect. Therefore, using the `GET` verb for this operation is matching the guarantees the `GET` verb offers.
 
-Registering a Pet on the other hand twice would lead to having two Pets stored in the application. Therefore, this operation is not side-effect free. Thus, it better fits the `POST` guarantees.
+Registering a Pet on the other hand twice would lead to having two Pets stored in the application. Therefore, this operation is not side-effect free. For those kinds of operations the `POST` verb would be a better fit, as this verb does not give guarantees about side-effect freeness.
 
 There are several verbs defined in HTTP. The primary ones are `GET`, `POST`, `PUT`, `DELETE`, `PATCH`.
+
+== Requests and Responses
+
+Requests and responses are not directly linked to REST conceptually, but they are very relevant for providing an API. Requests and responses are the actual interactions that happen between the client and the server of an API. A request is the initial message from the client to the server. The response on the other hand is the resulting message from the server to the client. Both interactions normally contain two parts: the message payload and the message metadata.
+
+Here is an example of how an HTTP request & response interaction looks like:
+
+
+.Example HTTP Request for creating a Visit
+[source,http]
+----
+POST http://petclinic.cuba-platform.com/rest/api/visits //<1>
+Authorization: Bearer 71dbb8a8-2a41-45e7-a73b-16a96c433651
+Content-Type: application/json // <2>
+
+{ // <3>
+  "petIdentificationNumber": "025",
+  "visitStart": "2020-04-05T08:00:00",
+  "visitEnd": "2020-04-05T10:00:00",
+  "type": "REGULAR_CHECKUP",
+  "description": "This is a regular checkup for Pikachu"
+}
+----
+<1> the Verb + Resource identifier to express what operation should be performed
+<2> the `Content-Type` describes to the server on how to interpret the message payload
+<3> the payload / body of the request containing the business relevant information
+
+After the server has received the HTTP request, it would e.g. produce the following response:
+
+.Corresponding HTTP Response indicating a Visit was created
+[source,http]
+----
+HTTP/1.1 200 // <1>
+Content-Type: application/json
+
+{ // <2>
+  "id": "4e3bde19-c0ec-7cd0-654a-577ba32dcc7f"
+}
+----
+<1> `200` indicates the response code to categorize the outcome of interaction
+<2> the response message (body) contains the actual business relevant information (visit identifier in this case)
+
+
+The message payload nowadays is mostly described in the JSON format, as seen above. It is possible to exchange different message formats
+through HTTP as well, like `XML`, or `www-url-formencoded`. Also, binary formats are possible (to transfer PDF documents / images).
+
+With this general information, we can now point our focus on how to convert those abstract descriptions into real working APIs in a CUBA application.
 
 == How to create an HTTP Controller
 
@@ -91,7 +142,13 @@ public class FetchPetController {
             .query("e.identificationNumber = ?1", petId)
             .optional();
 
-        return ResponseEntity.of(possiblePet); // <4>
+        if (!possiblePet.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok( // <4>
+            possiblePet.get()
+        );
     }
 }
 ----
@@ -102,9 +159,7 @@ public class FetchPetController {
 
 For the different HTTP verbs Spring MVC provides the corresponding Annotations, as we will see in later code listings.
 
-The `ResponseEntity` is responsible for controlling what HTTP response codes are returned to the client. In HTTP there are several response codes, that are used to indicate the client different outcomes of the operation. The response code `200 - OK` is indicating a successful operation, whereas `404 - Not found` tells the client that the resource that was requested is not available. There are several response codes that can be used to very precisely describe the outcome of a request.
-
-`ResponseEntity.of(Optional<T> body)` is one method that automatically responds either with `200` or `404` depending on the value of the passed in `Optional`.
+The `ResponseEntity` is responsible for controlling what HTTP response codes are returned to the client. In HTTP there are several response codes, that are used to indicate the client different outcomes of the operation. The response code `200 - OK` is indicating a successful operation, whereas `404 - Not Found` tells the client that the resource that was requested is not available. There are several response codes that can be used to very precisely describe the outcome of a request.
 
 == REST API for Petclinic
 
