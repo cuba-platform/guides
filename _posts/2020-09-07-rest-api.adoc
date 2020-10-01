@@ -1,17 +1,17 @@
 ---
 compatible_cuba_versions: 7.1+
 compatible_java_versions: 8+
-project_id: cuba-petclinic-custom-rest-apis
-permalink: custom-rest-apis
+project_id: cuba-petclinic-rest-apis
+permalink: rest-apis
 ---
-= Custom REST APIs for CUBA applications
+= REST APIs for CUBA applications
 :showtitle:
 :sectlinks:
 :sectanchors:
-:page-navtitle: Custom REST APIs for CUBA applications
+:page-navtitle: REST APIs for CUBA applications
 :page-excerpt: In this guide you will learn how to create REST APIs for a CUBA application. We will explore mechanisms to create different types of APIs by adding Owner registration to the Petclinic as well as allow third-party applications to control the visit management.
 :page-root: ../../../
-:project_id: cuba-petclinic-custom-rest-apis
+:project_id: cuba-petclinic-rest-apis
 :java_version: 8
 :cuba_version: 7.1
 :page-icone: https://www.cuba-platform.com/guides/images/application-components/guide_icone.svg
@@ -20,7 +20,7 @@ In this guide you will learn how to create REST APIs for a CUBA application. We 
 
 == What we are going to build
 
-This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA Petclinic] example so that Owners can self-register online before the Visit. In the second example we will allow a third party Tablet application to do the Visit Management via a custom secured REST API.
+This guide enhances the https://github.com/cuba-platform/cuba-petclinic[CUBA Petclinic] example so that Owners can self-register online before the Visit. In the second example we will allow a third party tablet application to do the visit management via a custom secured REST API.
 
 include::includes/guide_requirements.adoc[]
 
@@ -69,7 +69,7 @@ There are several verbs defined in HTTP. The primary ones are `GET`, `POST`, `PU
 
 == Requests and Responses
 
-Requests and responses are not directly linked to REST conceptually, but they are very relevant for providing an API. Requests and responses are the actual interactions that happen between the client and the server of an API. A request is the initial message from the client to the server. The response on the other hand is the resulting message from the server to the client. Both interactions normally contain two parts: the message payload and the message metadata.
+Requests and responses conceptually are not described by REST, but they are a very integral part of an HTTP based API. Requests and responses are the actual interactions that happen between the client and the server of an HTTP interaction. A request is the initial message from the client to the server. The response on the other hand is the resulting message from the server to the client. Both interactions normally contain two parts: the message payload and the message metadata.
 
 Here is an example of how an HTTP request & response interaction looks like:
 
@@ -109,8 +109,7 @@ Content-Type: application/json
 <2> the response message (body) contains the actual business relevant information (visit identifier in this case)
 
 
-The message payload nowadays is mostly described in the JSON format, as seen above. It is possible to exchange different message formats
-through HTTP as well, like `XML`, or `www-url-formencoded`. Also, binary formats are possible (to transfer PDF documents / images).
+The message payload of an API interaction oftentimes uses the JSON format, as seen above. That being said, it is possible to exchange different message formats through HTTP as well, like `XML`, or `www-url-formencoded`. Also, binary formats are possible (to transfer PDF documents / images).
 
 With this general information, we can now point our focus on how to convert those abstract descriptions into real working APIs in a CUBA application.
 
@@ -159,9 +158,20 @@ public class FetchPetController {
 
 For the different HTTP verbs Spring MVC provides the corresponding Annotations, as we will see in later code listings.
 
-The `ResponseEntity` is responsible for controlling what HTTP response codes are returned to the client. In HTTP there are several response codes, that are used to indicate the client different outcomes of the operation. The response code `200 - OK` is indicating a successful operation, whereas `404 - Not Found` tells the client that the resource that was requested is not available. There are several response codes that can be used to very precisely describe the outcome of a request.
+One part of the HTTP message metadata is the response code. Those codes are used to indicate the client different outcomes of the operation. The response code `200 - OK` is indicating a successful operation, whereas `404 - Not Found` tells the client that the resource that was requested is not available. There are several response codes that can be used to very precisely describe the outcome of an operation.
+
+The `ResponseEntity` is responsible for controlling what HTTP response is returned to the client. It on the one hand describes the metadata like the response code, but is also used to define the response body. In the example above a Pet object is treated as the response body. Spring MVC takes care of converting the Pet object into a JSON format and returns it to the HTTP client.
 
 == REST API for Petclinic
+
+In this section we will look into the CUBA Petclinic application and go through two examples: public owner registration as well as Visit management via API.
+
+=== Request examples in Petclinic Example
+
+All example requests for testing out the solution can be found in the https://github.com/cuba-guides/{project_id}/blob/master/requests[requests] directory in the example project. This directory contains multiple example requests that can be used to interact with the running CUBA application. It allows to interactively use the API and see the actual HTTP requests and responses.
+
+image::rest-api/http-request-example.png[Example HTTP request, link="images/rest-api/http-request-example.png"]
+
 
 === Public Registration Endpoint for creating Owners through a Website (Form Submit / JSON request)
 
@@ -169,8 +179,26 @@ The `ResponseEntity` is responsible for controlling what HTTP response codes are
 * Custom JSON POJO
 
 
-=== Secured Custom Partner API for managing Visits in third party application
-* Using CUBAs OAuth2 security mechanism
+=== Secured API for managing Visits in third party application
+
+The second example is a new application called `PetTreat` will be used at the Petclinic by Vets and Nurses on their tablet. `PetTreat` should support the employees performing the treatments of the pets. In order to achieve this, the tablet application needs to communicate with the `CUBA Petclinic` application. Furthermore, the data that is handled in `PetTreat` should be updated accordingly in the `CUBA Petclinic` application to be accessible to all employees.
+
+After an initial exploration of the required functionality, the following data interactions with the Petclinic were identified:
+
+* Lookup data of a Pet
+* Create a Visit for a Pet
+* See information about an already existing Visit
+* Start & end a Treatment during a Visit
+
+As these kinds of information and operations are very sensitive, it is required to only allow the corresponding Vets and Nurses to interact with the `CUBA Petclinic` system through `PetTreat`. As the information should be available immediately for all other employees at the Petclinic after it was entered in PetTreat, an API in the Petclinic will be used for the interactions between `PetTreat` and CUBA Petclinic.
+
+CUBA offers solutions for those requirements through the above mentioned Spring MVC APIs as well through the generic REST API addon. In this example we will look into both solutions and compare the implementation of them.
+
+In order to support the authorization requirements, we will start by looking into CUBA OAuth2 implementation, which is a mechanism to authenticate users through the API.
+
+==== CUBA OAuth2 API Authentication
+
+OAuth2 is an internet standard for providing an authentication mechanism for an API usage.
 
 ==== Variant 1: using REST addon for generic exposure of Visit entity
 
