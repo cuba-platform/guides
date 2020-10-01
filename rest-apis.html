@@ -5,21 +5,21 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Custom REST APIs for CUBA applications</title>
+    <title>REST APIs for CUBA applications</title>
     <meta name="description" content="In this guide you will learn how to create REST APIs for a CUBA application. We will explore mechanisms to create different types of APIs by adding Owner registration to the Petclinic as well as allow third-party applications to control the visit management.">
     <meta name="author" content="Haulmont">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@CubaPlatform">
     <meta name="twitter:creator" content="@CubaPlatform">
-    <meta name="twitter:title" content="Custom REST APIs for CUBA applications">
+    <meta name="twitter:title" content="REST APIs for CUBA applications">
     <meta name="twitter:description" content="In this guide you will learn how to create REST APIs for a CUBA application. We will explore mechanisms to create different types of APIs by adding Owner registration to the Petclinic as well as allow third-party applications to control the visit management.">
     <meta name="twitter:image" content="">
 
     <meta property="og:type" content="article">
-    <meta property="og:title" content="Custom REST APIs for CUBA applications">
+    <meta property="og:title" content="REST APIs for CUBA applications">
     <meta property="og:description" content="In this guide you will learn how to create REST APIs for a CUBA application. We will explore mechanisms to create different types of APIs by adding Owner registration to the Petclinic as well as allow third-party applications to control the visit management.">
-    <meta property="og:url" content="https://www.cuba-platform.com/guides/custom-rest-apis">
+    <meta property="og:url" content="https://www.cuba-platform.com/guides/rest-apis">
     <meta property="og:image" content="">
 
     <link rel="shortcut icon" href="/guides/images/favicon.png" type="image/png" />
@@ -439,7 +439,7 @@
                             <div class="field field-name-body field-type-text-with-summary field-label-hidden">
                                 <div class="field-items">
                                     <div class="field-item even" property="content: encoded">
-                                        <h1>Custom REST APIs for CUBA applications</h1>
+                                        <h1>REST APIs for CUBA applications</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
@@ -451,7 +451,7 @@
 <h2 id="what_we_are_going_to_build"><a class="anchor" href="#what_we_are_going_to_build"></a><a class="link" href="#what_we_are_going_to_build">What we are going to build</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a> example so that Owners can self-register online before the Visit. In the second example we will allow a third party Tablet application to do the Visit Management via a custom secured REST API.</p>
+<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a> example so that Owners can self-register online before the Visit. In the second example we will allow a third party tablet application to do the visit management via a custom secured REST API.</p>
 </div>
 <div class="sect2">
 <h3 id="requirements"><a class="anchor" href="#requirements"></a><a class="link" href="#requirements">Requirements</a></h3>
@@ -469,10 +469,10 @@
 </ul>
 </div>
 <div class="paragraph">
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-custom-rest-apis/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-rest-apis/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
 </div>
 <div class="paragraph">
-<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-custom-rest-apis.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-custom-rest-apis.git</a></code></p>
+<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-rest-apis.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-rest-apis.git</a></code></p>
 </div>
 </div>
 </div>
@@ -481,13 +481,13 @@
 <h2 id="overview"><a class="anchor" href="#overview"></a><a class="link" href="#overview">Overview</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Providing an API for an application is oftentimes a good way to foster machine to machine communication. CUBA supports various forms of API technologies via its strong basis in form of the Spring Framework. Spring has native support for creating REST and SOAP-Webservice based APIs. Also, newer technology approaches like GraphQL are possible with the help of the wider Java ecosystem.</p>
+<p>Providing an API for an application is oftentimes a good way to foster machine to machine communication. CUBA supports various forms of API technologies through its strong foundation in form of the Spring Framework. Spring has native support for creating REST and SOAP-Webservice based APIs. Also, newer technology approaches like GraphQL are possible with the help of the wider Java ecosystem.</p>
 </div>
 <div class="paragraph">
 <p>Additionally, CUBA offers dedicated support for REST APIs via a generic API, which allows to manage the complete application entity model through automatically available endpoints.</p>
 </div>
 <div class="paragraph">
-<p>In this guide we will focus on creating multiple REST based HTTP APIs in order to allow other applications interact with the Petclinic example.
+<p>In this guide we will focus on creating multiple REST based HTTP APIs in order to allow other applications interact with the CUBA Petclinic.
 During the examples we will work with both the generic API and custom HTTP endpoints based on the use-case at hand.</p>
 </div>
 </div>
@@ -502,7 +502,7 @@ During the examples we will work with both the generic API and custom HTTP endpo
 <p>A REST API is an HTTP based API (HTTP being the protocol, that is the underpinning of a big part of the Internet) with some specific usage of it. REST in particular has a couple of building blocks, that we will use throughout this guide.</p>
 </div>
 <div class="paragraph">
-<p>To get a better understanding about what an API is, take the analogy of a restaurant:</p>
+<p>Generally speaking an API is a mechanism to let different systems communicate with each other and exchange data. The API then is the defined interaction mechanism in which those two applications can communicate. To make it more concrete, take the analogy of a restaurant:</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -516,21 +516,27 @@ The menu that the restaurant offers is the API. Once you order a piece from the 
 </tr>
 </table>
 </div>
+<div class="paragraph">
+<p>Let&#8217;s unfold the concepts which REST defines as one particular style of an API:</p>
+</div>
 <div class="sect2">
 <h3 id="resources"><a class="anchor" href="#resources"></a><a class="link" href="#resources">Resources</a></h3>
 <div class="paragraph">
-<p>A Resource is something that you can think of like an abstraction on the concept of any kind of information. Examples of a resource can be an image, a document, a dish in a menu or a Pet (or a virtual representation in the Petclinic). Resources are identified by something called a Resource Identifier. In its concrete form a resource identifier is something like a URL: <code><a href="https://petclinic.cuba-platform.com/pets/123" class="bare">https://petclinic.cuba-platform.com/pets/123</a></code> to identify the Resource: Pets with the Identification Number: 123.</p>
+<p>A Resource is something that you can think of like an abstraction on the concept of any kind of information. Examples of a resource can be an image, a document or a dish in a menu. In can also be a Pet, but not the actual Pet. It would be rather a virtual representation of it in the Petclinic application. Resources are identified by something called a Resource Identifier. In its concrete form a resource identifier is something like a URL: <code><a href="https://petclinic.cuba-platform.com/pets/123" class="bare">https://petclinic.cuba-platform.com/pets/123</a></code> to identify the Resource: The pet with the Identification Number: 123.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="resource_verbs"><a class="anchor" href="#resource_verbs"></a><a class="link" href="#resource_verbs">Resource Verbs</a></h3>
 <div class="paragraph">
-<p>Verbs on Resources represent the "operations" that you can perform on a particular resource. In the abstract in REST those Verbs should form a uniform interface, in the concrete in HTTP there are a couple of Verbs, that can be used in order to interact with a resource:</p>
+<p>Verbs on Resources represent the "operations" that you can perform on a particular resource. In REST those Verbs should form a uniform interface (abstract definition). In the concrete in HTTP there are a couple of Verbs, that can be used in order to interact with a resource:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
 <p><code>GET <a href="https://petclinic.cuba-platform.com/pets/123" class="bare">https://petclinic.cuba-platform.com/pets/123</a></code>: fetches information about the Pet with the Identification Number 123</p>
+</li>
+<li>
+<p><code>PUT <a href="https://petclinic.cuba-platform.com/pets/123" class="bare">https://petclinic.cuba-platform.com/pets/123</a></code>: updates information about the Pet with the Identification Number 123</p>
 </li>
 <li>
 <p><code>POST <a href="https://petclinic.cuba-platform.com/pets" class="bare">https://petclinic.cuba-platform.com/pets</a></code>: adds a new Pet to the list of existing Pets</p>
@@ -545,11 +551,86 @@ is oftentimes up to the provider of the API.</p>
 <p>Generally the Verbs have different characteristics / guarantees associated to it. E.g. the verb <code>GET</code> normally is used for loading data. By the HTTP specification a <code>GET</code> operation is <em>idempotent</em> and <em>safe</em>. Roughly speaking this means that the operation in the API should not have side effects. Also, applying the same operation twice should not lead to a different outcome. Loading information about a Pet is generally possible to do multiple times without having a side effect. Therefore, using the <code>GET</code> verb for this operation is matching the guarantees the <code>GET</code> verb offers.</p>
 </div>
 <div class="paragraph">
-<p>Registering a Pet on the other hand twice would lead to having two Pets stored in the application. Therefore, this operation is not side-effect free. Thus, it better fits the <code>POST</code> guarantees.</p>
+<p>Registering a Pet on the other hand twice would lead to having two Pets stored in the application. Therefore, this operation is not side-effect free. For those kinds of operations the <code>POST</code> verb would be a better fit, as this verb does not give guarantees about side-effect freeness.</p>
 </div>
 <div class="paragraph">
 <p>There are several verbs defined in HTTP. The primary ones are <code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>DELETE</code>, <code>PATCH</code>.</p>
 </div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="requests_and_responses"><a class="anchor" href="#requests_and_responses"></a><a class="link" href="#requests_and_responses">Requests and Responses</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Requests and responses conceptually are not described by REST, but they are a very integral part of an HTTP based API. Requests and responses are the actual interactions that happen between the client and the server of an HTTP interaction. A request is the initial message from the client to the server. The response on the other hand is the resulting message from the server to the client. Both interactions normally contain two parts: the message payload and the message metadata.</p>
+</div>
+<div class="paragraph">
+<p>Here is an example of how an HTTP request &amp; response interaction looks like:</p>
+</div>
+<div class="listingblock">
+<div class="title">Example HTTP Request for creating a Visit</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="http">POST http://petclinic.cuba-platform.com/rest/api/visits <i class="conum" data-value="1"></i><b>(1)</b>
+Authorization: Bearer 71dbb8a8-2a41-45e7-a73b-16a96c433651
+Content-Type: application/json <i class="conum" data-value="2"></i><b>(2)</b>
+
+{ <i class="conum" data-value="3"></i><b>(3)</b>
+  &quot;petIdentificationNumber&quot;: &quot;025&quot;,
+  &quot;visitStart&quot;: &quot;2020-04-05T08:00:00&quot;,
+  &quot;visitEnd&quot;: &quot;2020-04-05T10:00:00&quot;,
+  &quot;type&quot;: &quot;REGULAR_CHECKUP&quot;,
+  &quot;description&quot;: &quot;This is a regular checkup for Pikachu&quot;
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the Verb + Resource identifier to express what operation should be performed</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the <code>Content-Type</code> describes to the server on how to interpret the message payload</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>the payload / body of the request containing the business relevant information</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>After the server has received the HTTP request, it would e.g. produce the following response:</p>
+</div>
+<div class="listingblock">
+<div class="title">Corresponding HTTP Response indicating a Visit was created</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="http">HTTP/1.1 200 <i class="conum" data-value="1"></i><b>(1)</b>
+Content-Type: application/json
+
+{ <i class="conum" data-value="2"></i><b>(2)</b>
+  &quot;id&quot;: &quot;4e3bde19-c0ec-7cd0-654a-577ba32dcc7f&quot;
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>200</code> indicates the response code to categorize the outcome of interaction</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the response message (body) contains the actual business relevant information (visit identifier in this case)</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The message payload of an API interaction oftentimes uses the JSON format, as seen above. That being said, it is possible to exchange different message formats through HTTP as well, like <code>XML</code>, or <code>www-url-formencoded</code>. Also, binary formats are possible (to transfer PDF documents / images).</p>
+</div>
+<div class="paragraph">
+<p>With this general information, we can now point our focus on how to convert those abstract descriptions into real working APIs in a CUBA application.</p>
 </div>
 </div>
 </div>
@@ -585,7 +666,13 @@ is oftentimes up to the provider of the API.</p>
             .query(<span class="string"><span class="delimiter">&quot;</span><span class="content">e.identificationNumber = ?1</span><span class="delimiter">&quot;</span></span>, petId)
             .optional();
 
-        <span class="keyword">return</span> ResponseEntity.of(possiblePet); <i class="conum" data-value="4"></i><b>(4)</b>
+        <span class="keyword">if</span> (!possiblePet.isPresent()) {
+            <span class="keyword">return</span> ResponseEntity.notFound().build();
+        }
+
+        <span class="keyword">return</span> ResponseEntity.ok( <i class="conum" data-value="4"></i><b>(4)</b>
+            possiblePet.get()
+        );
     }
 }</code></pre>
 </div>
@@ -614,16 +701,30 @@ is oftentimes up to the provider of the API.</p>
 <p>For the different HTTP verbs Spring MVC provides the corresponding Annotations, as we will see in later code listings.</p>
 </div>
 <div class="paragraph">
-<p>The <code>ResponseEntity</code> is responsible for controlling what HTTP response codes are returned to the client. In HTTP there are several response codes, that are used to indicate the client different outcomes of the operation. The response code <code>200 - OK</code> is indicating a successful operation, whereas <code>404 - Not found</code> tells the client that the resource that was requested is not available. There are several response codes that can be used to very precisely describe the outcome of a request.</p>
+<p>One part of the HTTP message metadata is the response code. Those codes are used to indicate the client different outcomes of the operation. The response code <code>200 - OK</code> is indicating a successful operation, whereas <code>404 - Not Found</code> tells the client that the resource that was requested is not available. There are several response codes that can be used to very precisely describe the outcome of an operation.</p>
 </div>
 <div class="paragraph">
-<p><code>ResponseEntity.of(Optional&lt;T&gt; body)</code> is one method that automatically responds either with <code>200</code> or <code>404</code> depending on the value of the passed in <code>Optional</code>.</p>
+<p>The <code>ResponseEntity</code> is responsible for controlling what HTTP response is returned to the client. It on the one hand describes the metadata like the response code, but is also used to define the response body. In the example above a Pet object is treated as the response body. Spring MVC takes care of converting the Pet object into a JSON format and returns it to the HTTP client.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="rest_api_for_petclinic"><a class="anchor" href="#rest_api_for_petclinic"></a><a class="link" href="#rest_api_for_petclinic">REST API for Petclinic</a></h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>In this section we will look into the CUBA Petclinic application and go through two examples: public owner registration as well as Visit management via API.</p>
+</div>
+<div class="sect2">
+<h3 id="request_examples_in_petclinic_example"><a class="anchor" href="#request_examples_in_petclinic_example"></a><a class="link" href="#request_examples_in_petclinic_example">Request examples in Petclinic Example</a></h3>
+<div class="paragraph">
+<p>All example requests for testing out the solution can be found in the <a href="https://github.com/cuba-guides/cuba-petclinic-rest-apis/blob/master/requests">requests</a> directory in the example project. This directory contains multiple example requests that can be used to interact with the running CUBA application. It allows to interactively use the API and see the actual HTTP requests and responses.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/rest-api/http-request-example.png"><img src="/guides/images/rest-api/http-request-example.png" alt="Example HTTP request"></a>
+</div>
+</div>
+</div>
 <div class="sect2">
 <h3 id="public_registration_endpoint_for_creating_owners_through_a_website_form_submit_json_request"><a class="anchor" href="#public_registration_endpoint_for_creating_owners_through_a_website_form_submit_json_request"></a><a class="link" href="#public_registration_endpoint_for_creating_owners_through_a_website_form_submit_json_request">Public Registration Endpoint for creating Owners through a Website (Form Submit / JSON request)</a></h3>
 <div class="ulist">
@@ -638,13 +739,43 @@ is oftentimes up to the provider of the API.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="secured_custom_partner_api_for_managing_visits_in_third_party_application"><a class="anchor" href="#secured_custom_partner_api_for_managing_visits_in_third_party_application"></a><a class="link" href="#secured_custom_partner_api_for_managing_visits_in_third_party_application">Secured Custom Partner API for managing Visits in third party application</a></h3>
+<h3 id="secured_api_for_managing_visits_in_third_party_application"><a class="anchor" href="#secured_api_for_managing_visits_in_third_party_application"></a><a class="link" href="#secured_api_for_managing_visits_in_third_party_application">Secured API for managing Visits in third party application</a></h3>
+<div class="paragraph">
+<p>The second example is a new application called <code>PetTreat</code> will be used at the Petclinic by Vets and Nurses on their tablet. <code>PetTreat</code> should support the employees performing the treatments of the pets. In order to achieve this, the tablet application needs to communicate with the <code>CUBA Petclinic</code> application. Furthermore, the data that is handled in <code>PetTreat</code> should be updated accordingly in the <code>CUBA Petclinic</code> application to be accessible to all employees.</p>
+</div>
+<div class="paragraph">
+<p>After an initial exploration of the required functionality, the following data interactions with the Petclinic were identified:</p>
+</div>
 <div class="ulist">
 <ul>
 <li>
-<p>Using CUBAs OAuth2 security mechanism</p>
+<p>Lookup data of a Pet</p>
+</li>
+<li>
+<p>Create a Visit for a Pet</p>
+</li>
+<li>
+<p>See information about an already existing Visit</p>
+</li>
+<li>
+<p>Start &amp; end a Treatment during a Visit</p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p>As these kinds of information and operations are very sensitive, it is required to only allow the corresponding Vets and Nurses to interact with the <code>CUBA Petclinic</code> system through <code>PetTreat</code>. As the information should be available immediately for all other employees at the Petclinic after it was entered in PetTreat, an API in the Petclinic will be used for the interactions between <code>PetTreat</code> and CUBA Petclinic.</p>
+</div>
+<div class="paragraph">
+<p>CUBA offers solutions for those requirements through the above mentioned Spring MVC APIs as well through the generic REST API addon. In this example we will look into both solutions and compare the implementation of them.</p>
+</div>
+<div class="paragraph">
+<p>In order to support the authorization requirements, we will start by looking into CUBA OAuth2 implementation, which is a mechanism to authenticate users through the API.</p>
+</div>
+<div class="sect3">
+<h4 id="cuba_oauth2_api_authentication"><a class="anchor" href="#cuba_oauth2_api_authentication"></a><a class="link" href="#cuba_oauth2_api_authentication">CUBA OAuth2 API Authentication</a></h4>
+<div class="paragraph">
+<p>OAuth2 is an internet standard for providing an authentication mechanism for an API usage.</p>
+</div>
 </div>
 <div class="sect3">
 <h4 id="variant_1_using_rest_addon_for_generic_exposure_of_visit_entity"><a class="anchor" href="#variant_1_using_rest_addon_for_generic_exposure_of_visit_entity"></a><a class="link" href="#variant_1_using_rest_addon_for_generic_exposure_of_visit_entity">Variant 1: using REST addon for generic exposure of Visit entity</a></h4>
@@ -729,11 +860,13 @@ is oftentimes up to the provider of the API.</p>
 <li><a href="#resource_verbs">Resource Verbs</a></li>
 </ul>
 </li>
+<li><a href="#requests_and_responses">Requests and Responses</a></li>
 <li><a href="#how_to_create_an_http_controller">How to create an HTTP Controller</a></li>
 <li><a href="#rest_api_for_petclinic">REST API for Petclinic</a>
 <ul class="sectlevel2">
+<li><a href="#request_examples_in_petclinic_example">Request examples in Petclinic Example</a></li>
 <li><a href="#public_registration_endpoint_for_creating_owners_through_a_website_form_submit_json_request">Public Registration Endpoint for creating Owners through a Website (Form Submit / JSON request)</a></li>
-<li><a href="#secured_custom_partner_api_for_managing_visits_in_third_party_application">Secured Custom Partner API for managing Visits in third party application</a></li>
+<li><a href="#secured_api_for_managing_visits_in_third_party_application">Secured API for managing Visits in third party application</a></li>
 </ul>
 </li>
 <li><a href="#further_information">Further Information</a></li>
@@ -742,7 +875,7 @@ is oftentimes up to the provider of the API.</p>
 
                         <div class="sidebar-razd"></div>
                         <div class="guide-panel download">
-                            <a href="https://github.com/cuba-guides/cuba-petclinic-custom-rest-apis" class="github-link" target="_blank">Example code on Github</a>
+                            <a href="https://github.com/cuba-guides/cuba-petclinic-rest-apis" class="github-link" target="_blank">Example code on Github</a>
                         </div>
                         <div class="guide-panel cuba-version">Supported versions: CUBA 7.1+; Java 8+</div>
 
