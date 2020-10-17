@@ -81,7 +81,7 @@ TIP: You can find more information on the topic of different customization optio
 
 The second extension mechanism of a product is a compile-time extension. This type of extensions emerge during the production process of the software. It may appear at the development time through customer specific extensions / adjustments of the standard product. Alternatively, it can also be created at the time the binary is created, e.g. by adding certain additional `jar` files into the binary.
 
-In this case, almost everything can be changed by these extensions, because it is too early in the software production process. Additional entities can be created, business logic can be overridden and customer-specific UIs can be created.
+In this case, almost everything can be changed by these extensions, because it is very early in the software production process. Additional entities can be created, business logic can be overridden and customer-specific UIs can be created.
 
 
 == Petclinic as a Product Line
@@ -227,7 +227,7 @@ In order to add a field to an existing `form` component, the "delta" XML (contai
 <1> the `extends` attribute declares which screen this screen extension is based on
 <2> by adding another form component with the same ID "form" the component will be merged with the parent one
 
-In this case, the text area for the new field is appended at the bottom of the form component with the ID `for`.
+In this case, the text area for the new field is appended at the bottom of the form component with the ID `form`.
 
 ==== Create Visits for Today from Pet Browse
 
