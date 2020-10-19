@@ -164,28 +164,21 @@ The `ResponseEntity` is responsible for controlling what HTTP response is return
 
 == REST API for Petclinic
 
-In this section we will look into the CUBA Petclinic application and go through two examples: public owner registration as well as Visit management via API.
+In this section we will look into the CUBA Petclinic application and how we can create REST APIs for it in order to let other applications interact with the Petclinic.
 
-=== Request examples in Petclinic Example
+For most of the examples we will leverage the https://www.cuba-platform.com/marketplace/rest-api/[CUBA REST API addon]. In the Petclinic example it is already included. If you use the example as a starting point for your own implementation, make sure you add the addon to your application via the CUBA Marketplace.
 
-All example requests for testing out the solution can be found in the https://github.com/cuba-guides/{project_id}/blob/master/requests[requests] directory in the example project. This directory contains multiple example requests that can be used to interact with the running CUBA application. It allows to interactively use the API and see the actual HTTP requests and responses.
+All example requests for testing out the solution can be found in the https://github.com/cuba-guides/{project_id}/blob/master/requests[requests] directory in the example project. This directory contains multiple example requests to see the interaction with the API.
 
 image::rest-api/http-request-example.png[Example HTTP request, link="images/rest-api/http-request-example.png"]
 
+TIP: When using CUBA Studio together with https://www.jetbrains.com/idea/[IntelliJ IDEA Ultimate], those request examples can be used to directly interact with the running CUBA application via the corresponding "Play" button next to the request. It allows to interactively use the API and see the actual HTTP requests and responses.
 
-=== Public Registration Endpoint for creating Owners through a Website (Form Submit / JSON request)
-
-* Custom Spring MVC Endpoint
-* Custom JSON POJO
-
-
-=== Secured API for managing Visits in third party application
-
-The second example is a new application called `PetTreat` will be used at the Petclinic by Vets and Nurses on their tablet. `PetTreat` should support the employees performing the treatments of the pets. In order to achieve this, the tablet application needs to communicate with the `CUBA Petclinic` application. Furthermore, the data that is handled in `PetTreat` should be updated accordingly in the `CUBA Petclinic` application to be accessible to all employees.
+A new application called `PetTreat` will be used at the Petclinic by Vets and Nurses on their tablet. `PetTreat` should support the employees performing the treatments of the pets. In order to achieve this, the tablet application needs to communicate with the `CUBA Petclinic` application. Furthermore, the data that is handled in `PetTreat` should be updated accordingly in the `CUBA Petclinic` application to be accessible to all employees.
 
 After an initial exploration of the required functionality, the following data interactions with the Petclinic were identified:
 
-* Lookup data of a Pet
+* Search Pets by Name
 * Create a Visit for a Pet
 * See information about an already existing Visit
 * Start & end a Treatment during a Visit
@@ -196,19 +189,342 @@ CUBA offers solutions for those requirements through the above mentioned Spring 
 
 In order to support the authorization requirements, we will start by looking into CUBA OAuth2 implementation, which is a mechanism to authenticate users through the API.
 
-==== CUBA OAuth2 API Authentication
+=== CUBA OAuth2 API Authentication
 
-OAuth2 is an internet standard for providing an authentication mechanism for an API usage.
+OAuth2 is a common internet standard for providing an authentication mechanism for API interaction. CUBA supports the OAuth2 authentication framework out of the box via its https://doc.cuba-platform.com/restapi-latest/[REST API addon]. The way the authentication via OAuth2 works is the following:
 
-==== Variant 1: using REST addon for generic exposure of Visit entity
+1. the client makes a request providing the login credentials (username and password) in order to retrieve access token
+2. the access token is send as a short living credential, that is send with every request as a HTTP header to authenticate further requests
 
-* Using Visit Entity directly in Entity Endpoint
-* Using Visit Management Service for higher level API abstraction
+An example request for performing the login and retrieve the access token looks like this:
 
-==== Variant 2: Custom higher level API operations
-* Create custom Request Objects for Visit Management (CreateVisitRequest, FinishTreatmentRequest, GetTreatmentStatusRequest)
+.HTTP Access Token Request
+[source,http]
+----
+POST http://localhost:8080/app/rest/v2/oauth/token
+Authorization: Basic {{cubaRestClientId}} {{cubaRestClientSecret}}
+Content-Type: application/x-www-form-urlencoded
 
-==== Pros & Cons of using generic vs. custom API
+grant_type=password&username={{username}}&password={{password}}
+----
+
+TIP: The text that is expressed in double curly braces like `{{username}}` are variables that should be replaced by the actual values. E.g. `username` and `password` need to be replaced by the actual username and password of the user to login.
+
+This HTTP POST request will, given correct credentials, respond with the following JSON containing the access token:
+
+.HTTP Access Token Response
+[source,json]
+----
+{
+  "access_token": "56b53dab-0988-4480-84ae-5690bdf713dd",
+  "token_type": "bearer",
+  "refresh_token": "44727aca-07d7-4363-b545-d2801502d01b",
+  "expires_in": 43199,
+  "scope": "rest-api"
+}
+----
+
+The value of the `access_token` fields needs to be stored in the client application and used for further requests. After the authentication step is done, it is possible to interact with the REST API in an authenticated way. This means further requests that are performed with this access token act as the user that originally requested the token.
+
+In particular CUBA now takes the complete security subsystem into consideration like the Roles as well as the Access Group which the user is currently associated with. As a concrete example, if the user is inside an access group, that only allows to see Pets of the type `Water`, the same restriction is populated through the API.
+
+You can find more information on the different security related topics in the addon documentation:
+
+* https://doc.cuba-platform.com/restapi-latest/#rest_api_v2_ex_get_token[OAuth 2 Authentication]
+* https://doc.cuba-platform.com/restapi-latest/#security[REST API Security]
+
+The next step is to go through the functional requirements for `PetTreat` and see how to perform those operations through an API.
+We will start off with the generic API approach directly available via the REST API addon.
+
+=== Custom API operations
+
+The first approach on how to create those APIs is to define custom REST controllers as shown above via Spring MVC. Lets go through the four scenarios and see how to tackle one-by-one.
+
+==== Registering custom Controllers in CUBA
+
+The first step is to not only create a Spring MVC controller, but also registering it to the CUBA application and to put it under the security umbrella, that we have seen above.
+
+For that we need to create a file called `rest-dispatcher-spring.xml` under `com/haulmont/sample/petclinic` package within the `web` module. It contains the configuration of the custom API:
+
+.rest-dispatcher-spring.xml
+[source,xml]
+----
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+      xmlns:security="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+
+  <context:component-scan
+    base-package="com.haulmont.sample.petclinic.web.controller" // <1>
+  />
+
+  <security:http
+    pattern="/rest/api/**" // <2>
+    create-session="stateless"
+    entry-point-ref="oauthAuthenticationEntryPoint"
+    xmlns="http://www.springframework.org/schema/security">
+    <!-- Specify one or more protected URL patterns-->
+    <intercept-url
+        pattern="/rest/api/**"
+        access="isAuthenticated()"
+    />
+    <anonymous enabled="false"/>
+    <csrf disabled="true"/>
+    <cors configuration-source-ref="cuba_RestCorsSource"/>
+    <custom-filter ref="resourceFilter" before="PRE_AUTH_FILTER"/>
+    <custom-filter ref="cuba_AnonymousAuthenticationFilter" after="PRE_AUTH_FILTER"/>
+  </security:http>
+
+</beans>
+----
+<1> activate automatic searches for `@Controller` annotated controllers in the `controller` sub-package
+<2> configure authentication for the route `/rest/api/**` and all controllers that are put under this prefix
+
+After creating this file, it needs to be registered within the `web-app.properties` file like this:
+
+.web-app.properties
+[source,properties]
+----
+cuba.restSpringContextConfig = +com/haulmont/sample/petclinic/rest-dispatcher-spring.xml
+----
+
+With this configuration in place, we are able to create our first controller inside the `controller` package.
+
+==== Retrieving Pet and Visit information
+
+==== Creating a Visit for a Pet
+
+==== Starting and Stopping a Visit Treatment
+
+
+=== REST addon for generic API
+
+The four requirements of looking up data from Pets and Visits, as well as creating visits and starting a treatment can be achieved through the generic REST API.
+
+Before showing how it works, let's quickly go through the idea behind the generic API from the REST API addon.
+
+With the help of the addon, the CUBA application provides an API for performing CRUD operations for all entities out of the box. There is no need to write code on the server side to expose the entity data as an API. Also, for similar operations like creating or updating an entity the generic API will provide this capability.
+
+It is also possible to expose CUBA services directly via this generic API only by registering the business service in a configuration file `rest-services.xml`.
+
+
+==== Retrieving Visit information
+
+For retrieving the Visit Information through the generic API, the following HTTP GET request can be performed:
+
+.Retrieve Pet Information
+[source,http]
+----
+GET http://localhost:8080/app/rest/v2/entities/petclinic_Visit // <1>
+Authorization: Bearer {{auth_token}} // <2>
+
+
+HTTP/1.1 200
+Content-Type: application/json;charset=UTF-8
+
+[ // <3>
+  {
+    "_entityName": "petclinic_Visit",
+    "_instanceName": "198 - Murkrow ()",
+    "id": "0019e1b3-ab9a-c322-ef9b-5824fab430c2",
+    "visitEnd": "2020-09-07 10:00:00.000",
+    "description": "Surgery",
+    "type": "RECHARGE",
+    "visitStart": "2020-09-07 08:30:00.000",
+    "version": 1,
+    "petName": "Murkrow",
+    "treatmentStatus": "DONE",
+    "typeStyle": "event-green",
+    "pet": {
+      "_entityName": "petclinic_Pet",
+      "_instanceName": "198 - Murkrow",
+      "id": "e66f31a9-fa41-3e76-e881-d139439afc27",
+      "version": 1,
+      "name": "Murkrow",
+      "identificationNumber": "198"
+    }
+  },
+  {
+    "_entityName": "petclinic_Visit",
+    "_instanceName": "118 - Goldeen ()",
+    "id": "001c0a58-3e2d-7d11-e93f-a16e21208378",
+    "visitEnd": "2019-10-21 12:45:00.000",
+    "description": "Surgery",
+    "type": "REGULAR_CHECKUP",
+    "visitStart": "2019-10-21 12:15:00.000",
+    "version": 1,
+    "petName": "Goldeen",
+    "treatmentStatus": "DONE",
+    "typeStyle": "event-blue",
+    "pet": {
+      "_entityName": "petclinic_Pet",
+      "_instanceName": "118 - Goldeen",
+      "id": "ebc6b61a-e6cc-8b95-4139-cc76fd408539",
+      "version": 1,
+      "name": "Goldeen",
+      "identificationNumber": "118"
+    }
+  },
+  {
+    "_entityName": "petclinic_Visit",
+    "_instanceName": "109 - Smogon ()",
+    "id": "00384f37-0361-56ba-1289-89827d682ce8",
+    "visitEnd": "2020-09-04 14:30:00.000",
+    "description": "Fever",
+    "type": "RECHARGE",
+    "visitStart": "2020-09-04 13:30:00.000",
+    "version": 1,
+    "petName": "Smogon",
+    "treatmentStatus": "DONE",
+    "typeStyle": "event-green",
+    "pet": {
+      "_entityName": "petclinic_Pet",
+      "_instanceName": "109 - Smogon",
+      "id": "4100306c-49cd-0961-bfa3-c50859f1e6c4",
+      "version": 1,
+      "name": "Smogon",
+      "identificationNumber": "109"
+    }
+  }
+]
+----
+<1> the URL path `entities/petclinic_Visit` indicates which entity data to load
+<2> the access token needs to be passed to every request in order to perform the authentication
+<3> the response contains a list of all Visits
+
+==== Filtering for Pets by Name
+
+The generic API also provides an endpoint to perform searches for entities. It is possible to define filter criteria similar to how you would do it in the generic Filter UI component. Filtering for the Pet with the name "Pikachu" can be done like this:
+
+.Search for Pet by Name
+[source,http]
+----
+POST http://localhost:8080/app/rest/v2/entities/petclinic_Pet/search
+Authorization: Bearer {{auth_token}}
+
+{
+  "filter": { // <1>
+    "conditions": [
+      {
+        "property": "name",
+        "operator": "=",
+        "value": "Pikachu"
+      }
+    ]
+  },
+  "view": "pet-with-owner-and-type" // <2>
+}
+
+
+HTTP/1.1 200
+Content-Type: application/json;charset=UTF-8
+
+[ // <3>
+  {
+    "_entityName": "petclinic_Pet",
+    "_instanceName": "025 - Pikachu",
+    "id": "d83cc7f7-69b5-3830-ff1d-ed74d1e4a79c",
+    "owner": {
+      "_entityName": "petclinic_Owner",
+      "_instanceName": "Ash Ketchum",
+      "id": "351eb2d2-c70b-3af7-109c-2b19a5929101",
+      "lastName": "Ketchum",
+      "address": "Miastreet 134",
+      "city": "Alabastia",
+      "telephone": "00497688166348",
+      "firstName": "Ash",
+      "email": "ash-ketchum@example.com"
+    },
+    "type": {
+      "_entityName": "petclinic_PetType",
+      "_instanceName": "Electric",
+      "id": "d390dc26-3462-7586-221a-3110f0fcd97c",
+      "name": "Electric"
+    },
+    "birthDate": "1998-01-03",
+    "name": "Pikachu",
+    "identificationNumber": "025"
+  }
+]
+----
+<1> the filter definition is send as the HTTP POST body
+<2> a view can be specified for defining which data is returned
+<3> the HTTP response contains the entry list that match the search criteria
+
+With this very flexible API it is possible to perform all kinds of queries against the list of entities. More information can be found in the https://doc.cuba-platform.com/restapi-latest/#rest_api_v2_ex_search_filter[docs].
+
+With those two endpoints, the API fulfils the requirements to view & search all kinds of Visit and Pet data in the `PetTreat` application.
+
+==== Creating a Visit for a Pet
+
+The next operation to create a visit can be performed through the generic Entities API as well.
+
+For creating a Visit the following HTTP POST request needs to be performed:
+
+.Create a Visit
+[source,http]
+----
+POST http://localhost:8080/app/rest/v2/entities/petclinic_Visit
+Authorization: Bearer {{auth_token}}
+
+{ // <1>
+    "visitStart": "2020-10-14 08:30:00.000",
+    "visitEnd": "2020-10-15 10:00:00.000",
+    "description": "Surgery created via API",
+    "type": "RECHARGE",
+    "pet": {
+      "id": "d83cc7f7-69b5-3830-ff1d-ed74d1e4a79c" // <2>
+    }
+}
+
+
+HTTP/1.1 201 // <3>
+Location: http://localhost:8080/petclinic/rest/v2/entities/petclinic_Visit/a1aa87cb-c68f-ef2f-a69a-a685eeb2dd0c
+Content-Type: application/json;charset=UTF-8
+
+{
+  "_entityName": "petclinic_Visit",
+  "id": "a1aa87cb-c68f-ef2f-a69a-a685eeb2dd0c" // <4>
+}
+----
+<1> the Visit information are send as the HTTP body
+<2> links to other entities like the `Pet`are created by ID references
+<3> the HTTP response is `201 - Created` for a valid request
+<4> the result contains an ID of the newly created Visit
+
+
+==== Starting and Stopping a Visit Treatment
+
+The last API operation that `PetTreat` needs is the ability to start / finish a Visit treatment. In the entity model, this operation is expressed via a status field of the Visit entity called `treatmentStatus`. Therefore, it is possible to perform an update on the Visit entity respectively.
+
+The following request will start the treatment of a Visit:
+
+
+.Start a Visit treatment
+[source,http]
+----
+PUT http://localhost:8080/app/rest/v2/entities/petclinic_Visit/{{visitId}} // <1>
+Authorization: Bearer {{auth_token}}
+
+{
+    "treatmentStatus": "IN_PROGRESS" // <2>
+}
+
+
+HTTP/1.1 200
+----
+<1> an HTTP PUT request is performed against the URI of the Visit
+<2> the fields to update are send through the request body
+
+Finishing a treatment can be done with the same HTTP request, but instead of sending `IN_PROGRESS`, `DONE` is send for the `treatmentStatus` field.
+
+=== Pros & Cons of using generic vs. custom API
 
 Custom API:
 * Ability to control HTTP interaction (custom Status Code, error responses etc.)
