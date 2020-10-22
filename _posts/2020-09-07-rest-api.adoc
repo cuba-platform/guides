@@ -9,14 +9,14 @@ permalink: rest-apis
 :sectlinks:
 :sectanchors:
 :page-navtitle: REST APIs for CUBA applications
-:page-excerpt: In this guide you will learn how to create REST APIs for a CUBA application. We will explore mechanisms to create different types of APIs by adding Owner registration to the Petclinic as well as allow third-party applications to control the visit management.
+:page-excerpt: In this guide you will learn how to create REST APIs for a CUBA application. We will explore mechanisms to create different types of APIs by  allowing third-party applications to control the visit management of the Petclinic.
 :page-root: ../../../
 :project_id: cuba-petclinic-rest-apis
 :java_version: 8
 :cuba_version: 7.1
 :page-icone: https://www.cuba-platform.com/guides/images/application-components/guide_icone.svg
 
-In this guide you will learn how to create REST APIs for a CUBA application. We will explore mechanisms to create different types of APIs by adding Owner registration to the Petclinic as well as allow third-party applications to control the visit management.
+In this guide you will learn how to create REST APIs for a CUBA application. We will explore mechanisms to create different types of APIs by  allowing third-party applications to control the visit management of the Petclinic.
 
 == What we are going to build
 
@@ -208,7 +208,7 @@ Content-Type: application/x-www-form-urlencoded
 grant_type=password&username={{username}}&password={{password}}
 ----
 
-TIP: The text that is expressed in double curly braces like `{{username}}` are variables that should be replaced by the actual values. E.g. `username` and `password` need to be replaced by the actual username and password of the user to login.
+TIP: The parts in double curly braces like `{{username}}` are variables that should be replaced by the actual values. E.g. `username` and `password` need to be replaced by the actual username and password of the user to login.
 
 This HTTP POST request will, given correct credentials, respond with the following JSON containing the access token:
 
@@ -235,73 +235,6 @@ You can find more information on the different security related topics in the ad
 
 The next step is to go through the functional requirements for `PetTreat` and see how to perform those operations through an API.
 We will start off with the generic API approach directly available via the REST API addon.
-
-=== Custom API operations
-
-The first approach on how to create those APIs is to define custom REST controllers as shown above via Spring MVC. Lets go through the four scenarios and see how to tackle one-by-one.
-
-==== Registering custom Controllers in CUBA
-
-The first step is to not only create a Spring MVC controller, but also registering it to the CUBA application and to put it under the security umbrella, that we have seen above.
-
-For that we need to create a file called `rest-dispatcher-spring.xml` under `com/haulmont/sample/petclinic` package within the `web` module. It contains the configuration of the custom API:
-
-.rest-dispatcher-spring.xml
-[source,xml]
-----
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
-      xmlns:security="http://www.springframework.org/schema/security"
-       xsi:schemaLocation="
-           http://www.springframework.org/schema/beans
-           http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
-           http://www.springframework.org/schema/context
-           http://www.springframework.org/schema/context/spring-context-4.3.xsd">
-
-
-  <context:component-scan
-    base-package="com.haulmont.sample.petclinic.web.controller" // <1>
-  />
-
-  <security:http
-    pattern="/rest/api/**" // <2>
-    create-session="stateless"
-    entry-point-ref="oauthAuthenticationEntryPoint"
-    xmlns="http://www.springframework.org/schema/security">
-    <!-- Specify one or more protected URL patterns-->
-    <intercept-url
-        pattern="/rest/api/**"
-        access="isAuthenticated()"
-    />
-    <anonymous enabled="false"/>
-    <csrf disabled="true"/>
-    <cors configuration-source-ref="cuba_RestCorsSource"/>
-    <custom-filter ref="resourceFilter" before="PRE_AUTH_FILTER"/>
-    <custom-filter ref="cuba_AnonymousAuthenticationFilter" after="PRE_AUTH_FILTER"/>
-  </security:http>
-
-</beans>
-----
-<1> activate automatic searches for `@Controller` annotated controllers in the `controller` sub-package
-<2> configure authentication for the route `/rest/api/**` and all controllers that are put under this prefix
-
-After creating this file, it needs to be registered within the `web-app.properties` file like this:
-
-.web-app.properties
-[source,properties]
-----
-cuba.restSpringContextConfig = +com/haulmont/sample/petclinic/rest-dispatcher-spring.xml
-----
-
-With this configuration in place, we are able to create our first controller inside the `controller` package.
-
-==== Retrieving Pet and Visit information
-
-==== Creating a Visit for a Pet
-
-==== Starting and Stopping a Visit Treatment
-
 
 === REST addon for generic API
 
@@ -524,20 +457,297 @@ HTTP/1.1 200
 
 Finishing a treatment can be done with the same HTTP request, but instead of sending `IN_PROGRESS`, `DONE` is send for the `treatmentStatus` field.
 
-=== Pros & Cons of using generic vs. custom API
 
-Custom API:
-* Ability to control HTTP interaction (custom Status Code, error responses etc.)
-* Decoupling between entity model and API model when using custom REST API
-* Non CRUD possibilities when using custom REST API
+=== Custom API operations
 
-Generic API:
-* Speed of Development
-* additional functionality (search, views, queries, pagination, Swagger etc.)
-* Service Exposure for non-CRUD operations
+After seing how to leverage the generic REST API of CUBA, lets look on how to create those APIs via custom REST controllers as shown in the beginning via Spring MVC. Let's go through the four scenarios and see how to tackle one-by-one.
+
+==== Registering custom Controllers in CUBA
+
+The first step is to not only create a Spring MVC controller, but also registering it to the CUBA application and to put it under the security umbrella, that we have seen above.
+
+For that we need to create a file called `rest-dispatcher-spring.xml` under `com/haulmont/sample/petclinic` package within the `web` module. It contains the configuration of the custom API:
+
+.rest-dispatcher-spring.xml
+[source,xml]
+----
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+      xmlns:security="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+
+  <context:component-scan
+    base-package="com.haulmont.sample.petclinic.web.controller" // <1>
+  />
+
+  <security:http
+    pattern="/rest/api/**" // <2>
+    create-session="stateless"
+    entry-point-ref="oauthAuthenticationEntryPoint"
+    xmlns="http://www.springframework.org/schema/security">
+    <!-- Specify one or more protected URL patterns-->
+    <intercept-url
+        pattern="/rest/api/**"
+        access="isAuthenticated()"
+    />
+    <anonymous enabled="false"/>
+    <csrf disabled="true"/>
+    <cors configuration-source-ref="cuba_RestCorsSource"/>
+    <custom-filter ref="resourceFilter" before="PRE_AUTH_FILTER"/>
+    <custom-filter ref="cuba_AnonymousAuthenticationFilter" after="PRE_AUTH_FILTER"/>
+  </security:http>
+
+</beans>
+----
+<1> activate automatic searches for `@Controller` annotated controllers in the `controller` sub-package
+<2> configure authentication for the route `/rest/api/**` and all controllers that are put under this prefix
+
+After creating this file, it needs to be registered within the `web-app.properties` file like this:
+
+.web-app.properties
+[source,properties]
+----
+cuba.restSpringContextConfig = +com/haulmont/sample/petclinic/rest-dispatcher-spring.xml
+----
+
+With this configuration in place, we are able to create our first controller inside the `controller` package.
+
+==== Retrieving Pet and Visit information
+
+The first RESTful HTTP API that is requested by `PetTreat` is to load Pet and Visit Information for display purposes. For the `fetchPet` controller, we already have seen an example above. For the Visit fetching, the difference is that a dedicated response object is used:
+
+.VisitController.java
+[source,java]
+----
+
+@RestController(VisitController.NAME)
+@RequestMapping("/api")
+public class VisitController {
+
+    // ...
+
+    @Inject
+    protected VisitService visitService;
+
+    @GetMapping("/visits/{visitId}")
+    public ResponseEntity<FetchVisitApiResponse> fetchVisit(
+        @PathVariable("visitId") UUID visitId
+    ) {
+
+        final Optional<Visit> visit = Optional.ofNullable(
+            visitService.fetch(visitId)
+        ); // <1>
+
+        return ResponseEntity.of(
+            FetchVisitApiResponse.of(visit) // <2>
+        );
+    }
+
+}
+----
+<1> the Visit entity is loaded via a dedicated `VisitService`, that interacts with the database
+<2> the Visit is transformed into `FetchVisitApiResponse` for exactly defining the API response
+
+Here are two interesting points to elaborate a little further. First is the fact, that the controller is very small in its functionality scope. Although it would be possible to perform the data fetching directly against the database and potentially also do data transformation, those responsibilities are put into different classes. It mostly is a good idea to keep the controller layer thin and only perform its the main responsibility: doing HTTP interactions and delegate business logic to other classes.
+
+The second thing to notice here is the dedicated `FetchVisitApiResponse` object. This class defines the JSON response that is transferred via HTTP to the client. It is mainly a data transfer object (DTO) the decouples the HTTP response from the entity model of the application.
+
+.FetchVisitApiResponse.java
+[source,java]
+----
+public class FetchVisitApiResponse {
+
+    private final String id;
+    private final String petIdentificationNumber;
+
+    @JsonFormat(pattern = "dd/MM/yyyy") // <1>
+    private final LocalDateTime visitStart;
+
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private final LocalDateTime visitEnd;
+
+    private final ApiVisitType type; // <2>
+    private final String description;
+
+    // ...
+
+    public static Optional<FetchVisitApiResponse> of(Optional<Visit> possibleVisit) {
+        return possibleVisit.map(visit -> // <3>
+            new FetchVisitApiResponse(
+                visit.getId().toString(),
+                visit.getPet().getIdentificationNumber(),
+                visit.getVisitStart(),
+                visit.getVisitEnd(),
+                ApiVisitType.ofEntityType(visit.getType())
+                    .orElse(null),
+                visit.getDescription()
+            )
+        );
+    }
+
+    public String getPetIdentificationNumber() { // <4>
+        return petIdentificationNumber;
+    }
+
+    public LocalDateTime getVisitStart() {
+        return visitStart;
+    }
+
+    // ...
+}
+----
+<1> Jackson annotations are used to configure the JSON output for particular fields
+<2> the fields might contain different types (like `ApiVisitType` instead of `VisitType`) compared to the entity layer
+<3> the `of` factory method maps the entity layer to the DTO layer and converts the attributes if needed
+<4> the getter methods define which attributes will be exposed via JSON
+
+The fundamental value proposition of this class is that you can exactly control what attributes are displayed via the API. Furthermore, due to the decoupling the JSON response from the entity model, it is possible to adjust the structure of the entity layer while still keeping the API contract intact. If you decide to rename an attribute in your database, it should not be required to let you API users also rename those fields in their integration source code.
+
+==== Creating a Visit for a Pet
+
+The next operation is to create a visit for a Pet. This endpoint also is located in the `VisitController` as another endpoint:
+
+[source,java]
+.VisitController.java
+----
+public class VisitController {
+
+    @Inject
+    protected VisitService visitService;
+
+    @PostMapping("/visits")
+    public ResponseEntity<CreateVisitApiResponse> createUpcomingVisit(
+        @RequestBody @Valid CreateVisitApiRequest createVisitApiRequest // <1>
+    ) {
+
+        final Visit visit = visitService.create(
+            createVisitApiRequest.toVisitCreation() // <2>
+        );
+
+        return ResponseEntity.ok(
+            CreateVisitApiResponse.of(visit) // <3>
+        );
+    }
+}
+----
+<1> the `CreateVisitApiRequest` parameter is parsed from the JSON body of the request
+<2> the `VisitService` receives a `VisitCreation` object and does not directly depends on the request object
+<3> after the visit has been created, a `CreateVisitApiResponse` object is returned to the client
+
+In this example it is once again showing the application of the decoupling of the inner workings of the Petclinic with the outside world. The dedicated API objects `CreateVisitApiRequest` and `CreateVisitApiResponse` represent the contract with the API client. Those classes are only used in the controller layer. Internally when interacting with the `VisitService` the request object is converted to another DTO called `VisitCreation`, that is located in the global module of CUBA. This enforces proper layering between the REST API and the internal service layer.
+
+The `@Valid` annotation on the request parameter indicates to Spring, that the request object needs to be validated via bean validation. In case the JSON request contains invalid data, Spring will return a proper error response with an error message of the bean validation result.
+
+
+==== Starting and Stopping a Visit Treatment
+
+The last business requirement is to be able to start and finish Visit treatments via `PetTreat`. The API is similar to the create visit API, but it shows one interesting difference: API as an abstraction. Up until now the API more or less mirrored the domain model of the Petclinic. Oftentimes this is enough, but sometimes it is possible to use the API layer as a way to simplify the internal domain model or hide certain details.
+
+Let's look at the controller first, so that you get an idea on what kind of abstraction we are talking about:
+
+[source,java]
+.TreatmentController.java
+----
+@RestController(TreatmentController.NAME)
+@RequestMapping("/api")
+public class TreatmentController {
+
+    public static final String NAME = "petclinic_TreatmentController";
+
+    @Inject
+    protected TreatmentService treatmentService;
+
+    @PostMapping("/treatments/{visitId}")
+    public ResponseEntity<Void> startTreatment(
+        @PathVariable("visitId") UUID visitId
+    ) {
+        treatmentService.start(visitId);
+        return noContent();
+    }
+
+    @PatchMapping("/treatments/{visitId}")
+    public ResponseEntity<Void> finishTreatment(
+        @PathVariable("visitId") UUID visitId,
+        @RequestBody @Valid FinishTreatmentApiRequest request
+    ) {
+
+        if (request.isCancelled()) {
+            treatmentService.cancel(visitId);
+        }
+        else {
+            treatmentService.finish(visitId);
+        }
+
+        return noContent();
+    }
+
+    private ResponseEntity<Void> noContent() {
+        return ResponseEntity.noContent().build();
+    }
+}
+----
+
+The controller provides two endpoints: "Start Treatment": `POST /treatments/{visitId}` and "Finish Treatment": `PATCH  /treatments/{visitId}`. It is possible to have the same URL but provide different HTTP operations on it. Here, the reason is that for both are actually effecting the same treatment / visit resource.
+
+Internally the API performs changes on the `Visit` entity. In particular the `visitStatus` attribute is effected. Still, on the API the model and concept to interact with are `Treatments`. Here is an example of the HTTP request to finish a treatment:
+
+[source,http]
+.Finish Treatment Request
+----
+PATCH http://localhost:8080/petclinic/rest/api/treatments/{{visitId}}
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "outcome": "DONE"
+}
+----
+
+In this case the API provides a higher level abstraction over CRUD operations on the domain model of the Visit. The `FinishTreatmentApiRequest` contains an attribute `outcome` which determines the outcome of the treatment: `DONE` or `CANCELLED`. This enum is not directly used by any entity, but rather it is only an API abstraction to control the different actions within the controller on what business operation to perform.
+
+
+=== Pros & Cons of different approaches
+
+With closing off those examples, we finished the complete Petclinic example or the REST API. With those two different approaches in mind, let's look into the pros and cons of the different approaches.
+
+
+==== Generic API
+
+The generic REST API provided by CUBA is a huge time saver. It comes out of the box with complete CRUD operations on entities. Furthermore, it implements some other extended functionality like file upload, Swagger API documentation or translation endpoints for entity attributes.
+
+The functionality of loading entites in various ways with proper pagination, search capabilities and a mechanism to define queries in the request give huge flexibility for the client of the API without touching the server side are highly beneficial. Through referencing different views, it is also possible within the client to control the amount of data that are returned. In the example we saw above where the search operation was invoked with the view `pet-with-owner-and-type` not only the pet, but also the reference to the owner and its type are returned in the JSON.
+
+With the built-in security mechanism it is possible to transparently on the server side control what data the API client is able to retrieve, just as it is possible in the UI.
+
+==== Custom API
+
+The custom Petclinic API is leveraging Spring MVCs mechanisms to control the HTTP interaction in very precise way. It is possible to define the input data as well as the output data. HTTP response codes can be used to describe particular situations in the HTTP lifecycle like error scenarios.
+
+By defining the input and ouput data via dedicated request and response objects, it is not only possible to control which data is returned, but furthermore it allows to define higher level API abstractions on top of the entity model. Not every database entity should be accessible via APIs The decoupling allows to free yourself from changing your internal entity model without changing your API client.
+
+The generic API has some mechanisms in place to overcome those shortcomings. E.g. it is possible to define https://doc.cuba-platform.com/restapi-latest/#rest_api_v2_data_model_versioning[model-transformations] to have backwards compatibility when an entity attribute is changed, but those are limited in nature compared to controlling the input & output data in java classes. Also, the possibility to invoke CUBA services directly provides a way to decouple the entity model from the API to a certain degree.
+
+Developing a custom API is oftentimes time-consuming depending on the API surface. On the other side it is oftentimes required in case API compatability is a must have.
+
+CUBA together with Spring provides mechanisms to fulfil both ends of the spectrum. Depending on the use-case and requirement either a custom API or the usage of the generic API can be used. It is also possible to use both approaches hand-in-hand. E.g. the search capabilities can be used via the generic API, while the write operations are performed through custom API controllers.
+
+
+== Summary
+
+In this guide we have learned about the basics of the architectural style REST and its concrete application within HTTP. After going over the basics like Resources, Verbs as well as Requests and Responses. After that we shifted our focus to take a look on how to create HTTP endpoints in Spring.
+
+With that knowledge in place we started looking into the Petclinic example on how to connect the imaginary `PetTreat` application to it. In CUBA there are two main options when it comes to REST APIs: using standard functionality or providing custom REST APIs via Spring. For both variants we looked into the concrete implementation on how the different requirements of `PetTreat` would be solved.
+
+We finished the guide with a comparison of both approaches. As we have seen there are pros and cons both for the generic API and a custom API. CUBA provides the flexibility to you to mix and match the approaches to come up with the best solution to your circumstances.
 
 
 == Further Information
 
-* https://doc.cuba-platform.com/manual-latest/extension.html[CUBA docs: Functionality Extensions]
+* https://doc.cuba-platform.com/restapi-latest/[CUBA REST API documentation]
 * https://doc.cuba-platform.com/manual-latest/app_components.html[CUBA docs: Application components]
