@@ -6,19 +6,19 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>REST APIs for CUBA applications</title>
-    <meta name="description" content="In this guide you will learn how to create REST APIs for a CUBA application. We will explore mechanisms to create different types of APIs by adding Owner registration to the Petclinic as well as allow third-party applications to control the visit management.">
+    <meta name="description" content="In this guide you will learn how to create REST APIs for a CUBA application. We will explore mechanisms to create different types of APIs by  allowing third-party applications to control the visit management of the Petclinic.">
     <meta name="author" content="Haulmont">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@CubaPlatform">
     <meta name="twitter:creator" content="@CubaPlatform">
     <meta name="twitter:title" content="REST APIs for CUBA applications">
-    <meta name="twitter:description" content="In this guide you will learn how to create REST APIs for a CUBA application. We will explore mechanisms to create different types of APIs by adding Owner registration to the Petclinic as well as allow third-party applications to control the visit management.">
+    <meta name="twitter:description" content="In this guide you will learn how to create REST APIs for a CUBA application. We will explore mechanisms to create different types of APIs by  allowing third-party applications to control the visit management of the Petclinic.">
     <meta name="twitter:image" content="">
 
     <meta property="og:type" content="article">
     <meta property="og:title" content="REST APIs for CUBA applications">
-    <meta property="og:description" content="In this guide you will learn how to create REST APIs for a CUBA application. We will explore mechanisms to create different types of APIs by adding Owner registration to the Petclinic as well as allow third-party applications to control the visit management.">
+    <meta property="og:description" content="In this guide you will learn how to create REST APIs for a CUBA application. We will explore mechanisms to create different types of APIs by  allowing third-party applications to control the visit management of the Petclinic.">
     <meta property="og:url" content="https://www.cuba-platform.com/guides/rest-apis">
     <meta property="og:image" content="">
 
@@ -443,7 +443,7 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this guide you will learn how to create REST APIs for a CUBA application. We will explore mechanisms to create different types of APIs by adding Owner registration to the Petclinic as well as allow third-party applications to control the visit management.</p>
+<p>In this guide you will learn how to create REST APIs for a CUBA application. We will explore mechanisms to create different types of APIs by  allowing third-party applications to control the visit management of the Petclinic.</p>
 </div>
 </div>
 </div>
@@ -803,7 +803,7 @@ grant_type=password&amp;username={{username}}&amp;password={{password}}</code></
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-The text that is expressed in double curly braces like <code>{{username}}</code> are variables that should be replaced by the actual values. E.g. <code>username</code> and <code>password</code> need to be replaced by the actual username and password of the user to login.
+The parts in double curly braces like <code>{{username}}</code> are variables that should be replaced by the actual values. E.g. <code>username</code> and <code>password</code> need to be replaced by the actual username and password of the user to login.
 </td>
 </tr>
 </table>
@@ -845,95 +845,6 @@ The text that is expressed in double curly braces like <code>{{username}}</code>
 <div class="paragraph">
 <p>The next step is to go through the functional requirements for <code>PetTreat</code> and see how to perform those operations through an API.
 We will start off with the generic API approach directly available via the REST API addon.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="custom_api_operations"><a class="anchor" href="#custom_api_operations"></a><a class="link" href="#custom_api_operations">Custom API operations</a></h3>
-<div class="paragraph">
-<p>The first approach on how to create those APIs is to define custom REST controllers as shown above via Spring MVC. Lets go through the four scenarios and see how to tackle one-by-one.</p>
-</div>
-<div class="sect3">
-<h4 id="registering_custom_controllers_in_cuba"><a class="anchor" href="#registering_custom_controllers_in_cuba"></a><a class="link" href="#registering_custom_controllers_in_cuba">Registering custom Controllers in CUBA</a></h4>
-<div class="paragraph">
-<p>The first step is to not only create a Spring MVC controller, but also registering it to the CUBA application and to put it under the security umbrella, that we have seen above.</p>
-</div>
-<div class="paragraph">
-<p>For that we need to create a file called <code>rest-dispatcher-spring.xml</code> under <code>com/haulmont/sample/petclinic</code> package within the <code>web</code> module. It contains the configuration of the custom API:</p>
-</div>
-<div class="listingblock">
-<div class="title">rest-dispatcher-spring.xml</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;beans</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.springframework.org/schema/beans</span><span class="delimiter">&quot;</span></span>
-       <span class="attribute-name">xmlns:xsi</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema-instance</span><span class="delimiter">&quot;</span></span>
-       <span class="attribute-name">xmlns:context</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.springframework.org/schema/context</span><span class="delimiter">&quot;</span></span>
-      <span class="attribute-name">xmlns:security</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.springframework.org/schema/security</span><span class="delimiter">&quot;</span></span>
-       <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span>
-           <span class="content">http://www.springframework.org/schema/beans</span>
-           <span class="content">http://www.springframework.org/schema/beans/spring-beans-4.3.xsd</span>
-           <span class="content">http://www.springframework.org/schema/context</span>
-           <span class="content">http://www.springframework.org/schema/context/spring-context-4.3.xsd</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
-
-
-  <span class="tag">&lt;context:component-scan</span>
-    <span class="attribute-name">base-package</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.haulmont.sample.petclinic.web.controller</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="1"></i><b>(1)</b>
-  <span class="tag">/&gt;</span>
-
-  <span class="tag">&lt;security:http</span>
-    <span class="attribute-name">pattern</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">/rest/api/**</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="2"></i><b>(2)</b>
-    <span class="attribute-name">create-session</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">stateless</span><span class="delimiter">&quot;</span></span>
-    <span class="attribute-name">entry-point-ref</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">oauthAuthenticationEntryPoint</span><span class="delimiter">&quot;</span></span>
-    <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.springframework.org/schema/security</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
-    <span class="comment">&lt;!-- Specify one or more protected URL patterns--&gt;</span>
-    <span class="tag">&lt;intercept-url</span>
-        <span class="attribute-name">pattern</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">/rest/api/**</span><span class="delimiter">&quot;</span></span>
-        <span class="attribute-name">access</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">isAuthenticated()</span><span class="delimiter">&quot;</span></span>
-    <span class="tag">/&gt;</span>
-    <span class="tag">&lt;anonymous</span> <span class="attribute-name">enabled</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">false</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
-    <span class="tag">&lt;csrf</span> <span class="attribute-name">disabled</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
-    <span class="tag">&lt;cors</span> <span class="attribute-name">configuration-source-ref</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">cuba_RestCorsSource</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
-    <span class="tag">&lt;custom-filter</span> <span class="attribute-name">ref</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">resourceFilter</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">before</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">PRE_AUTH_FILTER</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
-    <span class="tag">&lt;custom-filter</span> <span class="attribute-name">ref</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">cuba_AnonymousAuthenticationFilter</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">after</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">PRE_AUTH_FILTER</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
-  <span class="tag">&lt;/security:http&gt;</span>
-
-<span class="tag">&lt;/beans&gt;</span></code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>activate automatic searches for <code>@Controller</code> annotated controllers in the <code>controller</code> sub-package</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>configure authentication for the route <code>/rest/api/**</code> and all controllers that are put under this prefix</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>After creating this file, it needs to be registered within the <code>web-app.properties</code> file like this:</p>
-</div>
-<div class="listingblock">
-<div class="title">web-app.properties</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="properties">cuba.restSpringContextConfig = +com/haulmont/sample/petclinic/rest-dispatcher-spring.xml</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>With this configuration in place, we are able to create our first controller inside the <code>controller</code> package.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="retrieving_pet_and_visit_information"><a class="anchor" href="#retrieving_pet_and_visit_information"></a><a class="link" href="#retrieving_pet_and_visit_information">Retrieving Pet and Visit information</a></h4>
-
-</div>
-<div class="sect3">
-<h4 id="creating_a_visit_for_a_pet"><a class="anchor" href="#creating_a_visit_for_a_pet"></a><a class="link" href="#creating_a_visit_for_a_pet">Creating a Visit for a Pet</a></h4>
-
-</div>
-<div class="sect3">
-<h4 id="starting_and_stopping_a_visit_treatment"><a class="anchor" href="#starting_and_stopping_a_visit_treatment"></a><a class="link" href="#starting_and_stopping_a_visit_treatment">Starting and Stopping a Visit Treatment</a></h4>
-
 </div>
 </div>
 <div class="sect2">
@@ -1130,7 +1041,7 @@ Content-Type: application/json;charset=UTF-8
 </div>
 </div>
 <div class="sect3">
-<h4 id="creating_a_visit_for_a_pet_2"><a class="anchor" href="#creating_a_visit_for_a_pet_2"></a><a class="link" href="#creating_a_visit_for_a_pet_2">Creating a Visit for a Pet</a></h4>
+<h4 id="creating_a_visit_for_a_pet"><a class="anchor" href="#creating_a_visit_for_a_pet"></a><a class="link" href="#creating_a_visit_for_a_pet">Creating a Visit for a Pet</a></h4>
 <div class="paragraph">
 <p>The next operation to create a visit can be performed through the generic Entities API as well.</p>
 </div>
@@ -1186,7 +1097,7 @@ Content-Type: application/json;charset=UTF-8
 </div>
 </div>
 <div class="sect3">
-<h4 id="starting_and_stopping_a_visit_treatment_2"><a class="anchor" href="#starting_and_stopping_a_visit_treatment_2"></a><a class="link" href="#starting_and_stopping_a_visit_treatment_2">Starting and Stopping a Visit Treatment</a></h4>
+<h4 id="starting_and_stopping_a_visit_treatment"><a class="anchor" href="#starting_and_stopping_a_visit_treatment"></a><a class="link" href="#starting_and_stopping_a_visit_treatment">Starting and Stopping a Visit Treatment</a></h4>
 <div class="paragraph">
 <p>The last API operation that <code>PetTreat</code> needs is the ability to start / finish a Visit treatment. In the entity model, this operation is expressed via a status field of the Visit entity called <code>treatmentStatus</code>. Therefore, it is possible to perform an update on the Visit entity respectively.</p>
 </div>
@@ -1225,19 +1136,376 @@ HTTP/1.1 200</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="pros_cons_of_using_generic_vs_custom_api"><a class="anchor" href="#pros_cons_of_using_generic_vs_custom_api"></a><a class="link" href="#pros_cons_of_using_generic_vs_custom_api">Pros &amp; Cons of using generic vs. custom API</a></h3>
+<h3 id="custom_api_operations"><a class="anchor" href="#custom_api_operations"></a><a class="link" href="#custom_api_operations">Custom API operations</a></h3>
 <div class="paragraph">
-<p>Custom API:
-* Ability to control HTTP interaction (custom Status Code, error responses etc.)
-* Decoupling between entity model and API model when using custom REST API
-* Non CRUD possibilities when using custom REST API</p>
+<p>After seing how to leverage the generic REST API of CUBA, lets look on how to create those APIs via custom REST controllers as shown in the beginning via Spring MVC. Let&#8217;s go through the four scenarios and see how to tackle one-by-one.</p>
+</div>
+<div class="sect3">
+<h4 id="registering_custom_controllers_in_cuba"><a class="anchor" href="#registering_custom_controllers_in_cuba"></a><a class="link" href="#registering_custom_controllers_in_cuba">Registering custom Controllers in CUBA</a></h4>
+<div class="paragraph">
+<p>The first step is to not only create a Spring MVC controller, but also registering it to the CUBA application and to put it under the security umbrella, that we have seen above.</p>
 </div>
 <div class="paragraph">
-<p>Generic API:
-* Speed of Development
-* additional functionality (search, views, queries, pagination, Swagger etc.)
-* Service Exposure for non-CRUD operations</p>
+<p>For that we need to create a file called <code>rest-dispatcher-spring.xml</code> under <code>com/haulmont/sample/petclinic</code> package within the <code>web</code> module. It contains the configuration of the custom API:</p>
 </div>
+<div class="listingblock">
+<div class="title">rest-dispatcher-spring.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;beans</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.springframework.org/schema/beans</span><span class="delimiter">&quot;</span></span>
+       <span class="attribute-name">xmlns:xsi</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema-instance</span><span class="delimiter">&quot;</span></span>
+       <span class="attribute-name">xmlns:context</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.springframework.org/schema/context</span><span class="delimiter">&quot;</span></span>
+      <span class="attribute-name">xmlns:security</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.springframework.org/schema/security</span><span class="delimiter">&quot;</span></span>
+       <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span>
+           <span class="content">http://www.springframework.org/schema/beans</span>
+           <span class="content">http://www.springframework.org/schema/beans/spring-beans-4.3.xsd</span>
+           <span class="content">http://www.springframework.org/schema/context</span>
+           <span class="content">http://www.springframework.org/schema/context/spring-context-4.3.xsd</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+
+
+  <span class="tag">&lt;context:component-scan</span>
+    <span class="attribute-name">base-package</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.haulmont.sample.petclinic.web.controller</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="1"></i><b>(1)</b>
+  <span class="tag">/&gt;</span>
+
+  <span class="tag">&lt;security:http</span>
+    <span class="attribute-name">pattern</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">/rest/api/**</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="attribute-name">create-session</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">stateless</span><span class="delimiter">&quot;</span></span>
+    <span class="attribute-name">entry-point-ref</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">oauthAuthenticationEntryPoint</span><span class="delimiter">&quot;</span></span>
+    <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.springframework.org/schema/security</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="comment">&lt;!-- Specify one or more protected URL patterns--&gt;</span>
+    <span class="tag">&lt;intercept-url</span>
+        <span class="attribute-name">pattern</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">/rest/api/**</span><span class="delimiter">&quot;</span></span>
+        <span class="attribute-name">access</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">isAuthenticated()</span><span class="delimiter">&quot;</span></span>
+    <span class="tag">/&gt;</span>
+    <span class="tag">&lt;anonymous</span> <span class="attribute-name">enabled</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">false</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;csrf</span> <span class="attribute-name">disabled</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;cors</span> <span class="attribute-name">configuration-source-ref</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">cuba_RestCorsSource</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;custom-filter</span> <span class="attribute-name">ref</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">resourceFilter</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">before</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">PRE_AUTH_FILTER</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;custom-filter</span> <span class="attribute-name">ref</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">cuba_AnonymousAuthenticationFilter</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">after</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">PRE_AUTH_FILTER</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+  <span class="tag">&lt;/security:http&gt;</span>
+
+<span class="tag">&lt;/beans&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>activate automatic searches for <code>@Controller</code> annotated controllers in the <code>controller</code> sub-package</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>configure authentication for the route <code>/rest/api/**</code> and all controllers that are put under this prefix</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>After creating this file, it needs to be registered within the <code>web-app.properties</code> file like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">web-app.properties</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="properties">cuba.restSpringContextConfig = +com/haulmont/sample/petclinic/rest-dispatcher-spring.xml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With this configuration in place, we are able to create our first controller inside the <code>controller</code> package.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="retrieving_pet_and_visit_information"><a class="anchor" href="#retrieving_pet_and_visit_information"></a><a class="link" href="#retrieving_pet_and_visit_information">Retrieving Pet and Visit information</a></h4>
+<div class="paragraph">
+<p>The first RESTful HTTP API that is requested by <code>PetTreat</code> is to load Pet and Visit Information for display purposes. For the <code>fetchPet</code> controller, we already have seen an example above. For the Visit fetching, the difference is that a dedicated response object is used:</p>
+</div>
+<div class="listingblock">
+<div class="title">VisitController.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@RestController</span>(VisitController.NAME)
+<span class="annotation">@RequestMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/api</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">VisitController</span> {
+
+    <span class="comment">// ...</span>
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> VisitService visitService;
+
+    <span class="annotation">@GetMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/visits/{visitId}</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">public</span> ResponseEntity&lt;FetchVisitApiResponse&gt; fetchVisit(
+        <span class="annotation">@PathVariable</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">visitId</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">UUID</span> visitId
+    ) {
+
+        <span class="directive">final</span> Optional&lt;Visit&gt; visit = Optional.ofNullable(
+            visitService.fetch(visitId)
+        ); <i class="conum" data-value="1"></i><b>(1)</b>
+
+        <span class="keyword">return</span> ResponseEntity.of(
+            FetchVisitApiResponse.of(visit) <i class="conum" data-value="2"></i><b>(2)</b>
+        );
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the Visit entity is loaded via a dedicated <code>VisitService</code>, that interacts with the database</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the Visit is transformed into <code>FetchVisitApiResponse</code> for exactly defining the API response</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Here are two interesting points to elaborate a little further. First is the fact, that the controller is very small in its functionality scope. Although it would be possible to perform the data fetching directly against the database and potentially also do data transformation, those responsibilities are put into different classes. It mostly is a good idea to keep the controller layer thin and only perform its the main responsibility: doing HTTP interactions and delegate business logic to other classes.</p>
+</div>
+<div class="paragraph">
+<p>The second thing to notice here is the dedicated <code>FetchVisitApiResponse</code> object. This class defines the JSON response that is transferred via HTTP to the client. It is mainly a data transfer object (DTO) the decouples the HTTP response from the entity model of the application.</p>
+</div>
+<div class="listingblock">
+<div class="title">FetchVisitApiResponse.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">FetchVisitApiResponse</span> {
+
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> id;
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> petIdentificationNumber;
+
+    <span class="annotation">@JsonFormat</span>(pattern = <span class="string"><span class="delimiter">&quot;</span><span class="content">dd/MM/yyyy</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="directive">private</span> <span class="directive">final</span> LocalDateTime visitStart;
+
+    <span class="annotation">@JsonFormat</span>(pattern = <span class="string"><span class="delimiter">&quot;</span><span class="content">dd/MM/yyyy</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">private</span> <span class="directive">final</span> LocalDateTime visitEnd;
+
+    <span class="directive">private</span> <span class="directive">final</span> ApiVisitType type; <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> description;
+
+    <span class="comment">// ...</span>
+
+    <span class="directive">public</span> <span class="directive">static</span> Optional&lt;FetchVisitApiResponse&gt; of(Optional&lt;Visit&gt; possibleVisit) {
+        <span class="keyword">return</span> possibleVisit.map(visit -&gt; <i class="conum" data-value="3"></i><b>(3)</b>
+            <span class="keyword">new</span> FetchVisitApiResponse(
+                visit.getId().toString(),
+                visit.getPet().getIdentificationNumber(),
+                visit.getVisitStart(),
+                visit.getVisitEnd(),
+                ApiVisitType.ofEntityType(visit.getType())
+                    .orElse(<span class="predefined-constant">null</span>),
+                visit.getDescription()
+            )
+        );
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">String</span> getPetIdentificationNumber() { <i class="conum" data-value="4"></i><b>(4)</b>
+        <span class="keyword">return</span> petIdentificationNumber;
+    }
+
+    <span class="directive">public</span> LocalDateTime getVisitStart() {
+        <span class="keyword">return</span> visitStart;
+    }
+
+    <span class="comment">// ...</span>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Jackson annotations are used to configure the JSON output for particular fields</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the fields might contain different types (like <code>ApiVisitType</code> instead of <code>VisitType</code>) compared to the entity layer</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>the <code>of</code> factory method maps the entity layer to the DTO layer and converts the attributes if needed</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>the getter methods define which attributes will be exposed via JSON</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The fundamental value proposition of this class is that you can exactly control what attributes are displayed via the API. Furthermore, due to the decoupling the JSON response from the entity model, it is possible to adjust the structure of the entity layer while still keeping the API contract intact. If you decide to rename an attribute in your database, it should not be required to let you API users also rename those fields in their integration source code.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="creating_a_visit_for_a_pet_2"><a class="anchor" href="#creating_a_visit_for_a_pet_2"></a><a class="link" href="#creating_a_visit_for_a_pet_2">Creating a Visit for a Pet</a></h4>
+<div class="paragraph">
+<p>The next operation is to create a visit for a Pet. This endpoint also is located in the <code>VisitController</code> as another endpoint:</p>
+</div>
+<div class="listingblock">
+<div class="title">VisitController.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VisitController</span> {
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> VisitService visitService;
+
+    <span class="annotation">@PostMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/visits</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">public</span> ResponseEntity&lt;CreateVisitApiResponse&gt; createUpcomingVisit(
+        <span class="annotation">@RequestBody</span> <span class="annotation">@Valid</span> CreateVisitApiRequest createVisitApiRequest <i class="conum" data-value="1"></i><b>(1)</b>
+    ) {
+
+        <span class="directive">final</span> Visit visit = visitService.create(
+            createVisitApiRequest.toVisitCreation() <i class="conum" data-value="2"></i><b>(2)</b>
+        );
+
+        <span class="keyword">return</span> ResponseEntity.ok(
+            CreateVisitApiResponse.of(visit) <i class="conum" data-value="3"></i><b>(3)</b>
+        );
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the <code>CreateVisitApiRequest</code> parameter is parsed from the JSON body of the request</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the <code>VisitService</code> receives a <code>VisitCreation</code> object and does not directly depends on the request object</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>after the visit has been created, a <code>CreateVisitApiResponse</code> object is returned to the client</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In this example it is once again showing the application of the decoupling of the inner workings of the Petclinic with the outside world. The dedicated API objects <code>CreateVisitApiRequest</code> and <code>CreateVisitApiResponse</code> represent the contract with the API client. Those classes are only used in the controller layer. Internally when interacting with the <code>VisitService</code> the request object is converted to another DTO called <code>VisitCreation</code>, that is located in the global module of CUBA. This enforces proper layering between the REST API and the internal service layer.</p>
+</div>
+<div class="paragraph">
+<p>The <code>@Valid</code> annotation on the request parameter indicates to Spring, that the request object needs to be validated via bean validation. In case the JSON request contains invalid data, Spring will return a proper error response with an error message of the bean validation result.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="starting_and_stopping_a_visit_treatment_2"><a class="anchor" href="#starting_and_stopping_a_visit_treatment_2"></a><a class="link" href="#starting_and_stopping_a_visit_treatment_2">Starting and Stopping a Visit Treatment</a></h4>
+<div class="paragraph">
+<p>The last business requirement is to be able to start and finish Visit treatments via <code>PetTreat</code>. The API is similar to the create visit API, but it shows one interesting difference: API as an abstraction. Up until now the API more or less mirrored the domain model of the Petclinic. Oftentimes this is enough, but sometimes it is possible to use the API layer as a way to simplify the internal domain model or hide certain details.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s look at the controller first, so that you get an idea on what kind of abstraction we are talking about:</p>
+</div>
+<div class="listingblock">
+<div class="title">TreatmentController.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@RestController</span>(TreatmentController.NAME)
+<span class="annotation">@RequestMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/api</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">TreatmentController</span> {
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">String</span> NAME = <span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_TreatmentController</span><span class="delimiter">&quot;</span></span>;
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> TreatmentService treatmentService;
+
+    <span class="annotation">@PostMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/treatments/{visitId}</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">public</span> ResponseEntity&lt;<span class="predefined-type">Void</span>&gt; startTreatment(
+        <span class="annotation">@PathVariable</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">visitId</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">UUID</span> visitId
+    ) {
+        treatmentService.start(visitId);
+        <span class="keyword">return</span> noContent();
+    }
+
+    <span class="annotation">@PatchMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/treatments/{visitId}</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">public</span> ResponseEntity&lt;<span class="predefined-type">Void</span>&gt; finishTreatment(
+        <span class="annotation">@PathVariable</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">visitId</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">UUID</span> visitId,
+        <span class="annotation">@RequestBody</span> <span class="annotation">@Valid</span> FinishTreatmentApiRequest request
+    ) {
+
+        <span class="keyword">if</span> (request.isCancelled()) {
+            treatmentService.cancel(visitId);
+        }
+        <span class="keyword">else</span> {
+            treatmentService.finish(visitId);
+        }
+
+        <span class="keyword">return</span> noContent();
+    }
+
+    <span class="directive">private</span> ResponseEntity&lt;<span class="predefined-type">Void</span>&gt; noContent() {
+        <span class="keyword">return</span> ResponseEntity.noContent().build();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The controller provides two endpoints: "Start Treatment": <code>POST /treatments/{visitId}</code> and "Finish Treatment": <code>PATCH  /treatments/{visitId}</code>. It is possible to have the same URL but provide different HTTP operations on it. Here, the reason is that for both are actually effecting the same treatment / visit resource.</p>
+</div>
+<div class="paragraph">
+<p>Internally the API performs changes on the <code>Visit</code> entity. In particular the <code>visitStatus</code> attribute is effected. Still, on the API the model and concept to interact with are <code>Treatments</code>. Here is an example of the HTTP request to finish a treatment:</p>
+</div>
+<div class="listingblock">
+<div class="title">Finish Treatment Request</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="http">PATCH http://localhost:8080/petclinic/rest/api/treatments/{{visitId}}
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  &quot;outcome&quot;: &quot;DONE&quot;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this case the API provides a higher level abstraction over CRUD operations on the domain model of the Visit. The <code>FinishTreatmentApiRequest</code> contains an attribute <code>outcome</code> which determines the outcome of the treatment: <code>DONE</code> or <code>CANCELLED</code>. This enum is not directly used by any entity, but rather it is only an API abstraction to control the different actions within the controller on what business operation to perform.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="pros_cons_of_different_approaches"><a class="anchor" href="#pros_cons_of_different_approaches"></a><a class="link" href="#pros_cons_of_different_approaches">Pros &amp; Cons of different approaches</a></h3>
+<div class="paragraph">
+<p>With closing off those examples, we finished the complete Petclinic example or the REST API. With those two different approaches in mind, let&#8217;s look into the pros and cons of the different approaches.</p>
+</div>
+<div class="sect3">
+<h4 id="generic_api"><a class="anchor" href="#generic_api"></a><a class="link" href="#generic_api">Generic API</a></h4>
+<div class="paragraph">
+<p>The generic REST API provided by CUBA is a huge time saver. It comes out of the box with complete CRUD operations on entities. Furthermore, it implements some other extended functionality like file upload, Swagger API documentation or translation endpoints for entity attributes.</p>
+</div>
+<div class="paragraph">
+<p>The functionality of loading entites in various ways with proper pagination, search capabilities and a mechanism to define queries in the request give huge flexibility for the client of the API without touching the server side are highly beneficial. Through referencing different views, it is also possible within the client to control the amount of data that are returned. In the example we saw above where the search operation was invoked with the view <code>pet-with-owner-and-type</code> not only the pet, but also the reference to the owner and its type are returned in the JSON.</p>
+</div>
+<div class="paragraph">
+<p>With the built-in security mechanism it is possible to transparently on the server side control what data the API client is able to retrieve, just as it is possible in the UI.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="custom_api"><a class="anchor" href="#custom_api"></a><a class="link" href="#custom_api">Custom API</a></h4>
+<div class="paragraph">
+<p>The custom Petclinic API is leveraging Spring MVCs mechanisms to control the HTTP interaction in very precise way. It is possible to define the input data as well as the output data. HTTP response codes can be used to describe particular situations in the HTTP lifecycle like error scenarios.</p>
+</div>
+<div class="paragraph">
+<p>By defining the input and ouput data via dedicated request and response objects, it is not only possible to control which data is returned, but furthermore it allows to define higher level API abstractions on top of the entity model. Not every database entity should be accessible via APIs The decoupling allows to free yourself from changing your internal entity model without changing your API client.</p>
+</div>
+<div class="paragraph">
+<p>The generic API has some mechanisms in place to overcome those shortcomings. E.g. it is possible to define <a href="https://doc.cuba-platform.com/restapi-latest/#rest_api_v2_data_model_versioning">model-transformations</a> to have backwards compatibility when an entity attribute is changed, but those are limited in nature compared to controlling the input &amp; output data in java classes. Also, the possibility to invoke CUBA services directly provides a way to decouple the entity model from the API to a certain degree.</p>
+</div>
+<div class="paragraph">
+<p>Developing a custom API is oftentimes time-consuming depending on the API surface. On the other side it is oftentimes required in case API compatability is a must have.</p>
+</div>
+<div class="paragraph">
+<p>CUBA together with Spring provides mechanisms to fulfil both ends of the spectrum. Depending on the use-case and requirement either a custom API or the usage of the generic API can be used. It is also possible to use both approaches hand-in-hand. E.g. the search capabilities can be used via the generic API, while the write operations are performed through custom API controllers.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this guide we have learned about the basics of the architectural style REST and its concrete application within HTTP. After going over the basics like Resources, Verbs as well as Requests and Responses. After that we shifted our focus to take a look on how to create HTTP endpoints in Spring.</p>
+</div>
+<div class="paragraph">
+<p>With that knowledge in place we started looking into the Petclinic example on how to connect the imaginary <code>PetTreat</code> application to it. In CUBA there are two main options when it comes to REST APIs: using standard functionality or providing custom REST APIs via Spring. For both variants we looked into the concrete implementation on how the different requirements of <code>PetTreat</code> would be solved.</p>
+</div>
+<div class="paragraph">
+<p>We finished the guide with a comparison of both approaches. As we have seen there are pros and cons both for the generic API and a custom API. CUBA provides the flexibility to you to mix and match the approaches to come up with the best solution to your circumstances.</p>
 </div>
 </div>
 </div>
@@ -1247,7 +1515,7 @@ HTTP/1.1 200</code></pre>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://doc.cuba-platform.com/manual-latest/extension.html">CUBA docs: Functionality Extensions</a></p>
+<p><a href="https://doc.cuba-platform.com/restapi-latest/">CUBA REST API documentation</a></p>
 </li>
 <li>
 <p><a href="https://doc.cuba-platform.com/manual-latest/app_components.html">CUBA docs: Application components</a></p>
@@ -1288,11 +1556,12 @@ HTTP/1.1 200</code></pre>
 <li><a href="#rest_api_for_petclinic">REST API for Petclinic</a>
 <ul class="sectlevel2">
 <li><a href="#cuba_oauth2_api_authentication">CUBA OAuth2 API Authentication</a></li>
-<li><a href="#custom_api_operations">Custom API operations</a></li>
 <li><a href="#rest_addon_for_generic_api">REST addon for generic API</a></li>
-<li><a href="#pros_cons_of_using_generic_vs_custom_api">Pros &amp; Cons of using generic vs. custom API</a></li>
+<li><a href="#custom_api_operations">Custom API operations</a></li>
+<li><a href="#pros_cons_of_different_approaches">Pros &amp; Cons of different approaches</a></li>
 </ul>
 </li>
+<li><a href="#summary">Summary</a></li>
 <li><a href="#further_information">Further Information</a></li>
 </ul>
                         </div>
