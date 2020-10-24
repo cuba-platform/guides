@@ -451,7 +451,7 @@
 <h2 id="what_we_are_going_to_build"><a class="anchor" href="#what_we_are_going_to_build"></a><a class="link" href="#what_we_are_going_to_build">What we are going to build</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a> example so that Owners can self-register online before the Visit. In the second example we will allow a third party tablet application to do the visit management via a custom secured REST API.</p>
+<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a> example so that we will allow a third party tablet application to do the visit management via a secured REST API. It should be possible to retrieve information about Pets and Visits. Also starting and finishing a treatment are operations that should be exposed through the API.</p>
 </div>
 <div class="sect2">
 <h3 id="requirements"><a class="anchor" href="#requirements"></a><a class="link" href="#requirements">Requirements</a></h3>
@@ -469,10 +469,10 @@
 </ul>
 </div>
 <div class="paragraph">
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-rest-apis/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-rest-api/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
 </div>
 <div class="paragraph">
-<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-rest-apis.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-rest-apis.git</a></code></p>
+<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-rest-api.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-rest-api.git</a></code></p>
 </div>
 </div>
 </div>
@@ -488,7 +488,7 @@
 </div>
 <div class="paragraph">
 <p>In this guide we will focus on creating multiple REST based HTTP APIs in order to allow other applications interact with the CUBA Petclinic.
-During the examples we will work with both the generic API and custom HTTP endpoints based on the use-case at hand.</p>
+During the examples we will work with both the generic API and custom HTTP endpoints in order to see the differences between the approaches.</p>
 </div>
 </div>
 </div>
@@ -496,7 +496,7 @@ During the examples we will work with both the generic API and custom HTTP endpo
 <h2 id="what_is_a_rest_api"><a class="anchor" href="#what_is_a_rest_api"></a><a class="link" href="#what_is_a_rest_api">What is a REST API</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Before exploring the details of the CUBA implementation of proving an API, let&#8217;s quickly talk about what a REST API looks like and what the concepts behind it are.</p>
+<p>Before exploring the details of the CUBA implementation for proving an API, let&#8217;s quickly talk about what a REST API looks like and what are the concepts behind it.</p>
 </div>
 <div class="paragraph">
 <p>A REST API is an HTTP based API (HTTP being the protocol, that is the underpinning of a big part of the Internet) with some specific usage of it. REST in particular has a couple of building blocks, that we will use throughout this guide.</p>
@@ -528,7 +528,7 @@ The menu that the restaurant offers is the API. Once you order a piece from the 
 <div class="sect2">
 <h3 id="resource_verbs"><a class="anchor" href="#resource_verbs"></a><a class="link" href="#resource_verbs">Resource Verbs</a></h3>
 <div class="paragraph">
-<p>Verbs on Resources represent the "operations" that you can perform on a particular resource. In REST those Verbs should form a uniform interface (abstract definition). In the concrete in HTTP there are a couple of Verbs, that can be used in order to interact with a resource:</p>
+<p>Verbs on Resources represent the "operations" that you can perform on a particular resource. In REST those Verbs should form a uniform interface, meaning that the protocol provides a limited set of standard operations. In HTTP there are a couple of Verbs that can be used in order to interact with a resource:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -563,7 +563,7 @@ is oftentimes up to the provider of the API.</p>
 <h2 id="requests_and_responses"><a class="anchor" href="#requests_and_responses"></a><a class="link" href="#requests_and_responses">Requests and Responses</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Requests and responses conceptually are not described by REST, but they are a very integral part of an HTTP based API. Requests and responses are the actual interactions that happen between the client and the server of an HTTP interaction. A request is the initial message from the client to the server. The response on the other hand is the resulting message from the server to the client. Both interactions normally contain two parts: the message payload and the message metadata.</p>
+<p>Requests and responses conceptually are not described by REST, but they are a very integral part of an HTTP based API. Requests and responses are the actual interactions that happen between the client and the server of an HTTP interaction. A request is the initial message from the client to the server. The response on the other hand is the resulting message from the server back to the client. Both interactions normally contain two parts: the message payload and the message metadata.</p>
 </div>
 <div class="paragraph">
 <p>Here is an example of how an HTTP request &amp; response interaction looks like:</p>
@@ -630,7 +630,7 @@ Content-Type: application/json
 <p>The message payload of an API interaction oftentimes uses the JSON format, as seen above. That being said, it is possible to exchange different message formats through HTTP as well, like <code>XML</code>, or <code>www-url-formencoded</code>. Also, binary formats are possible (to transfer PDF documents / images).</p>
 </div>
 <div class="paragraph">
-<p>With this general information, we can now point our focus on how to convert those abstract descriptions into real working APIs in a CUBA application.</p>
+<p>With this general information, we can now shift our focus on how to convert those abstract descriptions into real working APIs in a CUBA application.</p>
 </div>
 </div>
 </div>
@@ -641,7 +641,7 @@ Content-Type: application/json
 <p>In the next section, we will take a look into the concrete usage of the HTTP inside a CUBA application. CUBA is based on Spring, which offers dedicated support for providing HTTP APIs. In particular Spring MVC is responsible for offering that functionality.</p>
 </div>
 <div class="paragraph">
-<p>In order to create a HTTP endpoint it is necessary to create a Java class and annotate it with <code>@RestController</code>. In order to fulfil the implementation of the API operation <code>GET <a href="https://petclinic.cuba-platform.com/pets/123" class="bare">https://petclinic.cuba-platform.com/pets/123</a></code>, a method needs to be annotated with <code>@GetMapping</code> in order to connect it to a particular endpoint.</p>
+<p>In order to create a HTTP endpoint it is necessary to create a Java class and annotate it with <code>@RestController</code>. In order to fulfil the implementation of the API operation <code>GET <a href="https://petclinic.cuba-platform.com/pets/123" class="bare">https://petclinic.cuba-platform.com/pets/123</a></code>, a method needs to be annotated with <code>@GetMapping</code>. This connects the method to a particular endpoint.</p>
 </div>
 <div class="paragraph">
 <p>Here you find an example of such a REST Controller in Spring MVC:</p>
@@ -704,7 +704,7 @@ Content-Type: application/json
 <p>One part of the HTTP message metadata is the response code. Those codes are used to indicate the client different outcomes of the operation. The response code <code>200 - OK</code> is indicating a successful operation, whereas <code>404 - Not Found</code> tells the client that the resource that was requested is not available. There are several response codes that can be used to very precisely describe the outcome of an operation.</p>
 </div>
 <div class="paragraph">
-<p>The <code>ResponseEntity</code> is responsible for controlling what HTTP response is returned to the client. It on the one hand describes the metadata like the response code, but is also used to define the response body. In the example above a Pet object is treated as the response body. Spring MVC takes care of converting the Pet object into a JSON format and returns it to the HTTP client.</p>
+<p>The <code>ResponseEntity</code> is responsible for controlling what HTTP response is returned to the client. But it is also used to define the response body. In the example above a Pet object is treated as the response body. Spring MVC takes care of converting the Pet object into a JSON format and returns it to the HTTP client.</p>
 </div>
 </div>
 </div>
@@ -715,10 +715,10 @@ Content-Type: application/json
 <p>In this section we will look into the CUBA Petclinic application and how we can create REST APIs for it in order to let other applications interact with the Petclinic.</p>
 </div>
 <div class="paragraph">
-<p>For most of the examples we will leverage the <a href="https://www.cuba-platform.com/marketplace/rest-api/">CUBA REST API addon</a>. In the Petclinic example it is already included. If you use the example as a starting point for your own implementation, make sure you add the addon to your application via the CUBA Marketplace.</p>
+<p>For most of the examples we will leverage the <a href="https://www.cuba-platform.com/marketplace/rest-api/">CUBA REST API addon</a>. In the example project it is already included. If you use the example as a starting point for your own implementation, make sure you add the addon to your application via the CUBA Marketplace.</p>
 </div>
 <div class="paragraph">
-<p>All example requests for testing out the solution can be found in the <a href="https://github.com/cuba-guides/cuba-petclinic-rest-apis/blob/master/requests">requests</a> directory in the example project. This directory contains multiple example requests to see the interaction with the API.</p>
+<p>All example requests for testing out the solution can be found in the <a href="https://github.com/cuba-guides/cuba-petclinic-rest-api/blob/master/requests">requests</a> directory in the example project. This directory contains multiple example requests to see the interaction with the API.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -760,7 +760,7 @@ When using CUBA Studio together with <a href="https://www.jetbrains.com/idea/">I
 </ul>
 </div>
 <div class="paragraph">
-<p>As these kinds of information and operations are very sensitive, it is required to only allow the corresponding Vets and Nurses to interact with the <code>CUBA Petclinic</code> system through <code>PetTreat</code>. As the information should be available immediately for all other employees at the Petclinic after it was entered in PetTreat, an API in the Petclinic will be used for the interactions between <code>PetTreat</code> and CUBA Petclinic.</p>
+<p>As these kinds of information and operations are very sensitive, it is required to only allow the corresponding Vets and Nurses to interact with the <code>CUBA Petclinic</code> system through <code>PetTreat</code>. As the information should be available immediately for all other employees at the Petclinic after it was entered in PetTreat, an API in the CUBA Petclinic will be used for the interactions between the two applications.</p>
 </div>
 <div class="paragraph">
 <p>CUBA offers solutions for those requirements through the above mentioned Spring MVC APIs as well through the generic REST API addon. In this example we will look into both solutions and compare the implementation of them.</p>
@@ -776,10 +776,10 @@ When using CUBA Studio together with <a href="https://www.jetbrains.com/idea/">I
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>the client makes a request providing the login credentials (username and password) in order to retrieve access token</p>
+<p>the client makes a request providing the login credentials (username and password) in order to retrieve an <code>access token</code></p>
 </li>
 <li>
-<p>the access token is send as a short living credential, that is send with every request as a HTTP header to authenticate further requests</p>
+<p>the <code>access token</code> is a short living credential, that is send with every request as a HTTP header to authenticate further requests</p>
 </li>
 </ol>
 </div>
@@ -859,7 +859,7 @@ We will start off with the generic API approach directly available via the REST 
 <p>With the help of the addon, the CUBA application provides an API for performing CRUD operations for all entities out of the box. There is no need to write code on the server side to expose the entity data as an API. Also, for similar operations like creating or updating an entity the generic API will provide this capability.</p>
 </div>
 <div class="paragraph">
-<p>It is also possible to expose CUBA services directly via this generic API only by registering the business service in a configuration file <code>rest-services.xml</code>.</p>
+<p>It is also possible to expose CUBA services directly via this generic API only by registering the business service in a configuration file called <code>rest-services.xml</code>.</p>
 </div>
 <div class="sect3">
 <h4 id="retrieving_visit_information"><a class="anchor" href="#retrieving_visit_information"></a><a class="link" href="#retrieving_visit_information">Retrieving Visit information</a></h4>
@@ -867,7 +867,7 @@ We will start off with the generic API approach directly available via the REST 
 <p>For retrieving the Visit Information through the generic API, the following HTTP GET request can be performed:</p>
 </div>
 <div class="listingblock">
-<div class="title">Retrieve Pet Information</div>
+<div class="title">Retrieve Visit Information</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="http">GET http://localhost:8080/app/rest/v2/entities/petclinic_Visit <i class="conum" data-value="1"></i><b>(1)</b>
 Authorization: Bearer {{auth_token}} <i class="conum" data-value="2"></i><b>(2)</b>
@@ -955,7 +955,7 @@ Content-Type: application/json;charset=UTF-8
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>the response contains a list of all Visits</td>
+<td>the response contains a list of all Visits with its corresponding data</td>
 </tr>
 </table>
 </div>
@@ -1034,19 +1034,13 @@ Content-Type: application/json;charset=UTF-8
 </table>
 </div>
 <div class="paragraph">
-<p>With this very flexible API it is possible to perform all kinds of queries against the list of entities. More information can be found in the <a href="https://doc.cuba-platform.com/restapi-latest/#rest_api_v2_ex_search_filter">docs</a>.</p>
-</div>
-<div class="paragraph">
-<p>With those two endpoints, the API fulfils the requirements to view &amp; search all kinds of Visit and Pet data in the <code>PetTreat</code> application.</p>
+<p>With this very flexible API it is possible to perform all kinds of queries against the list of entities. More information can be found in the <a href="https://doc.cuba-platform.com/restapi-latest/#rest_api_v2_ex_search_filter">docs</a>. With those two endpoints, the API fulfils the requirements to view &amp; search all kinds of Visit and Pet data in the <code>PetTreat</code> application.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="creating_a_visit_for_a_pet"><a class="anchor" href="#creating_a_visit_for_a_pet"></a><a class="link" href="#creating_a_visit_for_a_pet">Creating a Visit for a Pet</a></h4>
 <div class="paragraph">
-<p>The next operation to create a visit can be performed through the generic Entities API as well.</p>
-</div>
-<div class="paragraph">
-<p>For creating a Visit the following HTTP POST request needs to be performed:</p>
+<p>The next operation to create a visit can be performed through the generic Entities API as well. For creating a Visit the following HTTP POST request needs to be performed:</p>
 </div>
 <div class="listingblock">
 <div class="title">Create a Visit</div>
@@ -1079,11 +1073,11 @@ Content-Type: application/json;charset=UTF-8
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>the Visit information are send as the HTTP body</td>
+<td>the Visit information are send as the request body</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>links to other entities like the `Pet`are created by ID references</td>
+<td>links to other entities like the <code>Pet</code> are created by ID references</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -1094,6 +1088,9 @@ Content-Type: application/json;charset=UTF-8
 <td>the result contains an ID of the newly created Visit</td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>When using Bean Validation in the entities, the constraints are checked against the request. In case there invalid data is send, the Visit will not be created and the client retrieve an error message with information on what went wrong.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1131,22 +1128,19 @@ HTTP/1.1 200</code></pre>
 </table>
 </div>
 <div class="paragraph">
-<p>Finishing a treatment can be done with the same HTTP request, but instead of sending <code>IN_PROGRESS</code>, <code>DONE</code> is send for the <code>treatmentStatus</code> field.</p>
+<p>Finishing a treatment can be done with the same HTTP request, but instead of sending <code>IN_PROGRESS</code> you have to send <code>DONE</code> in the field value.</p>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="custom_api_operations"><a class="anchor" href="#custom_api_operations"></a><a class="link" href="#custom_api_operations">Custom API operations</a></h3>
 <div class="paragraph">
-<p>After seing how to leverage the generic REST API of CUBA, lets look on how to create those APIs via custom REST controllers as shown in the beginning via Spring MVC. Let&#8217;s go through the four scenarios and see how to tackle one-by-one.</p>
+<p>After seing how to leverage the generic REST API of CUBA, lets look on how to create those APIs via custom REST controllers as shown in the beginning via Spring MVC. Let&#8217;s go through the four scenarios and see how to tackle them one-by-one.</p>
 </div>
 <div class="sect3">
 <h4 id="registering_custom_controllers_in_cuba"><a class="anchor" href="#registering_custom_controllers_in_cuba"></a><a class="link" href="#registering_custom_controllers_in_cuba">Registering custom Controllers in CUBA</a></h4>
 <div class="paragraph">
-<p>The first step is to not only create a Spring MVC controller, but also registering it to the CUBA application and to put it under the security umbrella, that we have seen above.</p>
-</div>
-<div class="paragraph">
-<p>For that we need to create a file called <code>rest-dispatcher-spring.xml</code> under <code>com/haulmont/sample/petclinic</code> package within the <code>web</code> module. It contains the configuration of the custom API:</p>
+<p>The first step is to create a Spring MVC controller class and registering it to the CUBA application. For registration we need to create a file called <code>rest-dispatcher-spring.xml</code> under <code>com/haulmont/sample/petclinic</code> package within the <code>web</code> module. It contains the configuration of the custom API:</p>
 </div>
 <div class="listingblock">
 <div class="title">rest-dispatcher-spring.xml</div>
@@ -1190,7 +1184,7 @@ HTTP/1.1 200</code></pre>
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>activate automatic searches for <code>@Controller</code> annotated controllers in the <code>controller</code> sub-package</td>
+<td>activate automatic searches for <code>@Controller</code> annotated classes in the <code>controller</code> sub-package</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -1199,7 +1193,7 @@ HTTP/1.1 200</code></pre>
 </table>
 </div>
 <div class="paragraph">
-<p>After creating this file, it needs to be registered within the <code>web-app.properties</code> file like this:</p>
+<p>After creating this file, it needs to be registered within the <code>web-app.properties</code> like this:</p>
 </div>
 <div class="listingblock">
 <div class="title">web-app.properties</div>
@@ -1214,7 +1208,7 @@ HTTP/1.1 200</code></pre>
 <div class="sect3">
 <h4 id="retrieving_pet_and_visit_information"><a class="anchor" href="#retrieving_pet_and_visit_information"></a><a class="link" href="#retrieving_pet_and_visit_information">Retrieving Pet and Visit information</a></h4>
 <div class="paragraph">
-<p>The first RESTful HTTP API that is requested by <code>PetTreat</code> is to load Pet and Visit Information for display purposes. For the <code>fetchPet</code> controller, we already have seen an example above. For the Visit fetching, the difference is that a dedicated response object is used:</p>
+<p>The first custom API that is requested by <code>PetTreat</code> is to load Pet and Visit Information for display purposes. For the <code>fetchPet</code> controller, we already have seen an example above. For the Visit fetching, the difference is that a dedicated response object is used:</p>
 </div>
 <div class="listingblock">
 <div class="title">VisitController.java</div>
@@ -1249,16 +1243,16 @@ HTTP/1.1 200</code></pre>
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>the Visit entity is loaded via a dedicated <code>VisitService</code>, that interacts with the database</td>
+<td>the Visit entity is loaded via the <code>VisitService</code> that loads the Visit from the database</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>the Visit is transformed into <code>FetchVisitApiResponse</code> for exactly defining the API response</td>
+<td>the Visit is transformed into a <code>FetchVisitApiResponse</code> object, that is send as the response body</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>Here are two interesting points to elaborate a little further. First is the fact, that the controller is very small in its functionality scope. Although it would be possible to perform the data fetching directly against the database and potentially also do data transformation, those responsibilities are put into different classes. It mostly is a good idea to keep the controller layer thin and only perform its the main responsibility: doing HTTP interactions and delegate business logic to other classes.</p>
+<p>Here are two interesting points to elaborate a little further. First is the fact, that the controller is very small in its functionality scope. Although it would be possible to perform the data fetching directly against the database and potentially also do data transformation, those responsibilities are put into different classes. Its mostly a good idea to keep the controller layer thin and only let it perform its the main responsibility: doing HTTP interactions. The actual business logic is delegated to other classes.</p>
 </div>
 <div class="paragraph">
 <p>The second thing to notice here is the dedicated <code>FetchVisitApiResponse</code> object. This class defines the JSON response that is transferred via HTTP to the client. It is mainly a data transfer object (DTO) the decouples the HTTP response from the entity model of the application.</p>
@@ -1335,7 +1329,7 @@ HTTP/1.1 200</code></pre>
 <div class="sect3">
 <h4 id="creating_a_visit_for_a_pet_2"><a class="anchor" href="#creating_a_visit_for_a_pet_2"></a><a class="link" href="#creating_a_visit_for_a_pet_2">Creating a Visit for a Pet</a></h4>
 <div class="paragraph">
-<p>The next operation is to create a visit for a Pet. This endpoint also is located in the <code>VisitController</code> as another endpoint:</p>
+<p>The next operation is to create a visit for a Pet. This endpoint also is located in the <code>VisitController</code> as another method:</p>
 </div>
 <div class="listingblock">
 <div class="title">VisitController.java</div>
@@ -1378,16 +1372,16 @@ HTTP/1.1 200</code></pre>
 </table>
 </div>
 <div class="paragraph">
-<p>In this example it is once again showing the application of the decoupling of the inner workings of the Petclinic with the outside world. The dedicated API objects <code>CreateVisitApiRequest</code> and <code>CreateVisitApiResponse</code> represent the contract with the API client. Those classes are only used in the controller layer. Internally when interacting with the <code>VisitService</code> the request object is converted to another DTO called <code>VisitCreation</code>, that is located in the global module of CUBA. This enforces proper layering between the REST API and the internal service layer.</p>
+<p>In this example we have decoupled the inner workings of the Petclinic with the outside world. The dedicated API objects <code>CreateVisitApiRequest</code> and <code>CreateVisitApiResponse</code> represent the contract with the API client. Those classes are only used in the controller layer. Internally when interacting with the <code>VisitService</code> the request object is converted to another DTO called <code>VisitCreation</code>. This class is located in the global module of CUBA. This enforces proper layering between the REST API and the internal service layer.</p>
 </div>
 <div class="paragraph">
-<p>The <code>@Valid</code> annotation on the request parameter indicates to Spring, that the request object needs to be validated via bean validation. In case the JSON request contains invalid data, Spring will return a proper error response with an error message of the bean validation result.</p>
+<p>The <code>@Valid</code> annotation on the request parameter indicates to Spring, that the request object needs to be validated via bean validation. In case the JSON request contains invalid data, Spring will return a proper error response with a message of the bean validation results.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="starting_and_stopping_a_visit_treatment_2"><a class="anchor" href="#starting_and_stopping_a_visit_treatment_2"></a><a class="link" href="#starting_and_stopping_a_visit_treatment_2">Starting and Stopping a Visit Treatment</a></h4>
 <div class="paragraph">
-<p>The last business requirement is to be able to start and finish Visit treatments via <code>PetTreat</code>. The API is similar to the create visit API, but it shows one interesting difference: API as an abstraction. Up until now the API more or less mirrored the domain model of the Petclinic. Oftentimes this is enough, but sometimes it is possible to use the API layer as a way to simplify the internal domain model or hide certain details.</p>
+<p>The last business requirement is to be able to start and finish Visit treatments via <code>PetTreat</code>. The API is similar to the create visit API, but it shows one interesting difference: <em>API as a way to created additional abstractions</em>. Up until now the API more or less mirrored the domain model of the Petclinic. Oftentimes this is enough, but sometimes it is possible to use the API layer as a way to simplify the internal domain model or hide certain details.</p>
 </div>
 <div class="paragraph">
 <p>Let&#8217;s look at the controller first, so that you get an idea on what kind of abstraction we are talking about:</p>
@@ -1438,7 +1432,10 @@ HTTP/1.1 200</code></pre>
 <p>The controller provides two endpoints: "Start Treatment": <code>POST /treatments/{visitId}</code> and "Finish Treatment": <code>PATCH  /treatments/{visitId}</code>. It is possible to have the same URL but provide different HTTP operations on it. Here, the reason is that for both are actually effecting the same treatment / visit resource.</p>
 </div>
 <div class="paragraph">
-<p>Internally the API performs changes on the <code>Visit</code> entity. In particular the <code>visitStatus</code> attribute is effected. Still, on the API the model and concept to interact with are <code>Treatments</code>. Here is an example of the HTTP request to finish a treatment:</p>
+<p>Internally the API performs changes on the <code>Visit</code> entity. In particular the <code>treatmentStatus</code> attribute is effected. If you look back to how it is solved by using the generic API, you see that we updated this field directly.</p>
+</div>
+<div class="paragraph">
+<p>In this custom implementation on the API level we are not talking about <code>Visits</code>. Instead by the endponit and request &amp; response objects we are mainly creating the concept of a <code>Treatment</code>. Here is an example of the HTTP request to finish a treatment:</p>
 </div>
 <div class="listingblock">
 <div class="title">Finish Treatment Request</div>
@@ -1460,7 +1457,7 @@ Content-Type: application/json
 <div class="sect2">
 <h3 id="pros_cons_of_different_approaches"><a class="anchor" href="#pros_cons_of_different_approaches"></a><a class="link" href="#pros_cons_of_different_approaches">Pros &amp; Cons of different approaches</a></h3>
 <div class="paragraph">
-<p>With closing off those examples, we finished the complete Petclinic example or the REST API. With those two different approaches in mind, let&#8217;s look into the pros and cons of the different approaches.</p>
+<p>With closing off those examples, we finished the complete Petclinic example or the REST API. With those two different approaches in mind, let&#8217;s look into the pros and cons of them.</p>
 </div>
 <div class="sect3">
 <h4 id="generic_api"><a class="anchor" href="#generic_api"></a><a class="link" href="#generic_api">Generic API</a></h4>
@@ -1468,28 +1465,31 @@ Content-Type: application/json
 <p>The generic REST API provided by CUBA is a huge time saver. It comes out of the box with complete CRUD operations on entities. Furthermore, it implements some other extended functionality like file upload, Swagger API documentation or translation endpoints for entity attributes.</p>
 </div>
 <div class="paragraph">
-<p>The functionality of loading entites in various ways with proper pagination, search capabilities and a mechanism to define queries in the request give huge flexibility for the client of the API without touching the server side are highly beneficial. Through referencing different views, it is also possible within the client to control the amount of data that are returned. In the example we saw above where the search operation was invoked with the view <code>pet-with-owner-and-type</code> not only the pet, but also the reference to the owner and its type are returned in the JSON.</p>
+<p>The functionality of loading entites in various ways with proper pagination, search capabilities and a mechanism to define queries in the request gives huge flexibility for the client of the API without touching the server side.</p>
 </div>
 <div class="paragraph">
-<p>With the built-in security mechanism it is possible to transparently on the server side control what data the API client is able to retrieve, just as it is possible in the UI.</p>
+<p>Through referencing different views, it is also possible within the client to control the amount of data that is returned. In the example we saw above where the search operation was invoked with the view <code>pet-with-owner-and-type</code>. Here not only the pet itself, but also the reference to the owner and its type is returned in the JSON.</p>
+</div>
+<div class="paragraph">
+<p>With the built-in security mechanism it is possible to transparently control what data the API client is able to retrieve on the server side, just as it is possible in the UI.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="custom_api"><a class="anchor" href="#custom_api"></a><a class="link" href="#custom_api">Custom API</a></h4>
 <div class="paragraph">
-<p>The custom Petclinic API is leveraging Spring MVCs mechanisms to control the HTTP interaction in very precise way. It is possible to define the input data as well as the output data. HTTP response codes can be used to describe particular situations in the HTTP lifecycle like error scenarios.</p>
+<p>The custom Petclinic API is leveraging Spring MVCs mechanisms to control the HTTP interaction in very precise ways. It is possible to define the input data as well as the output data. HTTP response codes can be used to describe particular situations in the HTTP lifecycle like error scenarios.</p>
 </div>
 <div class="paragraph">
-<p>By defining the input and ouput data via dedicated request and response objects, it is not only possible to control which data is returned, but furthermore it allows to define higher level API abstractions on top of the entity model. Not every database entity should be accessible via APIs The decoupling allows to free yourself from changing your internal entity model without changing your API client.</p>
+<p>By defining the input and ouput data via dedicated request and response objects, it is possible to control which data is returned. Furthermore it allows to define higher level API abstractions on top of the entity model. Oftentimes it is a good idea to not let every database entity should be accessible via APIs. The decoupling allows to free yourself from changing your internal entity model without changing your API client.</p>
 </div>
 <div class="paragraph">
-<p>The generic API has some mechanisms in place to overcome those shortcomings. E.g. it is possible to define <a href="https://doc.cuba-platform.com/restapi-latest/#rest_api_v2_data_model_versioning">model-transformations</a> to have backwards compatibility when an entity attribute is changed, but those are limited in nature compared to controlling the input &amp; output data in java classes. Also, the possibility to invoke CUBA services directly provides a way to decouple the entity model from the API to a certain degree.</p>
+<p>The generic API has some mechanisms in place to overcome those shortcomings. E.g. it is possible to define <a href="https://doc.cuba-platform.com/restapi-latest/#rest_api_v2_data_model_versioning">model-transformations</a> to have backwards compatibility when an entity attribute is changed. But those possibilities are limited in nature compared to controlling the input &amp; output data in java classes. Also, the possibility to invoke CUBA services directly provides a way to decouple the entity model from the API to a certain degree.</p>
 </div>
 <div class="paragraph">
-<p>Developing a custom API is oftentimes time-consuming depending on the API surface. On the other side it is oftentimes required in case API compatability is a must have.</p>
+<p>Developing a custom API is time-consuming in particular when a big API surface is needed. On the other side it is oftentimes required in case strict API backwards compatability is a must have, because you do not control the API clients.</p>
 </div>
 <div class="paragraph">
-<p>CUBA together with Spring provides mechanisms to fulfil both ends of the spectrum. Depending on the use-case and requirement either a custom API or the usage of the generic API can be used. It is also possible to use both approaches hand-in-hand. E.g. the search capabilities can be used via the generic API, while the write operations are performed through custom API controllers.</p>
+<p>CUBA together with Spring provides mechanisms to fulfil both ends of the spectrum. Depending on the use-case and requirement either a custom API or the usage of the generic API is a better fit. It is also possible to use both approaches hand-in-hand. E.g. the search capabilities can be used via the generic API, while the write operations are performed through custom API controllers.</p>
 </div>
 </div>
 </div>
@@ -1499,7 +1499,7 @@ Content-Type: application/json
 <h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this guide we have learned about the basics of the architectural style REST and its concrete application within HTTP. After going over the basics like Resources, Verbs as well as Requests and Responses. After that we shifted our focus to take a look on how to create HTTP endpoints in Spring.</p>
+<p>In this guide we have learned about the basics of the architectural style REST and its concrete application within HTTP. We went over the basics like Resources, Verbs as well as Requests and Responses. After that we shifted our focus to take a look on how to create HTTP endpoints in Spring. The annotation driven approach via <code>@RestController</code> and <code>@GetMapping</code> classes and methods are linked to HTTP endpoints.</p>
 </div>
 <div class="paragraph">
 <p>With that knowledge in place we started looking into the Petclinic example on how to connect the imaginary <code>PetTreat</code> application to it. In CUBA there are two main options when it comes to REST APIs: using standard functionality or providing custom REST APIs via Spring. For both variants we looked into the concrete implementation on how the different requirements of <code>PetTreat</code> would be solved.</p>
@@ -1568,7 +1568,7 @@ Content-Type: application/json
 
                         <div class="sidebar-razd"></div>
                         <div class="guide-panel download">
-                            <a href="https://github.com/cuba-guides/cuba-petclinic-rest-apis" class="github-link" target="_blank">Example code on Github</a>
+                            <a href="https://github.com/cuba-guides/cuba-petclinic-rest-api" class="github-link" target="_blank">Example code on Github</a>
                         </div>
                         <div class="guide-panel cuba-version">Supported versions: CUBA 7.1+; Java 8+</div>
 
