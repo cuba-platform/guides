@@ -749,4 +749,5 @@ We finished the guide with a comparison of both approaches. As we have seen ther
 == Further Information
 
 * https://doc.cuba-platform.com/restapi-latest/[CUBA REST API documentation]
-* https://doc.cuba-platform.com/manual-latest/app_components.html[CUBA docs: Application components]
+* https://www.jetbrains.com/help/idea/http-client-in-product-code-editor.html[Running Requests in IntelliJ IDEA]
+* https://www.restapitutorial.com/[More information on RESTful APIs]
