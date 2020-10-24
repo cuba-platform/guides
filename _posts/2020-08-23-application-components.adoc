@@ -1,5 +1,5 @@
 ---
-compatible_cuba_versions: 7.1+
+compatible_cuba_versions: 7.2+
 compatible_java_versions: 8+
 project_id: cuba-petclinic-product-line-platform
 permalink: product-customizations-with-app-components
@@ -81,7 +81,7 @@ TIP: You can find more information on the topic of different customization optio
 
 The second extension mechanism of a product is a compile-time extension. This type of extensions emerge during the production process of the software. It may appear at the development time through customer specific extensions / adjustments of the standard product. Alternatively, it can also be created at the time the binary is created, e.g. by adding certain additional `jar` files into the binary.
 
-In this case, almost everything can be changed by these extensions, because it is too early in the software production process. Additional entities can be created, business logic can be overridden and customer-specific UIs can be created.
+In this case, almost everything can be changed by these extensions, because it is very early in the software production process. Additional entities can be created, business logic can be overridden and customer-specific UIs can be created.
 
 
 == Petclinic as a Product Line
@@ -168,7 +168,7 @@ This project only needs slight adjustments to the Petclinic core. There is addit
 
 ==== Extending the Visit Entity
 
-In order to achieve the first requirement of storing previous illnesses to the Visit, the `Visit` entity must be extended. CUBA allows extending screens from application components or the framework itself via the `@Extends` annotation on the JPA entity. For the Kanto-Petclinic adding an attribute looks like this:
+In order to achieve the first requirement of storing previous illnesses to the Visit, the `Visit` entity must be extended. CUBA allows extending entities from application components or the framework itself via the `@Extends` annotation on the JPA entity. For the Kanto-Petclinic adding an attribute looks like this:
 
 
 .KantoVisit.java
@@ -196,7 +196,7 @@ The `@Extends` annotation replaces all occurrences of the `Visit` entity with it
 
 After this addition, CUBA Studio will generate the corresponding database update scripts. This will alter the original table instead of defining a new one.
 
-More information on the Entity extension mechanism can be found in the CUBA docs: https://doc.cuba-platform.com/manual-latest/entity_extension.html[Entity Extensions]
+More information on the Entity extension mechanism can be found in the CUBA docs: https://doc.cuba-platform.com/manual-latest/entity_extension.html[Entity Extensions].
 
 The second part of that feature requirement is that the attribute `previousIllnesses` can also be managed in the UI. For this, we will extend the existing UI screen of a Visit. CUBA Studio guides you through the process of extending a screen via `Screens > New > Screen > Extend an existing Screen`. The field should only be added to the Entity editor screen, so extending `VisitEdit` is sufficient.
 
@@ -227,7 +227,7 @@ In order to add a field to an existing `form` component, the "delta" XML (contai
 <1> the `extends` attribute declares which screen this screen extension is based on
 <2> by adding another form component with the same ID "form" the component will be merged with the parent one
 
-In this case, the text area for the new field is appended at the bottom of the form component with the ID `for`.
+In this case, the text area for the new field is appended at the bottom of the form component with the ID `form`.
 
 ==== Create Visits for Today from Pet Browse
 
