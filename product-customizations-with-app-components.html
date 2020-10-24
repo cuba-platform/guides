@@ -593,7 +593,7 @@ You can find more information on the topic of different customization options in
 <p>The second extension mechanism of a product is a compile-time extension. This type of extensions emerge during the production process of the software. It may appear at the development time through customer specific extensions / adjustments of the standard product. Alternatively, it can also be created at the time the binary is created, e.g. by adding certain additional <code>jar</code> files into the binary.</p>
 </div>
 <div class="paragraph">
-<p>In this case, almost everything can be changed by these extensions, because it is too early in the software production process. Additional entities can be created, business logic can be overridden and customer-specific UIs can be created.</p>
+<p>In this case, almost everything can be changed by these extensions, because it is very early in the software production process. Additional entities can be created, business logic can be overridden and customer-specific UIs can be created.</p>
 </div>
 </div>
 </div>
@@ -739,7 +739,7 @@ When using a development approach within a team, the normal way of handling such
 <div class="sect3">
 <h4 id="extending_the_visit_entity"><a class="anchor" href="#extending_the_visit_entity"></a><a class="link" href="#extending_the_visit_entity">Extending the Visit Entity</a></h4>
 <div class="paragraph">
-<p>In order to achieve the first requirement of storing previous illnesses to the Visit, the <code>Visit</code> entity must be extended. CUBA allows extending screens from application components or the framework itself via the <code>@Extends</code> annotation on the JPA entity. For the Kanto-Petclinic adding an attribute looks like this:</p>
+<p>In order to achieve the first requirement of storing previous illnesses to the Visit, the <code>Visit</code> entity must be extended. CUBA allows extending entities from application components or the framework itself via the <code>@Extends</code> annotation on the JPA entity. For the Kanto-Petclinic adding an attribute looks like this:</p>
 </div>
 <div class="listingblock">
 <div class="title">KantoVisit.java</div>
@@ -769,7 +769,7 @@ When using a development approach within a team, the normal way of handling such
 <p>After this addition, CUBA Studio will generate the corresponding database update scripts. This will alter the original table instead of defining a new one.</p>
 </div>
 <div class="paragraph">
-<p>More information on the Entity extension mechanism can be found in the CUBA docs: <a href="https://doc.cuba-platform.com/manual-latest/entity_extension.html">Entity Extensions</a></p>
+<p>More information on the Entity extension mechanism can be found in the CUBA docs: <a href="https://doc.cuba-platform.com/manual-latest/entity_extension.html">Entity Extensions</a>.</p>
 </div>
 <div class="paragraph">
 <p>The second part of that feature requirement is that the attribute <code>previousIllnesses</code> can also be managed in the UI. For this, we will extend the existing UI screen of a Visit. CUBA Studio guides you through the process of extending a screen via <code>Screens &gt; New &gt; Screen &gt; Extend an existing Screen</code>. The field should only be added to the Entity editor screen, so extending <code>VisitEdit</code> is sufficient.</p>
@@ -812,7 +812,7 @@ When using a development approach within a team, the normal way of handling such
 </table>
 </div>
 <div class="paragraph">
-<p>In this case, the text area for the new field is appended at the bottom of the form component with the ID <code>for</code>.</p>
+<p>In this case, the text area for the new field is appended at the bottom of the form component with the ID <code>form</code>.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1320,7 +1320,7 @@ In order to use the <code>ext</code> attributes, the namespace must be defined i
                         <div class="guide-panel download">
                             <a href="https://github.com/cuba-guides/cuba-petclinic-product-line-platform" class="github-link" target="_blank">Example code on Github</a>
                         </div>
-                        <div class="guide-panel cuba-version">Supported versions: CUBA 7.1+; Java 8+</div>
+                        <div class="guide-panel cuba-version">Supported versions: CUBA 7.2+; Java 8+</div>
 
                     </section>
                     </div>
