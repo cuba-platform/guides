@@ -14,7 +14,7 @@ permalink: rest-apis
 :project_id: cuba-petclinic-rest-api
 :java_version: 8
 :cuba_version: 7.1
-:page-icone: https://www.cuba-platform.com/guides/images/application-components/guide_icone.svg
+:page-icone: https://www.cuba-platform.com/guides/images/rest-api/guide_icone.svg
 
 In this guide you will learn how to create REST APIs for a CUBA application. We will explore mechanisms to create different types of APIs by  allowing third-party applications to control the visit management of the Petclinic.
 
