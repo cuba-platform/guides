@@ -244,7 +244,7 @@ Before showing how it works, let's quickly go through the idea behind the generi
 
 With the help of the addon, the CUBA application provides an API for performing CRUD operations for all entities out of the box. There is no need to write code on the server side to expose the entity data as an API. Also, for similar operations like creating or updating an entity the generic API will provide this capability.
 
-It is also possible to expose CUBA services directly via this generic API only by registering the business service in a configuration file called `rest-services.xml`.
+It is also possible to expose CUBA services directly via this generic API only by registering the business service in a configuration file as we will see in one of the examples.
 
 
 ==== Retrieving Visit information
@@ -391,6 +391,72 @@ Content-Type: application/json;charset=UTF-8
 <3> the HTTP response contains the entry list that match the search criteria
 
 With this very flexible API it is possible to perform all kinds of queries against the list of entities. More information can be found in the https://doc.cuba-platform.com/restapi-latest/#rest_api_v2_ex_search_filter[docs]. With those two endpoints, the API fulfils the requirements to view & search all kinds of Visit and Pet data in the `PetTreat` application.
+
+==== Finding a Visit by its Identification Number
+
+Another similar example is to find the Pet via its identification number. This could be achieved as well by the search API, but in this case, let's take a look at using custom service to provide this capability. The `PetService` that is part of the demo application has a method: `findById(String petIdentificationNumber)` which returns a Pet instance. It is possible to expose that service directly through the generic REST API, so that the method can be invoked via the API.
+
+For this to work, we need to register the Service method in a configuration file called `rest-services.xml` in the web module.
+
+.rest-services.xml
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns="http://schemas.haulmont.com/cuba/rest-services-v2.xsd">
+
+    <service name="petclinic_PetService">
+        <method name="findById"> // <1>
+            <param name="petIdentificationNumber"/>
+        </method>
+    </service>
+
+</services>
+----
+<1> the method `findById` is marked as being part of the generic REST API for authenticated users
+
+This file also needs to be attached to the configuration via the `web-app.properties` like this:
+
+```
+cuba.rest.servicesConfig=+com/haulmont/sample/petclinic/rest-services.xml
+```
+
+TIP: CUBA Studio allows to automatically generate the file and the `web-app.properties` binding by right clicking the "REST API" section in the CUBA menu and select "Create REST Services Configuration".
+
+Now that the method is exposed, it is possible to interact with the method in the following way:
+
+
+.Create a Visit
+[source,http]
+----
+GET http://localhost:8080/app/rest/v2/services/petclinic_PetService/findById?petIdentificationNumber=025 // <1>
+Authorization: Bearer {{auth_token}}
+
+
+HTTP/1.1 200
+Content-Type: application/json;charset=UTF-8
+
+{ // <2>
+  "_entityName": "petclinic_Pet",
+  "id": "d83cc7f7-69b5-3830-ff1d-ed74d1e4a79c",
+  "owner": {
+    "id": "351eb2d2-c70b-3af7-109c-2b19a5929101",
+    "name": "Ash Ketchum",
+  },
+  "type": {
+    "_entityName": "petclinic_PetType",
+    "_instanceName": "Electric",
+    "id": "d390dc26-3462-7586-221a-3110f0fcd97c",
+    "name": "Electric",
+    "version": 1
+  },
+  "birthDate": "1998-01-03",
+  "name": "Pikachu",
+  "identificationNumber": "025"
+}
+----
+<1> the method invocation happens through HTTP GET and passing in the method parameters as URL parameters `?petIdentificationNumber=025`
+<2> the response body contains the Pet information returned as a JSON structure
+
 
 ==== Creating a Visit for a Pet
 
@@ -718,21 +784,23 @@ With closing off those examples, we finished the complete Petclinic example or t
 
 The generic REST API provided by CUBA is a huge time saver. It comes out of the box with complete CRUD operations on entities. Furthermore, it implements some other extended functionality like file upload, Swagger API documentation or translation endpoints for entity attributes.
 
-The functionality of loading entites in various ways with proper pagination, search capabilities and a mechanism to define queries in the request gives huge flexibility for the client of the API without touching the server side.
+The functionality of loading entities in various ways with proper pagination, search capabilities and a mechanism to define queries in the request gives huge flexibility for the client of the API without touching the server side.
 
 Through referencing different views, it is also possible within the client to control the amount of data that is returned. In the example we saw above where the search operation was invoked with the view `pet-with-owner-and-type`. Here not only the pet itself, but also the reference to the owner and its type is returned in the JSON.
 
 With the built-in security mechanism it is possible to transparently control what data the API client is able to retrieve on the server side, just as it is possible in the UI.
 
+By exposing service methods as an API it is possible to expose business logic via APIs without the need to develop the HTTP interactions on the server side. This allows to create an abstraction on top of the direct entity access in order to ensure data integrity, further validation etc.
+
 ==== Custom API
 
 The custom Petclinic API is leveraging Spring MVCs mechanisms to control the HTTP interaction in very precise ways. It is possible to define the input data as well as the output data. HTTP response codes can be used to describe particular situations in the HTTP lifecycle like error scenarios.
 
-By defining the input and ouput data via dedicated request and response objects, it is possible to control which data is returned. Furthermore it allows to define higher level API abstractions on top of the entity model. Oftentimes it is a good idea to not let every database entity should be accessible via APIs. The decoupling allows to free yourself from changing your internal entity model without changing your API client.
+By defining the input and output data via dedicated request and response objects, it is possible to control which data is returned. Furthermore it allows to define higher level API abstractions on top of the entity model. Oftentimes it is a good idea to not let every database entity should be accessible via APIs. The decoupling allows to free yourself from changing your internal entity model without changing your API client.
 
-The generic API has some mechanisms in place to overcome those shortcomings. E.g. it is possible to define https://doc.cuba-platform.com/restapi-latest/#rest_api_v2_data_model_versioning[model-transformations] to have backwards compatibility when an entity attribute is changed. But those possibilities are limited in nature compared to controlling the input & output data in java classes. Also, the possibility to invoke CUBA services directly provides a way to decouple the entity model from the API to a certain degree.
+The generic API has some mechanisms in place to overcome those shortcomings. E.g. it is possible to define https://doc.cuba-platform.com/restapi-latest/#rest_api_v2_data_model_versioning[model-transformations] to have backwards compatibility when an entity attribute is changed. But those possibilities are limited in nature compared to controlling the input & output data in java classes. Also, the possibility to invoke CUBA services directly provides a way to decouple the entity model from the API.
 
-Developing a custom API is time-consuming in particular when a big API surface is needed. On the other side it is oftentimes required in case strict API backwards compatability is a must have, because you do not control the API clients.
+Developing a custom API is time-consuming in particular when a big API surface is needed. On the other side it is oftentimes required in case strict API backwards compatibility is a must have, because you do not control the API clients.
 
 CUBA together with Spring provides mechanisms to fulfil both ends of the spectrum. Depending on the use-case and requirement either a custom API or the usage of the generic API is a better fit. It is also possible to use both approaches hand-in-hand. E.g. the search capabilities can be used via the generic API, while the write operations are performed through custom API controllers.
 
