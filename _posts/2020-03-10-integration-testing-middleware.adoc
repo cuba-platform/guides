@@ -509,7 +509,7 @@ This knowledge allows us to uncover the forth option of verification:
 
 TIP: 4. Verify database rows to appear in the `EmailSending` CUBA database table used by the `EmailerAPI` which represent outgoing Email requests for CUBA Email functionality.
 
-This option is also a state verification. Generally, it is preferable to use the state verification, as those verifications are usually more robust and normally increase the maintenance costs of a test case.
+This option is also a state verification. Generally, it is preferable to use the state verification, as those verifications are usually more resilient when it comes to changes in the implementation.
 
 Compared to the option `1.`, the option `4.` requires much less infrastructure to be in-place. For `1.`, the system environment requires:
 
