@@ -1,0 +1,1945 @@
+<!doctype html>
+<!--[if IE 9]>
+<html class="lt-ie10" lang="en"> <![endif]-->
+<html class="no-js" lang="en" data-useragent="Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REST APIs for CUBA applications</title>
+    <meta name="description" content="In this guide you will learn how to create REST APIs for a CUBA application. We will explore mechanisms to create different types of APIs by  allowing third-party applications to control the visit management of the Petclinic.">
+    <meta name="author" content="Haulmont">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@CubaPlatform">
+    <meta name="twitter:creator" content="@CubaPlatform">
+    <meta name="twitter:title" content="REST APIs for CUBA applications">
+    <meta name="twitter:description" content="In this guide you will learn how to create REST APIs for a CUBA application. We will explore mechanisms to create different types of APIs by  allowing third-party applications to control the visit management of the Petclinic.">
+    <meta name="twitter:image" content="">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="REST APIs for CUBA applications">
+    <meta property="og:description" content="In this guide you will learn how to create REST APIs for a CUBA application. We will explore mechanisms to create different types of APIs by  allowing third-party applications to control the visit management of the Petclinic.">
+    <meta property="og:url" content="https://www.cuba-platform.com/guides/rest-apis">
+    <meta property="og:image" content="">
+
+    <link rel="shortcut icon" href="/guides/images/favicon.png" type="image/png" />
+    <link rel="stylesheet" href="/guides/css/foundation.css">
+    <link rel="stylesheet" href="/guides/css/font-awesome.css">
+    <link rel="stylesheet" href="/guides/css/coderay.css">
+    <link rel="stylesheet" href="/guides/css/bootstrap.css">
+    <link rel="stylesheet" href="https://www.cuba-platform.com/sites/all/themes/cuba_adaptive/css/reset.css">
+    <link rel="stylesheet" href="https://www.cuba-platform.com/sites/all/themes/cuba_adaptive/css/animate.css">
+    <link rel="stylesheet" href="/guides/css/extra.css">
+    <link rel="stylesheet" href="/guides/css/extra2.css">
+    <link rel="stylesheet" href="/guides/css/cuba-new.css">
+    <link rel="stylesheet" href="/guides/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/guides/css/guides.css">
+    <script src="/guides/js/jquery_v2.1.min.js"></script>
+    <link rel="stylesheet" href="/guides/css/main.css" />
+    <!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-MH3DTWV');</script>
+<!-- End Google Tag Manager -->
+</head>
+<body class="html not-front not-logged-in no-sidebars page-node page-node- page-node-962 node-type-blog-post i18n-en">
+
+<section id="wrapper">
+    
+<header role="banner" fragment="14269c1b298" class="header">
+    <nav class="header_nav">
+        <input id="mobile-menu-open" type="checkbox" class="header_checkbox">
+        <div class="container header_container">
+            <div class="header_toggle">
+                <label for="mobile-menu-open"
+                       class="header_toggle-label toggle-label">
+                    <span>CUBA.platform</span>
+                </label>
+            </div>
+            <a href="/" class="header_logo nuxt-link-active"></a>
+            <ul class="header_menu">
+                <li class="header_menu_item"><a href="/framework/" class="header_menu_link">Framework</a></li>
+                <li class="header_menu_item"><a href="/learn/" class="header_menu_link nuxt-link-active">Learn</a></li>
+                <li class="header_menu_item"><a href="/documentation/" class="header_menu_link">Documentation</a></li>
+                <li class="header_menu_item"><a href="/discuss/" class="header_menu_link">Forum</a></li>
+                <li class="header_menu_item"><a href="/blog/" class="header_menu_link">Blog</a></li>
+            </ul>
+            <div class="lang-switch">
+                <div class="multiselect-wrapper select-wrapper" onclick="langSwitch()">
+                    <div tabindex="0" class="multiselect">
+                        <div class="multiselect__select"></div>
+                        <div class="multiselect__tags">
+                            <span class="multiselect__single">EN</span>
+                        </div>
+                        <div tabindex="-1" class="multiselect__content-wrapper" style="max-height: 300px; display: none;">
+                            <ul class="multiselect__content" style="display: inline-block;">
+                                <li class="multiselect__element"><span class="multiselect__option multiselect__option--highlight">EN</span></li>
+                                <li class="multiselect__element"><span class="multiselect__option"><a href="http://cuba-platform.ru/">RU</a></span></li>
+                                <li class="multiselect__element"><span class="multiselect__option"><a href="https://cuba-platform.cn/">CN</a></span> </li>
+                                <li class="multiselect__element"><span class="multiselect__option"><a href="http://cuba-platform.it/">IT</a></span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="header-support">
+                <button class="header-support_toggle">
+                <img src="images/users.svg" class="header-support_toggle_icon">
+                <span class="header-support_toggle_text">Services</span></button>
+                <div class="header-support_popup">
+                    <div class="support-popup">
+                        <div class="support-popup_services">
+                            <h3 class="support-popup_services_title">Commercial services for your project</h3>
+                            <ul class="services-list">
+                                <li class="services-list_item"><a href="/support-options/"><strong
+                                        class="services-list_title">Consultancy &amp; Support</strong>
+                                    <div class="services-list_text">
+                                        <div><p>Commercial consulting requests have a guaranteed response
+                                            time.</p>
+                                        </div>
+                                    </div>
+                                </a></li>
+                                <li class="services-list_item"><a href="/development/"><strong
+                                        class="services-list_title">Custom Development</strong>
+                                    <div class="services-list_text">
+                                        <div><p>We can deliver a turn key solution or contribute to your
+                                            project</p>
+                                        </div>
+                                    </div>
+                                </a></li>
+                                <li class="services-list_item"><a href="/training/"><strong
+                                        class="services-list_title">Training</strong>
+                                    <div class="services-list_text">
+                                        <div><p>For fast and deep dive into framework features to shift your
+                                            team productivity.</p>
+                                        </div>
+                                    </div>
+                                </a></li>
+                            </ul>
+                        </div>
+                        <div class="support-popup_haulmont">
+                            <div class="support-popup_haulmont_header"><h3 class="support-popup_haulmont_title">
+                                Haulmont</h3>
+                                <div class="support-popup_haulmont_subtitle">we develop modern enterprise
+                                    solutions
+                                </div>
+                            </div>
+                            <ul class="haulmont-list">
+                                <li class="haulmont-list_item">
+                                    <div><p>Experts in Enterprise software</p>
+                                    </div>
+                                </li>
+                                <li class="haulmont-list_item">
+                                    <div><p>Creators of the CUBA Platform</p>
+                                    </div>
+                                </li>
+                                <li class="haulmont-list_item">
+                                    <div><p>Established in 2008</p>
+                                    </div>
+                                </li>
+                            </ul>
+                            <ul class="numbers-list">
+                                <li class="numbers-list_item"><strong class="numbers-list_number">300+</strong>
+                                    <div class="numbers-list_text">developers</div>
+                                </li>
+                                <li class="numbers-list_item"><strong class="numbers-list_number">400+</strong>
+                                    <div class="numbers-list_text">projects</div>
+                                </li>
+                                <li class="numbers-list_item">
+                                    <div class="numbers-list_text">Customers in</div>
+                                    <strong class="numbers-list_number">60+</strong>
+                                    <div class="numbers-list_text">countries</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <a href="/user/" class="header_profile">
+                <svg xmlns="http://www.w3.org/2000/svg" id="i-profile" class="icon header_profile_src" viewBox="0 0 563.43 563.43" width="100%" height="100%">
+                    <path d="M280.79 314.559c83.266 0 150.803-67.538 150.803-150.803S364.055 13.415 280.79 13.415 129.987 80.953 129.987 163.756s67.537 150.803 150.803 150.803zm0-261.824c61.061 0 111.021 49.959 111.021 111.021s-49.96 111.02-111.021 111.02-111.021-49.959-111.021-111.021 49.959-111.02 111.021-111.02zM19.891 550.015h523.648c11.102 0 19.891-8.789 19.891-19.891 0-104.082-84.653-189.198-189.198-189.198H189.198C85.116 340.926 0 425.579 0 530.124c0 11.102 8.789 19.891 19.891 19.891zm169.307-169.307h185.034c75.864 0 138.313 56.436 148.028 129.524H41.17c9.714-72.625 72.164-129.524 148.028-129.524z"></path>
+                </svg>
+            </a>
+        </div>
+    </nav>
+    <nav class="header-submenu">
+        <div class="container header-submenu_container">
+            <a href="/learn/quickstart/" class="header-submenu_link">Quick Start</a>
+            <a href="/learn/live-demo/" class="header-submenu_link">Live Demo</a>
+            <a href="/guides/" class="header-submenu_link nuxt-link-exact-active nuxt-link-active">Guides</a>
+        </div>
+    </nav>
+</header>
+
+<script>
+    function langSwitch() {
+        var el = document.querySelector('.multiselect');
+        var el1 = document.querySelector('.multiselect__content-wrapper');
+        if(el.classList.contains("multiselect--active")) {
+            el.classList.remove("multiselect--active");
+            el1.style.display = 'none';
+        } else {
+            el.classList.add("multiselect--active");
+            el1.style.display = 'block';
+        }
+    }
+    document.addEventListener('click', function(event) {
+        var e = document.querySelector('.lang-switch');
+        var el = document.querySelector('.multiselect');
+        var el1 = document.querySelector('.multiselect__content-wrapper');
+
+        if (!e.contains(event.target)) {
+            el1.style.display='none';
+            el.classList.remove("multiselect--active");
+        }
+    });
+</script>
+<style>
+    .upper-header .header-options {
+        display: none;
+    }
+
+    .upper-header .upper-header-wrapper .header-menu div .nav > li:last-child > a {
+        padding-right: 0;
+    }
+
+    .header-support {
+        margin-left: 20px;
+    }
+
+    /* lang-switch*/
+     .lang-switch {
+         flex: 0 0 auto;
+         margin-left: auto;
+     }
+
+    @media screen and (max-width: 1000px) {
+        .lang-switch {
+           display: none;
+        }
+    }
+
+    .lang-switch .multiselect__select {
+        display: none;
+    }
+
+    .lang-switch .multiselect__tags {
+        border: none;
+        cursor: pointer;
+    }
+
+    .lang-switch .multiselect__content-wrapper {
+        top: 49px;
+        left: -7px;
+        width: 45px;
+        overflow: hidden;
+        border-radius: 0;
+        background: #FFF;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.25);
+    }
+
+    .lang-switch .multiselect__content-wrapper ul li:first-child {
+        display: none;
+    }
+
+    .lang-switch .multiselect-wrapper .multiselect {
+        min-height: 22px;
+    }
+
+    .lang-switch .multiselect__option:hover {
+        background: #E8F2FB;
+    }
+
+    .lang-switch .multiselect__option a:hover {
+        color: #0784E3!important;
+        text-decoration: none;
+    }
+
+    .lang-switch .multiselect__option {
+        width: 45px;
+        height: 34px;
+        min-height: 34px;
+        padding: 0;
+    }
+
+    .lang-switch .multiselect__option a {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 43px;
+        height: 34px;
+        font-size: 13px;
+        line-height: 22px;
+        color: #9B9B9B;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .lang-switch .multiselect__tags {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 27px;
+        height: 22px;
+        min-height: 22px;
+        padding: 0;
+    }
+
+    .lang-switch .multiselect__tags:hover {
+        color: #0784E3;
+    }
+
+    .lang-switch .multiselect__single {
+        display: block;
+        font-size: 13px;
+        line-height: 22px;
+        color: #9B9B9B;
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        border-radius: 0;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .lang-switch .multiselect__single:hover {
+        border: none;
+        color: #0784E3;
+    }
+
+    .lang-switch .multiselect__element {
+        overflow: hidden;
+        height: 34px;
+        min-height: 34px;
+    }
+
+    .lang-switch .multiselect--active .multiselect__single {
+        color: #0784E3;
+    }
+
+    .multiselect {
+        box-sizing: content-box;
+        display: block;
+        position: relative;
+        width: 100%;
+        min-height: 40px;
+        text-align: left;
+        color: #35495e;
+    }
+    .multiselect, .multiselect__single {
+        font-family: inherit;
+        font-size: 16px;
+        touch-action: manipulation;
+    }
+    .multiselect__select {
+        position: absolute;
+        width: 40px;
+        height: 38px;
+        right: 1px;
+        top: 1px;
+        padding: 4px 8px;
+        text-align: center;
+        transition: transform .2s ease;
+    }
+    .multiselect__select {
+        line-height: 16px;
+        box-sizing: border-box;
+        display: block;
+        margin: 0;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    .multiselect__tags {
+        min-height: 40px;
+        display: block;
+        padding: 8px 40px 0 8px;
+        border-radius: 5px;
+        border: 1px solid #e8e8e8;
+        background: #fff;
+        font-size: 14px;
+    }
+
+    .multiselect * {
+        box-sizing: border-box;
+    }
+
+    .multiselect__single {
+        position: relative;
+        display: inline-block;
+        min-height: 20px;
+        line-height: 20px;
+        border: none;
+        border-radius: 5px;
+        background: #fff;
+        padding: 0 0 0 5px;
+        width: 100%;
+        transition: border .1s ease;
+        box-sizing: border-box;
+        margin-bottom: 8px;
+        vertical-align: top;
+    }
+
+    .multiselect__content-wrapper {
+        position: absolute;
+        display: block;
+        background: #fff;
+        width: 100%;
+        max-height: 240px;
+        overflow: auto;
+        border: 1px solid #e8e8e8;
+        border-top: none;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+        z-index: 50;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .multiselect__content {
+        list-style: none;
+        display: inline-block;
+        padding: 0;
+        margin: 0;
+        min-width: 100%;
+        vertical-align: top;
+    }
+
+    .multiselect__option {
+        display: block;
+        padding: 12px;
+        min-height: 40px;
+        line-height: 16px;
+        text-decoration: none;
+        text-transform: none;
+        vertical-align: middle;
+        position: relative;
+        cursor: pointer;
+        white-space: nowrap;
+    }
+    /* end lang-switch*/
+</style>
+
+    <!-- Main Page Content and Sidebar -->
+    <div class="content-wrapper">
+        <div class="cuba-container text-node blog">
+
+
+
+            <!-- Main content (left column) -->
+            <div class="region region-content">
+
+
+
+                <section id="block-system-main" class="block block-system clearfix">
+                    <div id="node-962" class="article node node-blog-post node-promoted clearfix">
+                        <div class="content">
+                            <div class="field field-name-body field-type-text-with-summary field-label-hidden">
+                                <div class="field-items">
+                                    <div class="field-item even" property="content: encoded">
+                                        <h1>REST APIs for CUBA applications</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this guide you will learn how to create REST APIs for a CUBA application. We will explore mechanisms of creating different types of APIs by allowing third-party applications to control the visit management of the Petclinic.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="what_we_are_going_to_build"><a class="anchor" href="#what_we_are_going_to_build"></a><a class="link" href="#what_we_are_going_to_build">What we are going to build</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This guide enhances the <a href="https://github.com/cuba-platform/cuba-petclinic">CUBA Petclinic</a> example to allow a third party tablet application to manage visits via a secured REST API. It should be possible to retrieve information about Pets and Visits. Also, starting and finishing a treatment should be exposed through the API.</p>
+</div>
+<div class="sect2">
+<h3 id="requirements"><a class="anchor" href="#requirements"></a><a class="link" href="#requirements">Requirements</a></h3>
+<div class="paragraph">
+<p>Your development environment requires to contain the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://adoptopenjdk.net/">JDK 8</a></p>
+</li>
+<li>
+<p><a href="https://www.cuba-platform.com/download">CUBA Studio</a> as standalone IDE or as an IntelliJ IDEA plugin</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-rest-api/archive/master.zip">Download</a> and unzip the source repository for this guide, or clone it using git:</p>
+</div>
+<div class="paragraph">
+<p><code>git clone <a href="https://github.com/cuba-guides/cuba-petclinic-rest-api.git" class="bare">https://github.com/cuba-guides/cuba-petclinic-rest-api.git</a></code></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="overview"><a class="anchor" href="#overview"></a><a class="link" href="#overview">Overview</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Providing an API for an application is oftentimes a good way to foster machine to machine communication. CUBA supports various forms of API technologies through its strong foundation - the Spring Framework. Spring has native support for creating REST and SOAP-Webservice based APIs. Also, the wider Java ecosystem enable newer technology approaches like GraphQL.</p>
+</div>
+<div class="paragraph">
+<p>Additionally, CUBA offers dedicated support for REST APIs via a generic API, which allows managing the complete application entity model through automatically available endpoints.</p>
+</div>
+<div class="paragraph">
+<p>In this guide we will focus on creating multiple REST-based HTTP APIs to allow other applications interact with the CUBA Petclinic. During the examples we will work with both the generic API and custom HTTP endpoints, in order to see the differences between the approaches.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="what_is_a_rest_api"><a class="anchor" href="#what_is_a_rest_api"></a><a class="link" href="#what_is_a_rest_api">What is a REST API</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Before exploring the details of the CUBA implementation of an API, let&#8217;s quickly talk about what a REST API looks like and what are the concepts behind it.</p>
+</div>
+<div class="paragraph">
+<p>A REST API is an HTTP based API (HTTP being the protocol - the underpinning of a big part of the Internet) with some specific usage of it. REST in particular has a couple of building blocks that we will use throughout this guide.</p>
+</div>
+<div class="paragraph">
+<p>Generally speaking an API is a mechanism for letting different systems communicate with each other and exchange data. The API then is the defined interaction mechanism in which those two applications can communicate. To make it more concrete, let&#8217;s take the analogy of a restaurant:</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The menu that the restaurant offers is the API. Once you order a piece from the menu, you are doing an API call with a more or less structured interaction format ("I take number 25", "Pizza is out, sorry!", "Something to drink?"). The response of that API call is the food which is delivered from the kitchen.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s consider the concepts which define the style of a REST API.</p>
+</div>
+<div class="sect2">
+<h3 id="resources"><a class="anchor" href="#resources"></a><a class="link" href="#resources">Resources</a></h3>
+<div class="paragraph">
+<p>A Resource is something that you can think of as an abstraction on the concept of any kind of information. A resource can be an image, a document or a dish in a menu, for example. In can also be a Pet, but not the actual Pet. It would be rather a virtual representation of it in the Petclinic application. Resources are identified by something called a Resource Identifier. In its concrete form a resource identifier is something like a URL <code><a href="https://petclinic.cuba-platform.com/pets/123" class="bare">https://petclinic.cuba-platform.com/pets/123</a></code> to identify the Resource: The pet with the Identification Number "123".</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="resource_verbs"><a class="anchor" href="#resource_verbs"></a><a class="link" href="#resource_verbs">Resource Verbs</a></h3>
+<div class="paragraph">
+<p>Verbs on Resources represent the "operations" that you can perform with a particular resource. In REST those Verbs should form a uniform interface, meaning that the protocol provides a limited set of standard operations. In HTTP there are a couple of Verbs that can be used in order to interact with a resource:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>GET <a href="https://petclinic.cuba-platform.com/pets/123" class="bare">https://petclinic.cuba-platform.com/pets/123</a></code>: fetches information about the Pet with the Identification Number 123</p>
+</li>
+<li>
+<p><code>PUT <a href="https://petclinic.cuba-platform.com/pets/123" class="bare">https://petclinic.cuba-platform.com/pets/123</a></code>: updates information about the Pet with the Identification Number 123</p>
+</li>
+<li>
+<p><code>POST <a href="https://petclinic.cuba-platform.com/pets" class="bare">https://petclinic.cuba-platform.com/pets</a></code>: adds a new Pet to the list of existing Pets</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>There are several verbs defined in HTTP that can be used. All of them have a particular meaning, although their interpretation and usage is oftentimes up to the provider of the API.</p>
+</div>
+<div class="paragraph">
+<p>Generally the Verbs have different characteristics / guarantees associated with them. E.g. the verb <code>GET</code> is normally used for loading data. By the HTTP specification a <code>GET</code> operation is <em>idempotent</em> and <em>safe</em>. Roughly speaking, this means that the operation in the API should not have side effects. Also, applying the same operation twice should not lead to a different outcome. It is generally possible to load information about a Pet multiple times without having a side effect. Therefore, using the <code>GET</code> verb for this operation is matching the guarantees the <code>GET</code> verb offers.</p>
+</div>
+<div class="paragraph">
+<p>On the other hand, registering a Pet twice would lead to having two Pets stored in the application. Therefore, this operation is not side-effect free. For those types of operations the <code>POST</code> verb would be a better fit, as this verb does not give guarantees about side-effect freeness.</p>
+</div>
+<div class="paragraph">
+<p>There are several verbs defined in HTTP. The primary ones are <code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>DELETE</code>, <code>PATCH</code>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="requests_and_responses"><a class="anchor" href="#requests_and_responses"></a><a class="link" href="#requests_and_responses">Requests and Responses</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Requests and responses conceptually are not described by REST, but they are a very integral part of an HTTP based API. Requests and responses are the actual interactions that happen between the client and the server of an HTTP interaction. A request is the initial message from the client to the server. The response, on the other hand, is the resulting message from the server back to the client. Both interactions normally contain two parts: the message payload and the message metadata.</p>
+</div>
+<div class="paragraph">
+<p>Here is an example of how an HTTP request &amp; response interaction looks like:</p>
+</div>
+<div class="listingblock">
+<div class="title">Example HTTP Request for creating a Visit</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="http">POST http://petclinic.cuba-platform.com/rest/api/visits <i class="conum" data-value="1"></i><b>(1)</b>
+Authorization: Bearer 71dbb8a8-2a41-45e7-a73b-16a96c433651
+Content-Type: application/json <i class="conum" data-value="2"></i><b>(2)</b>
+
+{ <i class="conum" data-value="3"></i><b>(3)</b>
+  &quot;petIdentificationNumber&quot;: &quot;025&quot;,
+  &quot;visitStart&quot;: &quot;2020-04-05T08:00:00&quot;,
+  &quot;visitEnd&quot;: &quot;2020-04-05T10:00:00&quot;,
+  &quot;type&quot;: &quot;REGULAR_CHECKUP&quot;,
+  &quot;description&quot;: &quot;This is a regular checkup for Pikachu&quot;
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the Verb + Resource identifier to express what operation should be performed</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the <code>Content-Type</code> indicates how the server should interpret the message payload</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>the payload / body of the request containing the business relevant information</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>After the server received the HTTP request, it would e.g. produce the following response:</p>
+</div>
+<div class="listingblock">
+<div class="title">Corresponding HTTP Response indicating a Visit was created</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="http">HTTP/1.1 200 <i class="conum" data-value="1"></i><b>(1)</b>
+Content-Type: application/json
+
+{ <i class="conum" data-value="2"></i><b>(2)</b>
+  &quot;id&quot;: &quot;4e3bde19-c0ec-7cd0-654a-577ba32dcc7f&quot;
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>200</code> indicates the response code to categorize the outcome of interaction</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the response message (body) contains the actual business relevant information (visit identifier in this case)</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The message payload of an API interaction oftentimes uses the JSON format, as seen above. That being said, it is possible to exchange different message formats through HTTP as well, like <code>XML</code>, or <code>www-url-formencoded</code>. Also, binary formats are possible (to transfer PDF documents / images).</p>
+</div>
+<div class="paragraph">
+<p>With this general information, we can now shift our focus on how to convert those abstract descriptions into real working APIs in a CUBA application.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="how_to_create_an_http_controller"><a class="anchor" href="#how_to_create_an_http_controller"></a><a class="link" href="#how_to_create_an_http_controller">How to create an HTTP Controller</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the next section, we will take a look into the concrete usage of HTTP inside a CUBA application. CUBA is based on Spring, which offers dedicated support for providing HTTP APIs. In particular, Spring MVC is responsible for offering this functionality.</p>
+</div>
+<div class="paragraph">
+<p>In order to create an HTTP endpoint, it is necessary to create a Java class and annotate it with <code>@RestController</code>. To fulfil the implementation of the API operation <code>GET <a href="https://petclinic.cuba-platform.com/pets/123" class="bare">https://petclinic.cuba-platform.com/pets/123</a></code>, a method needs to be annotated with <code>@GetMapping</code>. This connects the method to a particular endpoint.</p>
+</div>
+<div class="paragraph">
+<p>Here you can find an example of such a REST Controller in Spring MVC:</p>
+</div>
+<div class="listingblock">
+<div class="title">FetchPetController.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">org.springframework.http.ResponseEntity</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.GetMapping</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.PathVariable</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RestController</span>;
+
+<span class="annotation">@RestController</span> <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">FetchPetController</span> {
+
+    <span class="annotation">@GetMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/pets/{petId}</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="directive">public</span> ResponseEntity&lt;Pet&gt; fetchPet(
+        <span class="annotation">@PathVariable</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">petId</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">String</span> petId <i class="conum" data-value="3"></i><b>(3)</b>
+    ) {
+
+        <span class="directive">final</span> Optional&lt;Pet&gt; possiblePet = dataManager.load(Pet.class)
+            .query(<span class="string"><span class="delimiter">&quot;</span><span class="content">e.identificationNumber = ?1</span><span class="delimiter">&quot;</span></span>, petId)
+            .optional();
+
+        <span class="keyword">if</span> (!possiblePet.isPresent()) {
+            <span class="keyword">return</span> ResponseEntity.notFound().build();
+        }
+
+        <span class="keyword">return</span> ResponseEntity.ok( <i class="conum" data-value="4"></i><b>(4)</b>
+            possiblePet.get()
+        );
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Registering the class as an HTTP / REST controller</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the <code>fetchPet</code> method links to the endpoint <code>GET /pets/{petId}</code> via the <code>@GetMapping</code> annotation</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>the <code>petId</code> part of the URL is dynamic and gets passed into the method as a parameter</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>ResponseEntity takes care of returning the correct HTTP status code and HTTP response body</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>For the different HTTP verbs Spring MVC provides the corresponding annotations, as we will see later in code listings.</p>
+</div>
+<div class="paragraph">
+<p>One part of the HTTP message metadata is the response code. Those codes are used to indicate the client different outcomes of the operation. The response code <code>200 - OK</code> is indicating a successful operation, whereas <code>404 - Not Found</code> tells the client that the requested resource is not available. There are several response codes that can be used to precisely describe the outcome of an operation.</p>
+</div>
+<div class="paragraph">
+<p>The <code>ResponseEntity</code> is responsible for controlling what HTTP response is returned to the client. But it is also used to define the response body. In the example above, a Pet object is treated as the response body. Spring MVC takes care of converting the Pet object into the JSON format and returns it to the HTTP client.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="rest_api_for_petclinic"><a class="anchor" href="#rest_api_for_petclinic"></a><a class="link" href="#rest_api_for_petclinic">REST API for Petclinic</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this section we will look into the CUBA Petclinic application, and see how we can create REST APIs for it in order to let other applications interact with the Petclinic.</p>
+</div>
+<div class="paragraph">
+<p>For most of the examples we will leverage the <a href="https://www.cuba-platform.com/marketplace/rest-api/">CUBA REST API add-on</a>. In the example project it is already installed. If you use the example as a starting point for your own implementation, make sure you have the add-on in your application via the CUBA Marketplace.</p>
+</div>
+<div class="paragraph">
+<p>All example requests for testing out the solution can be found in the <a href="https://github.com/cuba-guides/cuba-petclinic-rest-api/blob/master/requests">requests</a> directory in the example project. This directory contains multiple example requests to see the interaction with the API.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/rest-api/http-request-example.png"><img src="/guides/images/rest-api/http-request-example.png" alt="Example HTTP request"></a>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+When using CUBA Studio together with <a href="https://www.jetbrains.com/idea/">IntelliJ IDEA Ultimate</a>, those request examples can be used to directly interact with the running CUBA application via the corresponding "Play" button next to the request. It allows us to interactively use the API and see the actual HTTP requests and responses.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>A new application called <code>PetTreat</code> will be used at the Petclinic by Vets and Nurses on their tablets. <code>PetTreat</code> should support the employees performing the treatments of the pets. To achieve this, the tablet application must communicate with the <code>CUBA Petclinic</code> application. Furthermore, the data handled in <code>PetTreat</code> should be updated accordingly in the <code>CUBA Petclinic</code> application to be accessible for all employees.</p>
+</div>
+<div class="paragraph">
+<p>After an initial exploration of the required functionality, the following data interactions with the Petclinic were identified:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Search Pets by Name</p>
+</li>
+<li>
+<p>Create a Visit for a Pet</p>
+</li>
+<li>
+<p>See information about an existing Visit</p>
+</li>
+<li>
+<p>Start &amp; end a Treatment during a Visit</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>As these kinds of information and operations are very sensitive, it is required to only allow the corresponding Vets and Nurses to interact with the <code>CUBA Petclinic</code> system through <code>PetTreat</code>. As the information should be available immediately for all other employees at the Petclinic after it was entered in PetTreat, an API in the CUBA Petclinic will be used for interactions between the two applications.</p>
+</div>
+<div class="paragraph">
+<p>CUBA offers solutions for these requirements through the above mentioned Spring MVC APIs and the generic REST API add-on. In this example we will look into both solutions and compare the implementation of them.</p>
+</div>
+<div class="paragraph">
+<p>In order to support the authorization requirements, we will start with looking into CUBA OAuth2 implementation, which is a mechanism for authenticating users through the API.</p>
+</div>
+<div class="sect2">
+<h3 id="cuba_oauth2_api_authentication"><a class="anchor" href="#cuba_oauth2_api_authentication"></a><a class="link" href="#cuba_oauth2_api_authentication">CUBA OAuth2 API Authentication</a></h3>
+<div class="paragraph">
+<p>OAuth2 is a common internet standard for providing an authentication mechanism for API interaction. CUBA supports the OAuth2 authentication framework out-of-the-box via its <a href="https://doc.cuba-platform.com/restapi-latest/">REST API add-on</a>. The authentication via OAuth2 works the following way:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>a client makes a request providing the login credentials (username and password) to retrieve an <code>access token</code></p>
+</li>
+<li>
+<p>the <code>access token</code> is a short-living credential that is sent with every request as a HTTP header to authenticate further requests</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>An example request for performing the login and retrieve the access token looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">HTTP Access Token Request</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="http">POST http://localhost:8080/app/rest/v2/oauth/token
+Authorization: Basic {{cubaRestClientId}} {{cubaRestClientSecret}}
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password&amp;username={{username}}&amp;password={{password}}</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The parts in double curly braces like <code>{{username}}</code> are variables that should be replaced by the actual values. E.g. <code>username</code> and <code>password</code> need to be replaced by the actual username and password of a user to login.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This HTTP POST request will, if given correct credentials, respond with the following JSON containing the access token:</p>
+</div>
+<div class="listingblock">
+<div class="title">HTTP Access Token Response</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">access_token</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">56b53dab-0988-4480-84ae-5690bdf713dd</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">token_type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">bearer</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">refresh_token</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">44727aca-07d7-4363-b545-d2801502d01b</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">expires_in</span><span class="delimiter">&quot;</span></span>: <span class="integer">43199</span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">scope</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">rest-api</span><span class="delimiter">&quot;</span></span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The value of the <code>access_token</code> fields must be stored in the client application and used for further requests. After the authentication step is done, it is possible to interact with the REST API in an authenticated way. This means that further requests, performed with this access token, act as the user who originally requested the token.</p>
+</div>
+<div class="paragraph">
+<p>In particular, CUBA now takes the complete security subsystem into consideration, like the Roles as well as the Access Group which the user is currently associated with. For example, if the user is inside an access group, that only allows seeing Pets of the type <code>Water</code>, the same restriction is populated through the API.</p>
+</div>
+<div class="paragraph">
+<p>You can find more information on the different security related topics in the add-on documentation:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://doc.cuba-platform.com/restapi-latest/#rest_api_v2_ex_get_token">OAuth 2 Authentication</a></p>
+</li>
+<li>
+<p><a href="https://doc.cuba-platform.com/restapi-latest/#security">REST API Security</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The next step is to go through the functional requirements for <code>PetTreat</code> and see how to perform these operations through an API. We will start off with the generic API approach directly available via the REST API add-on.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="rest_add_on_for_generic_api"><a class="anchor" href="#rest_add_on_for_generic_api"></a><a class="link" href="#rest_add_on_for_generic_api">REST add-on for generic API</a></h3>
+<div class="paragraph">
+<p>The four requirements of looking up the data from Pets and Visits, as well as creating visits and starting a treatment, can be achieved through the generic REST API.</p>
+</div>
+<div class="paragraph">
+<p>Before showing how it works, let&#8217;s quickly go through the idea behind the generic API from the REST API addon.</p>
+</div>
+<div class="paragraph">
+<p>With the help of the add-on, the CUBA application provides an API for performing CRUD operations for all entities out-of-the-box. There is no need to write code on the server side to expose the entity data as an API. Also, for similar operations like creating or updating an entity, the generic API will provide this capability.</p>
+</div>
+<div class="paragraph">
+<p>It is also possible to expose CUBA services directly via this generic API only by registering the business service in a configuration file as we will see in one of the examples.</p>
+</div>
+<div class="sect3">
+<h4 id="retrieving_visit_information"><a class="anchor" href="#retrieving_visit_information"></a><a class="link" href="#retrieving_visit_information">Retrieving Visit information</a></h4>
+<div class="paragraph">
+<p>For retrieving the Visit Information through the generic API, the following HTTP GET request can be performed:</p>
+</div>
+<div class="listingblock">
+<div class="title">Retrieve Visit Information</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="http">GET http://localhost:8080/app/rest/v2/entities/petclinic_Visit <i class="conum" data-value="1"></i><b>(1)</b>
+Authorization: Bearer {{auth_token}} <i class="conum" data-value="2"></i><b>(2)</b>
+
+
+HTTP/1.1 200
+Content-Type: application/json;charset=UTF-8
+
+[ <i class="conum" data-value="3"></i><b>(3)</b>
+  {
+    &quot;_entityName&quot;: &quot;petclinic_Visit&quot;,
+    &quot;_instanceName&quot;: &quot;198 - Murkrow ()&quot;,
+    &quot;id&quot;: &quot;0019e1b3-ab9a-c322-ef9b-5824fab430c2&quot;,
+    &quot;visitEnd&quot;: &quot;2020-09-07 10:00:00.000&quot;,
+    &quot;description&quot;: &quot;Surgery&quot;,
+    &quot;type&quot;: &quot;RECHARGE&quot;,
+    &quot;visitStart&quot;: &quot;2020-09-07 08:30:00.000&quot;,
+    &quot;version&quot;: 1,
+    &quot;petName&quot;: &quot;Murkrow&quot;,
+    &quot;treatmentStatus&quot;: &quot;DONE&quot;,
+    &quot;typeStyle&quot;: &quot;event-green&quot;,
+    &quot;pet&quot;: {
+      &quot;_entityName&quot;: &quot;petclinic_Pet&quot;,
+      &quot;_instanceName&quot;: &quot;198 - Murkrow&quot;,
+      &quot;id&quot;: &quot;e66f31a9-fa41-3e76-e881-d139439afc27&quot;,
+      &quot;version&quot;: 1,
+      &quot;name&quot;: &quot;Murkrow&quot;,
+      &quot;identificationNumber&quot;: &quot;198&quot;
+    }
+  },
+  {
+    &quot;_entityName&quot;: &quot;petclinic_Visit&quot;,
+    &quot;_instanceName&quot;: &quot;118 - Goldeen ()&quot;,
+    &quot;id&quot;: &quot;001c0a58-3e2d-7d11-e93f-a16e21208378&quot;,
+    &quot;visitEnd&quot;: &quot;2019-10-21 12:45:00.000&quot;,
+    &quot;description&quot;: &quot;Surgery&quot;,
+    &quot;type&quot;: &quot;REGULAR_CHECKUP&quot;,
+    &quot;visitStart&quot;: &quot;2019-10-21 12:15:00.000&quot;,
+    &quot;version&quot;: 1,
+    &quot;petName&quot;: &quot;Goldeen&quot;,
+    &quot;treatmentStatus&quot;: &quot;DONE&quot;,
+    &quot;typeStyle&quot;: &quot;event-blue&quot;,
+    &quot;pet&quot;: {
+      &quot;_entityName&quot;: &quot;petclinic_Pet&quot;,
+      &quot;_instanceName&quot;: &quot;118 - Goldeen&quot;,
+      &quot;id&quot;: &quot;ebc6b61a-e6cc-8b95-4139-cc76fd408539&quot;,
+      &quot;version&quot;: 1,
+      &quot;name&quot;: &quot;Goldeen&quot;,
+      &quot;identificationNumber&quot;: &quot;118&quot;
+    }
+  },
+  {
+    &quot;_entityName&quot;: &quot;petclinic_Visit&quot;,
+    &quot;_instanceName&quot;: &quot;109 - Smogon ()&quot;,
+    &quot;id&quot;: &quot;00384f37-0361-56ba-1289-89827d682ce8&quot;,
+    &quot;visitEnd&quot;: &quot;2020-09-04 14:30:00.000&quot;,
+    &quot;description&quot;: &quot;Fever&quot;,
+    &quot;type&quot;: &quot;RECHARGE&quot;,
+    &quot;visitStart&quot;: &quot;2020-09-04 13:30:00.000&quot;,
+    &quot;version&quot;: 1,
+    &quot;petName&quot;: &quot;Smogon&quot;,
+    &quot;treatmentStatus&quot;: &quot;DONE&quot;,
+    &quot;typeStyle&quot;: &quot;event-green&quot;,
+    &quot;pet&quot;: {
+      &quot;_entityName&quot;: &quot;petclinic_Pet&quot;,
+      &quot;_instanceName&quot;: &quot;109 - Smogon&quot;,
+      &quot;id&quot;: &quot;4100306c-49cd-0961-bfa3-c50859f1e6c4&quot;,
+      &quot;version&quot;: 1,
+      &quot;name&quot;: &quot;Smogon&quot;,
+      &quot;identificationNumber&quot;: &quot;109&quot;
+    }
+  }
+]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the URL path <code>entities/petclinic_Visit</code> indicates which entity data to load</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the access token must be passed to every request in order to perform the authentication</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>the response contains a list of all Visits with its corresponding data</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="filtering_for_pets_by_name"><a class="anchor" href="#filtering_for_pets_by_name"></a><a class="link" href="#filtering_for_pets_by_name">Filtering for Pets by Name</a></h4>
+<div class="paragraph">
+<p>The generic API also provides an endpoint to perform searches for entities. It is possible to define filter criteria similar to how you would do it in the generic Filter UI component. Filtering for the Pet with the name "Pikachu" can be done like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">Search for Pet by Name</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="http">POST http://localhost:8080/app/rest/v2/entities/petclinic_Pet/search
+Authorization: Bearer {{auth_token}}
+
+{
+  &quot;filter&quot;: { <i class="conum" data-value="1"></i><b>(1)</b>
+    &quot;conditions&quot;: [
+      {
+        &quot;property&quot;: &quot;name&quot;,
+        &quot;operator&quot;: &quot;=&quot;,
+        &quot;value&quot;: &quot;Pikachu&quot;
+      }
+    ]
+  },
+  &quot;view&quot;: &quot;pet-with-owner-and-type&quot; <i class="conum" data-value="2"></i><b>(2)</b>
+}
+
+
+HTTP/1.1 200
+Content-Type: application/json;charset=UTF-8
+
+[ <i class="conum" data-value="3"></i><b>(3)</b>
+  {
+    &quot;_entityName&quot;: &quot;petclinic_Pet&quot;,
+    &quot;_instanceName&quot;: &quot;025 - Pikachu&quot;,
+    &quot;id&quot;: &quot;d83cc7f7-69b5-3830-ff1d-ed74d1e4a79c&quot;,
+    &quot;owner&quot;: {
+      &quot;_entityName&quot;: &quot;petclinic_Owner&quot;,
+      &quot;_instanceName&quot;: &quot;Ash Ketchum&quot;,
+      &quot;id&quot;: &quot;351eb2d2-c70b-3af7-109c-2b19a5929101&quot;,
+      &quot;lastName&quot;: &quot;Ketchum&quot;,
+      &quot;address&quot;: &quot;Miastreet 134&quot;,
+      &quot;city&quot;: &quot;Alabastia&quot;,
+      &quot;telephone&quot;: &quot;00497688166348&quot;,
+      &quot;firstName&quot;: &quot;Ash&quot;,
+      &quot;email&quot;: &quot;ash-ketchum@example.com&quot;
+    },
+    &quot;type&quot;: {
+      &quot;_entityName&quot;: &quot;petclinic_PetType&quot;,
+      &quot;_instanceName&quot;: &quot;Electric&quot;,
+      &quot;id&quot;: &quot;d390dc26-3462-7586-221a-3110f0fcd97c&quot;,
+      &quot;name&quot;: &quot;Electric&quot;
+    },
+    &quot;birthDate&quot;: &quot;1998-01-03&quot;,
+    &quot;name&quot;: &quot;Pikachu&quot;,
+    &quot;identificationNumber&quot;: &quot;025&quot;
+  }
+]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the filter definition is sent as the HTTP POST body</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>a view can be specified for defining which data is returned</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>the HTTP response contains the entry list that matches the search criteria</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>With this very flexible API it is possible to perform all kinds of queries against the list of entities. More information can be found in the <a href="https://doc.cuba-platform.com/restapi-latest/#rest_api_v2_ex_search_filter">documentation</a>. With those two endpoints, the API fulfils the requirements to view &amp; search all kinds of Visit and Pet data in the <code>PetTreat</code> application.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="finding_a_visit_by_its_identification_number"><a class="anchor" href="#finding_a_visit_by_its_identification_number"></a><a class="link" href="#finding_a_visit_by_its_identification_number">Finding a Visit by its Identification Number</a></h4>
+<div class="paragraph">
+<p>Another similar example is to find the Pet via its identification number. This could be also achieved by the search API, but in this case, let&#8217;s take a look at using custom service to provide this capability. The <code>PetService</code> that is part of the demo application has the <code>findById(String petIdentificationNumber)</code> method which returns a Pet instance. It is possible to expose this service directly through the generic REST API, so that the method could be invoked via the API.</p>
+</div>
+<div class="paragraph">
+<p>For this to work, we need to register the Service method in a configuration file called <code>rest-services.xml</code> in the web module.</p>
+</div>
+<div class="listingblock">
+<div class="title">rest-services.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="tag">&lt;services</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://schemas.haulmont.com/cuba/rest-services-v2.xsd</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+
+    <span class="tag">&lt;service</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_PetService</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;method</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">findById</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
+            <span class="tag">&lt;param</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">petIdentificationNumber</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+        <span class="tag">&lt;/method&gt;</span>
+    <span class="tag">&lt;/service&gt;</span>
+
+<span class="tag">&lt;/services&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the method <code>findById</code> is marked as part of the generic REST API for authenticated users</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This file also must be attached to the configuration via the <code>web-app.properties</code> like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>cuba.rest.servicesConfig=+com/haulmont/sample/petclinic/rest-services.xml</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+CUBA Studio allows automatic generation of the file and the <code>web-app.properties</code> binding by right clicking the "REST API" section in the CUBA menu and selecting "Create REST Services Configuration".
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Now that the method is exposed, it is possible to interact with the method in the following way:</p>
+</div>
+<div class="listingblock">
+<div class="title">Create a Visit</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="http">GET http://localhost:8080/app/rest/v2/services/petclinic_PetService/findById?petIdentificationNumber=025 <i class="conum" data-value="1"></i><b>(1)</b>
+Authorization: Bearer {{auth_token}}
+
+
+HTTP/1.1 200
+Content-Type: application/json;charset=UTF-8
+
+{ <i class="conum" data-value="2"></i><b>(2)</b>
+  &quot;_entityName&quot;: &quot;petclinic_Pet&quot;,
+  &quot;id&quot;: &quot;d83cc7f7-69b5-3830-ff1d-ed74d1e4a79c&quot;,
+  &quot;owner&quot;: {
+    &quot;id&quot;: &quot;351eb2d2-c70b-3af7-109c-2b19a5929101&quot;,
+    &quot;name&quot;: &quot;Ash Ketchum&quot;,
+  },
+  &quot;type&quot;: {
+    &quot;_entityName&quot;: &quot;petclinic_PetType&quot;,
+    &quot;_instanceName&quot;: &quot;Electric&quot;,
+    &quot;id&quot;: &quot;d390dc26-3462-7586-221a-3110f0fcd97c&quot;,
+    &quot;name&quot;: &quot;Electric&quot;,
+    &quot;version&quot;: 1
+  },
+  &quot;birthDate&quot;: &quot;1998-01-03&quot;,
+  &quot;name&quot;: &quot;Pikachu&quot;,
+  &quot;identificationNumber&quot;: &quot;025&quot;
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the method invocation happens through HTTP GET and passing in the method parameters as URL parameters <code>?petIdentificationNumber=025</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the response body contains the Pet information returned as a JSON structure</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="creating_a_visit_for_a_pet"><a class="anchor" href="#creating_a_visit_for_a_pet"></a><a class="link" href="#creating_a_visit_for_a_pet">Creating a Visit for a Pet</a></h4>
+<div class="paragraph">
+<p>The next operation for creating a visit can be performed through the generic Entities API as well. For creating a Visit, the following HTTP POST request must be performed:</p>
+</div>
+<div class="listingblock">
+<div class="title">Create a Visit</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="http">POST http://localhost:8080/app/rest/v2/entities/petclinic_Visit
+Authorization: Bearer {{auth_token}}
+
+{ <i class="conum" data-value="1"></i><b>(1)</b>
+    &quot;visitStart&quot;: &quot;2020-10-14 08:30:00.000&quot;,
+    &quot;visitEnd&quot;: &quot;2020-10-15 10:00:00.000&quot;,
+    &quot;description&quot;: &quot;Surgery created via API&quot;,
+    &quot;type&quot;: &quot;RECHARGE&quot;,
+    &quot;pet&quot;: {
+      &quot;id&quot;: &quot;d83cc7f7-69b5-3830-ff1d-ed74d1e4a79c&quot; <i class="conum" data-value="2"></i><b>(2)</b>
+    }
+}
+
+
+HTTP/1.1 201 <i class="conum" data-value="3"></i><b>(3)</b>
+Location: http://localhost:8080/petclinic/rest/v2/entities/petclinic_Visit/a1aa87cb-c68f-ef2f-a69a-a685eeb2dd0c
+Content-Type: application/json;charset=UTF-8
+
+{
+  &quot;_entityName&quot;: &quot;petclinic_Visit&quot;,
+  &quot;id&quot;: &quot;a1aa87cb-c68f-ef2f-a69a-a685eeb2dd0c&quot; <i class="conum" data-value="4"></i><b>(4)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the Visit information is sent as the request body</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>links to other entities like the <code>Pet</code> are created by ID references</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>the HTTP response is <code>201 - Created</code> for a valid request</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>the result contains an ID of the newly created Visit</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>When using Bean Validation in the entities, the constraints are checked against the request. In case the invalid data is sent, the Visit will not be created, and the client will retrieve an error message with information about what went wrong.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="starting_and_stopping_a_visit_treatment"><a class="anchor" href="#starting_and_stopping_a_visit_treatment"></a><a class="link" href="#starting_and_stopping_a_visit_treatment">Starting and Stopping a Visit Treatment</a></h4>
+<div class="paragraph">
+<p>The last API operation that <code>PetTreat</code> needs is the ability to start / finish a Visit treatment. In the entity model, this operation is expressed via a status field of the Visit entity called <code>treatmentStatus</code>. Therefore, it is possible to perform an update of the Visit entity respectively.</p>
+</div>
+<div class="paragraph">
+<p>The following request will start the treatment of a Visit:</p>
+</div>
+<div class="listingblock">
+<div class="title">Start a Visit treatment</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="http">PUT http://localhost:8080/app/rest/v2/entities/petclinic_Visit/{{visitId}} <i class="conum" data-value="1"></i><b>(1)</b>
+Authorization: Bearer {{auth_token}}
+
+{
+    &quot;treatmentStatus&quot;: &quot;IN_PROGRESS&quot; <i class="conum" data-value="2"></i><b>(2)</b>
+}
+
+
+HTTP/1.1 200</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>an HTTP PUT request is performed against the URL of the Visit</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the fields to update are sent through the request body</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Finishing a treatment can be done with the same HTTP request, but instead of sending <code>IN_PROGRESS</code> you have to send <code>DONE</code> in the field value.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="custom_api_operations"><a class="anchor" href="#custom_api_operations"></a><a class="link" href="#custom_api_operations">Custom API operations</a></h3>
+<div class="paragraph">
+<p>After seeing how to leverage the generic REST API of CUBA, let&#8217;s find out how to create those APIs via custom REST controllers via Spring MVC, as shown in the beginning. Let&#8217;s go through the four scenarios and see how to tackle them one by one.</p>
+</div>
+<div class="sect3">
+<h4 id="registering_custom_controllers_in_cuba"><a class="anchor" href="#registering_custom_controllers_in_cuba"></a><a class="link" href="#registering_custom_controllers_in_cuba">Registering custom Controllers in CUBA</a></h4>
+<div class="paragraph">
+<p>The first step is to create a Spring MVC controller class and register it in the CUBA application. For registration we need to create a file called <code>rest-dispatcher-spring.xml</code> under <code>com/haulmont/sample/petclinic</code> package within the <code>web</code> module. It contains the configuration of the custom API:</p>
+</div>
+<div class="listingblock">
+<div class="title">rest-dispatcher-spring.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;beans</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.springframework.org/schema/beans</span><span class="delimiter">&quot;</span></span>
+       <span class="attribute-name">xmlns:xsi</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema-instance</span><span class="delimiter">&quot;</span></span>
+       <span class="attribute-name">xmlns:context</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.springframework.org/schema/context</span><span class="delimiter">&quot;</span></span>
+      <span class="attribute-name">xmlns:security</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.springframework.org/schema/security</span><span class="delimiter">&quot;</span></span>
+       <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span>
+           <span class="content">http://www.springframework.org/schema/beans</span>
+           <span class="content">http://www.springframework.org/schema/beans/spring-beans-4.3.xsd</span>
+           <span class="content">http://www.springframework.org/schema/context</span>
+           <span class="content">http://www.springframework.org/schema/context/spring-context-4.3.xsd</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+
+
+  <span class="tag">&lt;context:component-scan</span>
+    <span class="attribute-name">base-package</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.haulmont.sample.petclinic.web.controller</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="1"></i><b>(1)</b>
+  <span class="tag">/&gt;</span>
+
+  <span class="tag">&lt;security:http</span>
+    <span class="attribute-name">pattern</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">/rest/api/**</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="attribute-name">create-session</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">stateless</span><span class="delimiter">&quot;</span></span>
+    <span class="attribute-name">entry-point-ref</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">oauthAuthenticationEntryPoint</span><span class="delimiter">&quot;</span></span>
+    <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.springframework.org/schema/security</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="comment">&lt;!-- Specify one or more protected URL patterns--&gt;</span>
+    <span class="tag">&lt;intercept-url</span>
+        <span class="attribute-name">pattern</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">/rest/api/**</span><span class="delimiter">&quot;</span></span>
+        <span class="attribute-name">access</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">isAuthenticated()</span><span class="delimiter">&quot;</span></span>
+    <span class="tag">/&gt;</span>
+    <span class="tag">&lt;anonymous</span> <span class="attribute-name">enabled</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">false</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;csrf</span> <span class="attribute-name">disabled</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;cors</span> <span class="attribute-name">configuration-source-ref</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">cuba_RestCorsSource</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;custom-filter</span> <span class="attribute-name">ref</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">resourceFilter</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">before</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">PRE_AUTH_FILTER</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;custom-filter</span> <span class="attribute-name">ref</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">cuba_AnonymousAuthenticationFilter</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">after</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">PRE_AUTH_FILTER</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+  <span class="tag">&lt;/security:http&gt;</span>
+
+<span class="tag">&lt;/beans&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>activate automatic searches for <code>@Controller</code> annotated classes in the <code>controller</code> sub-package</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>configure authentication for the route <code>/rest/api/**</code> and all controllers that are put under this prefix</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>After creating this file, it needs to be registered within the <code>web-app.properties</code> like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">web-app.properties</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="properties">cuba.restSpringContextConfig = +com/haulmont/sample/petclinic/rest-dispatcher-spring.xml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With this configuration in place, we can create our first controller inside the <code>controller</code> package.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="retrieving_pet_and_visit_information"><a class="anchor" href="#retrieving_pet_and_visit_information"></a><a class="link" href="#retrieving_pet_and_visit_information">Retrieving Pet and Visit information</a></h4>
+<div class="paragraph">
+<p>The first custom API that is requested by <code>PetTreat</code> is to load Pet and Visit Information for display purposes. For the <code>fetchPet</code> controller, we have already seen an example above. For the Visit fetching, the difference is that a dedicated response object is used:</p>
+</div>
+<div class="listingblock">
+<div class="title">VisitController.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@RestController</span>(VisitController.NAME)
+<span class="annotation">@RequestMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/api</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">VisitController</span> {
+
+    <span class="comment">// ...</span>
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> VisitService visitService;
+
+    <span class="annotation">@GetMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/visits/{visitId}</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">public</span> ResponseEntity&lt;FetchVisitApiResponse&gt; fetchVisit(
+        <span class="annotation">@PathVariable</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">visitId</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">UUID</span> visitId
+    ) {
+
+        <span class="directive">final</span> Optional&lt;Visit&gt; visit = Optional.ofNullable(
+            visitService.fetch(visitId)
+        ); <i class="conum" data-value="1"></i><b>(1)</b>
+
+        <span class="keyword">return</span> ResponseEntity.of(
+            FetchVisitApiResponse.of(visit) <i class="conum" data-value="2"></i><b>(2)</b>
+        );
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the Visit entity is loaded via the <code>VisitService</code> that loads the Visit from the database</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the Visit is transformed into a <code>FetchVisitApiResponse</code> object, that is sent as the response body</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Here are two interesting points to elaborate a little further. First, the controller is very small in its functionality scope. Although it would be possible to perform the data fetching directly against the database, and potentially do data transformation also, those responsibilities are put into different classes. It&#8217;s mostly a good idea to keep the controller layer thin and only let it perform its main responsibility: doing HTTP interactions. The actual business logic is delegated to other classes.</p>
+</div>
+<div class="paragraph">
+<p>The second thing to notice here is the dedicated <code>FetchVisitApiResponse</code> object. This class defines the JSON response that is transferred via HTTP to the client. It is mainly a data transfer object (DTO) that decouples the HTTP response from the entity model of the application.</p>
+</div>
+<div class="listingblock">
+<div class="title">FetchVisitApiResponse.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">FetchVisitApiResponse</span> {
+
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> id;
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> petIdentificationNumber;
+
+    <span class="annotation">@JsonFormat</span>(pattern = <span class="string"><span class="delimiter">&quot;</span><span class="content">dd/MM/yyyy</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="directive">private</span> <span class="directive">final</span> LocalDateTime visitStart;
+
+    <span class="annotation">@JsonFormat</span>(pattern = <span class="string"><span class="delimiter">&quot;</span><span class="content">dd/MM/yyyy</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">private</span> <span class="directive">final</span> LocalDateTime visitEnd;
+
+    <span class="directive">private</span> <span class="directive">final</span> ApiVisitType type; <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> description;
+
+    <span class="comment">// ...</span>
+
+    <span class="directive">public</span> <span class="directive">static</span> Optional&lt;FetchVisitApiResponse&gt; of(Optional&lt;Visit&gt; possibleVisit) {
+        <span class="keyword">return</span> possibleVisit.map(visit -&gt; <i class="conum" data-value="3"></i><b>(3)</b>
+            <span class="keyword">new</span> FetchVisitApiResponse(
+                visit.getId().toString(),
+                visit.getPet().getIdentificationNumber(),
+                visit.getVisitStart(),
+                visit.getVisitEnd(),
+                ApiVisitType.ofEntityType(visit.getType())
+                    .orElse(<span class="predefined-constant">null</span>),
+                visit.getDescription()
+            )
+        );
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">String</span> getPetIdentificationNumber() { <i class="conum" data-value="4"></i><b>(4)</b>
+        <span class="keyword">return</span> petIdentificationNumber;
+    }
+
+    <span class="directive">public</span> LocalDateTime getVisitStart() {
+        <span class="keyword">return</span> visitStart;
+    }
+
+    <span class="comment">// ...</span>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Json annotations are used to configure the JSON output for particular fields</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the fields might contain different types (like <code>ApiVisitType</code> instead of <code>VisitType</code>) compared to the entity layer</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>the <code>of</code> factory method maps the entity layer to the DTO layer and converts the attributes if needed</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>the getter methods define which attributes will be exposed via JSON</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The fundamental value proposition of this class is that you can exactly control what attributes are displayed via the API. Furthermore, due to the decoupling of the JSON response from the entity model, it is possible to adjust the structure of the entity layer while keeping the API contract intact. If you decide to rename an attribute in your database, it should not be required to let you API users also rename those fields in their integration source code.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="creating_a_visit_for_a_pet_2"><a class="anchor" href="#creating_a_visit_for_a_pet_2"></a><a class="link" href="#creating_a_visit_for_a_pet_2">Creating a Visit for a Pet</a></h4>
+<div class="paragraph">
+<p>The next operation is to create a visit for a Pet. This endpoint also is located in the <code>VisitController</code> as another method:</p>
+</div>
+<div class="listingblock">
+<div class="title">VisitController.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VisitController</span> {
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> VisitService visitService;
+
+    <span class="annotation">@PostMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/visits</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">public</span> ResponseEntity&lt;CreateVisitApiResponse&gt; createUpcomingVisit(
+        <span class="annotation">@RequestBody</span> <span class="annotation">@Valid</span> CreateVisitApiRequest createVisitApiRequest <i class="conum" data-value="1"></i><b>(1)</b>
+    ) {
+
+        <span class="directive">final</span> Visit visit = visitService.create(
+            createVisitApiRequest.toVisitCreation() <i class="conum" data-value="2"></i><b>(2)</b>
+        );
+
+        <span class="keyword">return</span> ResponseEntity.ok(
+            CreateVisitApiResponse.of(visit) <i class="conum" data-value="3"></i><b>(3)</b>
+        );
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the <code>CreateVisitApiRequest</code> parameter is parsed from the JSON body of the request</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the <code>VisitService</code> receives a <code>VisitCreation</code> object and does not directly depend on the request object</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>after the visit has been created, a <code>CreateVisitApiResponse</code> object is returned to the client</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In this example we have decoupled the inner workings of the Petclinic with the outside world. The dedicated API objects <code>CreateVisitApiRequest</code> and <code>CreateVisitApiResponse</code> represent the contract with the API client. Those classes are only used in the controller layer. Internally, when interacting with the <code>VisitService</code>, the request object is converted to another DTO called <code>VisitCreation</code>. This class is located in the global module of CUBA. This enforces proper layering between the REST API and the internal service layer.</p>
+</div>
+<div class="paragraph">
+<p>The <code>@Valid</code> annotation on the request parameter indicates to Spring that the request object needs to be validated via bean validation. In case the JSON request contains invalid data, Spring will return a proper error response with a message of the bean validation results.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="starting_and_stopping_a_visit_treatment_2"><a class="anchor" href="#starting_and_stopping_a_visit_treatment_2"></a><a class="link" href="#starting_and_stopping_a_visit_treatment_2">Starting and Stopping a Visit Treatment</a></h4>
+<div class="paragraph">
+<p>The last business requirement is to be able to start and finish Visit treatments via <code>PetTreat</code>. The API is similar to the visit creation API, but it shows one interesting difference: <em>API as a way to additional created abstractions</em>. Up until now the API more or less mirrored the domain model of the Petclinic. Usually it is enough, but sometimes it is possible to use the API layer as a way to simplify the internal domain model or hide certain details.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s look at the controller first, so that you get an idea on what kind of abstraction we are talking about:</p>
+</div>
+<div class="listingblock">
+<div class="title">TreatmentController.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@RestController</span>(TreatmentController.NAME)
+<span class="annotation">@RequestMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/api</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">TreatmentController</span> {
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">String</span> NAME = <span class="string"><span class="delimiter">&quot;</span><span class="content">petclinic_TreatmentController</span><span class="delimiter">&quot;</span></span>;
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">protected</span> TreatmentService treatmentService;
+
+    <span class="annotation">@PostMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/treatments/{visitId}</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">public</span> ResponseEntity&lt;<span class="predefined-type">Void</span>&gt; startTreatment(
+        <span class="annotation">@PathVariable</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">visitId</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">UUID</span> visitId
+    ) {
+        treatmentService.start(visitId);
+        <span class="keyword">return</span> noContent();
+    }
+
+    <span class="annotation">@PatchMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/treatments/{visitId}</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">public</span> ResponseEntity&lt;<span class="predefined-type">Void</span>&gt; finishTreatment(
+        <span class="annotation">@PathVariable</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">visitId</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">UUID</span> visitId,
+        <span class="annotation">@RequestBody</span> <span class="annotation">@Valid</span> FinishTreatmentApiRequest request
+    ) {
+
+        <span class="keyword">if</span> (request.isCancelled()) {
+            treatmentService.cancel(visitId);
+        }
+        <span class="keyword">else</span> {
+            treatmentService.finish(visitId);
+        }
+
+        <span class="keyword">return</span> noContent();
+    }
+
+    <span class="directive">private</span> ResponseEntity&lt;<span class="predefined-type">Void</span>&gt; noContent() {
+        <span class="keyword">return</span> ResponseEntity.noContent().build();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The controller provides two endpoints: "Start Treatment": <code>POST /treatments/{visitId}</code> and "Finish Treatment": <code>PATCH  /treatments/{visitId}</code>. It is possible to have the same URL but provide different HTTP operations to them. Here, the reason is that for both we are actually effecting the same treatment / visit resource.</p>
+</div>
+<div class="paragraph">
+<p>Internally the API performs changes on the <code>Visit</code> entity. In particular, the <code>treatmentStatus</code> attribute is effected. If you look back to how it is solved by using the generic API, you will see that we updated this field directly.</p>
+</div>
+<div class="paragraph">
+<p>In this custom implementation on the API level we are not talking about <code>Visits</code>. Instead, by the endponit and request &amp; response objects we are mainly creating the concept of a <code>Treatment</code>. Here is an example of the HTTP request to finish a treatment:</p>
+</div>
+<div class="listingblock">
+<div class="title">Finish Treatment Request</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="http">PATCH http://localhost:8080/petclinic/rest/api/treatments/{{visitId}}
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  &quot;outcome&quot;: &quot;DONE&quot;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this case the API provides a higher level abstraction over CRUD operations to the domain model of the Visit. The <code>FinishTreatmentApiRequest</code> contains an attribute <code>outcome</code> which determines the outcome of the treatment: <code>DONE</code> or <code>CANCELLED</code>. This enum is not directly used by any entity, but it is rather only an API abstraction to control the different actions within the controller on what business operation to perform.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="pros_cons_of_different_approaches"><a class="anchor" href="#pros_cons_of_different_approaches"></a><a class="link" href="#pros_cons_of_different_approaches">Pros &amp; Cons of different approaches</a></h3>
+<div class="paragraph">
+<p>With closing off those examples, we finished the complete Petclinic example of the REST API. With those two different approaches in mind, let&#8217;s look into their pros and cons.</p>
+</div>
+<div class="sect3">
+<h4 id="generic_api"><a class="anchor" href="#generic_api"></a><a class="link" href="#generic_api">Generic API</a></h4>
+<div class="paragraph">
+<p>The generic REST API provided by CUBA is a huge time saver. It comes out-of-the-box with complete CRUD operations on entities. Furthermore, it implements some other extended functionality like file upload, Swagger API documentation or translation endpoints for entity attributes.</p>
+</div>
+<div class="paragraph">
+<p>The functionality of loading entities in various ways with proper pagination, search capabilities and a mechanism to define queries in the request gives huge flexibility for the client of the API without touching the server side.</p>
+</div>
+<div class="paragraph">
+<p>Through referencing different views, it is also possible to control the amount of the returned data within the client. In the example above, we saw where the search operation was invoked with the view <code>pet-with-owner-and-type</code>. Here not only the pet itself, but also the reference to the owner and its type is returned to the JSON.</p>
+</div>
+<div class="paragraph">
+<p>With the built-in security mechanism it is possible to transparently control what data the API client is able to retrieve on the server side, just as it is possible in the UI.</p>
+</div>
+<div class="paragraph">
+<p>By exposing service methods as an API, it is possible to expose business logic via APIs without the need to develop the HTTP interactions on the server side. This allows creating an abstraction on top of the direct entity access in order to ensure data integrity, further validation, etc.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="custom_api"><a class="anchor" href="#custom_api"></a><a class="link" href="#custom_api">Custom API</a></h4>
+<div class="paragraph">
+<p>The custom Petclinic API is leveraging Spring MVCs mechanisms to control the HTTP interaction in very precise ways. It is possible to define the input data as well as the output data. HTTP response codes can be used to describe particular situations in the HTTP lifecycle like error scenarios.</p>
+</div>
+<div class="paragraph">
+<p>By defining the input and output data via dedicated request and response objects, it is possible to control which data is returned. Furthermore, it allows defining higher level API abstractions on top of the entity model. Oftentimes it is a good idea not to make every database entity accessible via APIs. The decoupling allows you to free yourself from changing your internal entity model without changing your API client.</p>
+</div>
+<div class="paragraph">
+<p>The generic API has some mechanisms in place to overcome those shortcomings. E.g. it is possible to define <a href="https://doc.cuba-platform.com/restapi-latest/#rest_api_v2_data_model_versioning">model-transformations</a> to have backwards compatibility when an entity attribute is changed. But those possibilities are limited in nature compared to controlling the input &amp; output data in java classes. Also, the possibility to invoke CUBA services directly provides a way to decouple the entity model from the API.</p>
+</div>
+<div class="paragraph">
+<p>Developing a custom API is time-consuming, in particular when a big API surface is needed. On the other hand, it is oftentimes required in case strict API backwards compatibility is a must-have, because you do not control the API clients.</p>
+</div>
+<div class="paragraph">
+<p>CUBA together with Spring provides mechanisms to fulfil both ends of the spectrum. Depending on the use-case and requirement either a custom API or the usage of the generic API is a better fit. It is also possible to use both approaches hand-in-hand. E.g. the search capabilities can be used via the generic API, while the write operations are performed through custom API controllers.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this guide we have learned about the basics of the architectural style REST and its concrete application within HTTP. We went over the basics like Resources, Verbs, as well as Requests and Responses. After that we shifted our focus to take a look on how to create HTTP endpoints in Spring. The annotation driven approach via <code>@RestController</code> and <code>@GetMapping</code> classes and methods are linked to HTTP endpoints.</p>
+</div>
+<div class="paragraph">
+<p>With that knowledge in place, we started looking into the Petclinic example on how to connect the imaginary <code>PetTreat</code> application to it. In CUBA there are two main options when it comes to REST APIs: using standard functionality or providing custom REST APIs via Spring. For both variants we looked into the concrete implementation of how the different requirements of <code>PetTreat</code> would be solved.</p>
+</div>
+<div class="paragraph">
+<p>We finished the guide with a comparison of both approaches. As we have seen, there are pros and cons both for the generic API and a custom API. CUBA provides the flexibility to you to mix and match the approaches to come up with the best solution.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="further_information"><a class="anchor" href="#further_information"></a><a class="link" href="#further_information">Further Information</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://doc.cuba-platform.com/restapi-latest/">CUBA REST API documentation</a></p>
+</li>
+<li>
+<p><a href="https://www.jetbrains.com/help/idea/http-client-in-product-code-editor.html">Running Requests in IntelliJ IDEA</a></p>
+</li>
+<li>
+<p><a href="https://www.restapitutorial.com/">More information on RESTful APIs</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!-- Sidebar (right column) -->
+            <div id="blog-sidebar">
+                <div class="region region-sidebar ">
+                    <section id="block-block-29" class="block block-block clearfix">
+
+                        <div class="guide-panel">
+                            <h3 class="header-table-content">Table of contents</h3>
+                            <ul class="sectlevel1">
+<li><a href="#what_we_are_going_to_build">What we are going to build</a>
+<ul class="sectlevel2">
+<li><a href="#requirements">Requirements</a></li>
+</ul>
+</li>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#what_is_a_rest_api">What is a REST API</a>
+<ul class="sectlevel2">
+<li><a href="#resources">Resources</a></li>
+<li><a href="#resource_verbs">Resource Verbs</a></li>
+</ul>
+</li>
+<li><a href="#requests_and_responses">Requests and Responses</a></li>
+<li><a href="#how_to_create_an_http_controller">How to create an HTTP Controller</a></li>
+<li><a href="#rest_api_for_petclinic">REST API for Petclinic</a>
+<ul class="sectlevel2">
+<li><a href="#cuba_oauth2_api_authentication">CUBA OAuth2 API Authentication</a></li>
+<li><a href="#rest_add_on_for_generic_api">REST add-on for generic API</a></li>
+<li><a href="#custom_api_operations">Custom API operations</a></li>
+<li><a href="#pros_cons_of_different_approaches">Pros &amp; Cons of different approaches</a></li>
+</ul>
+</li>
+<li><a href="#summary">Summary</a></li>
+<li><a href="#further_information">Further Information</a></li>
+</ul>
+                        </div>
+
+                        <div class="sidebar-razd"></div>
+                        <div class="guide-panel download">
+                            <a href="https://github.com/cuba-guides/cuba-petclinic-rest-api" class="github-link" target="_blank">Example code on Github</a>
+                        </div>
+                        <div class="guide-panel cuba-version">Supported versions: CUBA 7.1+; Java 8+</div>
+
+                    </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer fragment="14269c1b298" class="footer">
+    <div class="container footer_container">
+        <div class="footer_columns">
+            <div class="footer_column">
+                <div class="footer-menu"><h4 class="footer-menu_label">Framework</h4>
+                    <ul class="footer-menu_nav">
+                        <li><a href="/framework/">Framework</a></li>
+                        <li><a href="/tools/">Tools</a></li>
+                        <li><a href="/marketplace/">Addons</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer_column">
+                <div class="footer-menu"><h4 class="footer-menu_label">Learn</h4>
+                    <ul class="footer-menu_nav">
+                        <li><a href="/learn/quickstart/">Quick Start</a></li>
+                        <li><a href="/learn/live-demo/">Live Demo</a></li>
+                        <li><a href="/guides/">Guides</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer_column">
+                <div class="footer-menu"><h4 class="footer-menu_label">Documentation</h4>
+                    <ul class="footer-menu_nav">
+                        <li><a href="/documentation/">Documentation</a></li>
+                        <li><a href="/api-reference/">API References</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer_column">
+                <div class="footer-menu"><h4 class="footer-menu_label">Community</h4>
+                    <ul class="footer-menu_nav">
+                        <li><a href="/discuss/">Forum</a></li>
+                        <li><a href="/blog/">Blog</a></li>
+                        <li><a href="/contacts/">Contacts</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer_bottom">
+            <div class="footer_copyright">
+                Developed and sponsored by Haulmont
+                <a href="https://www.cuba-platform.com/terms-of-use/" class="footer_terms">Terms of Use</a></div>
+            <ul class="social footer_social">
+                <li class="social_item">
+                    <a href="https://github.com/cuba-platform/cuba" target="_blank" class="social_link">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon -github social_icon">
+                        <path d="M3.047 3.188C5.109 1.062 7.594 0 10.5 0c2.906 0 5.383 1.055 7.43 3.164C19.977 5.274 21 7.812 21 10.781c0 2.344-.672 4.453-2.016 6.328-1.343 1.875-3.062 3.172-5.156 3.891h-.187c-.375 0-.563-.187-.563-.563l.024-1.054c.015-.672.023-1.29.023-1.852 0-.906-.25-1.578-.75-2.015 1.438-.188 2.602-.649 3.492-1.383.89-.735 1.336-2.04 1.336-3.914 0-1.125-.36-2.094-1.078-2.906.313-.907.281-1.86-.094-2.86h-.234c-.719 0-1.61.375-2.672 1.125a9.858 9.858 0 0 0-2.625-.375c-.844 0-1.719.125-2.625.375-1.063-.75-1.953-1.125-2.672-1.125H4.97c-.375 1-.407 1.953-.094 2.86-.719.812-1.078 1.78-1.078 2.906 0 1.875.437 3.18 1.312 3.914s2.032 1.195 3.47 1.383c-.345.343-.563.828-.657 1.453a2.687 2.687 0 0 1-1.219.281c-.781 0-1.39-.39-1.828-1.172-.406-.687-.953-1.062-1.64-1.125-.657 0-.673.219-.047.656.468.25.859.782 1.171 1.594.032.125.094.274.188.445.094.172.351.399.773.68.422.281.93.422 1.524.422.437 0 .781-.031 1.031-.094v1.828c0 .344-.172.516-.516.516h-.187c-2.125-.719-3.852-2.008-5.18-3.867C.664 15.273 0 13.156 0 10.78c0-2.969 1.016-5.5 3.047-7.594z" fill="currentColor" fill-rule="evenodd"></path>
+                    </svg>
+                </a></li>
+                <li class="social_item">
+                    <a href="https://www.linkedin.com/company/cuba-platform" target="_blank" class="social_link">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon -linkedin social_icon">
+                        <path d="M19.305 0c.474 0 .875.155 1.203.465.328.31.492.702.492 1.176v17.554c0 .474-.164.894-.492 1.258-.328.365-.73.547-1.203.547h-17.5c-.474 0-.894-.182-1.258-.547C.182 20.09 0 19.67 0 19.195V1.641C0 1.167.173.775.52.465.866.155 1.294 0 1.805 0h17.5zM6.775 17.613V8.129h-2.71v9.484h2.71zM4.431 6.407c.245.245.566.367.964.367s.728-.13.988-.39.39-.574.39-.942c0-.398-.122-.727-.367-.987s-.567-.39-.965-.39-.727.13-.987.39-.39.59-.39.987c0 .368.122.69.367.965zm13.18 11.206v-5.42c0-1.336-.305-2.348-.916-3.034-.612-.687-1.407-1.03-2.386-1.03-1.048 0-1.922.506-2.62 1.517v-1.3H8.806v9.267h2.884v-5.257c0-.361.034-.614.104-.759.28-.722.77-1.083 1.468-1.083.979 0 1.468.668 1.468 2.005v5.094h2.883z" fill="currentColor" fill-rule="evenodd"></path>
+                    </svg>
+                </a></li>
+                <li class="social_item">
+                    <a href="https://www.facebook.com/CUBAplatform" target="_blank" class="social_link">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon -facebook social_icon">
+                        <path d="M17.063 0A3.939 3.939 0 0 1 21 3.938v13.124A3.939 3.939 0 0 1 17.062 21h-2.57v-8.135h2.72l.411-3.172h-3.13V7.67c0-.916.245-1.531 1.571-1.531l1.668-.014v-2.83c-.287-.041-1.285-.123-2.433-.123-2.42 0-4.088 1.476-4.088 4.183v2.338H8.477v3.172h2.734V21H3.937A3.939 3.939 0 0 1 0 17.062V3.938A3.939 3.939 0 0 1 3.938 0h13.124z" fill="currentColor" fill-rule="evenodd"></path>
+                    </svg>
+                </a></li>
+                <li class="social_item">
+                    <a href="https://twitter.com/CubaPlatform" target="_blank" class="social_link">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon -twitter social_icon">
+                            <path d="M17.5 6.59a6.058 6.058 0 0 1-1.654.465 2.903 2.903 0 0 0 1.271-1.6 5.717 5.717 0 0 1-1.832.697 2.847 2.847 0 0 0-2.092-.902 2.87 2.87 0 0 0-2.87 2.871c0 .219.013.451.068.656A8.158 8.158 0 0 1 4.457 5.77c-.246.423-.396.93-.396 1.449 0 .998.464 1.873 1.244 2.392-.479-.013-.93-.15-1.367-.355v.027c0 1.395 1.052 2.557 2.365 2.817-.246.068-.438.109-.698.109-.177 0-.355-.027-.533-.055a2.889 2.889 0 0 0 2.68 1.996A5.782 5.782 0 0 1 3.5 15.34a8.183 8.183 0 0 0 4.402 1.285c5.278 0 8.176-4.375 8.176-8.176 0-.123 0-.246-.014-.369A5.521 5.521 0 0 0 17.5 6.59zM21 3.938v13.124A3.939 3.939 0 0 1 17.062 21H3.938A3.939 3.939 0 0 1 0 17.062V3.938A3.939 3.939 0 0 1 3.938 0h13.124A3.939 3.939 0 0 1 21 3.938z" fill="currentColor" fill-rule="evenodd"></path>
+                        </svg>
+                    </a>
+                </li>
+                <li class="social_item">
+                    <a href="https://www.youtube.com/c/CubaPlatform" target="_blank" class="social_link">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon -youtube social_icon">
+                        <path d="M27.836 4.648c.11 1.97.164 3.92.164 5.852 0 1.932-.055 3.883-.164 5.852 0 1.24-.392 2.287-1.176 3.144-.784.857-1.74 1.285-2.87 1.285-2.808.146-6.071.219-9.79.219-3.719 0-6.982-.073-9.79-.219-1.13 0-2.086-.428-2.87-1.285C.556 18.64.164 17.591.164 16.352.054 14.382 0 12.432 0 10.5c0-1.276.073-3.227.219-5.852 0-1.24.383-2.287 1.148-3.144C2.133.647 3.081.219 4.211.219 6.872.073 9.97 0 13.508 0h.984c3.537 0 6.636.073 9.297.219 1.13 0 2.087.428 2.871 1.285.784.857 1.176 1.905 1.176 3.144zM11.32 15.86l7.93-5.359-7.93-5.414v10.773z" fill="currentColor" fill-rule="evenodd"></path>
+                    </svg>
+                </a></li>
+                <li class="social_item">
+                    <a href="/rss.xml" class="social_link">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon -rss social_icon">
+                            <path d="M.857 15.91C1.464 15.305 2.18 15 3 15c.821 0 1.527.295 2.116.884.59.59.884 1.295.884 2.116 0 .821-.295 1.527-.884 2.116-.59.59-1.295.884-2.116.884-.821 0-1.527-.295-2.116-.884C.294 19.526 0 18.821 0 18c0-.821.286-1.518.857-2.09zM0 7c3.828 0 7.118 1.376 9.871 4.129C12.624 13.882 14 17.172 14 21H9.625c0-2.917-.875-5.25-2.625-7s-4.083-2.625-7-2.625V7zm0-7c5.797 0 10.746 2.05 14.848 6.152C18.949 10.254 21 15.203 21 21h-4.375c0-4.667-1.604-8.604-4.813-11.813C8.604 5.98 4.668 4.375 0 4.375V0z" fill="currentColor" fill-rule="evenodd"></path>
+                        </svg>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</footer>
+<!--<script src="https://cuba-nuxt.demo.haulmont.com/_nuxt/83f852ef4b5c91802566.js" defer></script>
+<script src="https://cuba-nuxt.demo.haulmont.com/_nuxt/d3a40ea16eeb2e16777d.js" defer></script>
+<script src="https://cuba-nuxt.demo.haulmont.com/_nuxt/9bd7e05c04e06e762b47.js" defer></script>
+<script src="https://cuba-nuxt.demo.haulmont.com/_nuxt/70ff0a2e2f971caf4892.js" defer></script>
+<script src="https://cuba-nuxt.demo.haulmont.com/_nuxt/cf082d0abe0e606c10b9.js" defer></script>-->
+<style>
+    [class*="column"] + [class*="column"]:last-child {
+        float: none;
+    }
+</style>
+
+
+<!-- BEGIN FOOTER -->
+<!--<footer id="footer">
+    <div class="footer-wrapper cuba-container">
+        <div class="region region-footer-sitemap">
+            <section id="block-footer-sitemap-footer-sitemap" class="block block-footer-sitemap clearfix">
+                <div id="footer-sitemap" class="clearfix">
+                    <div class="fs-block-content">
+                        <div class="menu-footer-sitemap">
+                            <ul class="footer_links_menu-footer-sitemap total-items-5 parent-items-0 single-items-0">
+                                <li class="menu-1466 depth-1 total-children-4 parent-children-0 single-children-4  first">
+                                    <a href="/framework" class="fs-root-link">Platform</a>
+                                    <ul class="footer_links_menu-footer-sitemap total-items-4 parent-items-0 single-items-0">
+                                        <li class="menu-2770 depth-2 fs-no-children  first"><a href="/framework">The Framework</a></li>
+                                        <li class="menu-1473 depth-2 fs-no-children"><a href="/development-tools">Development Tools</a></li>
+                                        <li class="menu-2838 depth-2 fs-no-children last"><a href="/marketplace">Marketplace</a></li>
+                                    </ul>
+                                </li>
+                                <li class="menu-1469 depth-1 total-children-7 parent-children-0 single-children-7">
+                                    <a href="/online-demo" class="fs-root-link">Learn</a>
+                                    <ul class="footer_links_menu-footer-sitemap total-items-7 parent-items-0 single-items-0">
+                                        <li class="menu-1479 depth-2 fs-no-children first"><a href="/online-demo">Online demo</a></li>
+                                        <li class="menu-1477 depth-2 fs-no-children"><a href="/quickstart">Quick start</a></li>
+                                        <li class="menu-1478 depth-2 fs-no-children"><a href="/documentation">Documentation</a></li>
+                                        <li class="menu-1731 depth-2 fs-no-children"><a href="/guides">Guides</a></li>
+                                        <li class="menu-1773 depth-2 fs-no-children"><a href="/webinars">Webinars</a></li>
+                                        <li class="menu-1602 depth-2 fs-no-children last"><a href="/faq">FAQ</a></li>
+                                    </ul>
+                                </li>
+                                <li class="menu-1603 depth-1 total-children-3 parent-children-0 single-children-3"><a
+                                        href="https://www.cuba-platform.com/discuss/" class="fs-root-link">Community</a>
+                                    <ul class="footer_links_menu-footer-sitemap total-items-3 parent-items-0 single-items-0">
+                                        <li class="menu-1604 depth-2 fs-no-children first"><a href="https://www.cuba-platform.com/discuss/">Forum</a></li>
+                                        <li class="menu-1692 depth-2 fs-no-children"><a href="/testimonials">Customer stories</a></li>
+                                        <li class="menu-1615 depth-2 fs-no-children last"><a href="/blog">Blog</a></li>
+                                    </ul>
+                                </li>
+                                <li class="menu-1663 depth-1 total-children-3 parent-children-0 single-children-3"><a
+                                        href="/training" class="fs-root-link">Services</a>
+                                    <ul class="footer_links_menu-footer-sitemap total-items-3 parent-items-0 single-items-0">
+                                        <li class="menu-1756 depth-2 fs-no-children first"><a href="/training">Training</a></li>
+                                        <li class="menu-1757 depth-2 fs-no-children"><a href="/support-options">Support</a></li>
+                                        <li class="menu-1758 depth-2 fs-no-children last"><a href="/deployment">Development</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="menu-1612 depth-1 total-children-3 parent-children-0 single-children-3  last">
+                                    <a href="/download" class="fs-root-link">More</a>
+                                    <ul class="footer_links_menu-footer-sitemap total-items-3 parent-items-0 single-items-0">
+                                        <li class="menu-2773 depth-2 fs-no-children first"><a href="/download">Download</a></li>
+                                        <li class="menu-2775 depth-2 fs-no-children"><a href="/store">Store</a></li>
+                                        <li class="menu-1480 depth-2 fs-no-children last"><a href="/contacts">Contacts</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+        </div>
+        <div class="region region-footer-copyright">
+            <section id="block-block-14" class="block block-block clearfix">
+                <div class="footer-copyright">
+                    <div class="copyright">Copyright &copy; 2008-2018 Haulmont</div>
+                    <div class="licences"><a href="/terms-of-use">Terms of Use</a></div>
+                    <div class="socials">
+                        <ul>
+                            <li><a href="https://github.com/cuba-platform/cuba" class="socials-icon github"></a></li>
+                            <li><a href="https://www.youtube.com/c/CubaPlatform" class="socials-icon youtube"></a></li>
+                            <li><a href="https://www.facebook.com/CUBAplatform" class="socials-icon facebook"></a></li>
+                            <li><a href="https://twitter.com/CubaPlatform" class="socials-icon twitter"></a></li>
+                            <li><a href="https://www.linkedin.com/company/cuba-platform" class="socials-icon linkedin"></a></li>
+                            <li><a href="https://www.cuba-platform.com/rss.xml" class="socials-icon rss"></a></li>
+                        </ul>
+                    </div>
+                </div>
+                <script async defer src="https://buttons.github.io/buttons.js"></script>
+            </section>
+        </div>
+    </div>
+</footer>-->
+<!-- END FOOTER -->
+<div class="scrollTop"></div>
+</section>
+
+<script src="/guides/js/foundation.min.js"></script>
+<script src="https://unpkg.com/isotope-layout@3.0/dist/isotope.pkgd.js"></script>
+<script src="/guides/js/vendor/modernizr.js"></script>
+<script src="/guides/js/toc.js"></script>
+<script src="/guides/js/navigation.js"></script>
+<script src="/guides/js/navbar.js"></script>
+<script src="/guides/js/extra.js"></script>
+<script src="/guides/js/extra2.js"></script>
+<script src="/guides/js/cuba-new.js"></script>
+<script>
+(function ($) {
+  $(document).foundation();
+  var doc = document.documentElement;
+  doc.setAttribute('data-useragent', navigator.userAgent)
+
+  /* Issue #24 */
+  $(".blog .content img").each(function() {
+    var imgMarkup = $(this)[0].outerHTML;
+    console.log(imgMarkup);
+    $(this).replaceWith('<div class="img-center">' + imgMarkup + '</div>');
+  });
+
+})(jQuery);
+
+// Cache selectors
+var lastId,
+    topMenu = $(".sectlevel1"),
+    topMenuHeight = topMenu.outerHeight()+1,
+
+    // All list items
+    menuItems = topMenu.find("a"),
+    // Anchors corresponding to menu items
+    scrollItems = menuItems.map(function(){
+        var item = $($(this).attr("href"));
+        if (item.length) { return item; }
+    });
+console.log(topMenuHeight );
+menuItems.click(function(e){
+    var href = $(this).attr("href"),
+        offsetTop = href === "#" ? 0 : $(href).offset().top - 85;
+    $('html, body').stop().animate({
+        scrollTop: offsetTop
+    }, 850);
+    e.preventDefault();
+    window.location =  href;
+});
+
+$( document ).ready(function() {
+    const hash = location.hash.replace('#','');
+    if(hash !== ''){
+        $('html, body').stop().animate({ scrollTop: $('a[href=#' + hash + ']').offset().top - 85}, 850);
+    }
+});
+
+// Bind to scroll
+$(window).scroll(function(){
+    // Get container scroll position
+    var fromTop = $(this).scrollTop()+topMenuHeight;
+
+    // Get id of current scroll item
+    var cur = scrollItems.map(function(){
+        if ($(this).offset().top < fromTop)
+            return this;
+    });
+    // Get the id of the current element
+    cur = cur[cur.length-1];
+    var id = cur && cur.length ? cur[0].id : "";
+
+    if (lastId !== id) {
+        lastId = id;
+        // Set/remove active class
+        menuItems
+            .parent().removeClass("active")
+            .end().filter("[href=#"+id+"]").parent().addClass("active");
+    }
+});
+
+</script>
+</body>
+</html>
