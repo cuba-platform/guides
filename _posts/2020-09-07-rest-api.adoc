@@ -34,7 +34,7 @@ In this guide we will focus on creating multiple REST-based HTTP APIs to allow o
 
 == What is a REST API
 
-Before exploring the details of the CUBA implementation of an API, let's quickly talk about what a REST API looks like and what are the concepts behind it.
+Before exploring the details of the CUBA implementation for proving APIs, let's quickly talk about what a REST API looks like and what are the concepts behind it.
 
 A REST API is an HTTP based API (HTTP being the protocol - the underpinning of a big part of the Internet) with some specific usage of it. REST in particular has a couple of building blocks that we will use throughout this guide.
 
@@ -42,7 +42,7 @@ Generally speaking an API is a mechanism for letting different systems communica
 
 TIP: The menu that the restaurant offers is the API. Once you order a piece from the menu, you are doing an API call with a more or less structured interaction format ("I take number 25", "Pizza is out, sorry!", "Something to drink?"). The response of that API call is the food which is delivered from the kitchen.
 
-Let's consider the concepts which define the style of a REST API.
+Let's unfold the concepts which REST defines as one particular style of an API: Resources, Verbs and the request-response pattern.
 
 === Resources
 
@@ -660,7 +660,7 @@ public class FetchVisitApiResponse {
     // ...
 }
 ----
-<1> Json annotations are used to configure the JSON output for particular fields
+<1> Jackson annotations are used to configure the JSON output for particular fields
 <2> the fields might contain different types (like `ApiVisitType` instead of `VisitType`) compared to the entity layer
 <3> the `of` factory method maps the entity layer to the DTO layer and converts the attributes if needed
 <4> the getter methods define which attributes will be exposed via JSON
