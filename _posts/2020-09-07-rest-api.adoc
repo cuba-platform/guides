@@ -46,7 +46,7 @@ Let's unfold the concepts which REST defines as one particular style of an API: 
 
 === Resources
 
-A Resource is something that you can think of as an abstraction on the concept of any kind of information. A resource can be an image, a document or a dish in a menu, for example. In can also be a Pet, but not the actual Pet. It would be rather a virtual representation of it in the Petclinic application. Resources are identified by something called a Resource Identifier. In its concrete form a resource identifier is something like a URL `https://petclinic.cuba-platform.com/pets/123` to identify the Resource: The pet with the Identification Number "123".
+A Resource is something that you can think of as an abstraction on the concept of any kind of information. A resource can be an image, a document or a dish in a menu, for example. It can also be a Pet, but not the actual Pet. It would be rather a virtual representation of it in the Petclinic application. Resources are identified by something called a Resource Identifier. In its concrete form a resource identifier is something like a URL `https://petclinic.cuba-platform.com/pets/123` to identify the Resource: The pet with the Identification Number "123".
 
 === Resource Verbs
 
