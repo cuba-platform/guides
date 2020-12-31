@@ -65,7 +65,7 @@ In the case of the Petclinic example, there is some business logic which should 
 <a href="images/intro-to-working-with-data-in-CUBA/create-visit-for-pet.png"><img src="images/intro-to-working-with-data-in-CUBA/create-visit-for-pet.png"/></a>
 ++++
 
-The source code that loads the Pet instance by its Identification Number is located in https://github.com/cuba-guides/cuba-petclinic-intro-to-datamanager/blob/master/modules/core/src/com/cubaplatform/petclinic/service/visit/VisitServiceBean.java#L47[VisitServiceBean.java] in the example application. The usage of the DataManager API looks like this:
+The source code that loads the Pet instance by its Identification Number is located in https://github.com/cuba-guides/cuba-petclinic-intro-to-datamanager/blob/master/modules/core/src/com/haulmont/sample/petclinic/service/visit/VisitServiceBean.java#L47[VisitServiceBean.java] in the example application. The usage of the DataManager API looks like this:
 
 
 .VisitServiceBean.java

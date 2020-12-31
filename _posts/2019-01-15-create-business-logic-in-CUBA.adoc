@@ -48,7 +48,7 @@ Assuming the discount calculation should be executed when a user clicks a button
 <a href="images/creating-business-logic-in-cuba/calculate-discout-for-pet.png"><img src="images/creating-business-logic-in-cuba/calculate-discout-for-pet.png"/></a>
 ++++
 
-See the *Calculate discount* button in the petclinic application and the screen controller implementation: https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetBrowse.java#L15[PetBrowse].
+See the *Calculate discount* button in the petclinic application and the screen controller implementation: https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/pet/pet/PetBrowse.java#L15[PetBrowse].
 
 .PetBrowse.java
 [source,java]
@@ -126,8 +126,8 @@ The example that is implemented as (multiple) client tier beans is to display th
 
 For this there are two Spring beans:
 
-* https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/global/src/com/cubaplatform/petclinic/contact/PetContactFetcherBean.java[PetContactFetcher] that deals with fetching of the appropriate contact data
-* https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetContactDisplay.java[PetContactDisplay] for displaying contact information as notifications
+* https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/global/src/com/haulmont/sample/petclinic/contact/PetContactFetcherBean.java[PetContactFetcher] that deals with fetching of the appropriate contact data
+* https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/pet/pet/PetContactDisplay.java[PetContactDisplay] for displaying contact information as notifications
 
 .PetContactFetcherBean.java
 [source,java]
@@ -172,8 +172,8 @@ public class PetContactFetcherBean implements PetContactFetcher {
 ----
 
 
-The beans are used in the https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetBrowse.java#L24[Pet browse screen] and the
-https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetEdit.java#L19[Pet details screen]. The usage looks like this:
+The beans are used in the https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/pet/pet/PetBrowse.java#L24[Pet browse screen] and the
+https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/pet/pet/PetEdit.java#L19[Pet details screen]. The usage looks like this:
 
 
 .PetEdit.java
@@ -235,11 +235,11 @@ In the Petclinic application, the following service was created: `DiseaseWarning
 ++++
 
 
-* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/cubaplatform/petclinic/service/DiseaseWarningMailingService.java[DiseaseWarningMailingService] - service interface
+* https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/global/src/com/haulmont/sample/petclinic/service/DiseaseWarningMailingService.java[DiseaseWarningMailingService] - service interface
 
-* https://github.com/cuba-guides/{project_id}/blob/master/modules/global/src/com/cubaplatform/petclinic/service/DiseaseWarningMailingServiceBean.java[DiseaseWarningMailingServiceBean] - service implementation
+* https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/global/src/com/haulmont/sample/petclinic/service/DiseaseWarningMailingServiceBean.java[DiseaseWarningMailingServiceBean] - service implementation
 
-* https://github.com/cuba-guides/{project_id}/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/CreateDiseaseWarningMailing.java[CreateDiseaseWarningMailing] - screen controller that uses the service
+* https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/pet/pet/CreateDiseaseWarningMailing.java[CreateDiseaseWarningMailing] - screen controller that uses the service
 
 The implementation of a service looks like this in case of `DiseaseWarningMailingService`:
 
