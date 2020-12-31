@@ -509,7 +509,7 @@
 </div>
 <a href="images/creating-business-logic-in-cuba/calculate-discout-for-pet.png"><img src="images/creating-business-logic-in-cuba/calculate-discout-for-pet.png"/></a>
 <div class="paragraph">
-<p>See the <strong>Calculate discount</strong> button in the petclinic application and the screen controller implementation: <a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetBrowse.java#L15">PetBrowse</a>.</p>
+<p>See the <strong>Calculate discount</strong> button in the petclinic application and the screen controller implementation: <a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/pet/pet/PetBrowse.java#L15">PetBrowse</a>.</p>
 </div>
 <div class="listingblock">
 <div class="title">PetBrowse.java</div>
@@ -605,10 +605,10 @@ This approach is acceptable if the logic is invoked from a single point and it i
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/global/src/com/cubaplatform/petclinic/contact/PetContactFetcherBean.java">PetContactFetcher</a> that deals with fetching of the appropriate contact data</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/global/src/com/haulmont/sample/petclinic/contact/PetContactFetcherBean.java">PetContactFetcher</a> that deals with fetching of the appropriate contact data</p>
 </li>
 <li>
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetContactDisplay.java">PetContactDisplay</a> for displaying contact information as notifications</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/pet/pet/PetContactDisplay.java">PetContactDisplay</a> for displaying contact information as notifications</p>
 </li>
 </ul>
 </div>
@@ -655,8 +655,8 @@ This approach is acceptable if the logic is invoked from a single point and it i
 </div>
 </div>
 <div class="paragraph">
-<p>The beans are used in the <a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetBrowse.java#L24">Pet browse screen</a> and the
-<a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/PetEdit.java#L19">Pet details screen</a>. The usage looks like this:</p>
+<p>The beans are used in the <a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/pet/pet/PetBrowse.java#L24">Pet browse screen</a> and the
+<a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/pet/pet/PetEdit.java#L19">Pet details screen</a>. The usage looks like this:</p>
 </div>
 <div class="listingblock">
 <div class="title">PetEdit.java</div>
@@ -738,13 +738,13 @@ This approach is acceptable if the logic is invoked from a single point and it i
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/global/src/com/cubaplatform/petclinic/service/DiseaseWarningMailingService.java">DiseaseWarningMailingService</a> - service interface</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/global/src/com/haulmont/sample/petclinic/service/DiseaseWarningMailingService.java">DiseaseWarningMailingService</a> - service interface</p>
 </li>
 <li>
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/global/src/com/cubaplatform/petclinic/service/DiseaseWarningMailingServiceBean.java">DiseaseWarningMailingServiceBean</a> - service implementation</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/global/src/com/haulmont/sample/petclinic/service/DiseaseWarningMailingServiceBean.java">DiseaseWarningMailingServiceBean</a> - service implementation</p>
 </li>
 <li>
-<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/cubaplatform/petclinic/web/pet/pet/CreateDiseaseWarningMailing.java">CreateDiseaseWarningMailing</a> - screen controller that uses the service</p>
+<p><a href="https://github.com/cuba-guides/cuba-petclinic-business-logic/blob/master/modules/web/src/com/haulmont/sample/petclinic/web/pet/pet/CreateDiseaseWarningMailing.java">CreateDiseaseWarningMailing</a> - screen controller that uses the service</p>
 </li>
 </ul>
 </div>
