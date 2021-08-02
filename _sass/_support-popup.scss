@@ -1,10 +1,13 @@
 .support-popup {
+  box-shadow: 0 10px 20px rgba(52, 42, 152, 0.1);
   display: flex;
   flex-flow: row nowrap;
   align-items: stretch;
   width: 700px;
   min-height: 370px;
-  background: $color-accent;
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
 
   @include media-breakpoint-down(md) {
     flex-wrap: wrap;
@@ -12,11 +15,18 @@
     max-height: calc(100vh - #{$height-header});
     overflow-y: auto;
   }
+
+  b, strong {
+    font-weight: bold;
+  }
 }
 
 .support-popup_services {
-  width: 54%;
-  padding: 16px 22px;
+  width: 46%;
+  padding: 20px 29px;
+  box-shadow: 0 2px 5px rgba(52, 42, 152, 0.2);
+  z-index: 1;
+  position: relative;
 
   @include media-breakpoint-down(md) {
     width: 100%;
@@ -27,25 +37,43 @@
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-between;
-  width: 46%;
-  padding: 16px 22px;
-  color: #fff;
-  background: #30336b;
+  width: 54%;
+  padding: 20px 30px 30px 49px;
+  color: #342a98;
+  background: #faf9ff;
 
   @include media-breakpoint-down(md) {
     width: 100%;
+    padding-left: 29px;
+    padding-right: 29px;
   }
 }
 
 .support-popup_services_title {
+  color: #342a98;
+  display: block;
+  font-size: 18px;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0;
+  margin-inline-end: 0;
+  font-weight: bold;
   margin: 0 0 15px;
+  text-transform: uppercase;
 }
 
 .support-popup_haulmont_title {
+  display: block;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0;
+  margin-inline-end: 0;
+  font-weight: bold;
   margin: 4px 0 2px;
   font-size: 24px;
   line-height: 1;
   text-transform: uppercase;
+  margin-bottom: 10px;
 }
 
 .support-popup_haulmont_subtitle {

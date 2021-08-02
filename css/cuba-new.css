@@ -37,7 +37,7 @@
     background-size: 204px 36px;
     background-repeat: no-repeat;
     background-position: center center;
-    width: 204px;
+    width: 115px;
     height: 36px;
     overflow: hidden
 }
@@ -630,7 +630,6 @@
     flex: none;
     font-size: 13px;
     background-color: #fafafa;
-    border-top: 1px solid #e5e5e5
 }
 
 .footer_columns {

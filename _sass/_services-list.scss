@@ -5,27 +5,26 @@
 
 .services-list_item {
   margin: 0 0 8px;
-  padding: 9px 17px;
+  padding: 9px 0;
   font-size: 14px;
   list-style: none;
   background: rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
+  border-bottom: 1px solid #aeaad6;
+  border-radius: 0;
 
   &:last-child {
     margin-bottom: 0;
+    border-bottom: 0;
   }
 
   a {
     color: #2c3436;
     text-decoration: none;
   }
+}
 
-  &:hover, &:focus {
-    color: #fff;
-    text-decoration: none;
-    outline: none;
-    box-shadow: 0 5px 20px 0 rgba(44, 52, 54, 0.4);
-  }
+a.services-list_link-btn[href] {
+  color: #342a98;
 }
 
 .services-list_title {
