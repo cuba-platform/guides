@@ -1,0 +1,23 @@
+.cuba-platform-note {
+  padding-top: 27px;
+  padding-bottom: 27px;
+  background: #0073C6;
+  background-image:  url(/guides/images/cuba-platform-note/note__right.svg),
+    url(/guides/images/cuba-platform-note/note__left.svg);
+  background-position: top right, bottom left;
+  background-repeat: no-repeat;
+
+  @media (max-width: 768px) {
+    background-image: none;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
+
+.cuba-platform-note_text {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1.42857;
+  color: #fff;
+}

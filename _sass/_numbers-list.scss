@@ -1,4 +1,5 @@
 .numbers-list {
+  display: flex;
   margin: 5px 0;
   padding: 15px 0;
   border: solid 1px rgba(#9eadba, 0.27);
@@ -6,26 +7,34 @@
 }
 
 .numbers-list_item {
-  display: inline-block;
+  color: #17124b;
+  background: #fdb42b;
+  align-items: center;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
   margin: 6px 0;
-  padding: 0;
+  padding: 19px 0;
   font-size: 14px;
   list-style: none;
-  margin-right: 30px;
+  margin-right: 10px;
+  border-radius: 6px;
+  width: 100%;
 
   &:last-child {
-    margin-bottom: 0;
-    margin-top: 21px;
+    background: #25cde3;
   }
-
 }
 
 .numbers-list_number {
   display: block;
   font-size: 24px;
   line-height: 1;
+  font-family: $font-family-base;
 }
 
 .numbers-list_text {
   font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
 }
