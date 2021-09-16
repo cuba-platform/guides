@@ -163,7 +163,7 @@ As explained in the example, all Screen Controller code as well as the XML Scree
 
 On the upper border of the diagram the code executed in the browser is not part of the environment. This JavaScript code is part of Vaadin and is not covered.
 
-WARNING: The web integration test environment does _not_ interact with the application via a real web browser. To cover this area in a test case, a functional end-to-end test through tools like https://www.cuba-platform.com/marketplace/masquerade/[Masquerade] has to be performed.
+WARNING: The web integration test environment does _not_ interact with the application via a real web browser. To cover this area in a test case, a functional end-to-end test through tools like https://jmix.io/cuba-platform/marketplace/masquerade/[Masquerade] has to be performed.
 
 The borders at the bottom of the layered diagram for the web integration test environment are the Middleware Services.
 The service interfaces themselves act as the point where the test case has to provide a stub implementation that returns the expected values.
@@ -191,7 +191,7 @@ For all those examples (and more) it is not possible to verify the behavior with
 
 The same is true for the correct interaction with custom Services that are used in the UI. As those Services are stubbed out, so there is a potential to miss some scenarios in the mocking, which results in that the production application differs from the web integration test behavior.
 
-These are limitations with a web integration test. To overcome them, you need a black-box end-to-end test case. CUBA has a dedicated library called https://www.cuba-platform.com/marketplace/masquerade/[Masquerade] that makes creating those test cases easier. It is based on Selenium and therefore performs real browser based tests that interact with the application from the UI to the database.
+These are limitations with a web integration test. To overcome them, you need a black-box end-to-end test case. CUBA has a dedicated library called https://jmix.io/cuba-platform/marketplace/masquerade/[Masquerade] that makes creating those test cases easier. It is based on Selenium and therefore performs real browser based tests that interact with the application from the UI to the database.
 
 
 == Petclinic Web Integration Tests
