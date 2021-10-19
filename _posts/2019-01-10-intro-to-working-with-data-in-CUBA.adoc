@@ -219,4 +219,3 @@ The Data Manager API is a CUBA abstraction that allows an application developer 
 === Further Information
 
 * https://doc.cuba-platform.com/manual-{cuba_version}/dataManager.html[DataManager reference documentation]
-* https://www.cuba-platform.com/webinars/working-data[Working with Data (Webinar)]
