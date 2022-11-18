@@ -2,10 +2,10 @@
     .btn[data-v-8bc7c966] {
         display: inline-block;
         padding: 12px 30px;
-        color: #17124b;
+        color: #fff;
+        background: #342a98;
         font-weight: 600;
         font-size: 14px;
-        background: #fdb42b;
         border-radius: 6px;
     }
     .block[data-v-8bc7c966] {
@@ -13,8 +13,8 @@
         text-align: center;
     }
     .invert[data-v-8bc7c966] {
-        color: #fff;
-        background: #342a98;
+        color: #fff!important;
+        background: #342a98!important;
     }
     .green[data-v-8bc7c966] {
         background: #22d685;
@@ -26,7 +26,7 @@
     .intelij[data-v-8bc7c966] {
         border-radius: 36px;
         color: #fff;
-        background: url("/images/intelij-btn-bg.svg") center center no-repeat;
+        /*background: url("/images/intelij-btn-bg.svg") center center no-repeat;*/
         background-size: 100% 100%;
     }
     .cuba[data-v-8bc7c966] {
@@ -293,7 +293,550 @@
         cursor: pointer;
     }
 </style>
-<link rel="stylesheet" href="/css/normalize.css">
+<link rel="stylesheet" href="css/normalize.css">
+<style>
+    .header._active[data-v-1a9bb128] {
+        -webkit-box-shadow: 0px 2px 5px rgb(52 42 152 / 20%);
+        box-shadow: 0px 2px 5px rgb(52 42 152 / 20%);
+        background: #ffffff;
+    }
+    .header[data-v-2e2438ba] {
+        margin: 0;
+        padding: 0;
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: 9999;
+        width: 100%;
+        height: 72px;
+        -webkit-transition: background .3s ease,-webkit-box-shadow .3s ease;
+        transition: background .3s ease,-webkit-box-shadow .3s ease;
+        -o-transition: box-shadow .3s ease,background .3s ease;
+        transition: box-shadow .3s ease,background .3s ease;
+        transition: box-shadow .3s ease,background .3s ease,-webkit-box-shadow .3s ease;
+        -webkit-box-shadow: 0px 2px 5px rgb(52 42 152 / 20%);
+        box-shadow: 0px 2px 5px rgb(52 42 152 / 20%);
+        background: #ffffff;
+    }
+    .header__wrapper[data-v-2e2438ba] {
+        height: 100%;
+    }
+    .header__container[data-v-2e2438ba] {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        height: 100%;
+    }
+    .header__logo[data-v-2e2438ba] {
+        margin-right: 70px;
+    }
+    .header__logo-link[data-v-2e2438ba] {
+        display: block;
+    }
+    .header__logo img[data-v-2e2438ba] {
+        display: block;
+    }
+
+    @media (min-width: 1024px) {
+        .header__items[data-v-2e2438ba] {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+        }
+    }
+    @media (min-width: 1024px) {
+        .header__item[data-v-2e2438ba]:not(:last-child) {
+            margin-right: 30px;
+        }
+    }
+
+    .header__accordion {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    @media (min-width: 1024px) {
+        .header__accordion {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            align-items: center;
+        }
+    }
+    a.header__pricing-link {
+        cursor: pointer;
+    }
+
+    .header__pricing-link {
+        cursor: default;
+        background: rgba(0,0,0,0);
+        border: none;
+        padding: 0;
+        margin: 0;
+        font-weight: 600;
+        font-size: 15px;
+        line-height: 130%;
+        color: #17124b;
+        overflow: hidden;
+        -webkit-transition: color .3s ease;
+        -o-transition: color .3s ease;
+        transition: color .3s ease;
+    }
+
+    @media (max-width: 1023px) {
+        .header__pricing-link {
+            display: block;
+            color: #fff;
+            padding: 20px;
+            background: #342a98;
+            border-radius: 6px;
+        }
+    }
+    @media (min-width: 1024px) {
+        .header__col-right[data-v-2e2438ba] {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            align-items: center;
+        }
+    }
+    .lang[data-v-d8af0508] {
+        position: relative;
+    }
+    .lang-title[data-v-d8af0508] {
+        cursor: pointer;
+        pointer-events: none;
+        background: rgba(0,0,0,0);
+        border: none;
+        padding: 0;
+        margin: 0;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        font-weight: 600;
+        font-size: 15px;
+        line-height: 20px;
+        color: #17124b;
+        -webkit-transition: color .6s ease;
+        -o-transition: color .6s ease;
+        transition: color .6s ease;
+    }
+    .lang-svg[data-v-d8af0508] {
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 16px;
+        flex: 0 0 16px;
+        width: 16px;
+        height: 16px;
+        margin-left: 4px;
+        fill: currentColor;
+        -webkit-transition: fill .6s ease,-webkit-transform .6s ease;
+        transition: fill .6s ease,-webkit-transform .6s ease;
+        -o-transition: transform .6s ease,fill .6s ease;
+        transition: transform .6s ease,fill .6s ease;
+        transition: transform .6s ease,fill .6s ease,-webkit-transform .6s ease;
+    }
+    .lang.open .lang-title[data-v-d8af0508], .lang:hover .lang-title[data-v-d8af0508] {
+        color: #fc1264;
+    }
+    .lang.open .lang-svg[data-v-d8af0508], .lang:hover .lang-svg[data-v-d8af0508] {
+        -webkit-transform: rotate(-180deg);
+        -ms-transform: rotate(-180deg);
+        transform: rotate(-180deg);
+    }
+    .lang.open .lang-wrap[data-v-d8af0508], .lang:hover .lang-wrap[data-v-d8af0508] {
+        -webkit-transform: translate(-63%);
+        -ms-transform: translate(-63%);
+        transform: translate(-63%);
+        visibility: visible;
+        opacity: 1;
+    }
+    .icon {
+        display: inline-block;
+        vertical-align: top;
+    }
+    .lang-wrap[data-v-d8af0508] {
+        opacity: 0;
+        visibility: hidden;
+        position: absolute;
+        z-index: 2;
+        left: 50%;
+        -webkit-transform: translate(-63%,-2px);
+        -ms-transform: translate(-63%,-2px);
+        transform: translate(-63%,-2px);
+        top: 15px;
+        padding-top: 20px;
+        -webkit-transition: visibility .3s ease,opacity .3s ease,-webkit-transform .3s ease;
+        transition: visibility .3s ease,opacity .3s ease,-webkit-transform .3s ease;
+        -o-transition: visibility .3s ease,opacity .3s ease,transform .3s ease;
+        transition: visibility .3s ease,opacity .3s ease,transform .3s ease;
+        transition: visibility .3s ease,opacity .3s ease,transform .3s ease,-webkit-transform .3s ease;
+    }
+    .lang-select[data-v-d8af0508] {
+        background: #fff;
+        -webkit-box-shadow: 0 38.5185px 25.4815px rgb(52 42 152 / 4%), 0 20px 13px rgb(52 42 152 / 4%), 0 8.14815px 6.51852px rgb(52 42 152 / 3%), 0 1.85185px 3.14815px rgb(52 42 152 / 2%);
+        box-shadow: 0 38.5185px 25.4815px rgb(52 42 152 / 4%), 0 20px 13px rgb(52 42 152 / 4%), 0 8.14815px 6.51852px rgb(52 42 152 / 3%), 0 1.85185px 3.14815px rgb(52 42 152 / 2%);
+        border-radius: 16px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+    .lang-li[data-v-d8af0508] {
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 24px;
+        color: #11151b;
+    }
+    .lang-link[data-v-d8af0508] {
+        display: inline-block;
+        color: inherit;
+        text-decoration: none;
+        padding: 12px 32px;
+        -webkit-transition: background .3s ease;
+        -o-transition: background .3s ease;
+        transition: background .3s ease;
+    }
+    @media (min-width: 1111px) {
+        .header__btn[data-v-2e2438ba] {
+            margin-left: 24px;
+        }
+    }
+    @media (min-width: 1024px) {
+        .header__btn[data-v-2e2438ba] {
+            margin-left: 12px;
+        }
+    }
+    .invert[data-v-4458a3bf] {
+        color: #fff;
+        background: #342a98;
+    }
+    .btn[data-v-4458a3bf] {
+        position: relative;
+        display: inline-block;
+        padding: 12px 30px;
+        color: #fff;
+        background: #342a98;
+        font-weight: 600;
+        font-size: 15px;
+        border-radius: 6px;
+        border: 1px solid rgba(0,0,0,0);
+        -webkit-transition: all .3s ease-out;
+        -o-transition: all .3s ease-out;
+        transition: all .3s ease-out;
+    }
+    a {
+        color: #7b6dff;
+        text-decoration: none;
+        outline: none;
+        cursor: pointer;
+    }
+    .header__body[data-v-2e2438ba] {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+    }
+    @media (min-width: 1024px) {
+        .lang.mobile[data-v-d8af0508] {
+            display: none;
+        }
+    }
+    .lang-title[data-v-d8af0508] {
+        cursor: pointer;
+        pointer-events: none;
+        background: rgba(0,0,0,0);
+        border: none;
+        padding: 0;
+        margin: 0;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        font-weight: 600;
+        font-size: 15px;
+        line-height: 20px;
+        color: #17124b;
+        -webkit-transition: color .6s ease;
+        -o-transition: color .6s ease;
+        transition: color .6s ease;
+    }
+    .lang-svg[data-v-d8af0508] {
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 16px;
+        flex: 0 0 16px;
+        width: 16px;
+        height: 16px;
+        margin-left: 4px;
+        fill: currentColor;
+        -webkit-transition: fill .6s ease,-webkit-transform .6s ease;
+        transition: fill .6s ease,-webkit-transform .6s ease;
+        -o-transition: transform .6s ease,fill .6s ease;
+        transition: transform .6s ease,fill .6s ease;
+        transition: transform .6s ease,fill .6s ease,-webkit-transform .6s ease;
+    }
+    .lang-wrap[data-v-d8af0508] {
+        opacity: 0;
+        visibility: hidden;
+        position: absolute;
+        z-index: 2;
+        left: 50%;
+        -webkit-transform: translate(-63%,-2px);
+        -ms-transform: translate(-63%,-2px);
+        transform: translate(-63%,-2px);
+        top: 15px;
+        padding-top: 20px;
+        -webkit-transition: visibility .3s ease,opacity .3s ease,-webkit-transform .3s ease;
+        transition: visibility .3s ease,opacity .3s ease,-webkit-transform .3s ease;
+        -o-transition: visibility .3s ease,opacity .3s ease,transform .3s ease;
+        transition: visibility .3s ease,opacity .3s ease,transform .3s ease;
+        transition: visibility .3s ease,opacity .3s ease,transform .3s ease,-webkit-transform .3s ease;
+    }
+    .lang-select[data-v-d8af0508] {
+        background: #fff;
+        -webkit-box-shadow: 0 38.5185px 25.4815px rgb(52 42 152 / 4%), 0 20px 13px rgb(52 42 152 / 4%), 0 8.14815px 6.51852px rgb(52 42 152 / 3%), 0 1.85185px 3.14815px rgb(52 42 152 / 2%);
+        box-shadow: 0 38.5185px 25.4815px rgb(52 42 152 / 4%), 0 20px 13px rgb(52 42 152 / 4%), 0 8.14815px 6.51852px rgb(52 42 152 / 3%), 0 1.85185px 3.14815px rgb(52 42 152 / 2%);
+        border-radius: 16px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+    .lang-li[data-v-d8af0508] {
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 24px;
+        color: #11151b;
+    }
+    .lang-link[data-v-d8af0508] {
+        display: inline-block;
+        color: inherit;
+        text-decoration: none;
+        padding: 12px 32px;
+        -webkit-transition: background .3s ease;
+        -o-transition: background .3s ease;
+        transition: background .3s ease;
+    }
+    .header__account[data-v-2e2438ba] {
+        display: inline-block;
+        margin-left: 24px;
+    }
+
+    a {
+        color: #7b6dff;
+        text-decoration: none;
+        outline: none;
+        cursor: pointer;
+    }
+    .header__account-svg[data-v-2e2438ba] {
+        width: 28px;
+        height: 28px;
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 28px;
+        flex: 0 0 28px;
+        fill: #17124b;
+        -webkit-transition: fill .3s ease;
+        -o-transition: fill .3s ease;
+        transition: fill .3s ease;
+    }
+
+    .icon {
+        display: inline-block;
+        vertical-align: top;
+    }
+    @media (min-width: 1024px) {
+        .header__burger[data-v-2e2438ba] {
+            display: none;
+        }
+    }
+    .header__burger[data-v-2e2438ba] {
+        cursor: pointer;
+        padding: 0;
+        border: none;
+        background: #342a98;
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 28px;
+        flex: 0 0 28px;
+        width: 28px;
+        height: 28px;
+        margin-left: 20px;
+        border-radius: 5px;
+    }
+    .header__burger-wrapper[data-v-2e2438ba] {
+        position: relative;
+        display: block;
+        width: 100%;
+        height: 100%;
+        -webkit-transition: -webkit-transform .5s ease;
+        transition: -webkit-transform .5s ease;
+        -o-transition: transform .5s ease;
+        transition: transform .5s ease;
+        transition: transform .5s ease,-webkit-transform .5s ease;
+    }
+    .header__burger-wrapper span[data-v-2e2438ba]:first-child {
+        top: 6px;
+    }
+
+    .header__burger-wrapper span[data-v-2e2438ba] {
+        position: absolute;
+        width: 65%;
+        height: 2px;
+        left: 50%;
+        -webkit-transform: translate(-50%);
+        -ms-transform: translate(-50%);
+        transform: translate(-50%);
+        background: #fff;
+        pointer-events: none;
+        -webkit-transition: .5s ease;
+        -o-transition: .5s ease;
+        transition: .5s ease;
+    }
+    .header__burger-wrapper span[data-v-2e2438ba]:nth-child(2) {
+        top: 50%;
+        -webkit-transform: translate(-50%,-50%);
+        -ms-transform: translate(-50%,-50%);
+        transform: translate(-50%,-50%);
+    }
+    .header__burger-wrapper span[data-v-2e2438ba]:last-child {
+        bottom: 6px;
+    }
+    .header-submenu {
+        -webkit-box-flex: 0;
+        -ms-flex: none;
+        flex: none;
+        font-size: 14px;
+        line-height: 22px;
+        text-transform: uppercase;
+    }
+
+    .header-submenu .cuba-platform-note {
+        display: none;
+        padding-top: 27px;
+        padding-bottom: 27px;
+        background: #0073c6;
+
+        /*background-image: url(/_nuxt/img/note__right.587bccd.svg),url(/_nuxt/img/note__left.d2b5b5b.svg);*/
+        background-position: 100% 0,0 100%;
+        background-repeat: no-repeat;
+        text-align: center;
+        font-size: 18px;
+        font-weight: 700;
+        color: #fff;
+    }
+    .banner {
+        display: none;
+    }
+    .header-submenu_stripped-bg {
+        background: #fbfeff url(https://www.jmix.io/_nuxt/img/background-stripped-purple.691950a.png) repeat 50% 0;
+    }
+    .header__item-wrapper[data-v-0a8a5048]{position:relative}
+    .header__item-wrapper[data-v-0a8a5048]:not(:last-child){margin-right:30px}
+    @media (max-width:1280px){.header__item-wrapper[data-v-0a8a5048]:not(:last-child){margin-right:15px}}
+    @media (max-width:1023px){.header__item-wrapper[data-v-0a8a5048]:not(:last-child){margin-right:0;margin-bottom:30px}}
+    @media (max-width:1023px){.header__item-wrapper[data-v-0a8a5048]{background:#342a98;border-radius:6px}}
+    .header__item-wrapper:hover .header__button .header__button-svg[data-v-0a8a5048]{fill:#fc1264;-webkit-transform:rotate(-180deg);-ms-transform:rotate(-180deg);transform:rotate(-180deg)}
+    .header__item-wrapper:hover .header__button .header__button-title[data-v-0a8a5048]{color:#fc1264}
+    .header__item-wrapper:hover .header__menu-box[data-v-0a8a5048]{opacity:1;pointer-events:all;visibility:visible}
+    @media (max-width:1023px){.header__item-wrapper._active .header__button[data-v-0a8a5048]{padding-bottom:22px;margin-bottom:22px}
+        .header__item-wrapper._active .header__button[data-v-0a8a5048]:before{width:calc(100% - 40px);opacity:1}
+        .header__item-wrapper._active .header__button .header__button-title[data-v-0a8a5048]{color:#fc1264}
+        .header__item-wrapper._active .header__button .header__button-svg[data-v-0a8a5048]{fill:#fc1264;-webkit-transform:rotate(-180deg);-ms-transform:rotate(-180deg);transform:rotate(-180deg)}
+        .header__item-wrapper._active .header__submenu[data-v-0a8a5048]{opacity:1}}
+    .header__button[data-v-0a8a5048]{position:relative;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;cursor:pointer;background:rgba(0,0,0,0);border:none;padding:0;margin:0;font-weight:600;font-size:15px;line-height:130%;color:#17124b;overflow:hidden}
+    @media (min-width:1025px){.header__button[data-v-0a8a5048]{pointer-events:none}}
+    @media (max-width:1023px){.header__button[data-v-0a8a5048]{color:#fff;width:100%;-webkit-box-pack:justify;-ms-flex-pack:justify;justify-content:space-between;padding:20px;-webkit-transition:padding .6s ease,margin .6s ease;-o-transition:padding .6s ease,margin .6s ease;transition:padding .6s ease,margin .6s ease}}
+    .header__button[data-v-0a8a5048]:before{content:"";position:absolute;left:50%;bottom:0;width:1%;height:2px;background:#e7e4f3;opacity:0;-webkit-transform:translateX(-50%);-ms-transform:translateX(-50%);transform:translateX(-50%);-webkit-transition:opacity .6s ease,width .6s ease,-webkit-transform .6s ease;transition:opacity .6s ease,width .6s ease,-webkit-transform .6s ease;-o-transition:transform .6s ease,opacity .6s ease,width .6s ease;transition:transform .6s ease,opacity .6s ease,width .6s ease;transition:transform .6s ease,opacity .6s ease,width .6s ease,-webkit-transform .6s ease}
+    .header__button._active[data-v-0a8a5048]{color:#fc1264}.header__button-title[data-v-0a8a5048]{font-weight:600;font-size:15px;line-height:130%;color:#17124b;margin-right:8px;-webkit-transition:color .3s ease;-o-transition:color .3s ease;transition:color .3s ease}@media (max-width:1023px){.header__button-title[data-v-0a8a5048]{color:#fff}}
+    .header__button-svg[data-v-0a8a5048]{width:16px;height:16px;fill:#17124b;-webkit-transition:fill .6s ease,-webkit-transform .6s ease;transition:fill .6s ease,-webkit-transform .6s ease;-o-transition:fill .6s ease,transform .6s ease;transition:fill .6s ease,transform .6s ease;transition:fill .6s ease,transform .6s ease,-webkit-transform .6s ease}
+    @media (max-width:1023px){.header__button-svg[data-v-0a8a5048]{fill:#fff}}
+    @media (min-width:1024px){.header__menu-box[data-v-0a8a5048]{opacity:0;pointer-events:none;visibility:hidden;-webkit-transition:opacity .3s ease,visibility .3s ease;-o-transition:opacity .3s ease,visibility .3s ease;transition:opacity .3s ease,visibility .3s ease}}
+    .header__menu-box[data-v-0a8a5048]:before{
+        position:fixed;width:100%;height:100%;left:0;top:72px;background:-o-linear-gradient(top,#17124b,rgba(23,18,75,.2));
+        background:-webkit-gradient(linear,left top,left bottom,from(#17124b),to(rgba(23,18,75,.2)));
+        background:linear-gradient(180deg,#17124b,rgba(23,18,75,.2));opacity:.5;pointer-events:none
+    }
+    @media (min-width:1024px){
+        .header__menu-box[data-v-0a8a5048]:before{content:""}
+    }
+    .header__menu-box.open[data-v-0a8a5048]{
+        opacity:1;pointer-events:all;visibility:visible}
+    .header__menu-wrapper[data-v-0a8a5048]{
+        -webkit-transition:opacity .3s ease,visibility .3s ease;-o-transition:opacity .3s ease,visibility .3s ease;
+        transition:opacity .3s ease,visibility .3s ease
+    }
+    @media (min-width:1024px)    {
+        .header__menu-wrapper[data-v-0a8a5048]{
+            position:absolute;top:16px;left:50%;
+            -webkit-transform:translateX(-30%);-ms-transform:translateX(-30%);
+            transform:translateX(-30%);padding-top:30px
+        }
+    }
+    @media (min-width:1281px){
+        .header__menu-wrapper[data-v-0a8a5048]{
+            -webkit-transform:translateX(-36%);
+            -ms-transform:translateX(-36%);
+            transform:translateX(-36%)}
+    }
+    @media (min-width:1530px){
+        .header__menu-wrapper[data-v-0a8a5048]{
+            -webkit-transform:translateX(-50%);
+            -ms-transform:translateX(-50%);transform:translateX(-50%)}}
+    @media (min-width:1024px){.header__menu-body[data-v-0a8a5048]{-webkit-box-shadow:0 2px 5px rgba(52,42,152,.2);box-shadow:0 2px 5px rgba(52,42,152,.2);border-radius:0 0 16px 16px;background:#fff}}
+    @media (min-width:1024px){.header__menu-shadow[data-v-0a8a5048]{-webkit-box-shadow:inset 0 5px 5px -5px rgba(52,42,152,.5);box-shadow:inset 0 5px 5px -5px rgba(52,42,152,.5)}}.header__menu-container[data-v-0a8a5048]{padding:0}
+    @media (min-width:1024px){.header__menu-container[data-v-0a8a5048]{display:-webkit-box;display:-ms-flexbox;display:flex;padding:24px 20px}}
+    .header__submenu[data-v-0a8a5048]{list-style:none;border-left:2px solid #e7e4f3;padding-left:22px;margin:0 0 0 22px;-webkit-transition:border-top .5s ease,padding .5s ease,opacity .3s ease;-o-transition:border-top .5s ease,padding .5s ease,opacity .3s ease;transition:border-top .5s ease,padding .5s ease,opacity .3s ease}@media (max-width:1023px){.header__submenu[data-v-0a8a5048]{border-left:none;margin-left:0;opacity:0;padding:0 20px 20px}}.header__submenu-item[data-v-0a8a5048]{font-size:14px}
+    @media (min-width:1024px){.header__submenu-item[data-v-0a8a5048]{min-width:170px}}.header__submenu-item[data-v-0a8a5048]:not(:last-child){margin-bottom:10px}
+    .header__submenu-title[data-v-0a8a5048]{display:none;font-weight:bold;font-size:24px;line-height:1.2;letter-spacing:1px;text-transform:uppercase;color:#aeaad6;white-space:nowrap}@media (min-width:1024px){.header__submenu-title[data-v-0a8a5048]{display:block;padding-left:10px}}.header__submenu-subtitle[data-v-0a8a5048]{position:relative;font-weight:600;font-size:14px;line-height:24px;text-transform:uppercase;color:#342a98}.header__submenu-subtitle[data-v-0a8a5048]:before{position:absolute;left:0;bottom:-2px;width:40px;height:2px;background:#fdb42b;opacity:.8}@media (max-width:1023px){.header__submenu-subtitle[data-v-0a8a5048]:before{content:""}}@media (max-width:1023px){.header__submenu-subtitle[data-v-0a8a5048]{color:#fff}}.header__submenu-inner[data-v-0a8a5048]{position:relative;display:inline-block;padding-bottom:2px;overflow:hidden}@media (max-width:1023px){.header__submenu-inner[data-v-0a8a5048]{display:block}}.header__submenu-inner:hover .header__submenu-link[data-v-0a8a5048]{color:#25cde3}.header__submenu-inner[data-v-0a8a5048]:hover:before{-webkit-transform:translateX(0);-ms-transform:translateX(0);transform:translateX(0);opacity:1}.header__submenu-inner[data-v-0a8a5048]:before{position:absolute;left:0;bottom:0;height:2px;width:35px;background:#fc1264;opacity:0;-webkit-transform:translateX(-101%);-ms-transform:translateX(-101%);transform:translateX(-101%);-webkit-transition:opacity .3s ease,-webkit-transform .3s ease;transition:opacity .3s ease,-webkit-transform .3s ease;-o-transition:transform .3s ease,opacity .3s ease;transition:transform .3s ease,opacity .3s ease;transition:transform .3s ease,opacity .3s ease,-webkit-transform .3s ease}@media (min-width:1024px){.header__submenu-inner[data-v-0a8a5048]:before{content:""}}.header__submenu-link[data-v-0a8a5048]{display:inline-block;font-weight:400;line-height:24px;color:#11151b;-webkit-transition:color .3s ease;-o-transition:color .3s ease;transition:color .3s ease}@media (min-width:1121px){.header__submenu-link[data-v-0a8a5048]{white-space:nowrap}}@media (max-width:1023px){.header__submenu-link[data-v-0a8a5048]{color:#fff;display:block;padding:5px 0}}@media (max-width:480px){.header__submenu-link[data-v-0a8a5048]{padding:0}}.header__submenu-link[data-v-0a8a5048]:hover{text-decoration:none}@media (min-width:1025px){.header__submenu-link.focus-visible[data-v-0a8a5048],.header__submenu-link[data-v-0a8a5048]:focus-visible{outline:1px solid #666}}.-blue[data-v-0a8a5048]{color:#25cde3}.-blue[data-v-0a8a5048]:before{position:absolute;left:0;bottom:0;height:2px;width:35px;background:#fc1264;-webkit-transform:translateX(0);-ms-transform:translateX(0);transform:translateX(0);-webkit-transition:-webkit-transform .3s ease;transition:-webkit-transform .3s ease;-o-transition:transform .3s ease;transition:transform .3s ease;transition:transform .3s ease,-webkit-transform .3s ease}
+    .header__submenu-title p {
+        font-weight: 700;
+    }
+    @media (min-width:1024px){.-blue[data-v-0a8a5048]:before{content:""}}
+    .header__accordion{list-style:none;margin:0;padding:0}
+    @media (min-width:1024px){
+        .header__accordion{
+            display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center
+        }
+    }
+
+    .header__item-wrapper:hover .header__button .header__button-svg[data-v-0a8a5048],
+    .header__button-svg:hover
+    {
+        fill: #fc1264;
+        -webkit-transform: rotate(-180deg);
+        -ms-transform: rotate(-180deg);
+        transform: rotate(-180deg);
+    }
+    @media (any-hover: hover) {
+        .header__item-wrapper:hover .header__button img.header__button-svg[data-v-5dc98e3a] {
+            fill: #fc1264;
+            -webkit-transform: rotate(-180deg);
+            -ms-transform: rotate(-180deg);
+            transform: rotate(-180deg);
+        }
+        .header__item-wrapper:hover .header__button .header__button-title[data-v-5dc98e3a] {
+            color: #fc1264;
+        }
+        .header__item-wrapper:hover .header__menu-box[data-v-5dc98e3a] {
+            opacity: 1;
+            pointer-events: all;
+            visibility: visible;
+        }
+    }
+</style>
+<!--
 <style data-vue-ssr-id="d7dc6ec6:0">.header[data-v-1a9bb128] {
     margin: 0;
     padding: 0;
@@ -355,8 +898,9 @@
 }
 .header__logo-link[data-v-1a9bb128] {
     display: inline-block;
-}
-.header__burger[data-v-1a9bb128] {
+}-->
+<style>
+.header__burger {
     cursor: pointer;
     padding: 0;
     border: none;
@@ -370,32 +914,38 @@
     border-radius: 5px;
 }
 @media (min-width: 1024px) {
-    .header__burger[data-v-1a9bb128] {
+    .header__burger {
         display: none;
     }
 }
-.header__burger._active .header__burger-wrapper[data-v-1a9bb128] {
+.header__burger._active .header__burger-wrapper {
     -webkit-transform: rotate(90deg);
     -ms-transform: rotate(90deg);
     transform: rotate(90deg);
 }
-.header__burger._active .header__burger-wrapper span[data-v-1a9bb128]:first-child {
+
+.header__burger._active .header__burger-wrapper span:first-child {
     top: 50%;
     -webkit-transform: translate(-50%, -50%) rotate(45deg);
     -ms-transform: translate(-50%, -50%) rotate(45deg);
     transform: translate(-50%, -50%) rotate(45deg);
 }
-.header__burger._active .header__burger-wrapper span[data-v-1a9bb128]:nth-child(2) {
+.header__burger._active .header__burger-wrapper span:nth-child(2) {
     opacity: 0;
     -webkit-transform: rotate(45deg) scale(0);
     -ms-transform: rotate(45deg) scale(0);
     transform: rotate(45deg) scale(0);
 }
-.header__burger._active .header__burger-wrapper span[data-v-1a9bb128]:last-child {
+.header__burger._active .header__burger-wrapper span:last-child {
     bottom: 50%;
     -webkit-transform: translate(-50%, 50%) rotate(-45deg);
     -ms-transform: translate(-50%, 50%) rotate(-45deg);
     transform: translate(-50%, 50%) rotate(-45deg);
+}
+.header__burger._active .header__burger-wrapper {
+    -webkit-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    transform: rotate(90deg);
 }
 .header__burger-wrapper[data-v-1a9bb128] {
     position: relative;
@@ -434,7 +984,7 @@
 .header__burger-wrapper span[data-v-1a9bb128]:last-child {
     bottom: 6px;
 }
-.header__cols[data-v-1a9bb128] {
+.header__cols {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -447,7 +997,7 @@
     width: 100%;
 }
 @media (max-width: 1023px) {
-    .header__cols[data-v-1a9bb128] {
+    .header__cols {
         display: block;
         position: fixed;
         left: 100%;
@@ -468,14 +1018,14 @@
     }
 }
 @media (max-width: 1023px) {
-    .header__cols._active[data-v-1a9bb128] {
+    .header__cols._active {
         -webkit-transform: translateX(-100%);
         -ms-transform: translateX(-100%);
         transform: translateX(-100%);
     }
 }
 @media (max-width: 1023px) {
-    .header__col-left[data-v-1a9bb128] {
+    .header__col-left {
         margin-bottom: 30px;
         padding-top: 30px;
     }
@@ -876,7 +1426,7 @@
         width: calc(100% - 40px);
         opacity: 1;
     }
-    .header__item-wrapper._active .header__button .header__button-title[data-v-5dc98e3a] {
+    .header__item-wrapper._active .header__button .header__button-title {
         color: #fc1264;
     }
     .header__item-wrapper._active .header__button .header__button-svg[data-v-5dc98e3a] {
@@ -951,7 +1501,7 @@
 .header__button._active[data-v-5dc98e3a] {
     color: #fc1264;
 }
-.header__button-title[data-v-5dc98e3a] {
+.header__button-title {
     font-weight: 600;
     font-size: 14px;
     line-height: 130%;
@@ -961,9 +1511,26 @@
     -o-transition: color 0.3s ease;
     transition: color 0.3s ease;
 }
+@media (max-width: 1200px) {
+    .header__button-title, .header__pricing-link, .lang-title {
+        font-size: 12px!important;
+        line-height: 110%!important;
+    }
+}
+@media (max-width: 1200px) and (min-width: 1023px) {
+    .header__pricing {
+        margin-right: 20px;
+    }
+}
 @media (max-width: 1023px) {
-    .header__button-title[data-v-5dc98e3a] {
+    .header__button-title {
         color: #ffffff;
+    }
+    .header__lang.desctop {
+        display: none;
+    }
+    .header__pricing {
+        margin-top: 30px;
     }
 }
 .header__button-svg[data-v-5dc98e3a] {
@@ -1026,7 +1593,8 @@
         left: 0;
         width: 100%;
     }
-}
+}-->
+<style>
 @media (min-width: 1024px) {
     .header__menu-body[data-v-5dc98e3a] {
         -webkit-box-shadow: 0px 2px 5px rgba(52, 42, 152, 0.2);
@@ -1166,6 +1734,33 @@
     }
     .header__submenu-link[data-v-5dc98e3a]:focus-visible {
         outline: 1px solid #666;
+    }
+}
+.header-submenu_container {
+    text-align: center;
+}
+@media (max-width: 1023px) {
+    .header__cols[data-v-1a9bb128] {
+        display: block;
+        position: fixed;
+        left: 100%;
+        top: 0;
+        bottom: 0;
+        margin-top: 72px;
+        width: 100%;
+        background: #ffffff;
+        overflow: auto;
+        -webkit-box-shadow: 0px 5px 5px -5px rgb(52 42 152 / 50%) inset;
+        box-shadow: 0px 5px 5px -5px rgb(52 42 152 / 50%) inset;
+        padding-bottom: 10px;
+        -webkit-transition: -webkit-transform 0.6s ease;
+        transition: -webkit-transform 0.6s ease;
+        -o-transition: transform 0.6s ease;
+        transition: transform 0.6s ease;
+        transition: transform 0.6s ease, -webkit-transform 0.6s ease;
+    }
+    .contacts {
+        display: none!important;
     }
 }
 </style>
@@ -1493,57 +2088,81 @@
     margin-bottom: 12px;
 }
 </style>
-<header id="header" class="header _active" data-v-1a9bb128=""><div class="header__wrapper" data-v-1a9bb128=""><div class="header__container container" data-v-1a9bb128=""><div class="header__logo" data-v-1a9bb128=""><a href="/" class="header__logo-link" data-v-1a9bb128=""><img src="/guides/images/logo.svg" alt="logo jmix" class="header__logo-img" data-v-1a9bb128=""></a></div> <nav class="header__cols" data-v-1a9bb128=""><div class="header__col-left" data-v-1a9bb128=""><div class="header__items" data-v-1a9bb128=""><div class="header__item" data-v-1a9bb128=""><ul class="header__accordion" data-v-1a9bb128=""><li class="header__item-wrapper _active" data-v-5dc98e3a=""><button class="header__button" data-v-5dc98e3a=""><span class="header__button-title" data-v-5dc98e3a="">Platform</span> <svg xmlns="http://www.w3.org/2000/svg" class="header__button-svg icon -header-arrow undefined" data-v-5dc98e3a=""><use xlink:href="#i-header-arrow"></use></svg></button> <div class="header__menu-box" data-v-5dc98e3a=""><div class="header__menu" data-v-5dc98e3a="" style="overflow: hidden; transition: height 0.6s ease 0s;"><div class="header__menu-wrapper" data-v-5dc98e3a=""><div class="header__menu-body" data-v-5dc98e3a=""><div class="header__menu-shadow" data-v-5dc98e3a=""><div class="header__menu-container container" data-v-5dc98e3a=""><div class="header__submenu-title" data-v-5dc98e3a="">Platform</div> <ul class="header__submenu" data-v-5dc98e3a=""><li class="header__submenu-item" data-v-5dc98e3a=""><!----> <div class="header__submenu-inner" data-v-5dc98e3a=""><a href="/framework" class="header__submenu-link" data-v-5dc98e3a="">
+<header data-v-2e2438ba="" id="header" class="header _disabled"><div data-v-2e2438ba="" class="header__wrapper"><div data-v-2e2438ba="" class="header__container container"><div data-v-2e2438ba="" class="header__logo"><a data-v-2e2438ba="" href="/" class="header__logo-link"><img data-v-2e2438ba="" src="//www.jmix.io/images/jmix-logo.svg" alt="logo jmix" class="header__logo-img"></a></div> <nav data-v-2e2438ba="" class="header__cols"><div data-v-2e2438ba="" class="header__col-left"><div data-v-2e2438ba="" class="header__items"><div data-v-2e2438ba="" class="header__item"><ul data-v-2e2438ba="" class="header__accordion"><li data-v-0a8a5048="" class="header__item-wrapper _active"><button data-v-0a8a5048="" class="header__button"><span data-v-0a8a5048="" class="header__button-title">Platform</span> <svg data-v-0a8a5048="" xmlns="http://www.w3.org/2000/svg" class="header__button-svg icon -header-arrow undefined"><use xlink:href="#i-header-arrow"></use></svg></button> <div data-v-0a8a5048="" class="header__menu-box"><div data-v-0a8a5048="" class="header__menu" style="overflow: hidden; transition: height 0.6s ease 0s;"><div data-v-0a8a5048="" class="header__menu-wrapper"><div data-v-0a8a5048="" class="header__menu-body"><div data-v-0a8a5048="" class="header__menu-shadow"><div data-v-0a8a5048="" class="header__menu-container"><div data-v-0a8a5048="" class="header__submenu-title"><p>Platform</p>
+</div> <ul data-v-0a8a5048="" class="header__submenu"><li data-v-0a8a5048="" class="header__submenu-item"><div data-v-0a8a5048="" class="header__submenu-subtitle">
+    Overview
+</div> <!----></li><li data-v-0a8a5048="" class="header__submenu-item"><!----> <div data-v-0a8a5048="" class="header__submenu-inner"><a data-v-0a8a5048="" href="//www.jmix.io/framework/" class="header__submenu-link">
     Framework
-</a></div></li><li class="header__submenu-item" data-v-5dc98e3a=""><!----> <div class="header__submenu-inner" data-v-5dc98e3a=""><a href="/tools" class="header__submenu-link" data-v-5dc98e3a="">
+</a></div></li><li data-v-0a8a5048="" class="header__submenu-item"><!----> <div data-v-0a8a5048="" class="header__submenu-inner"><a data-v-0a8a5048="" href="//www.jmix.io/tools/" class="header__submenu-link">
     Studio
-</a></div></li><li class="header__submenu-item" data-v-5dc98e3a=""><!----> <div class="header__submenu-inner" data-v-5dc98e3a=""><a href="/marketplace" class="header__submenu-link" data-v-5dc98e3a="">
+</a></div></li><li data-v-0a8a5048="" class="header__submenu-item"><!----> <div data-v-0a8a5048="" class="header__submenu-inner"><a data-v-0a8a5048="" href="//www.jmix.io/marketplace/" class="header__submenu-link">
     Add-ons Marketplace
-</a></div></li><li class="header__submenu-item" data-v-5dc98e3a=""><!----> <div class="header__submenu-inner" data-v-5dc98e3a=""><a href="/business-process-automation" class="header__submenu-link" data-v-5dc98e3a="">
-    Business Process Automation
-</a></div></li><li class="header__submenu-item" data-v-5dc98e3a=""><!----> <div class="header__submenu-inner" data-v-5dc98e3a=""><a href="/devops-cloud" class="header__submenu-link" data-v-5dc98e3a="">
+</a></div></li><li data-v-0a8a5048="" class="header__submenu-item"><!----> <div data-v-0a8a5048="" class="header__submenu-inner"><a data-v-0a8a5048="" href="//www.jmix.io/devops-cloud/" class="header__submenu-link">
     DevOps Cloud
-</a></div></li><li class="header__submenu-item" data-v-5dc98e3a=""><!----> <div class="header__submenu-inner" data-v-5dc98e3a=""><a href="/subscription-plans-and-prices" class="header__submenu-link" data-v-5dc98e3a="">
-    Pricing
-</a></div></li></ul></div></div></div></div></div></div></li><li class="header__item-wrapper _active" data-v-5dc98e3a=""><button class="header__button" data-v-5dc98e3a=""><span class="header__button-title" data-v-5dc98e3a="">Why Jmix?</span> <svg xmlns="http://www.w3.org/2000/svg" class="header__button-svg icon -header-arrow undefined" data-v-5dc98e3a=""><use xlink:href="#i-header-arrow"></use></svg></button> <div class="header__menu-box" data-v-5dc98e3a=""><div class="header__menu" data-v-5dc98e3a="" style="overflow: hidden; transition: height 0.6s ease 0s;"><div class="header__menu-wrapper" data-v-5dc98e3a=""><div class="header__menu-body" data-v-5dc98e3a=""><div class="header__menu-shadow" data-v-5dc98e3a=""><div class="header__menu-container container" data-v-5dc98e3a=""><div class="header__submenu-title" data-v-5dc98e3a="">Why Jmix?</div> <ul class="header__submenu" data-v-5dc98e3a=""><li class="header__submenu-item" data-v-5dc98e3a=""><div class="header__submenu-subtitle" data-v-5dc98e3a="">
-    Jmix for
-</div> <!----></li><li class="header__submenu-item" data-v-5dc98e3a=""><!----> <div class="header__submenu-inner" data-v-5dc98e3a=""><a href="/it-leaders" class="header__submenu-link" data-v-5dc98e3a="">
-    IT Leaders
-</a></div></li><li class="header__submenu-item" data-v-5dc98e3a=""><!----> <div class="header__submenu-inner" data-v-5dc98e3a=""><a href="/isvs" class="header__submenu-link" data-v-5dc98e3a="">
-    ISVs
-</a></div></li><li class="header__submenu-item" data-v-5dc98e3a=""><!----> <div class="header__submenu-inner" data-v-5dc98e3a=""><a href="/enterprise-architects" class="header__submenu-link" data-v-5dc98e3a="">
-    Enterprise Architects
-</a></div></li><li class="header__submenu-item" data-v-5dc98e3a=""><!----> <div class="header__submenu-inner" data-v-5dc98e3a=""><a href="/developers" class="header__submenu-link" data-v-5dc98e3a="">
-    Developers
-</a></div></li></ul><ul class="header__submenu" data-v-5dc98e3a=""><li class="header__submenu-item" data-v-5dc98e3a=""><!----> <div class="header__submenu-inner" data-v-5dc98e3a=""><a href="/jmix-community" class="header__submenu-link" data-v-5dc98e3a="">
-    Jmix Community
-</a></div></li><li class="header__submenu-item" data-v-5dc98e3a=""><!----> <div class="header__submenu-inner" data-v-5dc98e3a=""><a href="/customer-stories" class="header__submenu-link" data-v-5dc98e3a="">
-    Customer stories
-</a></div></li></ul></div></div></div></div></div></div></li><li class="header__item-wrapper _active" data-v-5dc98e3a=""><button class="header__button" data-v-5dc98e3a=""><span class="header__button-title" data-v-5dc98e3a="">Solutions</span> <svg xmlns="http://www.w3.org/2000/svg" class="header__button-svg icon -header-arrow undefined" data-v-5dc98e3a=""><use xlink:href="#i-header-arrow"></use></svg></button> <div class="header__menu-box" data-v-5dc98e3a=""><div class="header__menu" data-v-5dc98e3a="" style="overflow: hidden; transition: height 0.6s ease 0s;"><div class="header__menu-wrapper" data-v-5dc98e3a=""><div class="header__menu-body" data-v-5dc98e3a=""><div class="header__menu-shadow" data-v-5dc98e3a=""><div class="header__menu-container container" data-v-5dc98e3a=""><div class="header__submenu-title" data-v-5dc98e3a="">Solutions</div> <ul class="header__submenu" data-v-5dc98e3a=""><li class="header__submenu-item" data-v-5dc98e3a=""><!----> <div class="header__submenu-inner" data-v-5dc98e3a=""><a href="/is-jmix-right-for-my-project" class="header__submenu-link" data-v-5dc98e3a="">
+</a></div></li><li data-v-0a8a5048="" class="header__submenu-item"><!----> <div data-v-0a8a5048="" class="header__submenu-inner"><a data-v-0a8a5048="" href="//www.jmix.io/business-process-automation/" class="header__submenu-link">
+    Business Process Automation
+</a></div></li></ul><ul data-v-0a8a5048="" class="header__submenu"><li data-v-0a8a5048="" class="header__submenu-item"><div data-v-0a8a5048="" class="header__submenu-subtitle">
+    Evaluation guide
+</div> <!----></li><li data-v-0a8a5048="" class="header__submenu-item"><!----> <div data-v-0a8a5048="" class="header__submenu-inner"><a data-v-0a8a5048="" href="//www.jmix.io/is-jmix-right-for-my-project/" class="header__submenu-link">
     Is Jmix right for my project?
-</a></div></li><li class="header__submenu-item" data-v-5dc98e3a=""><!----> <div class="header__submenu-inner" data-v-5dc98e3a=""><a href="/application-modernization" class="header__submenu-link" data-v-5dc98e3a="">
-    Modernize Apps
-</a></div></li><li class="header__submenu-item" data-v-5dc98e3a=""><!----> <div class="header__submenu-inner" data-v-5dc98e3a=""><a href="/eliminating-vendor-fees-and-limitations" class="header__submenu-link" data-v-5dc98e3a="">
-    Eliminate SaaS/Low Code vendor fees and limitations
-</a></div></li><li class="header__submenu-item" data-v-5dc98e3a=""><!----> <div class="header__submenu-inner" data-v-5dc98e3a=""><a href="/automate-internal-workflows-and-processes/" class="header__submenu-link" data-v-5dc98e3a="">
-    Automate Internal Workflows And Processes
-</a></div></li></ul></div></div></div></div></div></div></li><li class="header__item-wrapper _active" data-v-5dc98e3a=""><button class="header__button" data-v-5dc98e3a=""><span class="header__button-title" data-v-5dc98e3a="">Community</span> <svg xmlns="http://www.w3.org/2000/svg" class="header__button-svg icon -header-arrow undefined" data-v-5dc98e3a=""><use xlink:href="#i-header-arrow"></use></svg></button> <div class="header__menu-box" data-v-5dc98e3a=""><div class="header__menu" data-v-5dc98e3a="" style="overflow: hidden; transition: height 0.6s ease 0s;"><div class="header__menu-wrapper" data-v-5dc98e3a=""><div class="header__menu-body" data-v-5dc98e3a=""><div class="header__menu-shadow" data-v-5dc98e3a=""><div class="header__menu-container container" data-v-5dc98e3a=""><div class="header__submenu-title" data-v-5dc98e3a="">Community</div> <ul class="header__submenu" data-v-5dc98e3a=""><li class="header__submenu-item" data-v-5dc98e3a=""><!----> <div class="header__submenu-inner" data-v-5dc98e3a=""><a href="https://forum.jmix.io/" target="_blank" class="header__submenu-link" data-v-5dc98e3a="">
-    Forum
-</a></div></li><li class="header__submenu-item" data-v-5dc98e3a=""><!----> <div class="header__submenu-inner" data-v-5dc98e3a=""><a href="/blog" class="header__submenu-link" data-v-5dc98e3a="">
-    Blog
-</a></div></li><li class="header__submenu-item" data-v-5dc98e3a=""><!----> <div class="header__submenu-inner" data-v-5dc98e3a=""><a href="https://www.haulmont.com/services/cuba-platform-services/support/" target="_blank" class="header__submenu-link" data-v-5dc98e3a="">
-    Support &amp; Services
-</a></div></li><li class="header__submenu-item" data-v-5dc98e3a=""><!----> <div class="header__submenu-inner" data-v-5dc98e3a=""><a href="/partners" class="header__submenu-link" data-v-5dc98e3a="">
-    Partners
-</a></div></li><li class="header__submenu-item" data-v-5dc98e3a=""><!----> <div class="header__submenu-inner" data-v-5dc98e3a=""><a href="/contacts/" class="header__submenu-link" data-v-5dc98e3a="">
-    Contacts
-</a></div></li></ul></div></div></div></div></div></div></li></ul></div></div></div> <div class="header__col-right" data-v-1a9bb128=""><div class="header__select" data-v-1a9bb128=""><div class="header__select-body _active" data-v-1a9bb128=""><button class="header__select-btn" data-v-1a9bb128="">
-    Developer portal
-    <svg xmlns="http://www.w3.org/2000/svg" class="header__select-svg icon -header-arrow undefined" data-v-1a9bb128=""><use xlink:href="#i-header-arrow"></use></svg></button> <div class="header__select-wrapper" data-v-1a9bb128=""><div class="header__select-shadow" data-v-1a9bb128=""><div class="header__select-box" data-v-1a9bb128="" style="overflow: hidden; transition: height 0.6s ease 0s;"><ul class="header__select-list" data-v-1a9bb128=""><li class="header__select-li" data-v-1a9bb128=""><a href="/jmix-plugin-installation/" class="header__select-link" data-v-1a9bb128="">Get started</a></li><li class="header__select-li" data-v-1a9bb128=""><a href="/learn" class="header__select-link" data-v-1a9bb128="">Learn </a></li><li class="header__select-li" data-v-1a9bb128=""><a href="https://docs.jmix.io/jmix/intro.html" target="_blank" class="header__select-link" data-v-1a9bb128="">
+</a></div></li></ul></div></div></div></div></div></div></li><li data-v-0a8a5048="" class="header__item-wrapper _active"><button data-v-0a8a5048="" class="header__button"><span data-v-0a8a5048="" class="header__button-title">Business</span> <svg data-v-0a8a5048="" xmlns="http://www.w3.org/2000/svg" class="header__button-svg icon -header-arrow undefined"><use xlink:href="#i-header-arrow"></use></svg></button> <div data-v-0a8a5048="" class="header__menu-box"><div data-v-0a8a5048="" class="header__menu" style="overflow: hidden; transition: height 0.6s ease 0s;"><div data-v-0a8a5048="" class="header__menu-wrapper"><div data-v-0a8a5048="" class="header__menu-body"><div data-v-0a8a5048="" class="header__menu-shadow"><div data-v-0a8a5048="" class="header__menu-container"><div data-v-0a8a5048="" class="header__submenu-title"><p>Business</p>
+</div> <ul data-v-0a8a5048="" class="header__submenu"><li data-v-0a8a5048="" class="header__submenu-item"><div data-v-0a8a5048="" class="header__submenu-subtitle">
+    By persona
+</div> <!----></li><li data-v-0a8a5048="" class="header__submenu-item"><!----> <div data-v-0a8a5048="" class="header__submenu-inner"><a data-v-0a8a5048="" href="//www.jmix.io/it-leaders/" class="header__submenu-link">
+    IT Leaders
+</a></div></li><li data-v-0a8a5048="" class="header__submenu-item"><!----> <div data-v-0a8a5048="" class="header__submenu-inner"><a data-v-0a8a5048="" href="//www.jmix.io/isvs/" class="header__submenu-link">
+    ISVs
+</a></div></li><li data-v-0a8a5048="" class="header__submenu-item"><!----> <div data-v-0a8a5048="" class="header__submenu-inner"><a data-v-0a8a5048="" href="//www.jmix.io/enterprise-architects/" class="header__submenu-link">
+    Enterprise Architects
+</a></div></li></ul><ul data-v-0a8a5048="" class="header__submenu"><li data-v-0a8a5048="" class="header__submenu-item"><div data-v-0a8a5048="" class="header__submenu-subtitle">
+    By industry
+</div> <!----></li><li data-v-0a8a5048="" class="header__submenu-item"><!----> <div data-v-0a8a5048="" class="header__submenu-inner"><a data-v-0a8a5048="" href="//www.jmix.io/customer-stories/" class="header__submenu-link">
+    Customer Stories
+</a></div></li><li data-v-0a8a5048="" class="header__submenu-item"><!----> <div data-v-0a8a5048="" class="header__submenu-inner"><a data-v-0a8a5048="" href="//www.jmix.io/insurance-automation/" class="header__submenu-link">
+    Insurance
+</a></div></li><li data-v-0a8a5048="" class="header__submenu-item"><!----> <div data-v-0a8a5048="" class="header__submenu-inner"><a data-v-0a8a5048="" href="//www.jmix.io/banking/" class="header__submenu-link">
+    Banking
+</a></div></li><li data-v-0a8a5048="" class="header__submenu-item"><!----> <div data-v-0a8a5048="" class="header__submenu-inner"><a data-v-0a8a5048="" href="//www.jmix.io/logistics-automation/" class="header__submenu-link">
+    Logistics
+</a></div></li></ul><ul data-v-0a8a5048="" class="header__submenu"><li data-v-0a8a5048="" class="header__submenu-item"><div data-v-0a8a5048="" class="header__submenu-subtitle">
+    By Use Case
+</div> <!----></li><li data-v-0a8a5048="" class="header__submenu-item"><!----> <div data-v-0a8a5048="" class="header__submenu-inner"><a data-v-0a8a5048="" href="//www.jmix.io/application-modernization/" class="header__submenu-link">
+    Modernize Applications
+</a></div></li><li data-v-0a8a5048="" class="header__submenu-item"><!----> <div data-v-0a8a5048="" class="header__submenu-inner"><a data-v-0a8a5048="" href="//www.jmix.io/eliminating-vendor-fees-and-limitations/" class="header__submenu-link">
+    Reduce Software Spendings
+</a></div></li><li data-v-0a8a5048="" class="header__submenu-item"><!----> <div data-v-0a8a5048="" class="header__submenu-inner"><a data-v-0a8a5048="" href="//www.jmix.io/automate-internal-workflows-and-processes/" class="header__submenu-link">
+    Automate Service Workflows
+</a></div></li></ul></div></div></div></div></div></div></li><li data-v-0a8a5048="" class="header__item-wrapper _active"><button data-v-0a8a5048="" class="header__button"><span data-v-0a8a5048="" class="header__button-title">Developers</span> <svg data-v-0a8a5048="" xmlns="http://www.w3.org/2000/svg" class="header__button-svg icon -header-arrow undefined"><use xlink:href="#i-header-arrow"></use></svg></button> <div data-v-0a8a5048="" class="header__menu-box"><div data-v-0a8a5048="" class="header__menu" style="overflow: hidden; transition: height 0.6s ease 0s;"><div data-v-0a8a5048="" class="header__menu-wrapper"><div data-v-0a8a5048="" class="header__menu-body"><div data-v-0a8a5048="" class="header__menu-shadow"><div data-v-0a8a5048="" class="header__menu-container"><div data-v-0a8a5048="" class="header__submenu-title"><p>Developers</p>
+</div> <ul data-v-0a8a5048="" class="header__submenu"><li data-v-0a8a5048="" class="header__submenu-item"><div data-v-0a8a5048="" class="header__submenu-subtitle">
+    Overview
+</div> <!----></li><li data-v-0a8a5048="" class="header__submenu-item"><!----> <div data-v-0a8a5048="" class="header__submenu-inner"><a data-v-0a8a5048="" href="//www.jmix.io/developers/" class="header__submenu-link">
+    Why Jmix?
+</a></div></li><li data-v-0a8a5048="" class="header__submenu-item"><!----> <div data-v-0a8a5048="" class="header__submenu-inner"><a data-v-0a8a5048="" href="//www.jmix.io/get-started/" class="header__submenu-link">
+    Get started
+</a></div></li><li data-v-0a8a5048="" class="header__submenu-item"><!----> <div data-v-0a8a5048="" class="header__submenu-inner"><a data-v-0a8a5048="" href="//www.jmix.io/learn/" class="header__submenu-link">
+    Learn
+</a></div></li><li data-v-0a8a5048="" class="header__submenu-item"><!----> <div data-v-0a8a5048="" class="header__submenu-inner"><a data-v-0a8a5048="" href="https://docs.jmix.io/jmix/intro.html" target="_blank" class="header__submenu-link">
     Documentation
-</a></li></ul></div></div></div></div></div></div></nav> <div class="header__body" data-v-1a9bb128=""><a href="https://account.jmix.io/" target="_blank" class="header__account" data-v-1a9bb128=""><svg xmlns="http://www.w3.org/2000/svg" class="header__account-svg icon -icon-header-user undefined" data-v-1a9bb128=""><use xlink:href="#i-icon-header-user"></use></svg></a> <button class="header__burger" data-v-1a9bb128=""><span class="header__burger-wrapper" data-v-1a9bb128=""><span data-v-1a9bb128=""></span> <span data-v-1a9bb128=""></span> <span data-v-1a9bb128=""></span></span></button></div></div></div>
+</a></div></li><li data-v-0a8a5048="" class="header__submenu-item"><!----> <div data-v-0a8a5048="" class="header__submenu-inner"><a data-v-0a8a5048="" href="https://forum.jmix.io/" target="_blank" class="header__submenu-link">
+    Forum
+</a></div></li><li data-v-0a8a5048="" class="header__submenu-item"><!----> <div data-v-0a8a5048="" class="header__submenu-inner"><a data-v-0a8a5048="" href="//www.jmix.io/blog/" class="header__submenu-link">
+    Blog
+</a></div></li></ul></div></div></div></div></div></div></li><li data-v-0a8a5048="" class="header__item-wrapper _active"><button data-v-0a8a5048="" class="header__button"><span data-v-0a8a5048="" class="header__button-title">Services
+ &amp; Partners</span> <svg data-v-0a8a5048="" xmlns="http://www.w3.org/2000/svg" class="header__button-svg icon -header-arrow undefined">
+    <use xlink:href="#i-header-arrow"></use></svg></button> <div data-v-0a8a5048="" class="header__menu-box"><div data-v-0a8a5048="" class="header__menu" style="overflow: hidden; transition: height 0.6s ease 0s;"><div data-v-0a8a5048="" class="header__menu-wrapper"><div data-v-0a8a5048="" class="header__menu-body"><div data-v-0a8a5048="" class="header__menu-shadow"><div data-v-0a8a5048="" class="header__menu-container"><div data-v-0a8a5048="" class="header__submenu-title"><p>Services<br>
+    &amp; Partners</p>
+</div> <ul data-v-0a8a5048="" class="header__submenu"><li data-v-0a8a5048="" class="header__submenu-item"><!----> <div data-v-0a8a5048="" class="header__submenu-inner"><a data-v-0a8a5048="" href="//www.jmix.io/training/" class="header__submenu-link">
+    Training
+</a></div></li><li data-v-0a8a5048="" class="header__submenu-item"><!----> <div data-v-0a8a5048="" class="header__submenu-inner"><a data-v-0a8a5048="" href="//www.jmix.io/services-support/" class="header__submenu-link">
+    Consultancy
+</a></div></li><li data-v-0a8a5048="" class="header__submenu-item"><!----> <div data-v-0a8a5048="" class="header__submenu-inner"><a data-v-0a8a5048="" href="//www.jmix.io/partners/" class="header__submenu-link">
+    Become a Partner
+</a></div></li></ul></div></div></div></div></div></div></li></ul></div> <div data-v-2e2438ba="" class="header__pricing"><a data-v-2e2438ba="" href="//www.jmix.io/subscription-plans-and-prices/" class="header__pricing-link">Pricing</a></div></div></div> <div data-v-2e2438ba="" class="header__col-right"><div data-v-d8af0508="" data-v-2e2438ba="" class="lang header__lang desctop"><button data-v-d8af0508="" type="button" aria-label="Open language menu" class="lang-title">
+    EN
+    <svg data-v-d8af0508="" xmlns="http://www.w3.org/2000/svg" class="lang-svg icon -header-arrow undefined"><use xlink:href="#i-header-arrow"></use></svg></button> <div data-v-d8af0508="" class="lang-wrap"><ul data-v-d8af0508="" class="lang-select"><li data-v-d8af0508="" class="lang-li"><a data-v-d8af0508="" href="https://www.jmix.cn/" class="lang-link">CN</a></li></ul></div></div> <a href="https://www.jmix.io/contacts/" data-v-4458a3bf="" data-v-2e2438ba="" class="btn header__btn invert contacts">Contact Us <!----></a></div></nav> <div data-v-2e2438ba="" class="header__body"><div data-v-d8af0508="" data-v-2e2438ba="" class="lang header__lang mobile"><button data-v-d8af0508="" type="button" aria-label="Open language menu" class="lang-title">
+    EN
+    <svg data-v-d8af0508="" xmlns="http://www.w3.org/2000/svg" class="lang-svg icon -header-arrow undefined"><use xlink:href="#i-header-arrow"></use></svg></button> <div data-v-d8af0508="" class="lang-wrap"><ul data-v-d8af0508="" class="lang-select"><li data-v-d8af0508="" class="lang-li"><a data-v-d8af0508="" href="https://www.jmix.cn/" class="lang-link">CN</a></li></ul></div></div> <a data-v-2e2438ba="" href="https://account.jmix.io/" target="_blank" class="header__account"><svg data-v-2e2438ba="" xmlns="http://www.w3.org/2000/svg" class="header__account-svg icon -icon-header-user undefined"><use xlink:href="#i-icon-header-user"></use></svg></a> <button data-v-2e2438ba="" class="header__burger"><span data-v-2e2438ba="" class="header__burger-wrapper"><span data-v-2e2438ba=""></span> <span data-v-2e2438ba=""></span> <span data-v-2e2438ba=""></span></span></button></div></div></div>
 </header>
-
 <div class="cuba-platform-note">
     <div class="cuba-platform-note_text">You are browsing CUBA Platform website section. This is the previous generation of Jmix.</div>
     <div class="cuba-platform-note_text">Choose any item in the top menu to return to Jmix.</div>

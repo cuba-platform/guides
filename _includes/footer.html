@@ -282,7 +282,7 @@
         const headerCols = document.querySelector('.header__cols');
         const headerBtns = document.querySelectorAll('button.header__button');
         const selectBtn = document.querySelector('button.header__select-btn');
-        selectBtn.closest('.header__select-body').classList.remove('_active');
+        //selectBtn.closest('.header__select-body').classList.remove('_active');
         console.log(burgerBtn)
         burgerBtn.addEventListener('click', () => {
             console.log('header burger click')
@@ -295,8 +295,8 @@
                 this.closest('.header__item-wrapper').classList.toggle('_active');
             });
         });
-        selectBtn.addEventListener('click', () => {
+        /*selectBtn.addEventListener('click', () => {
             selectBtn.closest('.header__select-body').classList.toggle('_active');
-        });
+        });*/
     })
 </script>
